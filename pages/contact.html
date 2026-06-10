@@ -22,37 +22,39 @@
   <main class="tool-layout">
     <div class="container" style="max-width: 650px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem;">
       <h1 class="gradient-text" style="font-size: 3rem; font-family: var(--font-display); font-weight: 800; text-align: center; margin-bottom: 0.5rem;">Support & Feedback</h1>
-      <p style="text-align: center; color: var(--text-secondary); max-width: 500px; margin: 0 auto 1rem;">Have a tool suggestion or found a bug? Let us know. Since the app has no backend database, form submissions are logged locally.</p>
+      <p style="text-align: center; color: var(--text-secondary); max-width: 500px; margin: 0 auto 1rem;">Have a tool suggestion or found a bug? Let us know. Your message will be sent directly to our support team.</p>
       
       <div class="glass-panel tool-panel">
-        <div id="submit-success" class="alert-success" style="display: none; margin-bottom: 1rem;">
-          Message simulated successfully! Thank you for your feedback.
-        </div>
-        
-        <form id="contact-form" style="display: flex; flex-direction: column; gap: 1.25rem;">
+        <form action="https://formsubmit.co/mdsamiislam2006@gmail.com" method="POST" style="display: flex; flex-direction: column; gap: 1.25rem;">
+          
+          <!-- Security / Config -->
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_subject" value="New Submission from ALL IN ONE Utilities">
+          <input type="hidden" name="_next" value="https://sami12901.github.io/ALL-IN-ONE-v1/pages/contact.html">
+
           <div class="form-group">
             <label for="c-name">Full Name</label>
-            <input type="text" id="c-name" class="form-input" required placeholder="John Doe">
+            <input type="text" id="c-name" name="name" class="form-input" required placeholder="John Doe">
           </div>
           <div class="form-group">
             <label for="c-email">Email Address</label>
-            <input type="email" id="c-email" class="form-input" required placeholder="john@example.com">
+            <input type="email" id="c-email" name="email" class="form-input" required placeholder="john@example.com">
           </div>
           <div class="form-group">
             <label for="c-type">Inquiry Type</label>
-            <select id="c-type" class="form-select">
-              <option value="suggest">Request a New Tool</option>
-              <option value="bug">Report a Bug / Issue</option>
-              <option value="other">General Question</option>
+            <select id="c-type" name="inquiry_type" class="form-select">
+              <option value="Request a New Tool">Request a New Tool</option>
+              <option value="Report a Bug / Issue">Report a Bug / Issue</option>
+              <option value="General Question">General Question</option>
             </select>
           </div>
           <div class="form-group">
             <label for="c-msg">Message Detail</label>
-            <textarea id="c-msg" class="form-textarea" required placeholder="Please describe details here..." style="min-height: 120px;"></textarea>
+            <textarea id="c-msg" name="message" class="form-textarea" required placeholder="Please describe details here..." style="min-height: 120px;"></textarea>
           </div>
           <button type="submit" class="btn btn-primary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: block;"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-            Submit Inquiry
+            Send Message Securely
           </button>
         </form>
       </div>
@@ -61,39 +63,5 @@
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const form = document.getElementById('contact-form');
-      const successMsg = document.getElementById('submit-success');
-
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        const name = document.getElementById('c-name').value;
-        const email = document.getElementById('c-email').value;
-        const typeSelect = document.getElementById('c-type');
-        const typeText = typeSelect.options[typeSelect.selectedIndex].text;
-        const message = document.getElementById('c-msg').value;
-
-        // Construct the mailto link
-        const targetEmail = 'mdsamiislam2006@gmail.com';
-        const subject = encodeURIComponent(`ALL IN ONE: ${typeText}`);
-        const body = encodeURIComponent(`Name: ${name}\nReturn Email: ${email}\n\nMessage:\n${message}`);
-        
-        const mailtoLink = `mailto:${targetEmail}?subject=${subject}&body=${body}`;
-        
-        // Open the user's default email client
-        window.location.href = mailtoLink;
-
-        successMsg.innerText = "Opening your email client...";
-        successMsg.style.display = 'block';
-        
-        setTimeout(() => {
-          successMsg.style.display = 'none';
-        }, 5000);
-      });
-    });
-  </script>
 </body>
 </html>
