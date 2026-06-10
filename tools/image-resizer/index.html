@@ -34,22 +34,69 @@
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Image Resizer & Compressor</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Resize and compress images to WebP/PNG/JPG.</div>
-            <div><strong>Inputs:</strong> resize, compress, webp, quality, dimensions</div>
-            <div><strong>Category:</strong> image</div>
+      <div class="tool-workspace">
+        <div class="input-panel glass-panel">
+          <div class="form-group">
+            <label for="image-upload" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Select Image</label>
+            <input type="file" id="image-upload" accept="image/png, image/jpeg, image/webp" style="width: 100%; padding: 1rem; border: 2px dashed var(--border); border-radius: var(--radius-md); background: var(--bg-tertiary); cursor: pointer; color: var(--text-primary);">
+            <div id="file-info" style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-secondary); display: none;"></div>
+          </div>
+          
+          <div class="form-group" style="margin-top: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div>
+              <label for="resize-width" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Width (px)</label>
+              <input type="number" id="resize-width" class="form-control" placeholder="Auto" min="1">
+            </div>
+            <div>
+              <label for="resize-height" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Height (px)</label>
+              <input type="number" id="resize-height" class="form-control" placeholder="Auto" min="1">
+            </div>
+          </div>
+          
+          <div class="form-group" style="margin-top: 1rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem;">
+              <input type="checkbox" id="maintain-aspect-ratio" checked>
+              Maintain Aspect Ratio
+            </label>
+          </div>
+
+          <div class="form-group" style="margin-top: 1.5rem;">
+            <label for="output-format" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Output Format</label>
+            <select id="output-format" class="form-control">
+              <option value="image/jpeg">JPEG</option>
+              <option value="image/png">PNG</option>
+              <option value="image/webp" selected>WebP (Best Compression)</option>
+            </select>
+          </div>
+          
+          <div class="form-group" style="margin-top: 1.5rem;">
+            <label for="quality-slider" style="display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 0.5rem;">
+              <span>Quality (Compression)</span>
+              <span id="quality-value">80%</span>
+            </label>
+            <input type="range" id="quality-slider" min="1" max="100" value="80" style="width: 100%;">
+            <p style="font-size: 0.8rem; color: var(--text-tertiary); margin-top: 0.25rem;">Lower quality reduces file size.</p>
+          </div>
+
+          <button id="process-btn" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem;" disabled>Process Image</button>
+        </div>
+
+        <div class="output-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="font-weight: 600; font-size: 1.1rem;">Preview</h3>
+            <button id="download-btn" class="btn btn-secondary" disabled>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 0.25rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download
+            </button>
+          </div>
+          <div id="preview-container" style="width: 100%; min-height: 250px; background: var(--bg-tertiary); border-radius: var(--radius-md); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;">
+            <span id="preview-placeholder" style="color: var(--text-tertiary); font-size: 0.9rem;">Upload an image to see preview</span>
+            <img id="image-preview" style="max-width: 100%; max-height: 400px; display: none; object-fit: contain;">
+          </div>
+          <div id="output-info" style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary); display: none; background: rgba(16, 185, 129, 0.1); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid rgba(16, 185, 129, 0.2);">
+            <strong>Success!</strong> Dimensions: <span id="out-dim"></span> | Size: <span id="out-size"></span> (<span id="out-savings" style="color: var(--success); font-weight: bold;"></span>)
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
     
     </div>
