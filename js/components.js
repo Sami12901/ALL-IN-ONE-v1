@@ -36,6 +36,10 @@ class AppHeader extends HTMLElement {
     applyTheme(activeTheme); // Ensure theme is loaded
 
     this.innerHTML = `
+      <div class="dev-banner" style="background: linear-gradient(90deg, var(--accent), #e11d48); color: white; text-align: center; padding: 0.65rem 1rem; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em; display: flex; align-items: center; justify-content: center; gap: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); font-family: var(--font-display);">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: block;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <span>THIS WEBSITE IS CURRENTLY UNDER ACTIVE DEVELOPMENT</span>
+      </div>
       <header class="app-header glass-panel">
         <div class="container nav-container" style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 1.5rem; height: 70px;">
           <!-- Brand -->
