@@ -69,8 +69,25 @@
 
       form.addEventListener('submit', (e) => {
         e.preventDefault();
+        
+        const name = document.getElementById('c-name').value;
+        const email = document.getElementById('c-email').value;
+        const typeSelect = document.getElementById('c-type');
+        const typeText = typeSelect.options[typeSelect.selectedIndex].text;
+        const message = document.getElementById('c-msg').value;
+
+        // Construct the mailto link
+        const targetEmail = 'mdsamiislam2006@gmail.com';
+        const subject = encodeURIComponent(`ALL IN ONE: ${typeText}`);
+        const body = encodeURIComponent(`Name: ${name}\nReturn Email: ${email}\n\nMessage:\n${message}`);
+        
+        const mailtoLink = `mailto:${targetEmail}?subject=${subject}&body=${body}`;
+        
+        // Open the user's default email client
+        window.location.href = mailtoLink;
+
+        successMsg.innerText = "Opening your email client...";
         successMsg.style.display = 'block';
-        form.reset();
         
         setTimeout(() => {
           successMsg.style.display = 'none';
