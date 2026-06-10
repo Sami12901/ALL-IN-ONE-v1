@@ -3,73 +3,86 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HTML to Markdown Converter - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Extract markdown structure from HTML markup.">
-  <meta name="keywords" content="html, markdown, convert, clean, free, online, tool, utility">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/html-to-markdown/">
+  <title>HTML to Markdown Converter - ALL IN ONE</title>
+  <meta name="description" content="Convert HTML code to Markdown instantly. Fast, free, and completely in your browser.">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
   <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <script src="https://unpkg.com/turndown/lib/turndown.browser.umd.js"></script>
   <link rel="manifest" href="../../pwa/manifest.json">
   <meta name="theme-color" content="#4f46e5">
   <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
   <script type="module" src="../../js/main.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
-  <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
-      <div class="tool-header">
-        <h1>HTML to Markdown Converter</h1>
-        <p class="tool-description">Extract markdown structure from HTML markup.</p>
+      <div class="breadcrumb-container">
+        <ul class="breadcrumbs">
+          <li class="breadcrumb-item"><a href="../../index.html">Dashboard</a></li>
+          <li class="breadcrumb-item"><a href="#">Text Utilities</a></li>
+          <li class="breadcrumb-item active">HTML to Markdown</li>
+        </ul>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>HTML to Markdown Converter</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Extract markdown structure from HTML markup.</div>
-            <div><strong>Inputs:</strong> html, markdown, convert, clean</div>
-            <div><strong>Category:</strong> text</div>
+      <div class="tool-header">
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">HTML to Markdown Converter</h1>
+        <p class="tool-description">Instantly convert HTML markup to clean Markdown text. Perfect for migrating content, blogging, and documentation formatting.</p>
+      </div>
+
+      <div class="tool-workarea split-view">
+        <!-- Input Section -->
+        <div class="glass-panel tool-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            HTML Input
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <textarea id="html-input" class="form-textarea" placeholder="Paste your HTML code here...
+Example:
+<h1>Hello World</h1>
+<p>This is a <strong>bold</strong> statement.</p>" style="height: 100%; min-height: 300px; font-family: monospace;"></textarea>
+          </div>
+          <div class="action-bar">
+            <button id="clear-btn" class="btn btn-secondary">Clear Input</button>
+            <button id="paste-btn" class="btn btn-secondary">Paste from Clipboard</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Output Section -->
+        <div class="glass-panel tool-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Markdown Output
+          </div>
+          
+          <div class="form-group" style="flex: 1; position: relative;">
+            <textarea id="md-output" class="form-textarea" readonly placeholder="Your Markdown will appear here..." style="height: 100%; min-height: 300px; font-family: monospace; background: var(--bg-primary);"></textarea>
+            <button id="copy-btn" class="copy-btn">Copy</button>
+          </div>
+          
+          <div class="checkbox-group" style="flex-direction: row; flex-wrap: wrap; gap: 1.5rem; margin-top: 0.5rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+            <label class="checkbox-label">
+              <input type="checkbox" id="opt-heading" checked>
+              Use ATX Headings (#)
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="opt-hr" checked>
+              Use --- for HR
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="opt-code">
+              Fenced Code Blocks
+            </label>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
 
-  <!-- Footer Web Component -->
   <app-footer></app-footer>
-
-  <!-- Structured schema for search engine rich snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "HTML to Markdown Converter",
-    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/html-to-markdown/",
-    "description": "Extract markdown structure from HTML markup.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
-  }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
