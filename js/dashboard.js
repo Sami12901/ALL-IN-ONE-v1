@@ -159,8 +159,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const svgIcon = CATEGORY_ICONS[tool.category] || CATEGORY_ICONS.utility;
     const activeBadge = tool.active ? `<span style="background: rgba(16, 185, 129, 0.15); color: var(--success); font-size: 0.65rem; padding: 0.15rem 0.4rem; border-radius: var(--radius-sm); font-weight: 700; letter-spacing: 0.05em; border: 1px solid rgba(16, 185, 129, 0.3);">ACTIVE</span>` : `<span style="background: var(--bg-tertiary); color: var(--text-tertiary); font-size: 0.65rem; padding: 0.15rem 0.4rem; border-radius: var(--radius-sm); font-weight: 600; letter-spacing: 0.05em; border: 1px solid var(--border);">COMING SOON</span>`;
 
+    const cardStatusClass = tool.active ? '' : 'tool-coming-soon';
     return `
-      <div class="tool-card glass-panel" data-id="${tool.id}" style="position: relative;">
+      <div class="tool-card glass-panel ${cardStatusClass}" data-id="${tool.id}" style="position: relative;">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
           <div class="tool-icon-wrapper">${svgIcon}</div>
           <div style="display: flex; align-items: center; gap: 0.5rem;">
