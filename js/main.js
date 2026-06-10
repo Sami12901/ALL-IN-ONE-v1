@@ -27,9 +27,13 @@ document.addEventListener('DOMContentLoaded', () => {
 // Registers service worker correctly relative to page depth
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
-    const isSubFolder = window.location.pathname.includes('/tools/') || window.location.pathname.includes('/pages/');
-    // Caching service worker registers from root domain
-    const swPath = isSubFolder ? '../../sw.js' : './sw.js';
+    let swPath = './sw.js';
+    const path = window.location.pathname;
+    if (path.includes('/tools/')) {
+      swPath = '../../sw.js';
+    } else if (path.includes('/pages/')) {
+      swPath = '../sw.js';
+    }
     
     // Track installation prompts globally
     window.addEventListener('beforeinstallprompt', (e) => {

@@ -9,8 +9,11 @@ const CLOSE_SVG = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" s
 // Helper to determine root path prefix depending on directory depth
 function getRootPrefix() {
   const path = window.location.pathname;
-  if (path.includes('/tools/') || path.includes('/pages/')) {
+  if (path.includes('/tools/')) {
     return '../../';
+  }
+  if (path.includes('/pages/')) {
+    return '../';
   }
   return './';
 }
