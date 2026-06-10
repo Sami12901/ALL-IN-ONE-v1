@@ -66,11 +66,11 @@ class AppHeader extends HTMLElement {
             
             <!-- Dark Mode Toggle -->
             <button id="header-theme-toggle" class="btn-secondary" style="border: 1px solid var(--border); background: var(--bg-tertiary); color: var(--text-primary); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition);" aria-label="Toggle theme">
-              <span class="theme-icon" style="display: flex; align-items: center; justify-content: center;">\${activeTheme === 'dark' ? SUN_SVG : MOON_SVG}</span>
+              <span class="theme-icon" style="display: flex; align-items: center; justify-content: center;">${activeTheme === 'dark' ? SUN_SVG : MOON_SVG}</span>
             </button>
 
             <!-- Mobile Menu Toggle Button -->
-            <button id="mobile-menu-toggle" style="background: transparent; border: none; padding: 0.5rem; color: var(--text-primary); cursor: pointer; display: none;" aria-label="Toggle menu">\${HAMBURGER_SVG}</button>
+            <button id="mobile-menu-toggle" style="background: transparent; border: none; padding: 0.5rem; color: var(--text-primary); cursor: pointer; display: none;" aria-label="Toggle menu">${HAMBURGER_SVG}</button>
           </nav>
         </div>
       </header>
