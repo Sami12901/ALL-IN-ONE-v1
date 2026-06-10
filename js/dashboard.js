@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   let toolsDatabase = [];
   let activeCategory = 'all';
+  let activeStatusFilter = 'all';
 
   // 1. Initial Data Fetch
   fetch('data/tools-db.json')
@@ -210,6 +211,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const categoryMatch = category === 'all' || tool.category === category;
       if (!categoryMatch) return false;
 
+      // Status Match
+      if (activeStatusFilter === 'active' && !tool.active) return false;
+      if (activeStatusFilter === 'coming' && tool.active) return false;
+
       if (!query) return true;
 
       const nameMatch = tool.name.toLowerCase().includes(query);
@@ -228,6 +233,16 @@ document.addEventListener('DOMContentLoaded', () => {
         tab.classList.add('active');
         
         activeCategory = tab.getAttribute('data-category');
+        renderMainGrid();
+      });
+    });
+
+    const statusBtns = document.querySelectorAll('.filter-btn');
+    statusBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        statusBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeStatusFilter = btn.getAttribute('data-filter');
         renderMainGrid();
       });
     });
