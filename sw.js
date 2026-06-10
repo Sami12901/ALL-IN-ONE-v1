@@ -47,8 +47,11 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const requestUrl = new URL(e.request.url);
 
-  // Skip non-GET requests or external APIs (except allowed ones)
+  // Skip non-GET requests
   if (e.request.method !== 'GET') return;
+
+  // Skip non-HTTP/HTTPS protocols (like chrome-extension://)
+  if (!requestUrl.protocol.startsWith('http')) return;
 
   // Caching Strategy:
   // 1. Cache-first for local static assets (CSS, JS, Fonts, Images, Libs)
