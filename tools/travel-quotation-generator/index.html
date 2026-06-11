@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travel Quotation Generator - ALL IN ONE</title>
+  <meta name="description" content="Generate beautiful, print-ready travel quotations and proposals for your clients.">
+  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
+  
+  <!-- Core CSS -->
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <!-- Component Scripts -->
+  <script type="module" src="../../js/components.js"></script>
+  
+  <style>
+    /* Travel Tool Theming */
+    :root {
+      --travel-primary: #0ea5e9; /* Sky Blue */
+      --travel-secondary: #0284c7;
+      --travel-bg: rgba(240, 249, 255, 0.05);
+    }
+    
+    [data-theme="light"] {
+      --travel-bg: rgba(255, 255, 255, 0.8);
+    }
+    
+    .travel-gradient {
+      background: linear-gradient(135deg, #38bdf8, #0284c7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .layout-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    
+    @media (min-width: 1024px) {
+      .layout-container {
+        grid-template-columns: 450px 1fr;
+      }
+    }
+    
+    .glass-card {
+      background: var(--travel-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(14, 165, 233, 0.2);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    
+    .form-group label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      transition: var(--transition);
+      font-size: 0.95rem;
+    }
+    
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--travel-primary);
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+    }
+
+    /* Dynamic Line Items */
+    .line-items-container {
+      margin-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+    }
+
+    .line-item {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      margin-bottom: 1rem;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+
+    .line-item:hover {
+      border-color: rgba(14, 165, 233, 0.5);
+    }
+
+    .remove-item-btn {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .item-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .btn-travel {
+      background: linear-gradient(135deg, var(--travel-primary), var(--travel-secondary));
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    .btn-outline:hover {
+      background: var(--bg-hover);
+    }
+
+    /* Print / PDF Document Styling */
+    .document-preview {
+      background: #ffffff;
+      color: #1e293b;
+      min-height: 842px; /* A4 aspect ratio approx */
+      padding: 40px 50px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      border-radius: 4px;
+      position: relative;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    [data-theme="dark"] .document-preview {
+      background: #ffffff;
+    }
+
+    .doc-header {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .doc-company h1 {
+      color: #0ea5e9;
+      font-size: 1.8rem;
+      margin-bottom: 0.25rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .doc-meta {
+      text-align: right;
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+
+    .doc-title {
+      font-size: 2rem;
+      color: #0f172a;
+      margin-bottom: 1.5rem;
+      font-weight: 300;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .doc-client-info {
+      display: flex;
+      justify-content: space-between;
+      background: #f8fafc;
+      padding: 1.5rem;
+      border-radius: 4px;
+      margin-bottom: 2rem;
+      border-left: 4px solid #0ea5e9;
+    }
+
+    .info-block {
+      flex: 1;
+    }
+
+    .info-label {
+      font-size: 0.8rem;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.25rem;
+    }
+
+    .info-value {
+      font-weight: 600;
+      color: #0f172a;
+      font-size: 1rem;
+    }
+
+    .doc-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2rem;
+    }
+
+    .doc-table th {
+      background: #0ea5e9;
+      color: white;
+      text-align: left;
+      padding: 12px 15px;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .doc-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #e2e8f0;
+      color: #334155;
+    }
+
+    .doc-table tr:last-child td {
+      border-bottom: 2px solid #cbd5e1;
+    }
+
+    .doc-totals {
+      width: 350px;
+      margin-left: auto;
+    }
+
+    .doc-total-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 15px;
+      font-size: 0.95rem;
+      color: #475569;
+    }
+
+    .doc-grand-total {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px;
+      background: #f1f5f9;
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: #0f172a;
+      border-radius: 4px;
+      margin-top: 10px;
+    }
+
+    .doc-footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid #e2e8f0;
+      font-size: 0.85rem;
+      color: #64748b;
+      line-height: 1.6;
+    }
+
+    /* Print adjustments */
+    @media print {
+      body * { visibility: hidden; }
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      app-header, .glass-card, .tool-title, .tool-description, .no-print { display: none !important; }
+      .document-preview, .document-preview * { visibility: visible; }
+      .document-preview {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        border-radius: 0;
+      }
+      @page { margin: 1cm; }
+    }
+    
+    /* Profit Analyzer (Admin only) */
+    .profit-panel {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px dashed #10b981;
+      padding: 1rem;
+      border-radius: var(--radius-sm);
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <app-header></app-header>
+  
+  <main class="container" style="padding: 2rem 1.5rem;">
+    <div style="text-align: center; margin-bottom: 2rem;" class="no-print">
+      <span style="display: inline-block; padding: 0.25rem 1rem; background: rgba(14, 165, 233, 0.1); color: var(--travel-primary); border-radius: 20px; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 1rem;">Travel Agency Tools</span>
+      <h1 class="tool-title" style="margin-bottom: 0.5rem;"><span class="travel-gradient">Travel Quotation</span> Generator</h1>
+      <p class="tool-description" style="max-width: 600px; margin: 0 auto;">Build professional travel packages, calculate your agency markup, and generate a print-ready PDF proposal for your clients.</p>
+    </div>
+    
+    <div class="layout-container">
+      <!-- Left Panel: Input Form -->
+      <div class="glass-card no-print" style="max-height: 85vh; overflow-y: auto;">
+        <h2 style="font-family: var(--font-display); font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--travel-primary)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Quote Details
+        </h2>
+        
+        <form id="quote-form">
+          <div class="form-group">
+            <label for="q-currency">Currency</label>
+            <select id="q-currency">
+              <option value="BDT">BDT (৳)</option>
+              <option value="USD">USD ($)</option>
+              <option value="EUR">EUR (€)</option>
+              <option value="AED">AED (د.إ)</option>
+            </select>
+          </div>
+
+          <div style="height: 1px; background: var(--border); margin: 1.5rem 0;"></div>
+          <h3 style="font-size: 0.95rem; margin-bottom: 1rem; color: var(--text-secondary);">Client & Trip Info</h3>
+
+          <div class="form-group">
+            <label for="c-name">Client Name / Company</label>
+            <input type="text" id="c-name" placeholder="John Doe" value="John Doe">
+          </div>
+          
+          <div class="form-group">
+            <label for="c-dest">Destination</label>
+            <input type="text" id="c-dest" placeholder="e.g. Dubai, UAE" value="Dubai, UAE">
+          </div>
+          
+          <div class="item-grid">
+            <div class="form-group">
+              <label for="c-pax">No. of Pax</label>
+              <input type="number" id="c-pax" min="1" value="2">
+            </div>
+            <div class="form-group">
+              <label for="c-date">Travel Date</label>
+              <input type="date" id="c-date">
+            </div>
+          </div>
+
+          <div class="line-items-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h3 style="font-size: 0.95rem; color: var(--text-secondary); margin: 0;">Package Inclusions</h3>
+              <button type="button" id="add-item-btn" class="btn-outline" style="width: auto; padding: 0.25rem 0.75rem; font-size: 0.8rem;">+ Add Item</button>
+            </div>
+            
+            <div id="items-wrapper">
+              <!-- Items injected via JS -->
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 1.5rem;">
+            <label for="c-notes">Terms & Conditions (Footer Notes)</label>
+            <textarea id="c-notes" rows="3">1. Quotation is valid for 7 days.
+2. Prices are subject to availability at the time of booking.
+3. 50% advance payment required for confirmation.</textarea>
+          </div>
+        </form>
+
+        <!-- Agency Profit Tracker (Hidden from Client) -->
+        <div class="profit-panel">
+          <h3 style="font-size: 0.85rem; color: #047857; margin-bottom: 0.5rem; text-transform: uppercase;">Agency Profit (Admin View)</h3>
+          <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.25rem;">
+            <span style="color: var(--text-secondary);">Total Net Cost:</span>
+            <span id="admin-net" style="font-family: monospace; font-weight: 600;">৳ 0</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
+            <span style="color: var(--text-secondary);">Total Markup/Profit:</span>
+            <span id="admin-profit" style="font-family: monospace; font-weight: 700; color: #10b981;">৳ 0</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right Panel: Document Preview -->
+      <div>
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem; gap: 1rem;" class="no-print">
+          <button id="print-btn" class="btn-travel" style="width: auto;">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            Print to PDF
+          </button>
+        </div>
+
+        <div class="document-preview" id="doc-preview">
+          <!-- Header -->
+          <div class="doc-header">
+            <div class="doc-company">
+              <h1>ALL IN ONE TRAVELS</h1>
+              <div style="color: #64748b; font-size: 0.9rem;">123 Business Avenue, Tech City<br>contact@allinonetravels.com<br>+880 1234 567890</div>
+            </div>
+            <div class="doc-meta">
+              <div style="font-size: 1.2rem; font-weight: 700; color: #0f172a; margin-bottom: 0.25rem;">QUOTATION</div>
+              <div id="doc-date">Date: 12 Oct 2026</div>
+              <div id="doc-ref">Ref: QT-1026001</div>
+            </div>
+          </div>
+
+          <div class="doc-title">TRAVEL PROPOSAL</div>
+
+          <!-- Client Info -->
+          <div class="doc-client-info">
+            <div class="info-block">
+              <div class="info-label">Prepared For</div>
+              <div class="info-value" id="doc-client">John Doe</div>
+            </div>
+            <div class="info-block">
+              <div class="info-label">Destination</div>
+              <div class="info-value" id="doc-dest">Dubai, UAE</div>
+            </div>
+            <div class="info-block">
+              <div class="info-label">Passengers</div>
+              <div class="info-value" id="doc-pax">2 Pax</div>
+            </div>
+            <div class="info-block">
+              <div class="info-label">Travel Date</div>
+              <div class="info-value" id="doc-travel-date">TBD</div>
+            </div>
+          </div>
+
+          <!-- Line Items Table -->
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th width="45%">Description</th>
+                <th width="15%" style="text-align: center;">Qty / Pax</th>
+                <th width="20%" style="text-align: right;">Unit Price</th>
+                <th width="20%" style="text-align: right;">Total</th>
+              </tr>
+            </thead>
+            <tbody id="doc-tbody">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+
+          <!-- Totals -->
+          <div class="doc-totals">
+            <div class="doc-total-row">
+              <span>Subtotal</span>
+              <span id="doc-subtotal">৳ 0</span>
+            </div>
+            <div class="doc-total-row" style="font-size: 0.85rem;">
+              <span>Taxes & Fees</span>
+              <span>Included</span>
+            </div>
+            <div class="doc-grand-total">
+              <span>TOTAL AMOUNT</span>
+              <span id="doc-grand">৳ 0</span>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="doc-footer" id="doc-footer-notes">
+            1. Quotation is valid for 7 days.<br>
+            2. Prices are subject to availability at the time of booking.<br>
+            3. 50% advance payment required for confirmation.
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
