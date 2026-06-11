@@ -71,8 +71,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let html = '';
 
+    const businessSuiteSection = document.getElementById('business-suite-section');
+    const popularSection = document.getElementById('popular-section');
+    const categoriesTitle = document.getElementById('categories-title');
+    const categoriesTabs = document.getElementById('categories-tabs-container');
+
     // If search is active, just show search results directly
     if (query) {
+      if (businessSuiteSection) businessSuiteSection.style.display = 'none';
+      if (popularSection) popularSection.style.display = 'none';
+      if (categoriesTitle) categoriesTitle.style.display = 'none';
+      if (categoriesTabs) categoriesTabs.style.display = 'none';
+
       if (filteredTools.length === 0) {
         mainToolsGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 3rem 1.5rem; color: var(--text-tertiary);">No tools matched your search query.</div>';
         return;
@@ -85,6 +95,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Else if no active search, compile sections (Favorites, Recents, Category items)
+    if (businessSuiteSection) businessSuiteSection.style.display = 'block';
+    if (popularSection) popularSection.style.display = 'block';
+    if (categoriesTitle) categoriesTitle.style.display = 'block';
+    if (categoriesTabs) categoriesTabs.style.display = 'flex';
+
     let sectionsHtml = '';
 
     // Favorites Section
@@ -272,6 +287,14 @@ document.addEventListener('DOMContentLoaded', () => {
       clearSearchBtn.style.display = 'none';
       renderMainGrid();
       searchInput.focus();
+    });
+    
+    // Keyboard shortcut to focus search
+    document.addEventListener('keydown', (e) => {
+      if (e.key === '/' && document.activeElement !== searchInput) {
+        e.preventDefault();
+        searchInput.focus();
+      }
     });
   }
 
