@@ -37,7 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
     'USD': '$',
     'EUR': '€',
     'GBP': '£',
-    'INR': '₹'
+    'INR': '₹',
+    'AED': 'AED'
   };
 
   function formatCurrency(amount, curr) {
