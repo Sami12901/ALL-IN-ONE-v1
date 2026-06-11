@@ -21,16 +21,41 @@ Live URL: **[https://sami12901.github.io/ALL-IN-ONE-v1/](https://sami12901.githu
 
 ## Currently Active Functional Tools
 
-1. **Password Generator**: Secure cryptographically strong key generator with customizable complexity rules and Shannon entropy meters.
-2. **QR Code Generator**: Local QR generator supporting sizing, custom foreground/background colors, and PNG downloads.
-3. **Text Case Converter**: Supports Sentence Case, Title Case, UPPERCASE, lowercase, camelCase, and snake_case formatting.
-4. **Word Counter**: Live metrics counting words, characters, sentences, and estimated reading/speaking speeds.
-5. **Character Counter**: Emoji-safe visual glyph matching alongside raw UTF-8 byte calculations.
-6. **JSON Formatter**: Syntax-highlighted output viewer, error alerts, minification, and one-click copy.
-7. **Base64 Encoder**: Drag-and-drop file drops or text inputs encoded directly to base64 strings.
-8. **Base64 Decoder**: Instantly decode base64 strings back to text or write downloadable binary file blobs.
-9. **Color Picker**: Saturation-lightness canvas picker, custom eyedropper integrations, and format exports (HEX, RGB, HSL).
-10. **BMI Calculator**: Metric/Imperial toggles, sliding body weight/height gauges, and dynamic weight classification meters.
+1. **Word Counter**: Count words, reading time, and speaking duration.
+2. **Character Counter**: Count characters, whitespace, and byte sizes.
+3. **Text Case Converter**: Convert text between UPPERCASE, lowercase, Title Case, etc.
+4. **Lorem Ipsum Generator**: Generate placeholder text with custom counts.
+5. **Text Reverser**: Reverse characters, words, or full sentences.
+6. **Find and Replace**: Search and replace text patterns using string or regex.
+7. **HTML to Markdown Converter**: Extract markdown structure from HTML markup.
+8. **Sentence Counter**: Count total sentence fragments in a text.
+9. **JSON Formatter**: Format, validate, minfy, and beautify JSON data.
+10. **Base64 Encoder**: Convert text or files to Base64 format.
+11. **Base64 Decoder**: Decode Base64 strings back to text or files.
+12. **QR Code Generator**: Generate custom QR codes for URLs, text, and contacts.
+13. **Image Resizer & Compressor**: Resize and compress images to WebP/PNG/JPG.
+14. **Password Generator**: Create secure random passwords.
+15. **Invoice Generator**: Creates print-ready HTML billing invoice listings.
+16. **Color Picker**: Visual canvas palette picker with format conversions.
+17. **BMI Calculator**: Calculate Body Mass Index and health categories.
+18. **HTML Output Viewer**: Live preview and test raw HTML, CSS, and JS code in an isolated sandbox.
+19. **Visa Fee Calculator**: Calculate total visa processing costs.
+20. **Passport Expiry Checker**: Batch check passport expiration dates.
+21. **Travel Quotation Generator**: Generate custom tour and travel quotes.
+22. **Tour Package Builder**: Build and price comprehensive tour packages.
+23. **Product Profit Calculator**: Calculate net profit per product sold.
+24. **Order Analyzer**: Analyze order volumes and trends.
+25. **Sales Analyzer**: Deep dive into store sales performance.
+26. **Inventory Analyzer**: Monitor inventory turnover and levels.
+27. **Stock Alert Tool**: Generate low stock warnings and alerts.
+28. **Product Catalog Generator**: Create digital catalogs from product lists.
+29. **Invoice Generator**: Generate order invoices for customers.
+30. **Receipt Generator**: Create digital purchase receipts.
+31. **Shipping Calculator**: Estimate shipping costs by weight and region.
+32. **Brand Identity Kit Generator**: Create comprehensive luxury brand guidelines.
+33. **Pricing Strategy Calculator**: Formulate premium pricing strategies.
+34. **VIP Client Analyzer**: Analyze purchasing habits of high-net-worth clients.
+35. **Smart Business Analyzer**: Parse, analyze, and chart business data natively.
 
 ---
 
