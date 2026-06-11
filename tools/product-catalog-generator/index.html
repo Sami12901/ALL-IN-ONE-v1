@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Catalog Generator - ALL IN ONE</title>
+  <meta name="description" content="Create stunning digital catalogs and lookbooks for your products.">
+  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
+  
+  <!-- Core CSS -->
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <!-- Component Scripts -->
+  <script type="module" src="../../js/components.js"></script>
+  
+  <style>
+    /* E-commerce Tool Theming */
+    :root {
+      --ecom-primary: #ec4899; /* Pink */
+      --ecom-secondary: #be185d;
+      --ecom-bg: rgba(236, 72, 153, 0.05);
+    }
+    
+    [data-theme="light"] {
+      --ecom-bg: rgba(255, 255, 255, 0.8);
+    }
+    
+    .ecom-gradient {
+      background: linear-gradient(135deg, #f472b6, #be185d);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .layout-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    
+    @media (min-width: 1024px) {
+      .layout-container {
+        grid-template-columns: 450px 1fr;
+      }
+    }
+    
+    .glass-card {
+      background: var(--ecom-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(236, 72, 153, 0.2);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    
+    .form-group label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      transition: var(--transition);
+      font-size: 0.95rem;
+    }
+    
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      outline: none;
+      border-color: var(--ecom-primary);
+      box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+    }
+
+    .form-group input[type="file"] {
+      padding: 0.5rem;
+      font-size: 0.85rem;
+      background: var(--bg-secondary);
+      cursor: pointer;
+    }
+
+    .item-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .btn-ecom {
+      background: linear-gradient(135deg, var(--ecom-primary), var(--ecom-secondary));
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    .btn-outline:hover {
+      background: var(--bg-hover);
+    }
+
+    /* Product Builder Section */
+    .product-container {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      margin-bottom: 1rem;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+
+    .product-container:hover {
+      border-color: rgba(236, 72, 153, 0.5);
+    }
+
+    .remove-btn {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    /* Print / PDF Document Styling with CSS Variables for Theming */
+    .doc-preview {
+      --theme-primary: #ec4899;
+      --theme-header-bg: #111827;
+      --theme-header-text: #ffffff;
+      --theme-font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      
+      background: #ffffff;
+      color: #1e293b;
+      min-height: 842px;
+      padding: 0;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      border-radius: 4px;
+      position: relative;
+      font-family: var(--theme-font);
+      overflow: hidden;
+    }
+
+    [data-theme="dark"] .doc-preview {
+      background: #ffffff;
+    }
+
+    .doc-header {
+      background: var(--theme-header-bg);
+      color: var(--theme-header-text);
+      padding: 3rem;
+      text-align: center;
+      border-bottom: 8px solid var(--theme-primary);
+    }
+
+    .doc-title {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .doc-subtitle {
+      font-size: 1.25rem;
+      font-weight: 300;
+      opacity: 0.9;
+    }
+
+    .doc-company {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      opacity: 0.8;
+      letter-spacing: 1px;
+    }
+
+    .doc-content {
+      padding: 3rem;
+    }
+
+    /* Product Grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+
+    .product-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-img-wrapper {
+      height: 250px;
+      width: 100%;
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .product-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .product-info {
+      padding: 1.5rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 0.5rem;
+    }
+
+    .product-price {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--theme-primary);
+      margin-bottom: 1rem;
+    }
+
+    .product-desc {
+      font-size: 0.9rem;
+      color: #475569;
+      line-height: 1.6;
+    }
+
+    /* Print adjustments */
+    @media print {
+      body * { visibility: hidden; }
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      app-header, .glass-card, .tool-title, .tool-description, .no-print { display: none !important; }
+      .doc-preview, .doc-preview * { visibility: visible; }
+      .doc-preview {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        border-radius: 0;
+      }
+      @page { margin: 0; }
+    }
+  </style>
+</head>
+<body>
+  <app-header></app-header>
+  
+  <main class="container" style="padding: 2rem 1.5rem;">
+    <div style="text-align: center; margin-bottom: 2rem;" class="no-print">
+      <span style="display: inline-block; padding: 0.25rem 1rem; background: rgba(236, 72, 153, 0.1); color: var(--ecom-primary); border-radius: 20px; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 1rem;">E-Commerce Tools</span>
+      <h1 class="tool-title" style="margin-bottom: 0.5rem;"><span class="ecom-gradient">Product Catalog</span> Generator</h1>
+      <p class="tool-description" style="max-width: 600px; margin: 0 auto;">Design stunning visual lookbooks and catalogs for your products with 26+ custom themes.</p>
+    </div>
+    
+    <div class="layout-container">
+      <!-- Left Panel: Input Form -->
+      <div class="glass-card no-print" style="max-height: 85vh; overflow-y: auto;">
+        
+        <form id="catalog-form">
+          <h2 style="font-family: var(--font-display); font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--ecom-primary)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+            Catalog Details
+          </h2>
+
+          <div class="form-group">
+            <label>Document Theme <span style="font-weight: 400; font-size: 0.75rem; color: var(--ecom-primary);">26 Themes Available</span></label>
+            <select id="doc-theme">
+              <!-- Options injected via JS -->
+            </select>
+          </div>
+
+          <div class="item-grid">
+            <div class="form-group">
+              <label>Currency Symbol</label>
+              <input type="text" id="c-currency" value="৳">
+            </div>
+            <div class="form-group">
+              <label>Company/Store Name</label>
+              <input type="text" id="c-company" placeholder="e.g. Zara Styles" value="Zara Styles">
+            </div>
+          </div>
+
+          <div style="height: 1px; background: var(--border); margin: 1.5rem 0;"></div>
+
+          <div class="form-group">
+            <label>Catalog Title</label>
+            <input type="text" id="c-title" placeholder="e.g. Summer Collection 2026" value="Summer Collection 2026">
+          </div>
+          
+          <div class="form-group">
+            <label>Sub-title / Description</label>
+            <input type="text" id="c-subtitle" placeholder="e.g. Exclusive premium wear" value="Exclusive premium wear for the modern individual.">
+          </div>
+          
+          <div style="height: 1px; background: var(--border); margin: 1.5rem 0;"></div>
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="font-size: 0.95rem; color: var(--text-secondary); margin: 0;">Products List</h3>
+            <button type="button" id="add-product-btn" class="btn-outline" style="width: auto; padding: 0.25rem 0.75rem; font-size: 0.8rem;">+ Add Product</button>
+          </div>
+          
+          <div id="products-wrapper">
+            <!-- Products injected via JS -->
+          </div>
+
+        </form>
+      </div>
+      
+      <!-- Right Panel: Document Preview -->
+      <div>
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem; gap: 1rem;" class="no-print">
+          <button id="print-btn" class="btn-ecom" style="width: auto;">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            Export PDF Catalog
+          </button>
+        </div>
+
+        <div class="doc-preview" id="doc-preview">
+          <!-- Header Section -->
+          <div class="doc-header">
+            <div class="doc-title" id="doc-title">Summer Collection 2026</div>
+            <div class="doc-subtitle" id="doc-subtitle">Exclusive premium wear for the modern individual.</div>
+            <div class="doc-company" id="doc-company">Zara Styles</div>
+          </div>
+          
+          <!-- Content Section -->
+          <div class="doc-content">
+            <div class="product-grid" id="doc-grid">
+              <!-- Products injected via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
