@@ -69,7 +69,7 @@
       color: var(--text-secondary);
     }
 
-    .form-group input, .form-group textarea {
+    .form-group input, .form-group textarea, .form-group select {
       width: 100%;
       padding: 0.75rem 1rem;
       border-radius: var(--radius-sm);
@@ -81,10 +81,17 @@
       font-size: 0.95rem;
     }
     
-    .form-group input:focus, .form-group textarea:focus {
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
       outline: none;
       border-color: var(--travel-primary);
       box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+    }
+
+    .form-group input[type="file"] {
+      padding: 0.5rem;
+      font-size: 0.85rem;
+      background: var(--bg-secondary);
+      cursor: pointer;
     }
 
     .item-grid {
@@ -163,8 +170,13 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
 
-    /* Print / PDF Document Styling */
+    /* Print / PDF Document Styling with CSS Variables for Theming */
     .doc-preview {
+      --theme-primary: #0ea5e9;
+      --theme-header-bg: #0f172a;
+      --theme-header-text: #ffffff;
+      --theme-font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      
       background: #ffffff;
       color: #1e293b;
       min-height: 842px;
@@ -172,7 +184,7 @@
       box-shadow: 0 20px 40px rgba(0,0,0,0.15);
       border-radius: 4px;
       position: relative;
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: var(--theme-font);
       overflow: hidden;
     }
 
@@ -183,12 +195,12 @@
     .doc-hero {
       position: relative;
       height: 300px;
-      background: #0f172a;
+      background: var(--theme-header-bg);
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
       padding: 2.5rem;
-      color: white;
+      color: var(--theme-header-text);
     }
 
     .doc-hero-img {
@@ -196,7 +208,7 @@
       top: 0; left: 0; right: 0; bottom: 0;
       width: 100%; height: 100%;
       object-fit: cover;
-      opacity: 0.6;
+      opacity: 0.5;
       z-index: 1;
     }
 
@@ -220,19 +232,13 @@
     }
 
     .doc-meta-strip {
-      background: #0ea5e9;
-      color: white;
+      background: var(--theme-primary);
+      color: #ffffff;
       padding: 1rem 2.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-weight: 600;
-    }
-
-    .doc-meta-item {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
     }
 
     .doc-content {
@@ -280,7 +286,7 @@
       width: 16px;
       height: 16px;
       border-radius: 50%;
-      background: #0ea5e9;
+      background: var(--theme-primary);
       border: 3px solid #ffffff;
       box-shadow: 0 0 0 2px #e2e8f0;
     }
@@ -288,7 +294,7 @@
     .day-title {
       font-size: 1.1rem;
       font-weight: 700;
-      color: #0ea5e9;
+      color: var(--theme-primary);
       margin-bottom: 0.5rem;
       margin-top: -3px;
     }
@@ -384,7 +390,7 @@
     <div style="text-align: center; margin-bottom: 2rem;" class="no-print">
       <span style="display: inline-block; padding: 0.25rem 1rem; background: rgba(14, 165, 233, 0.1); color: var(--travel-primary); border-radius: 20px; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 1rem;">Travel Agency Tools</span>
       <h1 class="tool-title" style="margin-bottom: 0.5rem;"><span class="travel-gradient">Tour Package</span> Builder</h1>
-      <p class="tool-description" style="max-width: 600px; margin: 0 auto;">Design stunning visual day-by-day itineraries and tour brochures for your clients.</p>
+      <p class="tool-description" style="max-width: 600px; margin: 0 auto;">Design stunning visual day-by-day itineraries with 26+ custom themes and local image uploads.</p>
     </div>
     
     <div class="layout-container">
@@ -398,6 +404,15 @@
           </h2>
 
           <div class="form-group">
+            <label>Document Theme <span style="font-weight: 400; font-size: 0.75rem; color: var(--travel-primary);">26 Themes Available</span></label>
+            <select id="doc-theme">
+              <!-- Options injected via JS -->
+            </select>
+          </div>
+
+          <div style="height: 1px; background: var(--border); margin: 1.5rem 0;"></div>
+
+          <div class="form-group">
             <label>Package Title</label>
             <input type="text" id="p-title" placeholder="e.g. Wonders of Dubai" value="Wonders of Dubai">
           </div>
@@ -408,8 +423,11 @@
           </div>
           
           <div class="form-group">
-            <label>Hero Image URL <span style="font-weight: 400; font-size: 0.75rem;">(Optional)</span></label>
-            <input type="text" id="p-image" placeholder="https://example.com/dubai.jpg" value="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80">
+            <label>Hero Image <span style="font-weight: 400; font-size: 0.75rem;">Upload or Paste URL</span></label>
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <input type="file" id="p-image-upload" accept="image/*" style="flex: 1;">
+            </div>
+            <input type="text" id="p-image-url" placeholder="Or paste image URL here..." value="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80">
           </div>
           
           <div class="item-grid">
