@@ -118,9 +118,9 @@ document.addEventListener('DOMContentLoaded', () => {
     hexSecondary.textContent = sColor;
     hexTertiary.textContent = tColor;
 
-    swatchPrimary.style.backgroundColor = pColor;
-    swatchSecondary.style.backgroundColor = sColor;
-    swatchTertiary.style.backgroundColor = tColor;
+    swatchPrimary.style.setProperty('background-color', pColor, 'important');
+    swatchSecondary.style.setProperty('background-color', sColor, 'important');
+    swatchTertiary.style.setProperty('background-color', tColor, 'important');
 
     const rgbP = hexToRgb(pColor);
     const rgbS = hexToRgb(sColor);
@@ -131,15 +131,15 @@ document.addEventListener('DOMContentLoaded', () => {
     detailsTertiary.innerHTML = `HEX: ${tColor}<br>RGB: ${rgbT.r}, ${rgbT.g}, ${rgbT.b}`;
 
     // Contrast Preview Updates
-    bgDarkPreview.style.backgroundColor = pColor;
-    textLightPreview.style.color = getContrastYIQ(pColor);
+    bgDarkPreview.style.setProperty('background-color', pColor, 'important');
+    textLightPreview.style.setProperty('color', getContrastYIQ(pColor), 'important');
     
-    bgLightPreview.style.backgroundColor = tColor;
-    textDarkPreview.style.color = getContrastYIQ(tColor);
+    bgLightPreview.style.setProperty('background-color', tColor, 'important');
+    textDarkPreview.style.setProperty('color', getContrastYIQ(tColor), 'important');
     
     // Preview Header Theme update
     const headerEl = document.getElementById('preview-header');
-    headerEl.style.backgroundColor = tColor;
+    headerEl.style.setProperty('background-color', tColor, 'important');
     previewName.style.color = pColor;
     previewTagline.style.color = sColor;
   }
