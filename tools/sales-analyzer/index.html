@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales Analyzer - ALL IN ONE</title>
+  <meta name="description" content="Deep dive into your store's sales performance, margins, and ROAS.">
+  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
+  
+  <!-- Core CSS -->
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <!-- Component Scripts -->
+  <script type="module" src="../../js/components.js"></script>
+  
+  <style>
+    /* E-commerce Tool Theming */
+    :root {
+      --ecom-primary: #3b82f6; /* Blue */
+      --ecom-secondary: #2563eb;
+      --ecom-bg: rgba(59, 130, 246, 0.05);
+    }
+    
+    [data-theme="light"] {
+      --ecom-bg: rgba(255, 255, 255, 0.8);
+    }
+    
+    .ecom-gradient {
+      background: linear-gradient(135deg, #60a5fa, #2563eb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .layout-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    
+    @media (min-width: 900px) {
+      .layout-container {
+        grid-template-columns: 400px 1fr;
+      }
+    }
+    
+    .glass-card {
+      background: var(--ecom-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    
+    .form-group label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 1rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      transition: var(--transition);
+      font-size: 1rem;
+    }
+    
+    .form-group input.has-icon {
+      padding-left: 2.5rem;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--ecom-primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    /* Results Panel */
+    .result-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 600px) {
+      .result-panel {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .stat-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--ecom-primary);
+    }
+
+    .stat-card.full-width {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05));
+      border-color: var(--ecom-primary);
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      font-family: var(--font-display);
+      color: var(--text-primary);
+    }
+
+    .full-width .stat-value {
+      font-size: 2.5rem;
+      color: var(--ecom-primary);
+    }
+
+    .stat-subtext {
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      font-weight: 600;
+    }
+
+    .currency-selector {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      justify-content: center;
+    }
+
+    .currency-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .currency-btn.active {
+      background: var(--ecom-primary);
+      color: white;
+      border-color: var(--ecom-primary);
+    }
+  </style>
+</head>
+<body>
+  <app-header></app-header>
+  
+  <main class="container" style="padding: 2rem 1.5rem;">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <span style="display: inline-block; padding: 0.25rem 1rem; background: rgba(59, 130, 246, 0.1); color: var(--ecom-primary); border-radius: 20px; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 1rem;">E-Commerce Tools</span>
+      <h1 class="tool-title" style="margin-bottom: 0.5rem;"><span class="ecom-gradient">Sales Analyzer</span></h1>
+      <p class="tool-description" style="max-width: 600px; margin: 0 auto;">Deep dive into your sales metrics, ROAS, and overall profitability.</p>
+    </div>
+
+    <div class="currency-selector" id="currency-tabs">
+      <button class="currency-btn active" data-currency="৳">BDT (৳)</button>
+      <button class="currency-btn" data-currency="$">USD ($)</button>
+      <button class="currency-btn" data-currency="€">EUR (€)</button>
+      <button class="currency-btn" data-currency="£">GBP (£)</button>
+    </div>
+    
+    <div class="layout-container">
+      <!-- Input Section -->
+      <div class="glass-card">
+        <h2 style="font-family: var(--font-display); font-weight: 700; margin-bottom: 1.5rem; font-size: 1.25rem;">Sales Data</h2>
+        
+        <div class="form-group">
+          <label>Total Sales Revenue</label>
+          <div class="input-wrapper">
+            <span class="input-icon">৳</span>
+            <input type="number" id="val-rev" class="has-icon" value="500000" min="0" step="0.01">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Total Orders Count</label>
+          <input type="number" id="val-orders" value="350" min="1" step="1">
+        </div>
+
+        <div style="height: 1px; background: var(--border); margin: 1.5rem 0;"></div>
+
+        <div class="form-group">
+          <label>Cost of Goods Sold (COGS)</label>
+          <div class="input-wrapper">
+            <span class="input-icon">৳</span>
+            <input type="number" id="val-cogs" class="has-icon" value="150000" min="0" step="0.01">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Total Ad Spend (Marketing)</label>
+          <div class="input-wrapper">
+            <span class="input-icon">৳</span>
+            <input type="number" id="val-ad" class="has-icon" value="50000" min="0" step="0.01">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Operating / Other Expenses</label>
+          <div class="input-wrapper">
+            <span class="input-icon">৳</span>
+            <input type="number" id="val-opex" class="has-icon" value="20000" min="0" step="0.01">
+          </div>
+        </div>
+      </div>
+
+      <!-- Result Section -->
+      <div class="result-panel">
+        
+        <!-- Net Profit (Full Width) -->
+        <div class="stat-card full-width">
+          <div>
+            <div class="stat-label">Net Profit</div>
+            <div class="stat-value" id="res-net">৳ 280,000.00</div>
+            <div class="stat-subtext" id="res-margin" style="color: var(--ecom-primary);">Net Margin: 56.00%</div>
+          </div>
+        </div>
+
+        <!-- AOV -->
+        <div class="stat-card">
+          <div>
+            <div class="stat-label">Avg. Order Value (AOV)</div>
+            <div class="stat-value" id="res-aov">৳ 1,428.57</div>
+          </div>
+        </div>
+
+        <!-- Gross Profit -->
+        <div class="stat-card">
+          <div>
+            <div class="stat-label">Gross Profit</div>
+            <div class="stat-value" id="res-gross">৳ 350,000.00</div>
+            <div class="stat-subtext" style="color: var(--text-secondary);">Revenue - COGS</div>
+          </div>
+        </div>
+
+        <!-- Current ROAS -->
+        <div class="stat-card">
+          <div>
+            <div class="stat-label">Current ROAS</div>
+            <div class="stat-value" id="res-roas">10.00x</div>
+            <div class="stat-subtext" style="color: #10b981;">Return on Ad Spend</div>
+          </div>
+        </div>
+
+        <!-- Break-Even ROAS -->
+        <div class="stat-card">
+          <div>
+            <div class="stat-label">Break-Even ROAS</div>
+            <div class="stat-value" id="res-be-roas">1.43x</div>
+            <div class="stat-subtext" style="color: #f59e0b;">Minimum ROAS needed to not lose money</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
