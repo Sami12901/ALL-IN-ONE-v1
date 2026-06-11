@@ -50,12 +50,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 2. Initialize Dashboard Components
   function initDashboard() {
+    updateStats();
     renderMainGrid();
     renderPopularGrid();
     setupFilters();
     setupSearch();
     setupFAQ();
     checkUrlParams();
+  }
+
+  function updateStats() {
+    const travelTools = toolsDatabase.filter(t => t.category === 'travel').length;
+    const ecomTools = toolsDatabase.filter(t => t.category === 'ecommerce').length;
+    const luxuryTools = toolsDatabase.filter(t => t.category === 'luxury').length;
+    const excelTools = toolsDatabase.filter(t => t.category === 'business' || t.category === 'math').length;
+    
+    const activeTools = toolsDatabase.filter(t => t.active).length;
+    const comingSoonTools = toolsDatabase.filter(t => !t.active).length;
+
+    if(document.getElementById('stat-travel')) document.getElementById('stat-travel').textContent = travelTools;
+    if(document.getElementById('stat-ecom')) document.getElementById('stat-ecom').textContent = ecomTools;
+    if(document.getElementById('stat-luxury')) document.getElementById('stat-luxury').textContent = luxuryTools;
+    if(document.getElementById('stat-biz')) document.getElementById('stat-biz').textContent = excelTools;
+    if(document.getElementById('stat-active')) document.getElementById('stat-active').textContent = 'Active: ' + activeTools;
+    if(document.getElementById('stat-coming')) document.getElementById('stat-coming').textContent = 'Coming Soon: ' + comingSoonTools;
   }
 
   // 3. Render Tool Cards to Grid
