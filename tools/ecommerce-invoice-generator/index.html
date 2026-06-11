@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoice Generator - ALL IN ONE</title>
+  <meta name="description" content="Generate professional, print-ready invoices for your business.">
+  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
+  
+  <!-- Core CSS -->
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <!-- Component Scripts -->
+  <script type="module" src="../../js/components.js"></script>
+  
+  <style>
+    /* Business Tool Theming */
+    :root {
+      --ecom-primary: #14b8a6; /* Blue */
+      --ecom-secondary: #0f766e;
+      --ecom-bg: rgba(20, 184, 166, 0.05);
+    }
+    
+    [data-theme="light"] {
+      --ecom-bg: rgba(255, 255, 255, 0.8);
+    }
+    
+    .ecom-gradient {
+      background: linear-gradient(135deg, #2dd4bf, #0f766e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .layout-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    
+    @media (min-width: 1024px) {
+      .layout-container {
+        grid-template-columns: 450px 1fr;
+      }
+    }
+    
+    .glass-card {
+      background: var(--ecom-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(20, 184, 166, 0.2);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    
+    .form-group label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      transition: var(--transition);
+      font-size: 0.95rem;
+    }
+    
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      outline: none;
+      border-color: var(--ecom-primary);
+      box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+    }
+
+    .form-group input[type="file"] {
+      padding: 0.5rem;
+      font-size: 0.85rem;
+      background: var(--bg-secondary);
+      cursor: pointer;
+    }
+
+    .item-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .btn-ecom {
+      background: linear-gradient(135deg, var(--ecom-primary), var(--ecom-secondary));
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    .btn-outline:hover {
+      background: var(--bg-hover);
+    }
+
+    /* Product Builder Section */
+    .product-container {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      margin-bottom: 1rem;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+
+    .product-container:hover {
+      border-color: rgba(20, 184, 166, 0.5);
+    }
+
+    .remove-btn {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    /* Print / PDF Document Styling with CSS Variables for Theming */
+    .doc-preview {
+      --theme-primary: #14b8a6;
+      --theme-header-bg: #f8fafc;
+      --theme-header-text: #0f172a;
+      --theme-font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      
+      background: #ffffff;
+      color: #1e293b;
+      min-height: 1122px; /* A4 size approx */
+      width: 100%;
+      max-width: 794px;
+      margin: 0 auto;
+      padding: 3rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      border-radius: 4px;
+      position: relative;
+      font-family: var(--theme-font);
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    [data-theme="dark"] .doc-preview {
+      background: #ffffff;
+    }
+
+    .inv-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid var(--theme-primary);
+    }
+
+    .inv-logo-area {
+      max-width: 250px;
+    }
+
+    .inv-logo-img {
+      max-height: 80px;
+      max-width: 100%;
+      object-fit: contain;
+      margin-bottom: 1rem;
+    }
+
+    .inv-company-name {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--theme-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .inv-text-sm {
+      font-size: 0.85rem;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    .inv-title-area {
+      text-align: right;
+    }
+
+    .inv-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .inv-details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .inv-detail-box {
+      text-align: right;
+    }
+
+    .inv-detail-label {
+      font-size: 0.8rem;
+      color: #64748b;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .inv-detail-value {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .inv-parties {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 3rem;
+      background: var(--theme-header-bg);
+      padding: 1.5rem;
+      border-radius: 8px;
+    }
+
+    .inv-party-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      color: var(--theme-primary);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      letter-spacing: 1px;
+    }
+
+    .inv-party-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--theme-header-text);
+      margin-bottom: 0.25rem;
+    }
+
+    /* Table */
+    .inv-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2rem;
+    }
+
+    .inv-table th {
+      background: var(--theme-primary);
+      color: white;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 1rem;
+      text-align: left;
+    }
+
+    .inv-table th.text-right { text-align: right; }
+    .inv-table th.text-center { text-align: center; }
+
+    .inv-table td {
+      padding: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+      color: #334155;
+    }
+
+    .inv-table td.text-right { text-align: right; }
+    .inv-table td.text-center { text-align: center; }
+
+    .inv-item-name {
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .inv-item-desc {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-top: 0.25rem;
+    }
+
+    /* Totals */
+    .inv-totals-wrapper {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .inv-totals {
+      width: 300px;
+    }
+
+    .inv-total-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #e2e8f0;
+      color: #475569;
+    }
+
+    .inv-total-row.grand {
+      border-bottom: none;
+      border-top: 2px solid var(--theme-primary);
+      color: var(--theme-primary);
+      font-size: 1.25rem;
+      font-weight: 800;
+      padding-top: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .inv-notes {
+      margin-top: 4rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e2e8f0;
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    /* Print adjustments */
+    @media print {
+      body * { visibility: hidden; }
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      app-header, .glass-card, .tool-title, .tool-description, .no-print { display: none !important; }
+      .doc-preview, .doc-preview * { visibility: visible; }
+      .doc-preview {
+        position: absolute;
+        left: 0;
+        top: 0;
+        margin: 0;
+        padding: 2rem;
+        box-shadow: none;
+        border-radius: 0;
+        width: 100%;
+        max-width: none;
+      }
+      @page { margin: 0; size: A4 portrait; }
+    }
+  </style>
+</head>
+<body>
+  <app-header></app-header>
+  
+  <main class="container" style="padding: 2rem 1.5rem;">
+    <div style="text-align: center; margin-bottom: 2rem;" class="no-print">
+      <span style="display: inline-block; padding: 0.25rem 1rem; background: rgba(20, 184, 166, 0.1); color: var(--ecom-primary); border-radius: 20px; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 1rem;">E-Commerce Tools</span>
+      <h1 class="tool-title" style="margin-bottom: 0.5rem;"><span class="ecom-gradient">Invoice</span> Generator</h1>
+      <p class="tool-description" style="max-width: 600px; margin: 0 auto;">Generate professional, print-ready PDF invoices with 26+ custom themes and logo support.</p>
+    </div>
+    
+    <div class="layout-container">
+      <!-- Left Panel: Input Form -->
+      <div class="glass-card no-print" style="max-height: 85vh; overflow-y: auto;">
+        
+        <form id="invoice-form">
+          <h2 style="font-family: var(--font-display); font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--ecom-primary)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Invoice Details
+          </h2>
+
+          <div class="form-group">
+            <label>Document Theme <span style="font-weight: 400; font-size: 0.75rem; color: var(--ecom-primary);">26 Themes Available</span></label>
+            <select id="doc-theme">
+              <!-- Options injected via JS -->
+            </select>
+          </div>
+
+          <div class="item-grid">
+            <div class="form-group">
+              <label>Currency Symbol</label>
+              <input type="text" id="i-currency" value="$">
+            </div>
+            <div class="form-group">
+              <label>Invoice Number</label>
+              <input type="text" id="i-no" value="INV-2026-001">
+            </div>
+          </div>
+
+          <div class="item-grid">
+            <div class="form-group">
+              <label>Invoice Date</label>
+              <input type="text" id="i-date" value="Jun 11, 2026">
+            </div>
+            <div class="form-group">
+              <label>Due Date</label>
+              <input type="text" id="i-due" value="Jun 25, 2026">
+            </div>
+          </div>
+
+          <div style="height: 1px; background: var(--border); margin: 1.5rem 0;"></div>
+          
+          <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-primary);">Your Company (From)</h3>
+
+          <div class="form-group">
+            <label>Upload Logo</label>
+            <input type="file" id="i-logo" accept="image/*">
+          </div>
+
+          <div class="form-group">
+            <label>Company Name</label>
+            <input type="text" id="i-company" value="Apex Solutions LLC">
+          </div>
+
+          <div class="form-group">
+            <label>Address & Contact</label>
+            <textarea id="i-company-addr" rows="3">123 Business Rd, Suite 400&#10;New York, NY 10001&#10;contact@apex.com | +1 (555) 123-4567</textarea>
+          </div>
+
+          <div style="height: 1px; background: var(--border); margin: 1.5rem 0;"></div>
+          
+          <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-primary);">Client (Billed To)</h3>
+
+          <div class="form-group">
+            <label>Client Name / Company</label>
+            <input type="text" id="i-client" value="Acme Corp">
+          </div>
+
+          <div class="form-group">
+            <label>Client Address</label>
+            <textarea id="i-client-addr" rows="2">456 Corporate Blvd.&#10;San Francisco, CA 94107</textarea>
+          </div>
+
+          <div style="height: 1px; background: var(--border); margin: 1.5rem 0;"></div>
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="font-size: 0.95rem; color: var(--text-secondary); margin: 0;">Line Items</h3>
+            <button type="button" id="add-item-btn" class="btn-outline" style="width: auto; padding: 0.25rem 0.75rem; font-size: 0.8rem;">+ Add Item</button>
+          </div>
+          
+          <div id="items-wrapper">
+            <!-- Items injected via JS -->
+          </div>
+
+          <div style="height: 1px; background: var(--border); margin: 1.5rem 0;"></div>
+
+          <div class="item-grid">
+            <div class="form-group">
+              <label>Tax (%)</label>
+              <input type="number" id="i-tax" value="0" min="0" step="0.1">
+            </div>
+            <div class="form-group">
+              <label>Discount Amount</label>
+              <input type="number" id="i-discount" value="0" min="0" step="1">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Notes / Terms</label>
+            <textarea id="i-notes" rows="3">Payment is due within 14 days. Please make checks payable to Apex Solutions LLC. Thank you for your business!</textarea>
+          </div>
+
+        </form>
+      </div>
+      
+      <!-- Right Panel: Document Preview -->
+      <div style="display: flex; flex-direction: column; align-items: center;">
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem; width: 100%; max-width: 794px;" class="no-print">
+          <button id="print-btn" class="btn-ecom">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            Download PDF / Print
+          </button>
+        </div>
+
+        <div class="doc-preview" id="doc-preview">
+          
+          <!-- Header -->
+          <div class="inv-header">
+            <div class="inv-logo-area">
+              <img id="p-logo" src="" alt="Logo" class="inv-logo-img" style="display: none;">
+              <div class="inv-company-name" id="p-company">Apex Solutions LLC</div>
+              <div class="inv-text-sm" id="p-company-addr" style="white-space: pre-wrap;">123 Business Rd, Suite 400
+New York, NY 10001
+contact@apex.com | +1 (555) 123-4567</div>
+            </div>
+            <div class="inv-title-area">
+              <div class="inv-title">INVOICE</div>
+              <div class="inv-details-grid">
+                <div class="inv-detail-box">
+                  <div class="inv-detail-label">Invoice #</div>
+                  <div class="inv-detail-value" id="p-no">INV-2026-001</div>
+                </div>
+                <div class="inv-detail-box"></div>
+                <div class="inv-detail-box">
+                  <div class="inv-detail-label">Date</div>
+                  <div class="inv-detail-value" id="p-date">Jun 11, 2026</div>
+                </div>
+                <div class="inv-detail-box">
+                  <div class="inv-detail-label">Due Date</div>
+                  <div class="inv-detail-value" id="p-due">Jun 25, 2026</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Parties -->
+          <div class="inv-parties">
+            <div>
+              <div class="inv-party-title">Billed To:</div>
+              <div class="inv-party-name" id="p-client">Acme Corp</div>
+              <div class="inv-text-sm" id="p-client-addr" style="white-space: pre-wrap;">456 Corporate Blvd.
+San Francisco, CA 94107</div>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <table class="inv-table">
+            <thead>
+              <tr>
+                <th>Item Description</th>
+                <th class="text-center" style="width: 10%;">Qty</th>
+                <th class="text-right" style="width: 20%;">Rate</th>
+                <th class="text-right" style="width: 20%;">Amount</th>
+              </tr>
+            </thead>
+            <tbody id="p-items">
+              <!-- Items injected via JS -->
+            </tbody>
+          </table>
+
+          <!-- Totals -->
+          <div class="inv-totals-wrapper">
+            <div class="inv-totals">
+              <div class="inv-total-row">
+                <span>Subtotal</span>
+                <span id="p-subtotal">$ 0.00</span>
+              </div>
+              <div class="inv-total-row">
+                <span>Tax (<span id="p-tax-rate">0</span>%)</span>
+                <span id="p-tax-amt">$ 0.00</span>
+              </div>
+              <div class="inv-total-row">
+                <span>Discount</span>
+                <span id="p-discount-amt">- $ 0.00</span>
+              </div>
+              <div class="inv-total-row grand">
+                <span>Total Due</span>
+                <span id="p-grand">$ 0.00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div class="inv-notes">
+            <div style="font-weight: 700; color: #0f172a; margin-bottom: 0.25rem;">Notes / Terms</div>
+            <div id="p-notes" style="white-space: pre-wrap;">Payment is due within 14 days. Please make checks payable to Apex Solutions LLC. Thank you for your business!</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
