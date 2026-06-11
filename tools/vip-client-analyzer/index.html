@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VIP Client Analyzer - ALL IN ONE</title>
+  <meta name="description" content="Analyze and track purchasing habits of high-net-worth VIP clients for your luxury brand.">
+  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
+  
+  <!-- Core CSS -->
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <!-- Component Scripts -->
+  <script type="module" src="../../js/components.js"></script>
+  
+  <style>
+    /* Premium Luxury Styling */
+    :root {
+      --luxury-gold: #d4af37;
+      --luxury-gold-dark: #aa8c2c;
+      --luxury-bg: rgba(30, 30, 30, 0.6);
+    }
+    
+    [data-theme="light"] {
+      --luxury-bg: rgba(255, 255, 255, 0.8);
+      --luxury-gold: #c5a017;
+    }
+    
+    .vip-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    
+    @media (min-width: 992px) {
+      .vip-container {
+        grid-template-columns: 350px 1fr;
+      }
+    }
+    
+    .glass-card {
+      background: var(--luxury-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+    
+    .gold-text {
+      color: var(--luxury-gold);
+    }
+    
+    .gold-gradient {
+      background: linear-gradient(135deg, #f9f295, #e0aa3e, #e0aa3e, #f9f295);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .stat-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      background: rgba(212, 175, 55, 0.05);
+      border: 1px solid rgba(212, 175, 55, 0.1);
+      border-radius: var(--radius-md);
+      transition: all 0.3s ease;
+    }
+    
+    .stat-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.1);
+      border-color: var(--luxury-gold);
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      font-family: var(--font-display);
+      margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-secondary);
+    }
+    
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      transition: var(--transition);
+    }
+    
+    .form-group input:focus, .form-group select:focus {
+      outline: none;
+      border-color: var(--luxury-gold);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    }
+    
+    .btn-gold {
+      background: linear-gradient(135deg, #d4af37, #aa8c2c);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .btn-gold:hover {
+      background: linear-gradient(135deg, #e6c555, #bd9c34);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    }
+    
+    .clients-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    
+    .client-card {
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .client-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      border-color: rgba(212, 175, 55, 0.3);
+    }
+    
+    .tier-badge {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 0.4rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border-bottom-left-radius: var(--radius-md);
+    }
+    
+    .tier-platinum { background: linear-gradient(135deg, #e5e4e2, #b0b0b0); color: #333; }
+    .tier-gold { background: linear-gradient(135deg, #f9f295, #e0aa3e); color: #4a3600; }
+    .tier-silver { background: linear-gradient(135deg, #f0f0f0, #c0c0c0); color: #333; }
+    .tier-bronze { background: linear-gradient(135deg, #cd7f32, #8b5a2b); color: white; }
+    
+    .client-header {
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .client-name {
+      font-size: 1.25rem;
+      font-family: var(--font-display);
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+    
+    .client-detail {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+    
+    .client-detail span:first-child {
+      color: var(--text-tertiary);
+    }
+    
+    .client-detail span:last-child {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .action-btns {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    
+    .action-btn {
+      flex: 1;
+      padding: 0.5rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    
+    .action-btn:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+    
+    .action-btn.delete:hover {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border-color: #ef4444;
+    }
+    
+    /* Toast Notification */
+    #toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--bg-secondary);
+      border-left: 4px solid var(--luxury-gold);
+      color: var(--text-primary);
+      padding: 1rem 1.5rem;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    #toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <app-header></app-header>
+  
+  <main class="container" style="padding: 2rem 1.5rem;">
+    <div style="text-align: center; margin-bottom: 3rem;">
+      <span style="display: inline-block; padding: 0.25rem 1rem; background: rgba(212, 175, 55, 0.1); color: var(--luxury-gold); border-radius: 20px; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 1rem;">Luxury Brand Suite</span>
+      <h1 class="tool-title" style="margin-bottom: 0.5rem;"><span class="gold-gradient">VIP Client</span> Analyzer</h1>
+      <p class="tool-description" style="max-width: 600px; margin: 0 auto;">Track, analyze, and reward your high-net-worth customers. Monitor total spend, categorize into VIP tiers, and optimize your CRM strategy.</p>
+    </div>
+    
+    <div class="vip-container">
+      <!-- Left Panel: Add Client Form -->
+      <div class="glass-card">
+        <h2 style="font-family: var(--font-display); font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--luxury-gold)" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          Add VIP Client
+        </h2>
+        
+        <form id="client-form">
+          <input type="hidden" id="edit-id" value="">
+          <div class="form-group">
+            <label for="client-name">Full Name</label>
+            <input type="text" id="client-name" placeholder="e.g. John Doe" required>
+          </div>
+          <div class="form-group">
+            <label for="client-email">Email / Contact</label>
+            <input type="text" id="client-email" placeholder="john@example.com" required>
+          </div>
+          <div class="form-group">
+            <label for="client-spend">Total Spend ($)</label>
+            <input type="number" id="client-spend" placeholder="50000" min="0" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label for="client-purchases">Total Purchases</label>
+            <input type="number" id="client-purchases" placeholder="12" min="1" required>
+          </div>
+          <div class="form-group">
+            <label for="client-last-active">Last Active Date</label>
+            <input type="date" id="client-last-active" required>
+          </div>
+          <div class="form-group">
+            <label for="client-category">Preferred Category</label>
+            <select id="client-category">
+              <option value="Watches">Watches</option>
+              <option value="Jewelry">Jewelry</option>
+              <option value="Leather Goods">Leather Goods</option>
+              <option value="Fashion">Fashion & Apparel</option>
+              <option value="Automotive">Automotive</option>
+              <option value="Real Estate">Real Estate</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-gold" id="submit-btn">Add Client</button>
+          <button type="button" class="action-btn" id="cancel-edit-btn" style="display: none; margin-top: 0.5rem; width: 100%;">Cancel Edit</button>
+        </form>
+      </div>
+      
+      <!-- Right Panel: Analytics and Grid -->
+      <div>
+        <!-- Stats Dashboard -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+          <div class="stat-box">
+            <div class="stat-value gold-gradient" id="stat-total-clients">0</div>
+            <div class="stat-label">Total VIPs</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value gold-gradient" id="stat-total-revenue">$0</div>
+            <div class="stat-label">Total Revenue</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value gold-gradient" id="stat-avg-spend">$0</div>
+            <div class="stat-label">Avg. Spend</div>
+          </div>
+        </div>
+        
+        <!-- Controls -->
+        <div class="glass-card" style="padding: 1rem 1.5rem; margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem;">
+          <h2 style="font-family: var(--font-display); font-weight: 700; font-size: 1.25rem;">Client Database</h2>
+          <div style="display: flex; gap: 0.5rem;">
+            <select id="sort-select" style="padding: 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg-tertiary); color: var(--text-primary); outline: none;">
+              <option value="spend-desc">Highest Spend</option>
+              <option value="spend-asc">Lowest Spend</option>
+              <option value="recent">Most Recent</option>
+              <option value="name">Name (A-Z)</option>
+            </select>
+            <button id="export-csv" class="action-btn" style="margin: 0; padding: 0.5rem 1rem; background: var(--bg-tertiary);">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle; margin-right: 0.25rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export CSV
+            </button>
+            <button id="load-demo-btn" class="action-btn" style="margin: 0; padding: 0.5rem 1rem;">Demo Data</button>
+          </div>
+        </div>
+        
+        <!-- Clients Grid -->
+        <div id="clients-container" class="clients-grid">
+          <!-- Clients will be injected here via JS -->
+        </div>
+        
+        <div id="empty-state" style="text-align: center; padding: 4rem 1rem; color: var(--text-tertiary); display: none;">
+          <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1" style="margin-bottom: 1rem; opacity: 0.5;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <p>No VIP clients found in your database.</p>
+          <p style="font-size: 0.85rem; margin-top: 0.5rem;">Add a client or load demo data to get started.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="toast">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--luxury-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span id="toast-message">Action successful!</span>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
