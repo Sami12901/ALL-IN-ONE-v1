@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing Strategy Calculator - ALL IN ONE</title>
+  <meta name="description" content="Calculate and formulate premium pricing strategies for your luxury products.">
+  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
+  
+  <!-- Core CSS -->
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <!-- Component Scripts -->
+  <script type="module" src="../../js/components.js"></script>
+  
+  <style>
+    /* Premium Luxury Styling */
+    :root {
+      --luxury-gold: #d4af37;
+      --luxury-gold-dark: #aa8c2c;
+      --luxury-bg: rgba(30, 30, 30, 0.6);
+    }
+    
+    [data-theme="light"] {
+      --luxury-bg: rgba(255, 255, 255, 0.8);
+      --luxury-gold: #c5a017;
+    }
+    
+    .gold-gradient {
+      background: linear-gradient(135deg, #f9f295, #e0aa3e, #e0aa3e, #f9f295);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .pricing-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    
+    @media (min-width: 992px) {
+      .pricing-container {
+        grid-template-columns: 380px 1fr;
+      }
+    }
+    
+    .glass-card {
+      background: var(--luxury-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .glass-card-inner {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+    }
+    
+    [data-theme="light"] .glass-card-inner {
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    
+    .form-group label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .form-group label span.label-hint {
+      font-weight: 400;
+      color: var(--text-tertiary);
+      font-size: 0.8rem;
+    }
+    
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-prefix {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      font-weight: 600;
+    }
+
+    .input-suffix {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      font-weight: 600;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      transition: var(--transition);
+      font-size: 1rem;
+    }
+
+    .form-group input.has-prefix { padding-left: 2rem; }
+    .form-group input.has-suffix { padding-right: 2rem; }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--luxury-gold);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    }
+    
+    /* Range Slider Styling */
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      background: transparent;
+      padding: 0;
+    }
+    
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 20px;
+      width: 20px;
+      border-radius: 50%;
+      background: var(--luxury-gold);
+      cursor: pointer;
+      margin-top: -8px;
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+    }
+    
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 4px;
+      cursor: pointer;
+      background: var(--border);
+      border-radius: 2px;
+    }
+
+    /* Output Cards */
+    .tier-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .tier-card {
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .tier-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+
+    .tier-card.premium {
+      border-color: rgba(212, 175, 55, 0.5);
+      background: linear-gradient(to bottom right, var(--bg-tertiary), rgba(212, 175, 55, 0.05));
+    }
+
+    .tier-name {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+
+    .tier-price {
+      font-size: 2.5rem;
+      font-family: var(--font-display);
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.25rem;
+    }
+
+    .tier-price span {
+      font-size: 1rem;
+      font-family: var(--font-sans);
+      font-weight: 400;
+      color: var(--text-tertiary);
+    }
+
+    .breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .breakdown-row:last-child {
+      border-bottom: none;
+    }
+
+    .breakdown-label {
+      color: var(--text-secondary);
+    }
+
+    .breakdown-value {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .breakdown-value.profit {
+      color: #10b981;
+    }
+
+    .badge-ribbon {
+      position: absolute;
+      top: 15px;
+      right: -30px;
+      background: linear-gradient(135deg, #f9f295, #e0aa3e);
+      color: #333;
+      padding: 0.25rem 2.5rem;
+      transform: rotate(45deg);
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    /* Range Value Display */
+    .range-val {
+      font-weight: 700;
+      color: var(--luxury-gold);
+    }
+  </style>
+</head>
+<body>
+  <app-header></app-header>
+  
+  <main class="container" style="padding: 2rem 1.5rem;">
+    <div style="text-align: center; margin-bottom: 3rem;">
+      <span style="display: inline-block; padding: 0.25rem 1rem; background: rgba(212, 175, 55, 0.1); color: var(--luxury-gold); border-radius: 20px; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 1rem;">Luxury Brand Suite</span>
+      <h1 class="tool-title" style="margin-bottom: 0.5rem;"><span class="gold-gradient">Pricing Strategy</span> Calculator</h1>
+      <p class="tool-description" style="max-width: 600px; margin: 0 auto;">Determine the perfect price point for your luxury products using cost-plus, value-based, and psychological pricing models.</p>
+    </div>
+    
+    <div class="pricing-container">
+      <!-- Left Panel: Inputs -->
+      <div class="glass-card">
+        <h2 style="font-family: var(--font-display); font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--luxury-gold)" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          Cost & Strategy Metrics
+        </h2>
+        
+        <form id="pricing-form">
+          <div class="form-group">
+            <label for="base-cost">Base Production Cost <span class="label-hint">Materials & Labor</span></label>
+            <div class="input-wrapper">
+              <span class="input-prefix">$</span>
+              <input type="number" id="base-cost" class="has-prefix" value="150" min="0" step="0.01">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="overhead-cost">Overhead & Packaging <span class="label-hint">Per unit</span></label>
+            <div class="input-wrapper">
+              <span class="input-prefix">$</span>
+              <input type="number" id="overhead-cost" class="has-prefix" value="35" min="0" step="0.01">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="marketing-cost">Marketing & Acquisition <span class="label-hint">CAC per unit</span></label>
+            <div class="input-wrapper">
+              <span class="input-prefix">$</span>
+              <input type="number" id="marketing-cost" class="has-prefix" value="65" min="0" step="0.01">
+            </div>
+          </div>
+          
+          <div style="height: 1px; background: var(--border); margin: 1.5rem 0;"></div>
+          
+          <div class="form-group">
+            <label for="target-margin">Standard Profit Margin <span class="range-val" id="margin-val">60%</span></label>
+            <input type="range" id="target-margin" min="10" max="95" value="60" step="1">
+            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.25rem;">
+              <span>10%</span>
+              <span>Premium (60%+)</span>
+              <span>95%</span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="brand-multiplier">Luxury Brand Multiplier <span class="range-val" id="multiplier-val">2.5x</span></label>
+            <input type="range" id="brand-multiplier" min="1" max="10" value="2.5" step="0.1">
+            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.25rem;">
+              <span>Standard (1x)</span>
+              <span>Designer (3x+)</span>
+              <span>Veblen (10x)</span>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 1.5rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+              <input type="checkbox" id="psy-pricing" checked style="width: auto; height: auto;">
+              Use Psychological Pricing (End in .99)
+            </label>
+          </div>
+        </form>
+      </div>
+      
+      <!-- Right Panel: Results -->
+      <div>
+        <!-- Cost Summary -->
+        <div class="glass-card" style="margin-bottom: 2rem; padding: 1.5rem;">
+          <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-secondary);">Total Landed Cost</h3>
+          <div style="display: flex; align-items: baseline; gap: 1rem;">
+            <div style="font-size: 2.5rem; font-family: var(--font-display); font-weight: 700; color: var(--text-primary);" id="total-cost-display">$250.00</div>
+            <div style="font-size: 0.9rem; color: var(--text-tertiary);">Base ($150) + Overhead ($35) + Marketing ($65)</div>
+          </div>
+        </div>
+
+        <h3 style="font-size: 1.25rem; font-family: var(--font-display); margin-bottom: 1rem;">Recommended Pricing Tiers</h3>
+        
+        <!-- Pricing Tiers -->
+        <div class="tier-cards">
+          <!-- Standard Cost-Plus Tier -->
+          <div class="tier-card">
+            <div class="tier-name">Standard Cost-Plus</div>
+            <div class="tier-price" id="tier-standard-price">$625.00 <span>USD</span></div>
+            <div style="margin-bottom: 1rem; font-size: 0.85rem; color: var(--text-tertiary); line-height: 1.4;">Based on your target profit margin applied directly to total landed cost.</div>
+            
+            <div style="margin-top: auto;">
+              <div class="breakdown-row">
+                <span class="breakdown-label">Total Cost</span>
+                <span class="breakdown-value" id="tier-standard-cost">$250.00</span>
+              </div>
+              <div class="breakdown-row">
+                <span class="breakdown-label">Gross Margin</span>
+                <span class="breakdown-value">60%</span>
+              </div>
+              <div class="breakdown-row">
+                <span class="breakdown-label">Net Profit / Unit</span>
+                <span class="breakdown-value profit" id="tier-standard-profit">+$375.00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Luxury Value-Based Tier -->
+          <div class="tier-card premium">
+            <div class="badge-ribbon">Recommended</div>
+            <div class="tier-name gold-text">Value-Based Luxury</div>
+            <div class="tier-price gold-gradient" id="tier-luxury-price">$1,562.50 <span>USD</span></div>
+            <div style="margin-bottom: 1rem; font-size: 0.85rem; color: var(--text-tertiary); line-height: 1.4;">Premium pricing utilizing the brand equity multiplier to maximize perceived value.</div>
+            
+            <div style="margin-top: auto;">
+              <div class="breakdown-row">
+                <span class="breakdown-label">Total Cost</span>
+                <span class="breakdown-value" id="tier-luxury-cost">$250.00</span>
+              </div>
+              <div class="breakdown-row">
+                <span class="breakdown-label">Gross Margin</span>
+                <span class="breakdown-value" id="tier-luxury-margin-pct">84%</span>
+              </div>
+              <div class="breakdown-row">
+                <span class="breakdown-label">Net Profit / Unit</span>
+                <span class="breakdown-value profit" id="tier-luxury-profit">+$1,312.50</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Strategy Insights -->
+        <div class="glass-card-inner">
+          <h4 style="font-size: 1rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--luxury-gold)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            Strategic Insight
+          </h4>
+          <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;" id="insight-text">
+            By shifting from a Standard Cost-Plus model to a Value-Based Luxury model, you can increase your profit margin per unit from <strong>$375.00</strong> to <strong>$1,312.50</strong>. This strategy requires maintaining strict brand exclusivity, high-end packaging, and exceptional customer experience to justify the 2.5x brand multiplier.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
