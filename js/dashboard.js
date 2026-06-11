@@ -228,6 +228,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // 7. Filter Tools matching rules
   function filterToolsList(query, category) {
     return toolsDatabase.filter(tool => {
+      if (query) {
+        // Global search: ignore category and status filters
+        const nameMatch = tool.name.toLowerCase().includes(query);
+        const descMatch = tool.description.toLowerCase().includes(query);
+        const tagMatch = tool.tags && tool.tags.some(tag => tag.toLowerCase().includes(query));
+        return nameMatch || descMatch || tagMatch;
+      }
+
+      // Tab Filtering
       const categoryMatch = category === 'all' || tool.category === category;
       if (!categoryMatch) return false;
 
@@ -235,13 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (activeStatusFilter === 'active' && !tool.active) return false;
       if (activeStatusFilter === 'coming' && tool.active) return false;
 
-      if (!query) return true;
-
-      const nameMatch = tool.name.toLowerCase().includes(query);
-      const descMatch = tool.description.toLowerCase().includes(query);
-      const tagMatch = tool.tags.some(tag => tag.toLowerCase().includes(query));
-
-      return nameMatch || descMatch || tagMatch;
+      return true;
     });
   }
 
