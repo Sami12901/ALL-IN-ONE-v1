@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brand Identity Kit Generator - ALL IN ONE</title>
+  <meta name="description" content="Generate a professional luxury brand identity kit with colors, typography, and logo usage guidelines.">
+  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
+  
+  <!-- Core CSS -->
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <!-- Component Scripts -->
+  <script type="module" src="../../js/components.js"></script>
+  
+  <!-- External Fonts for Preview -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500;600&family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Premium Luxury Styling */
+    :root {
+      --luxury-gold: #d4af37;
+      --luxury-bg: rgba(30, 30, 30, 0.6);
+    }
+    
+    [data-theme="light"] {
+      --luxury-bg: rgba(255, 255, 255, 0.8);
+      --luxury-gold: #c5a017;
+    }
+    
+    .gold-gradient {
+      background: linear-gradient(135deg, #f9f295, #e0aa3e, #e0aa3e, #f9f295);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .layout-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    
+    @media (min-width: 992px) {
+      .layout-container {
+        grid-template-columns: 350px 1fr;
+      }
+    }
+    
+    .glass-card {
+      background: var(--luxury-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    
+    .form-group input[type="text"], .form-group select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      transition: var(--transition);
+    }
+    
+    .form-group input:focus, .form-group select:focus {
+      outline: none;
+      border-color: var(--luxury-gold);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    }
+    
+    .color-picker-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      background: var(--bg-tertiary);
+      padding: 0.5rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+    
+    .color-picker-group input[type="color"] {
+      -webkit-appearance: none;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      background: transparent;
+    }
+    
+    .color-picker-group input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+    
+    .color-picker-group input[type="color"]::-webkit-color-swatch {
+      border: 2px solid var(--border);
+      border-radius: 50%;
+    }
+    
+    .btn-gold {
+      background: linear-gradient(135deg, #d4af37, #aa8c2c);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .btn-gold:hover {
+      background: linear-gradient(135deg, #e6c555, #bd9c34);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline:hover {
+      background: var(--bg-hover);
+      border-color: var(--text-tertiary);
+    }
+
+    /* Output Canvas/Preview Area */
+    #kit-preview {
+      background: #ffffff;
+      color: #1a1a1a;
+      border-radius: 8px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    /* Print Styles */
+    @media print {
+      body * { visibility: hidden; }
+      app-header, .glass-card, .tool-title, .tool-description { display: none !important; }
+      #kit-preview, #kit-preview * { visibility: visible; }
+      #kit-preview {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        box-shadow: none;
+        border-radius: 0;
+        background: #fff;
+      }
+      .no-print { display: none !important; }
+    }
+    
+    /* Specific Kit Styles */
+    .kit-header {
+      padding: 4rem 3rem;
+      text-align: center;
+      position: relative;
+      background: #f8f9fa;
+      border-bottom: 1px solid #eaeaea;
+    }
+    
+    .kit-brand-name {
+      font-size: 3.5rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.1;
+    }
+    
+    .kit-tagline {
+      font-size: 1.25rem;
+      color: #666;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .kit-section {
+      padding: 3rem;
+      border-bottom: 1px solid #eaeaea;
+    }
+
+    .kit-section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #333;
+      border-bottom: 2px solid #eaeaea;
+      padding-bottom: 0.5rem;
+      display: inline-block;
+    }
+
+    /* Colors */
+    .color-palette {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+
+    .color-swatch-container {
+      flex: 1;
+      min-width: 150px;
+    }
+
+    .color-swatch {
+      width: 100%;
+      height: 120px;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .color-details {
+      font-family: monospace;
+      font-size: 0.9rem;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .color-label {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      color: #222;
+    }
+
+    /* Typography */
+    .typography-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+    }
+
+    .type-specimen {
+      background: #fcfcfc;
+      padding: 2rem;
+      border-radius: 8px;
+      border: 1px solid #eaeaea;
+    }
+
+    .type-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #888;
+      margin-bottom: 1rem;
+    }
+
+    .type-name {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <app-header></app-header>
+  
+  <main class="container" style="padding: 2rem 1.5rem;">
+    <div style="text-align: center; margin-bottom: 3rem;" class="no-print">
+      <span style="display: inline-block; padding: 0.25rem 1rem; background: rgba(212, 175, 55, 0.1); color: var(--luxury-gold); border-radius: 20px; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 1rem;">Luxury Brand Suite</span>
+      <h1 class="tool-title" style="margin-bottom: 0.5rem;"><span class="gold-gradient">Brand Identity</span> Kit</h1>
+      <p class="tool-description" style="max-width: 600px; margin: 0 auto;">Generate a comprehensive brand identity kit including color palettes, typography pairings, and style guidelines.</p>
+    </div>
+    
+    <div class="layout-container">
+      <!-- Left Panel: Controls -->
+      <div class="glass-card no-print">
+        <h2 style="font-family: var(--font-display); font-weight: 700; margin-bottom: 1.5rem;">Brand Details</h2>
+        
+        <form id="brand-form">
+          <div class="form-group">
+            <label for="brand-name">Brand Name</label>
+            <input type="text" id="brand-name" value="AURORA">
+          </div>
+          
+          <div class="form-group">
+            <label for="brand-tagline">Tagline</label>
+            <input type="text" id="brand-tagline" value="Timeless Elegance">
+          </div>
+
+          <h3 style="margin: 1.5rem 0 1rem; font-size: 1rem; color: var(--text-secondary); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">Typography</h3>
+          
+          <div class="form-group">
+            <label for="font-pairing">Font Pairing Style</label>
+            <select id="font-pairing">
+              <option value="classic">Classic Luxury (Playfair + Montserrat)</option>
+              <option value="modern">Modern Minimalist (Montserrat + Lato)</option>
+              <option value="heritage">Heritage & Regal (Cinzel + Lato)</option>
+            </select>
+          </div>
+
+          <h3 style="margin: 1.5rem 0 1rem; font-size: 1rem; color: var(--text-secondary); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">Color Palette</h3>
+          
+          <div class="color-picker-group">
+            <input type="color" id="color-primary" value="#1A1A1A">
+            <div style="flex: 1;">
+              <div style="font-size: 0.85rem; color: var(--text-secondary);">Primary</div>
+              <div style="font-family: monospace; font-size: 0.9rem; font-weight: bold;" id="hex-primary">#1A1A1A</div>
+            </div>
+          </div>
+          
+          <div class="color-picker-group">
+            <input type="color" id="color-secondary" value="#D4AF37">
+            <div style="flex: 1;">
+              <div style="font-size: 0.85rem; color: var(--text-secondary);">Secondary (Accent)</div>
+              <div style="font-family: monospace; font-size: 0.9rem; font-weight: bold;" id="hex-secondary">#D4AF37</div>
+            </div>
+          </div>
+          
+          <div class="color-picker-group">
+            <input type="color" id="color-tertiary" value="#F5F5F0">
+            <div style="flex: 1;">
+              <div style="font-size: 0.85rem; color: var(--text-secondary);">Background/Neutral</div>
+              <div style="font-family: monospace; font-size: 0.9rem; font-weight: bold;" id="hex-tertiary">#F5F5F0</div>
+            </div>
+          </div>
+          
+          <div style="display: flex; gap: 0.75rem; margin-top: 2rem;">
+            <button type="submit" class="btn-gold" style="flex: 2;">Generate Kit</button>
+            <button type="button" class="btn-outline" id="print-btn" style="flex: 1;" title="Print to PDF">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="display: block; margin: 0 auto;"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            </button>
+          </div>
+        </form>
+      </div>
+      
+      <!-- Right Panel: Preview Area -->
+      <div id="kit-preview">
+        <!-- Kit Header -->
+        <div class="kit-header" id="preview-header">
+          <div class="kit-brand-name" id="preview-name">AURORA</div>
+          <div class="kit-tagline" id="preview-tagline">TIMELESS ELEGANCE</div>
+        </div>
+
+        <!-- Color Palette -->
+        <div class="kit-section">
+          <div class="kit-section-title">Color Palette</div>
+          <div class="color-palette">
+            <div class="color-swatch-container">
+              <div class="color-label">Primary</div>
+              <div class="color-swatch" id="swatch-primary" style="background-color: #1a1a1a;"></div>
+              <div class="color-details" id="details-primary">HEX: #1A1A1A<br>RGB: 26, 26, 26</div>
+            </div>
+            <div class="color-swatch-container">
+              <div class="color-label">Secondary</div>
+              <div class="color-swatch" id="swatch-secondary" style="background-color: #d4af37;"></div>
+              <div class="color-details" id="details-secondary">HEX: #D4AF37<br>RGB: 212, 175, 55</div>
+            </div>
+            <div class="color-swatch-container">
+              <div class="color-label">Neutral</div>
+              <div class="color-swatch" id="swatch-tertiary" style="background-color: #f5f5f0;"></div>
+              <div class="color-details" id="details-tertiary">HEX: #F5F5F0<br>RGB: 245, 245, 240</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Typography -->
+        <div class="kit-section">
+          <div class="kit-section-title">Typography</div>
+          <div class="typography-grid">
+            <div class="type-specimen">
+              <div class="type-label">Headings & Titles</div>
+              <div class="type-name" id="preview-font-heading-name">Playfair Display</div>
+              <div id="preview-font-heading-sample" style="font-size: 2.5rem; margin-bottom: 1rem; line-height: 1.2;">Aa Bb Cc Dd Ee Ff Gg</div>
+              <div id="preview-font-heading-chars" style="font-size: 1.1rem; line-height: 1.6; color: #555;">A B C D E F G H I J K L M N O P Q R S T U V W X Y Z<br>a b c d e f g h i j k l m n o p q r s t u v w x y z<br>0 1 2 3 4 5 6 7 8 9 & @ # % * ! ?</div>
+            </div>
+            <div class="type-specimen">
+              <div class="type-label">Body Copy & Subtitles</div>
+              <div class="type-name" id="preview-font-body-name">Montserrat</div>
+              <div id="preview-font-body-sample" style="font-size: 1.5rem; margin-bottom: 1rem; line-height: 1.4;">The quick brown fox jumps over the lazy dog.</div>
+              <div style="font-size: 0.95rem; line-height: 1.6; color: #555;">
+                <p>Typography plays a crucial role in maintaining brand consistency. Use this font for all long-form copy, paragraphs, and secondary UI elements.</p>
+                <p style="font-weight: 600; margin-top: 0.5rem;">Weights: Regular (400), Medium (500), SemiBold (600)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Logo Guidelines -->
+        <div class="kit-section">
+          <div class="kit-section-title">Brand Usage Guidelines</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <div>
+              <h4 style="font-size: 1.1rem; margin-bottom: 1rem; color: #222;">Clear Space</h4>
+              <div style="background: #f9f9f9; padding: 2rem; border-radius: 8px; border: 1px dashed #ccc; text-align: center; display: flex; align-items: center; justify-content: center; min-height: 150px;">
+                <div style="position: relative; display: inline-block;">
+                  <div style="position: absolute; top: -15px; left: -15px; right: -15px; bottom: -15px; border: 1px solid rgba(212, 175, 55, 0.5); background: rgba(212, 175, 55, 0.05);"></div>
+                  <strong style="font-size: 1.5rem; color: #333;" id="preview-logo-space">AURORA</strong>
+                </div>
+              </div>
+              <p style="margin-top: 1rem; font-size: 0.9rem; color: #666; line-height: 1.5;">Always maintain clear space around the logo to ensure visibility and impact. No other elements should enter this safe zone.</p>
+            </div>
+            <div>
+              <h4 style="font-size: 1.1rem; margin-bottom: 1rem; color: #222;">Contrast Variations</h4>
+              <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div style="background: #1a1a1a; padding: 1.5rem; border-radius: 8px; text-align: center;" id="bg-dark-preview">
+                  <strong style="font-size: 1.25rem; color: #fff;" id="text-light-preview">AURORA</strong>
+                </div>
+                <div style="background: #f5f5f0; padding: 1.5rem; border-radius: 8px; text-align: center; border: 1px solid #eaeaea;" id="bg-light-preview">
+                  <strong style="font-size: 1.25rem; color: #1a1a1a;" id="text-dark-preview">AURORA</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
