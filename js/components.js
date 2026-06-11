@@ -139,14 +139,11 @@ class AppHeader extends HTMLElement {
     const searchInput = this.querySelector('#nav-search-input');
     const searchResults = this.querySelector('#nav-search-results');
 
-    // Only show quick search when NOT on the dashboard homepage (dashboard already has main search)
-    const isDashboard = !window.location.pathname.includes('/tools/') && !window.location.pathname.includes('/pages/');
-    if (!isDashboard) {
-      searchContainer.style.display = 'block';
-    }
+    // Show quick search on all pages, including the dashboard
+    searchContainer.style.display = 'block';
 
     let toolsData = [];
-    fetch(`${prefix}data/tools-db.json`)
+    fetch(`${prefix}data/tools-db.json?v=` + new Date().getTime())
       .then(res => res.json())
       .then(data => { toolsData = data; })
       .catch(err => console.warn('Could not load tools database for quick-nav search', err));
@@ -194,13 +191,23 @@ class AppHeader extends HTMLElement {
   checkResponsive() {
     const desktopLinks = this.querySelectorAll('.desktop-navigation > a');
     const menuToggle = this.querySelector('#mobile-menu-toggle');
+    const navSearch = this.querySelector('.nav-search-container');
+    const brandText = this.querySelector('.nav-brand span');
 
     if (window.innerWidth < 768) {
       desktopLinks.forEach(link => link.style.display = 'none');
       menuToggle.style.display = 'block';
+      if (brandText) brandText.style.display = 'none'; // Hide "ALL IN ONE" text on mobile to fit search
+      if (navSearch) {
+        navSearch.style.margin = '0 0.5rem';
+      }
     } else {
       desktopLinks.forEach(link => link.style.display = 'block');
       menuToggle.style.display = 'none';
+      if (brandText) brandText.style.display = 'inline';
+      if (navSearch) {
+        navSearch.style.margin = '0 1.5rem';
+      }
     }
   }
 }
