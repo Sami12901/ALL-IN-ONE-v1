@@ -1,6 +1,6 @@
 # ALL IN ONE — 188+ Free Client-Side Browser Utilities
 
-ALL IN ONE is a premium, lightweight, offline-ready, and privacy-focused collection of web-based utilities designed for developers, designers, writers, students, and freelancers. 
+ALL IN ONE is a premium, lightweight, offline-ready, and privacy-focused collection of web-based utilities designed for ALL TYPE USER. 
 
 The entire application runs **100% client-side** inside the browser sandbox. No input is ever transmitted to a remote server, ensuring complete data privacy and zero tracking.
 

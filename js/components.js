@@ -311,7 +311,7 @@ class AppFooter extends HTMLElement {
 
           <div style="border-top: 1px solid var(--border); padding-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem; align-items: center; justify-content: space-between; font-size: 0.85rem; color: var(--text-tertiary);">
             <span>&copy; ${currentYear} ALL IN ONE Tools. Released under the MIT License.</span>
-            <span>Created for developers, designers, students, and freelancers.</span>
+            <span>Created for ALL TYPE USER.</span>
           </div>
         </div>
       </footer>
