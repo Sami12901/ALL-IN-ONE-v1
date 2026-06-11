@@ -1,5 +1,5 @@
 // ALL IN ONE Service Worker
-const CACHE_NAME = 'all-in-one-cache-v13';
+const CACHE_NAME = 'all-in-one-cache-v14';
 
 // Static assets to pre-cache immediately on install
 const PRECACHE_ASSETS = [
@@ -60,8 +60,7 @@ self.addEventListener('fetch', (e) => {
     (
       requestUrl.pathname.includes('/css/') || 
       requestUrl.pathname.includes('/js/') || 
-      requestUrl.pathname.includes('/assets/') ||
-      requestUrl.pathname.includes('/data/')
+      requestUrl.pathname.includes('/assets/')
     );
 
   if (isStaticAsset) {
