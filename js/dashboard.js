@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeStatusFilter = 'all';
 
   // 1. Initial Data Fetch
-  fetch('data/tools-db.json')
+  fetch('data/tools-db.json?v=' + new Date().getTime())
     .then(res => res.json())
     .then(data => {
       toolsDatabase = data;
