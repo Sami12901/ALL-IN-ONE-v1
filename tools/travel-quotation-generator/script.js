@@ -1,4 +1,25 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // Lock Screen Logic
+  const lockScreen = document.getElementById('lock-screen');
+  const lockForm = document.getElementById('lock-form');
+  const passwordInput = document.getElementById('password-input');
+  const passwordError = document.getElementById('password-error');
+
+  if (sessionStorage.getItem('tqg_unlocked') === 'true') {
+    lockScreen.style.display = 'none';
+  }
+
+  lockForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (passwordInput.value === '7127730627654909953t') {
+      sessionStorage.setItem('tqg_unlocked', 'true');
+      lockScreen.style.display = 'none';
+    } else {
+      passwordError.style.display = 'block';
+      passwordInput.value = '';
+    }
+  });
+
   // Config
   const currencyMap = {
     'BDT': '৳',
