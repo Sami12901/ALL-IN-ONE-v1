@@ -1,71 +1,261 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alphabetical Sorter - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Sort lines of text alphabetically or numerically.">
-  <meta name="keywords" content="sort, lines, alphabetical, order, free, online, tool, utility">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/alphabetical-sorter/">
-  <link rel="stylesheet" href="../../css/main.css">
-  <link rel="stylesheet" href="../../css/tools-shared.css">
-  
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alphabetical Sorter - All in One Web Tools</title>
+    <meta name="description" content="Sort lines of text alphabetically or numerically.">
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="../../css/global.css">
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --accent-color: #00d2ff;
+            --accent-secondary: #3a7bd5;
+            --text-primary: #f0f0f0;
+            --text-secondary: #aaaaaa;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: var(--text-primary);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .tool-container {
+            width: 100%;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, var(--accent-color), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .controls-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .control-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-item label {
+            font-weight: 500;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        .control-item select, .control-item input[type="checkbox"] {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-family: inherit;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .control-item select:focus {
+            border-color: var(--accent-color);
+        }
+
+        .control-item select option {
+            background: #203a43;
+            color: #fff;
+        }
+
+        .text-areas {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .text-areas {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .area-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .area-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .area-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: var(--accent-color);
+        }
+
+        .btn {
+            background: linear-gradient(to right, var(--accent-color), var(--accent-secondary));
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: inherit;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        textarea {
+            width: 100%;
+            height: 400px;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-primary);
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        textarea:focus {
+            border-color: var(--accent-color);
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.3);
+        }
+    </style>
 </head>
 <body>
-  <!-- Header Web Component -->
-  <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
-  <app-breadcrumbs></app-breadcrumbs>
-
-  <!-- Main Work Container -->
-  <main class="tool-layout">
-    <div class="container tool-container">
-      <div class="tool-header">
-        <h1>Alphabetical Sorter</h1>
-        <p class="tool-description">Sort lines of text alphabetically or numerically.</p>
-      </div>
-
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Alphabetical Sorter</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Sort lines of text alphabetically or numerically.</div>
-            <div><strong>Inputs:</strong> sort, lines, alphabetical, order</div>
-            <div><strong>Category:</strong> text</div>
-          </div>
+    <div class="tool-container">
+        <div class="header">
+            <h1><i class="fas fa-sort-alpha-down"></i> Alphabetical Sorter</h1>
+            <p>Sort lines of text alphabetically or numerically with advanced options</p>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
-      </div>
-    
+
+        <div class="controls-group">
+            <div class="control-item">
+                <label for="sort-type">Sort By:</label>
+                <select id="sort-type">
+                    <option value="alpha-asc">Alphabetical (A-Z)</option>
+                    <option value="alpha-desc">Alphabetical (Z-A)</option>
+                    <option value="num-asc">Numerical (Low-High)</option>
+                    <option value="num-desc">Numerical (High-Low)</option>
+                    <option value="length-asc">Length (Short-Long)</option>
+                    <option value="length-desc">Length (Long-Short)</option>
+                    <option value="random">Randomize</option>
+                    <option value="reverse">Reverse List</option>
+                </select>
+            </div>
+            <div class="control-item">
+                <label for="case-sensitive">
+                    <input type="checkbox" id="case-sensitive">
+                    Case Sensitive
+                </label>
+            </div>
+            <div class="control-item">
+                <label for="remove-empty">
+                    <input type="checkbox" id="remove-empty" checked>
+                    Remove Empty Lines
+                </label>
+            </div>
+            <div class="control-item">
+                <label for="remove-duplicates">
+                    <input type="checkbox" id="remove-duplicates">
+                    Remove Duplicates
+                </label>
+            </div>
+        </div>
+
+        <div class="text-areas">
+            <div class="area-container">
+                <div class="area-header">
+                    <h3>Input</h3>
+                    <button class="btn" id="clear-btn" aria-label="Clear Input"><i class="fas fa-eraser"></i> Clear</button>
+                </div>
+                <textarea id="input-text" placeholder="Paste your lines here...&#10;Apple&#10;Banana&#10;Cherry"></textarea>
+            </div>
+            
+            <div class="area-container">
+                <div class="area-header">
+                    <h3>Output</h3>
+                    <button class="btn" id="copy-btn" aria-label="Copy Output"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <textarea id="output-text" readonly placeholder="Sorted lines will appear here..."></textarea>
+            </div>
+        </div>
     </div>
-  </main>
 
-  <!-- Footer Web Component -->
-  <app-footer></app-footer>
-
-  <!-- Structured schema for search engine rich snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Alphabetical Sorter",
-    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/alphabetical-sorter/",
-    "description": "Sort lines of text alphabetically or numerically.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
-  }
-  </script>
+    <script src="script.js"></script>
 </body>
 </html>
