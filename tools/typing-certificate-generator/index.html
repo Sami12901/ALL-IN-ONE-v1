@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typing Certificate Generator - ALL IN ONE</title>
+  <meta name="description" content="Generate a professional typing speed certificate in PDF format.">
+  
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <script type="module" src="../../js/components.js"></script>
+  <script type="module" src="../../js/main.js" defer></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Great+Vibes&family=Montserrat:wght@400;600&display=swap');
+
+    /* Printing Overrides */
+    @media print {
+      body * { visibility: hidden; }
+      #certificate-wrapper, #certificate-wrapper * { visibility: visible; }
+      #certificate-wrapper { 
+        position: absolute; 
+        left: 0; top: 0; 
+        width: 100%; 
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .no-print { display: none !important; }
+    }
+
+    .cert-preview {
+      width: 297mm;
+      height: 210mm;
+      background: #fff;
+      position: relative;
+      padding: 15mm;
+      box-sizing: border-box;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      transform: scale(1);
+      transform-origin: top center;
+    }
+
+    .cert-border {
+      width: 100%;
+      height: 100%;
+      border: 10px solid #1e3a8a; /* Deep blue */
+      padding: 5px;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    .cert-inner-border {
+      width: 100%;
+      height: 100%;
+      border: 2px solid #d4af37; /* Gold */
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+      position: relative;
+      background: #faf8f5; /* Off-white */
+    }
+
+    .cert-bg-logo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.05;
+      width: 300px;
+      height: auto;
+      pointer-events: none;
+    }
+
+    .cert-title {
+      font-family: 'Cinzel', serif;
+      font-size: 3.5rem;
+      color: #1e3a8a;
+      letter-spacing: 5px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .cert-subtitle {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.2rem;
+      color: #d4af37;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 40px;
+    }
+
+    .cert-text {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.1rem;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .cert-name {
+      font-family: 'Great Vibes', cursive;
+      font-size: 4rem;
+      color: #111;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #d4af37;
+      padding-bottom: 5px;
+      min-width: 400px;
+      text-align: center;
+    }
+
+    .cert-stats-container {
+      display: flex;
+      gap: 50px;
+      margin: 30px 0;
+    }
+
+    .cert-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #fff;
+      padding: 15px 30px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    .cert-stat-value {
+      font-family: 'Cinzel', serif;
+      font-size: 2.5rem;
+      color: #1e3a8a;
+      font-weight: 700;
+    }
+
+    .cert-stat-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .cert-footer {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      margin-top: auto;
+      padding: 0 50px;
+    }
+
+    .cert-signature {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .cert-signature img {
+      height: 60px;
+      margin-bottom: 5px;
+    }
+
+    .cert-signature-line {
+      width: 200px;
+      border-top: 1px solid #333;
+      padding-top: 5px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem;
+      text-align: center;
+      color: #333;
+    }
+
+    .cert-seal {
+      width: 100px;
+      height: 100px;
+      background: #d4af37;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+      color: #fff;
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      text-align: center;
+      border: 4px double #fff;
+    }
+
+  </style>
+</head>
+<body>
+  <app-header></app-header>
+  
+  <main class="workspace-container">
+    <app-breadcrumb tool-name="Typing Certificate Generator"></app-breadcrumb>
+
+    <div class="workspace-grid" style="grid-template-columns: 350px 1fr;">
+      <!-- Input Section -->
+      <div class="workspace-panel input-panel glass-panel no-print">
+        <h2 class="panel-title">Certificate Details</h2>
+        
+        <div class="form-group">
+          <label>Candidate Name</label>
+          <input type="text" id="cand-name" class="input-element" value="John Doe" placeholder="e.g. John Doe">
+        </div>
+        
+        <div class="form-group">
+          <label>Typing Speed (WPM)</label>
+          <input type="number" id="cand-wpm" class="input-element" value="75" placeholder="e.g. 75">
+        </div>
+
+        <div class="form-group">
+          <label>Accuracy (%)</label>
+          <input type="number" id="cand-acc" class="input-element" value="98" placeholder="e.g. 98">
+        </div>
+
+        <div class="form-group">
+          <label>Date of Issue</label>
+          <input type="date" id="cand-date" class="input-element">
+        </div>
+        
+        <div class="form-group">
+          <label>Certificate ID</label>
+          <input type="text" id="cand-id" class="input-element" readonly style="background: rgba(255,255,255,0.05); color: var(--text-secondary);">
+        </div>
+
+        <button id="print-btn" class="action-btn primary-btn" style="width: 100%; margin-top: 1.5rem;">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          Print / Save PDF
+        </button>
+      </div>
+
+      <!-- Preview Section -->
+      <div class="workspace-panel output-panel glass-panel no-print" style="overflow: hidden; display: flex; flex-direction: column;">
+        <h2 class="panel-title" style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+          Live Preview
+          <span style="font-size: 0.8rem; font-weight: 400; color: var(--text-tertiary);">A4 Landscape</span>
+        </h2>
+        
+        <div style="flex: 1; overflow: auto; background: var(--bg-tertiary); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; padding: 2rem;">
+          
+          <div id="scale-wrapper" style="transform-origin: top center;">
+            <div id="certificate-wrapper" class="cert-preview">
+              <div class="cert-border">
+                <div class="cert-inner-border">
+                  
+                  <svg class="cert-bg-logo" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="1"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect><line x1="6" y1="8" x2="6.01" y2="8"></line><line x1="10" y1="8" x2="10.01" y2="8"></line><line x1="14" y1="8" x2="14.01" y2="8"></line><line x1="18" y1="8" x2="18.01" y2="8"></line><line x1="6" y1="12" x2="6.01" y2="12"></line><line x1="10" y1="12" x2="10.01" y2="12"></line><line x1="14" y1="12" x2="14.01" y2="12"></line><line x1="18" y1="12" x2="18.01" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg>
+
+                  <div class="cert-title">Certificate</div>
+                  <div class="cert-subtitle">of Typing Proficiency</div>
+                  
+                  <div class="cert-text">This is to certify that</div>
+                  
+                  <div class="cert-name" id="preview-name">John Doe</div>
+                  
+                  <div class="cert-text">has successfully demonstrated their typing proficiency with the following verified results:</div>
+                  
+                  <div class="cert-stats-container">
+                    <div class="cert-stat">
+                      <div class="cert-stat-value" id="preview-wpm">75</div>
+                      <div class="cert-stat-label">Words Per Minute</div>
+                    </div>
+                    <div class="cert-stat">
+                      <div class="cert-stat-value" id="preview-acc">98%</div>
+                      <div class="cert-stat-label">Accuracy</div>
+                    </div>
+                  </div>
+
+                  <div class="cert-seal">
+                    CERTIFIED<br>EXPERT
+                  </div>
+                  
+                  <div class="cert-footer">
+                    <div class="cert-signature">
+                      <div style="height: 60px; display: flex; align-items: end; font-family: 'Great Vibes', cursive; font-size: 2.5rem; color: #1e3a8a; margin-bottom: 5px;">ALL IN ONE</div>
+                      <div class="cert-signature-line">Authorized Signature</div>
+                    </div>
+                    <div class="cert-signature" style="justify-content: flex-end;">
+                      <div class="cert-signature-line">
+                        Date: <span id="preview-date">October 24, 2026</span><br>
+                        <span style="font-size: 0.7rem; color: #888;">ID: <span id="preview-id">AIO-TYP-000000</span></span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <app-footer></app-footer>
+  <script src="script.js"></script>
+</body>
+</html>

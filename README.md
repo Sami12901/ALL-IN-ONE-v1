@@ -1,4 +1,4 @@
-# ALL IN ONE — 230+ Free Client-Side Browser Utilities
+# ALL IN ONE — 263+ Free Client-Side Browser Utilities
 
 ALL IN ONE is a premium, lightweight, offline-ready, and privacy-focused collection of web-based utilities designed for ALL TYPE USER. 
 
@@ -10,7 +10,7 @@ Live URL: **[https://sami12901.github.io/ALL-IN-ONE-v1/](https://sami12901.githu
 
 ## Key Features
 
-- **230+ Utilities Scheduled**: Structured across 12 distinct categories (Text, Developer, SEO, Colors, Converter, Math, Utility, and more).
+- **263+ Utilities Scheduled**: Structured across 12 distinct categories (Text, Developer, SEO, Colors, Converter, Math, Utility, and more).
 - **Frameworkless & Lightweight**: Built strictly using pure HTML5, Vanilla CSS3, and Vanilla JavaScript. Zero bundlers, compile phases, or external framework dependencies.
 - **PWA (Progressive Web App)**: Complete offline support via a custom cache-first Service Worker (`sw.js`). Installable directly onto mobile or desktop home screens.
 - **Premium User Interface**: Modern design featuring fluid dark/light mode switches, glassmorphic card patterns, harmonized HSL color tokens, and custom-designed inline SVG icons (100% emoji-free).
