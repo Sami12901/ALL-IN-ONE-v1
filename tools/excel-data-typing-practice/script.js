@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     refHtml += '</tr><tr><th>1</th>';
     headers.forEach(h => {
-      refHtml += `<th style="background:#e2e8f0;">${h}</th>`;
+      refHtml += `<th style="background:var(--bg-tertiary);">${h}</th>`;
     });
     refHtml += '</tr>';
 
@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     inHtml += '</tr><tr><th>1</th>';
     headers.forEach(h => {
-      inHtml += `<th style="background:#e2e8f0;">${h}</th>`;
+      inHtml += `<th style="background:var(--bg-tertiary);">${h}</th>`;
     });
     inHtml += '</tr>';
 
