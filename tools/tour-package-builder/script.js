@@ -146,7 +146,21 @@ document.addEventListener('DOMContentLoaded', () => {
           ${isTimeline ? 'DAY' : 'SECTION'} ${index + 1}
         </div>
         <div class="form-group" style="margin-bottom: 0.75rem;">
-          <input type="text" class="day-title-input" placeholder="${isTimeline ? 'e.g. Arrival in Dubai' : 'e.g. Flight Details'}" value="${day.title}">
+          <div style="display: flex; gap: 0.5rem;">
+            ${!isTimeline ? `
+              <select class="day-icon-select" style="width: auto; padding: 0.5rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-tertiary); color: var(--text-primary); outline: none; font-size: 1.2rem;">
+                <option value="" ${!day.icon ? 'selected' : ''}>- None -</option>
+                <option value="✈️" ${day.icon === '✈️' ? 'selected' : ''}>✈️ Flight</option>
+                <option value="🏨" ${day.icon === '🏨' ? 'selected' : ''}>🏨 Hotel</option>
+                <option value="🛂" ${day.icon === '🛂' ? 'selected' : ''}>🛂 Visa</option>
+                <option value="🚗" ${day.icon === '🚗' ? 'selected' : ''}>🚗 Transport</option>
+                <option value="🛡️" ${day.icon === '🛡️' ? 'selected' : ''}>🛡️ Insurance</option>
+                <option value="📄" ${day.icon === '📄' ? 'selected' : ''}>📄 Document</option>
+                <option value="ℹ️" ${day.icon === 'ℹ️' ? 'selected' : ''}>ℹ️ Info</option>
+              </select>
+            ` : ''}
+            <input type="text" class="day-title-input" style="flex: 1;" placeholder="${isTimeline ? 'e.g. Arrival in Dubai' : 'e.g. Flight Details'}" value="${day.title}">
+          </div>
         </div>
         <div class="form-group" style="margin-bottom: 0.75rem;">
           <textarea class="day-desc-input" rows="3" placeholder="Describe the details...">${day.desc}</textarea>
@@ -178,12 +192,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
 
-      const inputs = dayEl.querySelectorAll('input[type="text"], textarea');
+      const inputs = dayEl.querySelectorAll('input[type="text"], textarea, select');
       inputs.forEach(input => {
         input.addEventListener('input', (e) => {
           if (e.target.classList.contains('day-title-input')) day.title = e.target.value;
           if (e.target.classList.contains('day-desc-input')) day.desc = e.target.value;
           if (e.target.classList.contains('day-img-input')) day.img = e.target.value;
+          if (e.target.classList.contains('day-icon-select')) day.icon = e.target.value;
           updateDocument();
         });
       });
@@ -241,14 +256,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const dEl = document.createElement('div');
-      dEl.className = 'day-item';
+      dEl.className = isTimeline ? 'day-item' : 'custom-section-card';
       
       let markerHtml = isTimeline ? `<div class="day-marker"></div>` : '';
       let titlePrefix = isTimeline ? `Day ${i + 1}: ` : '';
+      let iconHtml = (!isTimeline && day.icon) ? `<span style="font-size: 1.5rem;">${day.icon}</span>` : '';
 
       dEl.innerHTML = `
         ${markerHtml}
-        <div class="day-title">${titlePrefix}${day.title || 'Untitled'}</div>
+        <div class="day-title">${iconHtml}${titlePrefix}${day.title || 'Untitled'}</div>
         <div class="day-desc">${day.desc ? day.desc.replace(/\n/g, '<br>') : ''}</div>
         ${imgHtml}
       `;
