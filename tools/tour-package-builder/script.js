@@ -47,6 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Inputs
   const themeSelect = document.getElementById('doc-theme');
+  const aName = document.getElementById('a-name');
+  const aLogoUpload = document.getElementById('a-logo-upload');
+  const aLogoUrl = document.getElementById('a-logo-url');
+
   const pTitle = document.getElementById('p-title');
   const pSubtitle = document.getElementById('p-subtitle');
   const pImageUpload = document.getElementById('p-image-upload');
@@ -58,10 +62,13 @@ document.addEventListener('DOMContentLoaded', () => {
   
   const daysWrapper = document.getElementById('days-wrapper');
   const addDayBtn = document.getElementById('add-day-btn');
+  const downloadImgBtn = document.getElementById('download-img-btn');
   const printBtn = document.getElementById('print-btn');
 
   // Outputs (Doc)
   const docPreview = document.getElementById('doc-preview');
+  const docAgencyLogo = document.getElementById('doc-agency-logo');
+  const docAgencyName = document.getElementById('doc-agency-name');
   const docHeroImg = document.getElementById('doc-hero-img');
   const docTitle = document.getElementById('doc-title');
   const docSubtitle = document.getElementById('doc-subtitle');
@@ -103,6 +110,14 @@ document.addEventListener('DOMContentLoaded', () => {
       reader.readAsDataURL(file);
     }
   }
+
+  // Agency Logo Upload
+  aLogoUpload.addEventListener('change', (e) => {
+    handleImageUpload(e.target.files[0], (dataUrl) => {
+      aLogoUrl.value = dataUrl;
+      updateDocument();
+    });
+  });
 
   // Hero Image Upload
   pImageUpload.addEventListener('change', (e) => {
@@ -178,6 +193,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateDocument() {
+    // Agency Info
+    if (aLogoUrl.value) {
+      docAgencyLogo.src = aLogoUrl.value;
+      docAgencyLogo.style.display = 'block';
+    } else {
+      docAgencyLogo.style.display = 'none';
+    }
+    docAgencyName.textContent = aName.value || 'Dream Travels';
+
     // Header Info
     docTitle.textContent = pTitle.value || 'Tour Package';
     docSubtitle.textContent = pSubtitle.value || 'Amazing Trip';
@@ -216,9 +240,36 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Global Change Listeners
-  [pTitle, pSubtitle, pImageUrl, pDuration, pPrice, pInc, pExc].forEach(el => {
+  [aName, aLogoUrl, pTitle, pSubtitle, pImageUrl, pDuration, pPrice, pInc, pExc].forEach(el => {
     el.addEventListener('input', updateDocument);
   });
+
+  if (downloadImgBtn) {
+    downloadImgBtn.addEventListener('click', () => {
+      const originalText = downloadImgBtn.innerHTML;
+      downloadImgBtn.innerHTML = 'Generating...';
+      downloadImgBtn.disabled = true;
+
+      html2canvas(docPreview, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff'
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `${pTitle.value || 'tour_package'}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        
+        downloadImgBtn.innerHTML = originalText;
+        downloadImgBtn.disabled = false;
+      }).catch(err => {
+        console.error('Error generating image', err);
+        downloadImgBtn.innerHTML = originalText;
+        downloadImgBtn.disabled = false;
+        alert('Could not generate image. Check if images have CORS issues.');
+      });
+    });
+  }
 
   printBtn.addEventListener('click', () => {
     window.print();
