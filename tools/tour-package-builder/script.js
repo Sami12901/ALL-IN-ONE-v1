@@ -55,6 +55,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const pSubtitle = document.getElementById('p-subtitle');
   const pImageUpload = document.getElementById('p-image-upload');
   const pImageUrl = document.getElementById('p-image-url');
+  
+  const pFormat = document.getElementById('p-format');
+  const pContentHeading = document.getElementById('p-content-heading');
+
   const pDuration = document.getElementById('p-duration');
   const pPrice = document.getElementById('p-price');
   const pInc = document.getElementById('p-inc');
@@ -72,6 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const docHeroImg = document.getElementById('doc-hero-img');
   const docTitle = document.getElementById('doc-title');
   const docSubtitle = document.getElementById('doc-subtitle');
+  const docContentHeading = document.getElementById('doc-content-heading');
   const docDuration = document.getElementById('doc-duration');
   const docPrice = document.getElementById('doc-price');
   const docTimeline = document.getElementById('doc-timeline');
@@ -128,18 +133,23 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function renderDaysForm() {
+    const isTimeline = pFormat.value === 'timeline';
+    addDayBtn.textContent = isTimeline ? '+ Add Day' : '+ Add Section';
+
     daysWrapper.innerHTML = '';
     days.forEach((day, index) => {
       const dayEl = document.createElement('div');
       dayEl.className = 'day-container';
       dayEl.innerHTML = `
         <button type="button" class="remove-btn" data-index="${index}">×</button>
-        <div style="font-weight: 700; color: var(--travel-primary); margin-bottom: 0.5rem; font-size: 0.85rem;">DAY ${index + 1}</div>
-        <div class="form-group" style="margin-bottom: 0.75rem;">
-          <input type="text" class="day-title-input" placeholder="e.g. Arrival in Dubai" value="${day.title}">
+        <div style="font-weight: 700; color: var(--travel-primary); margin-bottom: 0.5rem; font-size: 0.85rem;">
+          ${isTimeline ? 'DAY' : 'SECTION'} ${index + 1}
         </div>
         <div class="form-group" style="margin-bottom: 0.75rem;">
-          <textarea class="day-desc-input" rows="3" placeholder="Describe the day's activities...">${day.desc}</textarea>
+          <input type="text" class="day-title-input" placeholder="${isTimeline ? 'e.g. Arrival in Dubai' : 'e.g. Flight Details'}" value="${day.title}">
+        </div>
+        <div class="form-group" style="margin-bottom: 0.75rem;">
+          <textarea class="day-desc-input" rows="3" placeholder="Describe the details...">${day.desc}</textarea>
         </div>
         <div class="form-group" style="margin-bottom: 0;">
           <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
@@ -213,19 +223,32 @@ document.addEventListener('DOMContentLoaded', () => {
     renderLists(pInc.value, docInc);
     renderLists(pExc.value, docExc);
 
-    // Timeline
+    docContentHeading.textContent = pContentHeading.value || 'DETAILS';
+
+    // Timeline vs Sections
+    const isTimeline = pFormat.value === 'timeline';
+    if (isTimeline) {
+      docTimeline.classList.add('itinerary-timeline');
+    } else {
+      docTimeline.classList.remove('itinerary-timeline');
+    }
+
     docTimeline.innerHTML = '';
     days.forEach((day, i) => {
       let imgHtml = '';
       if (day.img && day.img.trim() !== '') {
-        imgHtml = `<img src="${day.img}" class="day-image" alt="Day ${i + 1}">`;
+        imgHtml = `<img src="${day.img}" class="day-image" alt="Section ${i + 1}">`;
       }
 
       const dEl = document.createElement('div');
       dEl.className = 'day-item';
+      
+      let markerHtml = isTimeline ? `<div class="day-marker"></div>` : '';
+      let titlePrefix = isTimeline ? `Day ${i + 1}: ` : '';
+
       dEl.innerHTML = `
-        <div class="day-marker"></div>
-        <div class="day-title">Day ${i + 1}: ${day.title || 'Untitled'}</div>
+        ${markerHtml}
+        <div class="day-title">${titlePrefix}${day.title || 'Untitled'}</div>
         <div class="day-desc">${day.desc ? day.desc.replace(/\n/g, '<br>') : ''}</div>
         ${imgHtml}
       `;
@@ -240,8 +263,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Global Change Listeners
-  [aName, aLogoUrl, pTitle, pSubtitle, pImageUrl, pDuration, pPrice, pInc, pExc].forEach(el => {
-    el.addEventListener('input', updateDocument);
+  [aName, aLogoUrl, pTitle, pSubtitle, pImageUrl, pDuration, pPrice, pInc, pExc, pFormat, pContentHeading].forEach(el => {
+    el.addEventListener('input', () => {
+      if (el === pFormat) renderDaysForm();
+      updateDocument();
+    });
   });
 
   if (downloadImgBtn) {
