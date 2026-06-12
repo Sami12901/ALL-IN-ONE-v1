@@ -1,14 +1,7 @@
+import { createUniver, LocaleType } from "https://esm.sh/@univerjs/presets@0.25.0";
+import { UniverSheetsCorePreset } from "https://esm.sh/@univerjs/preset-sheets-core@0.25.0";
+
 document.addEventListener('DOMContentLoaded', () => {
-  // Check if Univer is loaded correctly via CDN
-  if (!window.UniverPresets || !window.UniverPresetSheetsCore) {
-    console.error("Univer libraries not loaded correctly.");
-    document.getElementById('univer-container').innerHTML = '<div style="padding: 2rem; color: red;">Failed to load spreadsheet engine. Please check internet connection or cache.</div>';
-    return;
-  }
-
-  const { createUniver, LocaleType } = window.UniverPresets;
-  const { UniverSheetsCorePreset } = window.UniverPresetSheetsCore;
-
   // Auto-load from local storage or create blank
   let initialData = {};
   const savedData = localStorage.getItem('all-in-one-sheets-autosave');
