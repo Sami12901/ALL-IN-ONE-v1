@@ -1,11 +1,8 @@
 // ALL IN ONE Service Worker
-const CACHE_NAME = 'all-in-one-cache-v42';
+const CACHE_NAME = 'all-in-one-cache-v43';
 
 // Static assets to pre-cache immediately on install
 const PRECACHE_ASSETS = [
-  './tools/brand-asset-manager/',
-  './tools/brand-asset-manager/index.html',
-  './tools/brand-asset-manager/script.js',
   './tools/all-in-one-sheets/',
   './tools/all-in-one-sheets/index.html',
   './tools/all-in-one-sheets/script.js',
