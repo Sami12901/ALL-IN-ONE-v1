@@ -3,6 +3,8 @@
 const CATEGORY_ICONS = {
   text: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>`,
   seo: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></svg>`,
+  "digital-marketing": `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4l3-9 5 18 3-9h5"></path></svg>`,
+  pdf: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M16 13H8"></path><path d="M16 17H8"></path><path d="M10 9H8"></path></svg>`,
   developer: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>`,
   color: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 14.7255 3.09032 17.1962 4.85857 19C5.35857 19.5 5.5 20.5 5 21C4.5 21.5 3.5 21 3 20.5C1.5 19 1 17 1 15C1 8.92487 5.92487 4 12 4C18.0751 4 23 8.92487 23 15C23 18 20 21 16 21C14.5 21 13.5 20.5 13 20C12.5 19.5 12 19.5 11.5 20C11 20.5 10.5 22 12 22Z"></path></svg>`,
   image: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`,
@@ -194,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 5. Generate Tool Card HTML template
   function createToolCardHtml(tool, isFav) {
-    const categoryName = tool.category.toUpperCase();
+    const categoryName = tool.category.toUpperCase().replace(/-/g, ' ');
     const svgIcon = CATEGORY_ICONS[tool.category] || CATEGORY_ICONS.utility;
     const activeBadge = tool.active ? `<span style="background: rgba(16, 185, 129, 0.15); color: var(--success); font-size: 0.65rem; padding: 0.15rem 0.4rem; border-radius: var(--radius-sm); font-weight: 700; letter-spacing: 0.05em; border: 1px solid rgba(16, 185, 129, 0.3);">ACTIVE</span>` : `<span style="background: var(--bg-tertiary); color: var(--text-tertiary); font-size: 0.65rem; padding: 0.15rem 0.4rem; border-radius: var(--radius-sm); font-weight: 600; letter-spacing: 0.05em; border: 1px solid var(--border);">COMING SOON</span>`;
 
