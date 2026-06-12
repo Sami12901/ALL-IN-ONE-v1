@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typing Practice - ALL IN ONE</title>
+  <meta name="description" content="Improve your typing speed and accuracy with our interactive typing practice tool.">
+  
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <script type="module" src="../../js/components.js"></script>
+  <script type="module" src="../../js/main.js" defer></script>
+  <style>
+    .typing-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      position: relative;
+    }
+
+    .stats-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .stat-box {
+      background: var(--bg-tertiary);
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      min-width: 120px;
+      text-align: center;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      font-family: var(--font-display);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 0.25rem;
+    }
+
+    .text-display {
+      font-size: 1.5rem;
+      line-height: 1.6;
+      font-family: 'Courier New', Courier, monospace;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      min-height: 120px;
+      position: relative;
+      user-select: none;
+    }
+
+    .text-display span {
+      position: relative;
+    }
+
+    .char.correct {
+      color: #10b981; /* Success green */
+    }
+
+    .char.incorrect {
+      color: #ef4444; /* Error red */
+      background: rgba(239, 68, 68, 0.2);
+      border-radius: 2px;
+    }
+
+    .char.active {
+      color: var(--text-primary);
+      text-decoration: underline;
+      text-decoration-color: var(--primary);
+      text-decoration-thickness: 3px;
+    }
+
+    .hidden-input {
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      cursor: default;
+    }
+
+    .hidden-input:focus {
+      outline: none;
+    }
+
+    .keyboard-prompt {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 1rem 2rem;
+      border-radius: var(--radius-md);
+      z-index: 20;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      font-family: var(--font-primary);
+    }
+
+    .focused .keyboard-prompt {
+      opacity: 0;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+    }
+
+    .difficulty-select {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-md);
+      font-family: var(--font-primary);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <app-header></app-header>
+  
+  <main class="workspace-container">
+    <app-breadcrumb tool-name="Typing Practice"></app-breadcrumb>
+
+    <div class="workspace-panel glass-panel" style="max-width: 900px; margin: 0 auto;">
+      
+      <div class="typing-container" id="typing-container">
+        
+        <div class="stats-header">
+          <div class="stat-box">
+            <div class="stat-value" id="stat-wpm">0</div>
+            <div class="stat-label">WPM</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="stat-cpm">0</div>
+            <div class="stat-label">CPM</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="stat-acc">100<span style="font-size:1rem">%</span></div>
+            <div class="stat-label">Accuracy</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="stat-time">60</div>
+            <div class="stat-label">Time (s)</div>
+          </div>
+        </div>
+
+        <div style="position: relative;">
+          <textarea id="hidden-input" class="hidden-input" autocomplete="off" spellcheck="false"></textarea>
+          <div class="text-display" id="text-display">
+            <!-- Text goes here -->
+          </div>
+          <div class="keyboard-prompt" id="keyboard-prompt">Click here or press any key to start typing</div>
+        </div>
+
+        <div class="controls">
+          <div>
+            <select id="difficulty" class="difficulty-select">
+              <option value="easy">Easy (Short Words)</option>
+              <option value="medium" selected>Medium (Standard Text)</option>
+              <option value="hard">Hard (Punctuation & Numbers)</option>
+            </select>
+          </div>
+          <button id="reset-btn" class="action-btn secondary-btn">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg>
+            Reset Test
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Results Modal (Hidden by default) -->
+      <div id="results-modal" style="display: none; margin-top: 2rem; background: var(--bg-tertiary); padding: 2rem; border-radius: var(--radius-lg); border: 1px solid var(--primary); text-align: center;">
+        <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--text-primary);">Test Complete!</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Here is how you performed:</p>
+        
+        <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem;">
+          <div>
+            <div style="font-size: 3rem; font-weight: 800; color: #10b981;" id="final-wpm">--</div>
+            <div style="font-size: 0.9rem; color: var(--text-tertiary); text-transform: uppercase;">Final WPM</div>
+          </div>
+          <div>
+            <div style="font-size: 3rem; font-weight: 800; color: var(--primary);" id="final-acc">--</div>
+            <div style="font-size: 0.9rem; color: var(--text-tertiary); text-transform: uppercase;">Accuracy</div>
+          </div>
+        </div>
+        
+        <button id="try-again-btn" class="action-btn primary-btn">Try Again</button>
+      </div>
+
+    </div>
+  </main>
+
+  <app-footer></app-footer>
+  <script src="script.js"></script>
+</body>
+</html>
