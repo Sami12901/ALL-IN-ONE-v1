@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALL IN ONE Sheets | ALL IN ONE</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <!-- Univer CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/@univerjs/design@latest/lib/index.css" />
+  <link rel="stylesheet" href="https://unpkg.com/@univerjs/ui@latest/lib/index.css" />
+  <link rel="stylesheet" href="https://unpkg.com/@univerjs/docs-ui@latest/lib/index.css" />
+  <link rel="stylesheet" href="https://unpkg.com/@univerjs/sheets-ui@latest/lib/index.css" />
+  <link rel="stylesheet" href="https://unpkg.com/@univerjs/sheets-formula@latest/lib/index.css" />
+
+  <!-- Dependencies -->
+  <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/rxjs@7.8.1/dist/bundles/rxjs.umd.min.js"></script>
+  <script src="https://unpkg.com/clsx@2.0.0/dist/clsx.min.js"></script>
+
+  <!-- Univer JS -->
+  <script src="https://unpkg.com/@univerjs/core@latest/lib/umd/index.js"></script>
+  <script src="https://unpkg.com/@univerjs/design@latest/lib/umd/index.js"></script>
+  <script src="https://unpkg.com/@univerjs/engine-render@latest/lib/umd/index.js"></script>
+  <script src="https://unpkg.com/@univerjs/engine-formula@latest/lib/umd/index.js"></script>
+  <script src="https://unpkg.com/@univerjs/engine-numfmt@latest/lib/umd/index.js"></script>
+  <script src="https://unpkg.com/@univerjs/ui@latest/lib/umd/index.js"></script>
+  <script src="https://unpkg.com/@univerjs/docs@latest/lib/umd/index.js"></script>
+  <script src="https://unpkg.com/@univerjs/docs-ui@latest/lib/umd/index.js"></script>
+  <script src="https://unpkg.com/@univerjs/sheets@latest/lib/umd/index.js"></script>
+  <script src="https://unpkg.com/@univerjs/sheets-ui@latest/lib/umd/index.js"></script>
+  <script src="https://unpkg.com/@univerjs/sheets-formula@latest/lib/umd/index.js"></script>
+  <script src="https://unpkg.com/@univerjs/sheets-numfmt@latest/lib/umd/index.js"></script>
+  <script src="https://unpkg.com/@univerjs/facade@latest/lib/umd/index.js"></script>
+
+  <!-- SheetJS & ExcelJS -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Action Bar */
+    .sheets-header {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 0.5rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      z-index: 100;
+    }
+
+    .sheets-title {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .sheets-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .select-template {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 0.4rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .btn-action {
+      background: var(--theme-primary);
+      color: white;
+      border: none;
+      padding: 0.4rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: opacity 0.2s;
+    }
+
+    .btn-action:hover {
+      opacity: 0.9;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 0.4rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: background 0.2s;
+    }
+
+    .btn-outline:hover {
+      background: var(--bg-tertiary);
+    }
+
+    /* Container for Univer */
+    #univer-container {
+      flex: 1;
+      width: 100%;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="sheets-header">
+    <div class="sheets-title">
+      <a href="../../index.html" style="color: var(--text-primary); display: flex; align-items: center;">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </a>
+      📊 ALL IN ONE Sheets
+    </div>
+    
+    <div class="sheets-actions">
+      <select id="template-select" class="select-template">
+        <option value="">-- Load Template --</option>
+        <option value="blank">Blank Spreadsheet</option>
+        <option value="travel">Travel Agency Template</option>
+        <option value="ecommerce">E-commerce Template</option>
+      </select>
+      
+      <button class="btn-outline" id="btn-import">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        Import XLSX
+      </button>
+      <input type="file" id="file-import" accept=".xlsx, .xls, .csv" style="display: none;">
+      
+      <button class="btn-action" id="btn-export">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Export XLSX
+      </button>
+    </div>
+  </div>
+
+  <div id="univer-container"></div>
+
+  <script src="../../js/theme.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
