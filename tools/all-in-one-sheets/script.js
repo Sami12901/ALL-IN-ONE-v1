@@ -1,45 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const { Univer, LocaleType, UniverInstanceType } = window.UniverCore;
-  const { defaultTheme } = window.UniverDesign;
-  const { UniverRenderEnginePlugin } = window.UniverEngineRender;
-  const { UniverFormulaEnginePlugin } = window.UniverEngineFormula;
-  const { UniverNumfmtEnginePlugin } = window.UniverEngineNumfmt;
-  const { UniverUIPlugin } = window.UniverUI;
-  const { UniverDocsPlugin } = window.UniverDocs;
-  const { UniverDocsUIPlugin } = window.UniverDocsUI;
-  const { UniverSheetsPlugin } = window.UniverSheets;
-  const { UniverSheetsUIPlugin } = window.UniverSheetsUI;
-  const { UniverSheetsFormulaPlugin } = window.UniverSheetsFormula;
-  const { UniverSheetsNumfmtPlugin } = window.UniverSheetsNumfmt;
+  // Check if Univer is loaded correctly via CDN
+  if (!window.UniverPresets || !window.UniverPresetSheetsCore) {
+    console.error("Univer libraries not loaded correctly.");
+    document.getElementById('univer-container').innerHTML = '<div style="padding: 2rem; color: red;">Failed to load spreadsheet engine. Please check internet connection or cache.</div>';
+    return;
+  }
 
-  // Initialize Univer
-  const univer = new Univer({
-    theme: defaultTheme,
-    locale: LocaleType.EN_US,
-  });
-
-  // Register core plugins
-  univer.registerPlugin(UniverRenderEnginePlugin);
-  univer.registerPlugin(UniverFormulaEnginePlugin);
-  univer.registerPlugin(UniverNumfmtEnginePlugin);
-
-  // Register UI plugins
-  univer.registerPlugin(UniverUIPlugin, {
-    container: 'univer-container',
-  });
-
-  // Register Docs plugins (required for sheet cell editing)
-  univer.registerPlugin(UniverDocsPlugin, { hasScroll: false });
-  univer.registerPlugin(UniverDocsUIPlugin);
-
-  // Register Sheets plugins
-  univer.registerPlugin(UniverSheetsPlugin);
-  univer.registerPlugin(UniverSheetsUIPlugin);
-  univer.registerPlugin(UniverSheetsFormulaPlugin);
-  univer.registerPlugin(UniverSheetsNumfmtPlugin);
+  const { createUniver, LocaleType } = window.UniverPresets;
+  const { UniverSheetsCorePreset } = window.UniverPresetSheetsCore;
 
   // Auto-load from local storage or create blank
-  let initialData = null;
+  let initialData = {};
   const savedData = localStorage.getItem('all-in-one-sheets-autosave');
   if (savedData) {
     try {
@@ -49,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  if (!initialData) {
+  if (!initialData || Object.keys(initialData).length === 0) {
     initialData = {
       id: 'workbook-' + Date.now(),
       name: 'ALL IN ONE Sheet',
@@ -68,20 +39,26 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // Create Unit
-  univer.createUnit(UniverInstanceType.UNIVER_SHEET, initialData);
+  // Initialize Univer using Presets
+  const { univerAPI } = createUniver({
+    locale: LocaleType.EN_US,
+    presets: [
+      UniverSheetsCorePreset({
+        container: 'univer-container',
+      }),
+    ],
+  });
+
+  // Create Workbook with initial data
+  univerAPI.createWorkbook(initialData);
 
   // Setup Auto-save
-  // Univer's facade API can be used to get snapshot
   setInterval(() => {
     try {
-      if (window.UniverFacade && window.UniverFacade.FUniver) {
-        const facade = window.UniverFacade.FUniver.newAPI(univer);
-        const activeWorkbook = facade.getActiveWorkbook();
-        if (activeWorkbook) {
-          const snapshot = activeWorkbook.getSnapshot();
-          localStorage.setItem('all-in-one-sheets-autosave', JSON.stringify(snapshot));
-        }
+      const activeWorkbook = univerAPI.getActiveWorkbook();
+      if (activeWorkbook) {
+        const snapshot = activeWorkbook.save();
+        localStorage.setItem('all-in-one-sheets-autosave', JSON.stringify(snapshot));
       }
     } catch (err) {
       console.error('Autosave failed:', err);
@@ -95,9 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!val) return;
 
     if (window.confirm("Loading a template will replace your current spreadsheet. Do you want to continue?")) {
-      const facade = window.UniverFacade.FUniver.newAPI(univer);
-      const activeWorkbook = facade.getActiveWorkbook();
-      
       let newData = {};
 
       if (val === 'blank') {
@@ -189,8 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
       }
 
-      // We can't directly replace the unit data once created easily via public API without reloading page, 
-      // but we can clear localStorage and reload for a simple template load.
       localStorage.setItem('all-in-one-sheets-autosave', JSON.stringify(newData));
       window.location.reload();
     }
@@ -199,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
     e.target.value = '';
   });
 
-  // Import / Export Logic (Stubs for now, will use SheetJS / ExcelJS)
+  // Import / Export Logic
   const btnImport = document.getElementById('btn-import');
   const fileImport = document.getElementById('file-import');
   const btnExport = document.getElementById('btn-export');
@@ -210,9 +182,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Using SheetJS to read XLSX and convert to Univer format is complex.
-    // Instead of full parser here, we'll alert users that direct import requires a server backend for perfect conversion, 
-    // or we'll implement a basic SheetJS -> Univer conversion loop.
     const reader = new FileReader();
     reader.onload = function(evt) {
       const data = evt.target.result;
@@ -232,7 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
             cellData[rIdx] = {};
             row.forEach((cell, cIdx) => {
               if (cell !== undefined && cell !== null) {
-                // If number
                 if (typeof cell === 'number') {
                   cellData[rIdx][cIdx] = { v: cell, t: 2 };
                 } else {
@@ -265,13 +233,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   btnExport.addEventListener('click', async () => {
     try {
-      const facade = window.UniverFacade.FUniver.newAPI(univer);
-      const activeWorkbook = facade.getActiveWorkbook();
+      const activeWorkbook = univerAPI.getActiveWorkbook();
       if (!activeWorkbook) return;
 
-      const snapshot = activeWorkbook.getSnapshot();
+      const snapshot = activeWorkbook.save();
       
-      // We will use ExcelJS to create the workbook
+      // Use ExcelJS to create the workbook
       const workbook = new ExcelJS.Workbook();
       
       snapshot.sheetOrder.forEach(sheetId => {
