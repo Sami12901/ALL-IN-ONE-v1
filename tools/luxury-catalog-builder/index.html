@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luxury Catalog Builder - ALL IN ONE</title>
+  <meta name="description" content="Build stunning, high-end lookbooks and catalogs for your luxury brand.">
+  
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <script type="module" src="../../js/components.js"></script>
+  <script type="module" src="../../js/main.js" defer></script>
+  <style>
+    /* Printing Overrides for Luxury Catalog */
+    @media print {
+      body * { visibility: hidden; }
+      #catalog-preview-wrapper, #catalog-preview-wrapper * { visibility: visible; }
+      #catalog-preview-wrapper { 
+        position: absolute; 
+        left: 0; top: 0; 
+        width: 100%; 
+        background: #fff !important;
+        margin: 0;
+        padding: 0;
+      }
+      .no-print { display: none !important; }
+      
+      .lux-page {
+        page-break-after: always;
+      }
+    }
+
+    /* Luxury Theme Selection */
+    .theme-card {
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+    .theme-card.active {
+      border-color: var(--primary);
+      background: rgba(99, 102, 241, 0.1);
+    }
+    .theme-preview {
+      height: 60px;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+
+    /* Product Item Input */
+    .product-entry {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    .remove-product {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <app-header></app-header>
+  
+  <main class="workspace-container">
+    <app-breadcrumb tool-name="Luxury Catalog Builder"></app-breadcrumb>
+
+    <div class="workspace-grid" style="grid-template-columns: 350px 1fr;">
+      <!-- Input Section -->
+      <div class="workspace-panel input-panel glass-panel no-print">
+        <h2 class="panel-title">Catalog Details</h2>
+        
+        <div class="form-group">
+          <label>Brand Name</label>
+          <input type="text" id="brand-name" class="input-element" value="AURA" placeholder="e.g. AURA">
+        </div>
+        
+        <div class="form-group">
+          <label>Collection Title</label>
+          <input type="text" id="collection-title" class="input-element" value="Spring / Summer 2026" placeholder="e.g. Fall / Winter 2026">
+        </div>
+
+        <div class="form-group">
+          <label>Theme Style</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+            <div class="theme-card active" data-theme="minimalist">
+              <div class="theme-preview" style="background: #ffffff; color: #111; border: 1px solid #ddd; font-family: sans-serif;">Minimalist</div>
+            </div>
+            <div class="theme-card" data-theme="noir">
+              <div class="theme-preview" style="background: #111; color: #fff; border: 1px solid #333; font-family: serif;">Noir Elegance</div>
+            </div>
+            <div class="theme-card" data-theme="heritage">
+              <div class="theme-preview" style="background: #fdfbf7; color: #3b3a36; border: 1px solid #e2dcd0; font-family: serif;">Heritage</div>
+            </div>
+            <div class="theme-card" data-theme="avant">
+              <div class="theme-preview" style="background: #e9ecef; color: #212529; border: 1px solid #ced4da; font-family: sans-serif; letter-spacing: 2px; text-transform: uppercase;">Avant-Garde</div>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="font-size: 1rem; color: var(--text-secondary); margin: 1.5rem 0 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">Products</h3>
+        
+        <div id="products-list">
+          <!-- Dynamic Products -->
+        </div>
+
+        <button id="add-product-btn" class="action-btn secondary-btn" style="width: 100%; margin-bottom: 1.5rem;">
+          + Add Product
+        </button>
+        
+        <button id="print-btn" class="action-btn primary-btn" style="width: 100%;">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          Print / Save PDF
+        </button>
+      </div>
+
+      <!-- Preview Section -->
+      <div class="workspace-panel output-panel glass-panel no-print" style="overflow: hidden; display: flex; flex-direction: column;">
+        <h2 class="panel-title" style="margin-bottom: 1rem;">Live Preview</h2>
+        
+        <div style="flex: 1; overflow-y: auto; background: var(--bg-tertiary); border-radius: var(--radius-md); padding: 1rem; display: flex; justify-content: center;">
+          
+          <!-- Catalog Wrapper -->
+          <div id="catalog-preview-wrapper" style="width: 210mm; min-height: 297mm; background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; transition: all 0.3s ease;">
+            <!-- Rendered via JS -->
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <app-footer></app-footer>
+  <script src="script.js"></script>
+</body>
+</html>
