@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="../../js/main.js" defer></script>
   <style>
@@ -25,6 +26,8 @@
         padding: 0;
       }
       .no-print { display: none !important; }
+      .output-panel { overflow: visible !important; border: none !important; background: none !important; box-shadow: none !important; padding: 0 !important; }
+      .tool-workarea { display: block !important; }
       
       .lux-page {
         page-break-after: always;
@@ -123,15 +126,22 @@
           + Add Product
         </button>
         
-        <button id="print-btn" class="btn btn-primary" style="width: 100%;">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-          Print / Save PDF
-        </button>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; width: 100%;">
+          <button id="download-img-btn" class="btn btn-secondary" style="width: 100%;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Download Image
+          </button>
+          
+          <button id="print-btn" class="btn btn-primary" style="width: 100%;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            Print PDF
+          </button>
+        </div>
       </div>
 
       <!-- Preview Section -->
-      <div class="tool-panel output-panel glass-panel no-print" style="overflow: hidden; display: flex; flex-direction: column;">
-        <h2 class="panel-title" style="margin-bottom: 1rem;">Live Preview</h2>
+      <div class="tool-panel output-panel glass-panel" style="overflow: hidden; display: flex; flex-direction: column;">
+        <h2 class="panel-title no-print" style="margin-bottom: 1rem;">Live Preview</h2>
         
         <div style="flex: 1; overflow-y: auto; background: var(--bg-tertiary); border-radius: var(--radius-md); padding: 1rem; display: flex; justify-content: center;">
           

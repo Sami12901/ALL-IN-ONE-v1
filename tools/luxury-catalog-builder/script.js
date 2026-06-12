@@ -192,6 +192,38 @@ document.addEventListener('DOMContentLoaded', () => {
     updatePreview();
   });
 
+  const downloadImgBtn = document.getElementById('download-img-btn');
+  if (downloadImgBtn) {
+    downloadImgBtn.addEventListener('click', () => {
+      const originalText = downloadImgBtn.innerHTML;
+      downloadImgBtn.innerHTML = 'Generating...';
+      downloadImgBtn.disabled = true;
+
+      // Temporarily expand the wrapper to its full height so it captures everything
+      const wrapper = elements.preview;
+      const oldHeight = wrapper.style.height;
+      
+      html2canvas(wrapper, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: null
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `${elements.brandName.value || 'catalog'}_lookbook.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        
+        downloadImgBtn.innerHTML = originalText;
+        downloadImgBtn.disabled = false;
+      }).catch(err => {
+        console.error('Error generating image', err);
+        downloadImgBtn.innerHTML = originalText;
+        downloadImgBtn.disabled = false;
+        alert('Could not generate image. Check if images have CORS issues.');
+      });
+    });
+  }
+
   elements.printBtn.addEventListener('click', () => {
     window.print();
   });
