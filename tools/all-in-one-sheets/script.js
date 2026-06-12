@@ -1,6 +1,3 @@
-import { createUniver, LocaleType } from "https://esm.sh/@univerjs/presets@0.25.0";
-import { UniverSheetsCorePreset } from "https://esm.sh/@univerjs/preset-sheets-core@0.25.0";
-
 document.addEventListener('DOMContentLoaded', () => {
   // Auto-load from local storage or create blank
   let initialData = {};
@@ -32,18 +29,15 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // Initialize Univer using Presets
-  const { univerAPI } = createUniver({
-    locale: LocaleType.EN_US,
-    presets: [
-      UniverSheetsCorePreset({
-        container: 'univer-container',
-      }),
-    ],
-  });
-
-  // Create Workbook with initial data
-  univerAPI.createWorkbook(initialData);
+  // Initialize Univer using the bundled function
+  let univerAPI;
+  try {
+    univerAPI = window.initUniver('univer-container', initialData);
+  } catch (err) {
+    console.error("Failed to initialize Univer:", err);
+    document.getElementById('univer-container').innerHTML = '<div style="color:red; padding: 20px;">Failed to load spreadsheet engine. Please check console for details.</div>';
+    return;
+  }
 
   // Setup Auto-save
   setInterval(() => {
