@@ -83,6 +83,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const docInc = document.getElementById('doc-inc');
   const docExc = document.getElementById('doc-exc');
 
+  // Professional SVG Icons Map
+  const SVG_ICONS = {
+    flight: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="var(--theme-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"></path></svg>`,
+    hotel: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="var(--theme-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg>`,
+    visa: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="var(--theme-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect><line x1="3" y1="10" x2="21" y2="10"></line><line x1="7" y1="15" x2="7.01" y2="15"></line><line x1="11" y1="15" x2="15" y2="15"></line></svg>`,
+    transport: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="var(--theme-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="10" width="18" height="8" rx="2" ry="2"></rect><path d="M3 10L6 4h12l3 6"></path><circle cx="8" cy="18" r="2"></circle><circle cx="16" cy="18" r="2"></circle></svg>`,
+    insurance: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="var(--theme-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg>`,
+    document: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="var(--theme-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`,
+    activity: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="var(--theme-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>`,
+    info: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="var(--theme-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`
+  };
+
   function initThemes() {
     themes.forEach((t, i) => {
       const opt = document.createElement('option');
@@ -148,15 +160,16 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="form-group" style="margin-bottom: 0.75rem;">
           <div style="display: flex; gap: 0.5rem;">
             ${!isTimeline ? `
-              <select class="day-icon-select" style="width: auto; padding: 0.5rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-tertiary); color: var(--text-primary); outline: none; font-size: 1.2rem;">
+              <select class="day-icon-select" style="width: auto; padding: 0.5rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-tertiary); color: var(--text-primary); outline: none; font-size: 0.9rem;">
                 <option value="" ${!day.icon ? 'selected' : ''}>- None -</option>
-                <option value="✈️" ${day.icon === '✈️' ? 'selected' : ''}>✈️ Flight</option>
-                <option value="🏨" ${day.icon === '🏨' ? 'selected' : ''}>🏨 Hotel</option>
-                <option value="🛂" ${day.icon === '🛂' ? 'selected' : ''}>🛂 Visa</option>
-                <option value="🚗" ${day.icon === '🚗' ? 'selected' : ''}>🚗 Transport</option>
-                <option value="🛡️" ${day.icon === '🛡️' ? 'selected' : ''}>🛡️ Insurance</option>
-                <option value="📄" ${day.icon === '📄' ? 'selected' : ''}>📄 Document</option>
-                <option value="ℹ️" ${day.icon === 'ℹ️' ? 'selected' : ''}>ℹ️ Info</option>
+                <option value="flight" ${day.icon === 'flight' ? 'selected' : ''}>Flight</option>
+                <option value="hotel" ${day.icon === 'hotel' ? 'selected' : ''}>Hotel</option>
+                <option value="visa" ${day.icon === 'visa' ? 'selected' : ''}>Visa</option>
+                <option value="transport" ${day.icon === 'transport' ? 'selected' : ''}>Transport</option>
+                <option value="insurance" ${day.icon === 'insurance' ? 'selected' : ''}>Insurance</option>
+                <option value="activity" ${day.icon === 'activity' ? 'selected' : ''}>Activity</option>
+                <option value="document" ${day.icon === 'document' ? 'selected' : ''}>Document</option>
+                <option value="info" ${day.icon === 'info' ? 'selected' : ''}>Info</option>
               </select>
             ` : ''}
             <input type="text" class="day-title-input" style="flex: 1;" placeholder="${isTimeline ? 'e.g. Arrival in Dubai' : 'e.g. Flight Details'}" value="${day.title}">
@@ -260,7 +273,9 @@ document.addEventListener('DOMContentLoaded', () => {
       
       let markerHtml = isTimeline ? `<div class="day-marker"></div>` : '';
       let titlePrefix = isTimeline ? `Day ${i + 1}: ` : '';
-      let iconHtml = (!isTimeline && day.icon) ? `<span style="font-size: 1.5rem;">${day.icon}</span>` : '';
+      let iconHtml = (!isTimeline && day.icon && SVG_ICONS[day.icon]) 
+        ? `<span style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 6px; background: rgba(0,0,0,0.05); margin-right: 0.25rem;">${SVG_ICONS[day.icon]}</span>` 
+        : '';
 
       dEl.innerHTML = `
         ${markerHtml}
