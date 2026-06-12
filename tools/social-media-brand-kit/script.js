@@ -151,20 +151,19 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.innerHTML = 'Saving...';
       btn.disabled = true;
 
-      // Because we scaled the containers with aspect-ratio but maybe not to their exact target pixels (e.g., 1080x1080),
-      // we can scale html2canvas to achieve a high resolution. A scale of 3 on a ~300px element gives ~900px.
-      // Better yet, we can temporarily hardcode the width/height of the container, capture, and restore.
-      
-      const rect = targetEl.getBoundingClientRect();
-      // Let's set a scale factor to reach roughly 1080px for the post
       const targetWidth = targetId.includes('fb') ? 820 : 1080;
-      const scale = targetWidth / rect.width;
+      
+      // Temporarily remove transform for accurate html2canvas rendering
+      const originalTransform = targetEl.style.transform;
+      targetEl.style.transform = 'none';
 
       html2canvas(targetEl, {
-        scale: Math.max(scale, 2), // Ensure at least 2x resolution
+        scale: 1, // Canvas is already at target dimensions natively
         useCORS: true,
         backgroundColor: cBg.value
       }).then(canvas => {
+        targetEl.style.transform = originalTransform;
+
         const link = document.createElement('a');
         link.download = `${bName.value.replace(/[^a-z0-9]/gi, '_').toLowerCase()}-${filename}`;
         link.href = canvas.toDataURL('image/png');
@@ -173,6 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.innerHTML = originalText;
         btn.disabled = false;
       }).catch(err => {
+        targetEl.style.transform = originalTransform;
         console.error('Error generating image', err);
         btn.innerHTML = originalText;
         btn.disabled = false;
@@ -181,6 +181,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Visual scaling of the absolute fixed size canvases
+  function resizeCanvases() {
+    const containers = document.querySelectorAll('.asset-canvas-container');
+    containers.forEach(container => {
+      const canvas = container.querySelector('.asset-canvas');
+      if (!canvas) return;
+      
+      const targetWidth = parseFloat(canvas.style.width);
+      const targetHeight = parseFloat(canvas.style.height);
+      const containerWidth = container.clientWidth;
+      
+      if (!targetWidth || !containerWidth) return;
+      
+      const scale = containerWidth / targetWidth;
+      
+      canvas.style.transform = `scale(${scale})`;
+      container.style.height = `${targetHeight * scale}px`;
+    });
+  }
+
+  window.addEventListener('resize', resizeCanvases);
+
   // Init
   updateBrandAssets();
+  // Delay slightly to ensure layout is calculated before scaling
+  setTimeout(resizeCanvases, 50);
 });
