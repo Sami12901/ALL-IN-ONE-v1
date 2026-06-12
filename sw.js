@@ -1,5 +1,5 @@
 // ALL IN ONE Service Worker
-const CACHE_NAME = 'all-in-one-cache-v39';
+const CACHE_NAME = 'all-in-one-cache-v40';
 
 // Static assets to pre-cache immediately on install
 const PRECACHE_ASSETS = [
