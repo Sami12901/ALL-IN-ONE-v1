@@ -1,14 +1,9 @@
 // ALL IN ONE Service Worker
-const CACHE_NAME = 'all-in-one-cache-v42';
+const CACHE_NAME = 'all-in-one-cache-v43';
 
-// Static assets to pre-cache immediately on install
+// Only pre-cache the core shell. Individual tools are cached at runtime
+// via the network-first strategy in the fetch handler below.
 const PRECACHE_ASSETS = [
-  './tools/brand-asset-manager/',
-  './tools/brand-asset-manager/index.html',
-  './tools/brand-asset-manager/script.js',
-  './tools/all-in-one-sheets/',
-  './tools/all-in-one-sheets/index.html',
-  './tools/all-in-one-sheets/script.js',
   './',
   './index.html',
   './css/main.css',
@@ -17,8 +12,7 @@ const PRECACHE_ASSETS = [
   './js/main.js',
   './js/dashboard.js',
   './js/components.js',
-  './data/tools-db.json',
-  './assets/lib/qrious.min.js'
+  './data/tools-db.json'
 ];
 
 // Install Event - Pre-cache core shell

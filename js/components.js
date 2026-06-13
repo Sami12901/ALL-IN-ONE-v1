@@ -79,7 +79,7 @@ class AppHeader extends HTMLElement {
       <div id="mobile-drawer" class="glass-panel" style="position: fixed; top: 0; right: -280px; width: 280px; height: 100%; z-index: 1000; box-shadow: -5px 0 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; padding: 1.5rem; transition: right 0.3s ease-in-out;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1.5rem;">
           <span style="font-family: var(--font-display); font-weight: 700; font-size: 1.15rem;">Navigation</span>
-          <button id="mobile-drawer-close" style="background: transparent; border: none; padding: 0.5rem; color: var(--text-secondary); cursor: pointer;" aria-label="Close menu">\${CLOSE_SVG}</button>
+          <button id="mobile-drawer-close" style="background: transparent; border: none; padding: 0.5rem; color: var(--text-secondary); cursor: pointer;" aria-label="Close menu">${CLOSE_SVG}</button>
         </div>
         <div style="display: flex; flex-direction: column; gap: 1.25rem;">
           <a href="${prefix}index.html" style="color: var(--text-primary); text-decoration: none; font-weight: 600;">Dashboard</a>
@@ -158,7 +158,7 @@ class AppHeader extends HTMLElement {
       const matches = toolsData.filter(t => 
         t.name.toLowerCase().includes(query) || 
         t.description.toLowerCase().includes(query) || 
-        t.tags.some(tag => tag.toLowerCase().includes(query))
+        (t.tags && t.tags.some(tag => tag.toLowerCase().includes(query)))
       ).slice(0, 5);
 
       if (matches.length === 0) {
@@ -277,7 +277,7 @@ class AppFooter extends HTMLElement {
               
               <!-- PWA Install Button -->
               <button id="pwa-install-btn" class="btn btn-primary" style="display: none; width: fit-content; padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: var(--radius-sm); margin-top: 0.5rem; align-items: center; gap: 0.35rem;">
-                \${DOWNLOAD_SVG} Install Offline App
+                ${DOWNLOAD_SVG} Install Offline App
               </button>
             </div>
             

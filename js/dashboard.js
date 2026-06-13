@@ -312,14 +312,6 @@ document.addEventListener('DOMContentLoaded', () => {
       renderMainGrid();
       searchInput.focus();
     });
-    
-    // Keyboard shortcut to focus search
-    document.addEventListener('keydown', (e) => {
-      if (e.key === '/' && document.activeElement !== searchInput) {
-        e.preventDefault();
-        searchInput.focus();
-      }
-    });
   }
 
   // 10. FAQ Accordions animation
