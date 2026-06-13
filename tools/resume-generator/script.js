@@ -2,7 +2,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   let currentStep = 1;
-  const totalSteps = 5;
+  const totalSteps = 6;
 
   const btnPrev = document.getElementById('btn-prev');
   const btnNext = document.getElementById('btn-next');
@@ -95,6 +95,69 @@ document.addEventListener('DOMContentLoaded', () => {
     list.appendChild(item);
   };
 
+  window.addProject = function() {
+    const list = document.getElementById('proj-list');
+    const item = document.createElement('div');
+    item.className = 'list-item proj-item';
+    item.innerHTML = `
+      <button class="remove-btn" onclick="this.parentElement.remove()">✕</button>
+      <div class="form-row" style="margin-bottom:0.5rem">
+        <div class="form-group" style="margin:0"><input type="text" class="proj-title" placeholder="Project Name"></div>
+        <div class="form-group" style="margin:0"><input type="text" class="proj-link" placeholder="Link / GitHub"></div>
+      </div>
+      <div class="form-group" style="margin:0"><textarea class="proj-desc" rows="2" placeholder="Description/Technologies used..."></textarea></div>
+    `;
+    list.appendChild(item);
+  };
+
+  window.addCertification = function() {
+    const list = document.getElementById('cert-list');
+    const item = document.createElement('div');
+    item.className = 'list-item cert-item';
+    item.innerHTML = `
+      <button class="remove-btn" onclick="this.parentElement.remove()">✕</button>
+      <div class="form-row" style="margin-bottom:0.5rem">
+        <div class="form-group" style="margin:0"><input type="text" class="cert-title" placeholder="Certification Name"></div>
+        <div class="form-group" style="margin:0"><input type="text" class="cert-issuer" placeholder="Issuer (e.g. Coursera)"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group" style="margin:0"><input type="text" class="cert-date" placeholder="Year"></div>
+      </div>
+    `;
+    list.appendChild(item);
+  };
+
+  window.addLanguage = function() {
+    const list = document.getElementById('lang-list');
+    const item = document.createElement('div');
+    item.className = 'list-item lang-item';
+    item.innerHTML = `
+      <button class="remove-btn" onclick="this.parentElement.remove()">✕</button>
+      <div class="form-row">
+        <div class="form-group" style="margin:0"><input type="text" class="lang-name" placeholder="Language (e.g. English)"></div>
+        <div class="form-group" style="margin:0"><input type="text" class="lang-level" placeholder="Level (e.g. Native, Fluent)"></div>
+      </div>
+    `;
+    list.appendChild(item);
+  };
+
+  window.addReference = function() {
+    const list = document.getElementById('ref-list');
+    const item = document.createElement('div');
+    item.className = 'list-item ref-item';
+    item.innerHTML = `
+      <button class="remove-btn" onclick="this.parentElement.remove()">✕</button>
+      <div class="form-row" style="margin-bottom:0.5rem">
+        <div class="form-group" style="margin:0"><input type="text" class="ref-name" placeholder="Reference Name"></div>
+        <div class="form-group" style="margin:0"><input type="text" class="ref-pos" placeholder="Position / Company"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group" style="margin:0"><input type="text" class="ref-contact" placeholder="Email / Phone"></div>
+      </div>
+    `;
+    list.appendChild(item);
+  };
+
   // Pre-fill one of each just for UX
   addExperience();
   addEducation();
@@ -167,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
       bodyHTML += `
         <div class="cv-section">
           <div class="cv-section-title">Summary</div>
-          <div class="cv-summary">${summary.replace(/\\n/g, '<br>')}</div>
+          <div class="cv-summary">${summary.replace(/\n/g, '<br>')}</div>
         </div>
       `;
     }
@@ -189,13 +252,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="cv-entry-date">${date}</span>
               </div>
               <div class="cv-entry-subtitle">${company}</div>
-              ${desc ? \`<div class="cv-entry-desc">\${desc.replace(/\\n/g, '<br>')}</div>\` : ''}
+              ${desc ? `<div class="cv-entry-desc">${desc.replace(/\n/g, '<br>')}</div>` : ''}
             </div>
           `;
         }
       });
       if (entriesHTML) {
-        bodyHTML += \`<div class="cv-section"><div class="cv-section-title">Experience</div>\${entriesHTML}</div>\`;
+        bodyHTML += `<div class="cv-section"><div class="cv-section-title">Experience</div>${entriesHTML}</div>`;
+      }
+    }
+
+    // Projects
+    const projItems = document.querySelectorAll('.proj-item');
+    if (projItems.length > 0) {
+      let entriesHTML = '';
+      projItems.forEach(item => {
+        const title = item.querySelector('.proj-title').value.trim();
+        const link = item.querySelector('.proj-link').value.trim();
+        const desc = item.querySelector('.proj-desc').value.trim();
+        if (title) {
+          entriesHTML += `
+            <div class="cv-entry">
+              <div class="cv-entry-header">
+                <span class="cv-entry-title">${title}</span>
+              </div>
+              <div class="cv-entry-subtitle">${link}</div>
+              ${desc ? `<div class="cv-entry-desc">${desc.replace(/\n/g, '<br>')}</div>` : ''}
+            </div>
+          `;
+        }
+      });
+      if (entriesHTML) {
+        bodyHTML += `<div class="cv-section"><div class="cv-section-title">Projects</div>${entriesHTML}</div>`;
       }
     }
 
@@ -220,7 +308,71 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
       if (entriesHTML) {
-        bodyHTML += \`<div class="cv-section"><div class="cv-section-title">Education</div>\${entriesHTML}</div>\`;
+        bodyHTML += `<div class="cv-section"><div class="cv-section-title">Education</div>${entriesHTML}</div>`;
+      }
+    }
+
+    // Certifications
+    const certItems = document.querySelectorAll('.cert-item');
+    if (certItems.length > 0) {
+      let entriesHTML = '';
+      certItems.forEach(item => {
+        const title = item.querySelector('.cert-title').value.trim();
+        const issuer = item.querySelector('.cert-issuer').value.trim();
+        const date = item.querySelector('.cert-date').value.trim();
+        if (title) {
+          entriesHTML += `
+            <div class="cv-entry">
+              <div class="cv-entry-header">
+                <span class="cv-entry-title">${title}</span>
+                <span class="cv-entry-date">${date}</span>
+              </div>
+              <div class="cv-entry-subtitle">${issuer}</div>
+            </div>
+          `;
+        }
+      });
+      if (entriesHTML) {
+        bodyHTML += `<div class="cv-section"><div class="cv-section-title">Certifications</div>${entriesHTML}</div>`;
+      }
+    }
+
+    // Languages
+    const langItems = document.querySelectorAll('.lang-item');
+    if (langItems.length > 0) {
+      let entriesHTML = '';
+      langItems.forEach(item => {
+        const name = item.querySelector('.lang-name').value.trim();
+        const level = item.querySelector('.lang-level').value.trim();
+        if (name) {
+          entriesHTML += `<span class="cv-skill-tag">${name}${level ? ' — ' + level : ''}</span>`;
+        }
+      });
+      if (entriesHTML) {
+        bodyHTML += `<div class="cv-section"><div class="cv-section-title">Languages</div><div class="cv-skills-grid">${entriesHTML}</div></div>`;
+      }
+    }
+
+    // References
+    const refItems = document.querySelectorAll('.ref-item');
+    if (refItems.length > 0) {
+      let entriesHTML = '';
+      refItems.forEach(item => {
+        const name = item.querySelector('.ref-name').value.trim();
+        const pos = item.querySelector('.ref-pos').value.trim();
+        const contact = item.querySelector('.ref-contact').value.trim();
+        if (name) {
+          entriesHTML += `
+            <div class="cv-entry">
+              <div class="cv-entry-title">${name}</div>
+              <div class="cv-entry-subtitle">${pos}</div>
+              <div class="cv-entry-desc">${contact}</div>
+            </div>
+          `;
+        }
+      });
+      if (entriesHTML) {
+        bodyHTML += `<div class="cv-section"><div class="cv-section-title">References</div>${entriesHTML}</div>`;
       }
     }
 
@@ -228,11 +380,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const skillsRaw = document.getElementById('skills').value.trim();
     if (skillsRaw) {
       const skillsList = skillsRaw.split(',').map(s => s.trim()).filter(s => s);
-      let tagsHTML = skillsList.map(s => \`<span class="cv-skill-tag">\${s}</span>\`).join('');
-      bodyHTML += \`<div class="cv-section"><div class="cv-section-title">Skills</div><div class="cv-skills-grid">\${tagsHTML}</div></div>\`;
+      let tagsHTML = skillsList.map(s => `<span class="cv-skill-tag">${s}</span>`).join('');
+      bodyHTML += `<div class="cv-section"><div class="cv-section-title">Skills</div><div class="cv-skills-grid">${tagsHTML}</div></div>`;
     }
 
-    cvPaper.innerHTML = headerHTML + \`<div class="cv-body">\${bodyHTML}</div>\`;
+    cvPaper.innerHTML = headerHTML + `<div class="cv-body">${bodyHTML}</div>`;
 
     // Apply Styles
     const header = cvPaper.querySelector('.cv-header');
