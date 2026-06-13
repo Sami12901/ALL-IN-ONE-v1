@@ -27,7 +27,39 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnText = document.getElementById('tool-text');
   const textColorInput = document.getElementById('text-color');
   const textSizeSelect = document.getElementById('text-size');
+  const fontFamilySelect = document.getElementById('font-family');
   const exportBtn = document.getElementById('export-pdf');
+
+  // Populate Fonts
+  const popularFonts = [
+    "Roboto", "Open Sans", "Lato", "Montserrat", "Oswald", "Source Sans Pro", "Raleway", "PT Sans", 
+    "Merriweather", "Noto Sans", "Nunito", "Playfair Display", "Ubuntu", "Rubik", "Lora", "Work Sans", 
+    "Fira Sans", "Inter", "Quicksand", "Karla", "Barlow", "Mulish", "Inconsolata", "Titillium Web", 
+    "Josefin Sans", "Libre Baskerville", "Anton", "Dancing Script", "Bebas Neue", "Pacifico", "Caveat", 
+    "Cinzel", "Righteous", "Lobster", "Abril Fatface", "Permanent Marker", "Satisfy", "Courgette", 
+    "Great Vibes", "Amaranth", "Teko", "Cinzel Decorative", "Orbitron", "Press Start 2P", "Cormorant Garamond"
+  ];
+  popularFonts.forEach(f => {
+    const opt = document.createElement('option');
+    opt.value = f;
+    opt.textContent = f;
+    fontFamilySelect.appendChild(opt);
+  });
+
+  // Dynamically load font for preview
+  fontFamilySelect.addEventListener('change', (e) => {
+    const val = e.target.value;
+    if (val !== 'Helvetica') {
+      const linkId = 'font-link-' + val.replace(/\s+/g, '-');
+      if (!document.getElementById(linkId)) {
+        const link = document.createElement('link');
+        link.id = linkId;
+        link.rel = 'stylesheet';
+        link.href = 'https://fonts.googleapis.com/css2?family=' + val.replace(/\s+/g, '+') + '&display=swap';
+        document.head.appendChild(link);
+      }
+    }
+  });
 
   // State
   let pdfBytes = null;
@@ -38,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let scale = 1.5; // Base scale, adjusted on load
   let activeTool = null; // 'text' or 'whiteout'
 
-  // Annotations stored per page: { type: 'text'|'whiteout', x, y, width, height, text, color, size }
+  // Annotations stored per page: { type: 'text'|'whiteout', x, y, width, height, text, color, size, font }
   const annotations = {}; 
 
   // PDF.js Setup
@@ -239,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  function createTextAnnotation(x, y, textVal = '', colorVal = null, sizeVal = null) {
+  function createTextAnnotation(x, y, textVal = '', colorVal = null, sizeVal = null, fontVal = null) {
     const box = document.createElement('div');
     box.className = 'annotation';
     box.style.left = x + 'px';
@@ -252,6 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
     input.placeholder = 'Type here...';
     input.style.color = colorVal || textColorInput.value;
     input.style.fontSize = (sizeVal || textSizeSelect.value) + 'px';
+    input.style.fontFamily = fontVal || fontFamilySelect.value;
     input.style.minWidth = '100px';
     input.style.minHeight = '30px';
 
@@ -356,7 +389,8 @@ document.addEventListener('DOMContentLoaded', () => {
             y: unscaledY,
             text: textarea.value,
             color: textarea.style.color,
-            size: parseInt(textarea.style.fontSize) / scale // Unscale font size
+            size: parseInt(textarea.style.fontSize) / scale, // Unscale font size
+            font: textarea.style.fontFamily.replace(/['"]/g, '')
           });
         }
       }
@@ -382,7 +416,7 @@ document.addEventListener('DOMContentLoaded', () => {
         makeDraggable(box);
         overlay.appendChild(box);
       } else if (a.type === 'text') {
-        createTextAnnotation(a.x * scale, a.y * scale, a.text, a.color, a.size * scale);
+        createTextAnnotation(a.x * scale, a.y * scale, a.text, a.color, a.size * scale, a.font);
       }
     });
   }
@@ -403,11 +437,20 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      const { PDFDocument, rgb } = PDFLib;
+      const { PDFDocument, rgb, StandardFonts } = PDFLib;
       
       // Load original bytes
       const pdfDocLib = await PDFDocument.load(pdfBytes);
+      
+      // Register fontkit
+      if (window.fontkit) {
+        pdfDocLib.registerFontkit(window.fontkit);
+      }
+
       const pages = pdfDocLib.getPages();
+
+      // Cache for downloaded fonts to avoid re-fetching
+      const customFontsCache = {};
 
       // Apply annotations to each page
       for (let i = 0; i < pages.length; i++) {
@@ -416,34 +459,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!pageAnnots || pageAnnots.length === 0) continue;
 
         const page = pages[i];
-        const { width, height } = page.getSize();
         
-        // Note: PDF.js renders top-left origin. pdf-lib uses bottom-left origin.
-        // We must flip Y coordinate.
-        // PDF.js uses 72 DPI internally. Base scale is 1.5 in our app.
-        // Actually, our unscaled coords are based on PDF.js's viewport at scale=1.
-        // viewport height = pdf height. So Y_pdf = height - Y_unscaled
-        
-        // Let's get the base viewport to ensure dimensions match
         const pdfJsPage = await pdfDoc.getPage(pageNumIndex);
         const baseViewport = pdfJsPage.getViewport({ scale: 1.0 });
 
-        pageAnnots.forEach(a => {
-          // pdf.js renders at 72dpi. pdf-lib uses points (72dpi). 
-          // So dimensions map 1:1 if scale=1.
-          
+        for (const a of pageAnnots) {
           if (a.type === 'whiteout') {
-            // pdf-lib origin is bottom-left. Box Y is top-left of box.
             const y_bottom = baseViewport.height - a.y - a.height;
             page.drawRectangle({
               x: a.x,
               y: y_bottom,
               width: a.width,
               height: a.height,
-              color: rgb(1, 1, 1), // White
+              color: rgb(1, 1, 1),
             });
           } else if (a.type === 'text') {
-            // Parse rgb string "rgb(r, g, b)"
             let r=0, g=0, b=0;
             const rgbMatch = a.color.match(/\d+/g);
             if (rgbMatch && rgbMatch.length >= 3) {
@@ -452,17 +482,43 @@ document.addEventListener('DOMContentLoaded', () => {
               b = parseInt(rgbMatch[2]) / 255;
             }
 
-            // Text Y in PDF is the baseline. We offset slightly to match visual.
             const y_bottom = baseViewport.height - a.y - a.size;
+
+            let fontToUse;
+            if (a.font === 'Helvetica' || !a.font) {
+              fontToUse = await pdfDocLib.embedFont(StandardFonts.Helvetica);
+            } else {
+              // Fetch custom Google Font
+              if (!customFontsCache[a.font]) {
+                try {
+                  const fontUrl = 'https://fonts.googleapis.com/css2?family=' + a.font.replace(/\s+/g, '+');
+                  const css = await fetch(fontUrl).then(res => res.text());
+                  const woffUrlMatch = css.match(/url\((https:\/\/[^\)]+)\)/);
+                  if (woffUrlMatch && woffUrlMatch[1]) {
+                    const fontBytes = await fetch(woffUrlMatch[1]).then(res => res.arrayBuffer());
+                    customFontsCache[a.font] = await pdfDocLib.embedFont(fontBytes);
+                  } else {
+                    fontToUse = await pdfDocLib.embedFont(StandardFonts.Helvetica);
+                  }
+                } catch (e) {
+                  console.error('Failed to load custom font', a.font, e);
+                  fontToUse = await pdfDocLib.embedFont(StandardFonts.Helvetica);
+                }
+              }
+              if (customFontsCache[a.font]) {
+                fontToUse = customFontsCache[a.font];
+              }
+            }
             
             page.drawText(a.text, {
               x: a.x,
               y: y_bottom,
               size: a.size,
-              color: rgb(r, g, b)
+              color: rgb(r, g, b),
+              font: fontToUse
             });
           }
-        });
+        }
       }
 
       const pdfBytesModified = await pdfDocLib.save();
