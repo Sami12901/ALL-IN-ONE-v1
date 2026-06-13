@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Compress - Reduce PDF File Size Online - ALL IN ONE</title>
+  <meta name="description" content="Compress and reduce your PDF file size. Optimize PDFs for email and web. 100% offline, private, and secure.">
+  <meta name="keywords" content="pdf compress, reduce pdf size, optimize pdf, compress pdf offline, free pdf tools">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/pdf-compress/">
+  
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <script type="module" src="../../js/components.js"></script>
+  <link rel="manifest" href="../../pwa/manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
+  <script type="module" src="../../js/main.js" defer></script>
+  
+  <!-- PDF-lib for basic compression/optimization -->
+  <script src="../../assets/lib/pdf-lib.min.js"></script>
+
+  <style>
+    .upload-area {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 3rem 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      background: var(--bg-secondary);
+      position: relative;
+    }
+    
+    .upload-area:hover, .upload-area.drag-over {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+    
+    .file-info {
+      margin-top: 1.5rem;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    .options-panel {
+      display: none;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-group label {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .radio-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .radio-card {
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: var(--bg-primary);
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .radio-card:hover {
+      border-color: var(--accent);
+    }
+
+    .radio-card input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+    }
+
+    .radio-card input[type="radio"]:checked + .radio-content {
+      color: var(--accent);
+    }
+
+    .radio-card:has(input[type="radio"]:checked) {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .radio-title {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .radio-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    
+    .actions-panel {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      display: none;
+      justify-content: flex-end;
+    }
+    
+    .progress-container {
+      display: none;
+      margin-top: 1.5rem;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .progress-bar {
+      height: 8px;
+      background: var(--bg-primary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: var(--accent-gradient);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .result-panel {
+      display: none;
+      margin-top: 1.5rem;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid var(--success);
+      padding: 1.5rem;
+      border-radius: var(--radius-md);
+      text-align: center;
+    }
+
+    .result-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--success);
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <app-header></app-header>
+  <app-breadcrumbs></app-breadcrumbs>
+
+  <main class="tool-layout">
+    <div class="container tool-container">
+      <div class="tool-header" style="text-align: center;">
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">PDF Compress</h1>
+        <p class="tool-description">Reduce your PDF file size. 100% Secure & Client-Side.</p>
+      </div>
+
+      <div class="glass-panel" style="padding: 2rem; max-width: 800px; margin: 0 auto;">
+        
+        <!-- Upload Area -->
+        <div class="upload-area" id="drop-zone">
+          <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1rem;">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <polyline points="12 18 12 12"></polyline>
+            <polyline points="9 15 12 18 15 15"></polyline>
+          </svg>
+          <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: var(--text-primary);">Drag & Drop PDF Here</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">or click to browse from your device</p>
+          <button class="btn btn-secondary" onclick="document.getElementById('file-input').click()">
+            Choose PDF File
+          </button>
+          <input type="file" id="file-input" accept="application/pdf" style="display: none;">
+        </div>
+
+        <!-- File Info -->
+        <div class="file-info" id="file-info">
+          <div>
+            <div style="font-weight: 600" id="file-name">document.pdf</div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary);" id="file-size">0 MB</div>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="clear-btn">Clear / New File</button>
+        </div>
+
+        <!-- Options -->
+        <div class="options-panel" id="options-panel">
+          <div class="form-group">
+            <label>Compression Level</label>
+            <div class="radio-group">
+              <label class="radio-card">
+                <input type="radio" name="compression" value="low">
+                <div class="radio-content">
+                  <div class="radio-title">Less Compression</div>
+                  <div class="radio-desc">High quality, less size reduction</div>
+                </div>
+              </label>
+              
+              <label class="radio-card">
+                <input type="radio" name="compression" value="medium" checked>
+                <div class="radio-content">
+                  <div class="radio-title">Recommended</div>
+                  <div class="radio-desc">Good balance of quality and size</div>
+                </div>
+              </label>
+              
+              <label class="radio-card">
+                <input type="radio" name="compression" value="high">
+                <div class="radio-content">
+                  <div class="radio-title">Extreme Compression</div>
+                  <div class="radio-desc">Lower quality, maximum size reduction</div>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress (Loading) -->
+        <div class="progress-container" id="loading-container">
+          <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-secondary);">
+            <span id="loading-text">Compressing PDF...</span>
+            <span id="loading-percent">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="loading-fill"></div>
+          </div>
+        </div>
+
+        <!-- Result Panel -->
+        <div class="result-panel" id="result-panel">
+          <div class="result-title">Compression Complete!</div>
+          <div style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+            New size: <span id="new-size-display" style="font-weight: 600; color: var(--text-primary);">0 MB</span> 
+            (<span id="savings-display" style="color: var(--success); font-weight: 600;">0% saved</span>)
+          </div>
+          <button class="btn btn-primary" id="download-btn">
+            Download Compressed PDF
+          </button>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions-panel" id="actions-panel">
+          <button class="btn btn-primary" id="compress-btn" style="width: 100%; justify-content: center;">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            Compress PDF
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Features Section -->
+      <div style="max-width: 800px; margin: 3rem auto 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+        <div class="glass-panel" style="padding: 1.5rem;">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 0.75rem;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <h4 style="margin-bottom: 0.5rem; font-size: 1.05rem;">100% Private</h4>
+          <p style="font-size: 0.85rem; color: var(--text-secondary);">Your files never leave your device. All compression happens locally in your browser securely.</p>
+        </div>
+        <div class="glass-panel" style="padding: 1.5rem;">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 0.75rem;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <h4 style="margin-bottom: 0.5rem; font-size: 1.05rem;">Fast Optimization</h4>
+          <p style="font-size: 0.85rem; color: var(--text-secondary);">Quickly remove unnecessary metadata and optimize objects to reduce file size.</p>
+        </div>
+        <div class="glass-panel" style="padding: 1.5rem;">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 0.75rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <h4 style="margin-bottom: 0.5rem; font-size: 1.05rem;">Offline Ready</h4>
+          <p style="font-size: 0.85rem; color: var(--text-secondary);">Install our PWA and compress PDFs anytime, anywhere, without an internet connection.</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <app-footer></app-footer>
+  <script src="script.js"></script>
+</body>
+</html>
