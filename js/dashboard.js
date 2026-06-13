@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const travelTools = toolsDatabase.filter(t => t.category === 'travel').length;
     const ecomTools = toolsDatabase.filter(t => t.category === 'ecommerce').length;
     const luxuryTools = toolsDatabase.filter(t => t.category === 'luxury').length;
-    const excelTools = toolsDatabase.filter(t => t.category === 'business' || t.category === 'math').length;
+    const excelTools = toolsDatabase.filter(t => t.category === 'excel').length;
     
     const activeTools = toolsDatabase.filter(t => t.active).length;
     const comingSoonTools = toolsDatabase.filter(t => !t.active).length;
