@@ -37,15 +37,37 @@ document.addEventListener('DOMContentLoaded', () => {
   const accentColor = document.getElementById('accent-color');
   const cvPaper = document.getElementById('cv-paper');
 
-  templateSelect.addEventListener('change', () => {
-    cvPaper.className = 'cv-paper tpl-' + templateSelect.value;
-    renderCV();
-  });
+  // Populate template dropdown from CV_TEMPLATES (loaded from templates.js)
+  if (typeof CV_TEMPLATES !== 'undefined') {
+    templateSelect.innerHTML = '';
+    const groups = {};
+    CV_TEMPLATES.forEach(t => {
+      if (!groups[t.group]) groups[t.group] = [];
+      groups[t.group].push(t);
+    });
+    Object.keys(groups).forEach(groupName => {
+      const optgroup = document.createElement('optgroup');
+      optgroup.label = groupName;
+      groups[groupName].forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t.id;
+        opt.textContent = t.name;
+        optgroup.appendChild(opt);
+      });
+      templateSelect.appendChild(optgroup);
+    });
+  }
 
-  accentColor.addEventListener('input', (e) => {
-    document.documentElement.style.setProperty('--cv-accent', e.target.value);
-    renderCV();
-  });
+  function getTemplateConfig(id) {
+    if (typeof CV_TEMPLATES !== 'undefined') {
+      return CV_TEMPLATES.find(t => t.id === id) || CV_TEMPLATES[0];
+    }
+    return null;
+  }
+
+  templateSelect.addEventListener('change', () => renderCV());
+
+  accentColor.addEventListener('input', () => renderCV());
 
   // ===== Live Preview Rendering =====
   function getVal(id) { return (document.getElementById(id)?.value || '').trim(); }
@@ -216,31 +238,81 @@ document.addEventListener('DOMContentLoaded', () => {
       bodyHTML += `<div class="cv-section"><div class="cv-section-title">References</div>${entriesHTML}</div>`;
     }
 
-    // Apply accent color to template-specific elements
+    // Apply template styles dynamically
     cvPaper.innerHTML = headerHTML + `<div class="cv-body">${bodyHTML}</div>`;
-    applyAccentColor(accent, tpl);
+    applyTemplate();
   }
 
-  function applyAccentColor(color, tpl) {
-    if (tpl === 'modern') {
-      const header = cvPaper.querySelector('.cv-header');
-      if (header) header.style.background = `linear-gradient(135deg, ${color}, ${adjustColor(color, 40)})`;
-      cvPaper.querySelectorAll('.cv-section-title').forEach(el => { el.style.color = color; el.style.borderBottomColor = color; });
-      cvPaper.querySelectorAll('.cv-skill-tag').forEach(el => { el.style.background = hexToRgba(color, 0.1); el.style.color = color; });
-    } else if (tpl === 'developer') {
-      cvPaper.querySelectorAll('.cv-section-title').forEach(el => { el.style.color = color; el.style.borderLeftColor = color; });
-      const header = cvPaper.querySelector('.cv-header h1');
-      if (header) header.style.color = color;
-      cvPaper.querySelectorAll('.cv-skill-tag').forEach(el => { el.style.color = color; });
-    } else if (tpl === 'executive') {
-      const header = cvPaper.querySelector('.cv-header');
-      if (header) header.style.background = `linear-gradient(135deg, ${color}, ${adjustColor(color, 30)})`;
-      cvPaper.querySelectorAll('.cv-section-title').forEach(el => { el.style.color = color; });
-      cvPaper.querySelectorAll('.cv-entry-title').forEach(el => { el.style.color = color; });
-      cvPaper.querySelectorAll('.cv-skill-tag').forEach(el => { el.style.background = hexToRgba(color, 0.08); el.style.color = color; });
-    } else if (tpl === 'classic') {
-      // Classic is mostly neutral
+  function applyTemplate() {
+    const tplConfig = getTemplateConfig(templateSelect.value);
+    if (!tplConfig) return;
+
+    const header = cvPaper.querySelector('.cv-header');
+    const nameEl = cvPaper.querySelector('.cv-header h1');
+    const contact = cvPaper.querySelector('.cv-contact');
+
+    // Header
+    if (header) {
+      header.style.background = tplConfig.headerBg || '#fff';
+      header.style.color = tplConfig.headerColor || '#1f2937';
+      header.style.fontFamily = tplConfig.headerFont || "'Inter', sans-serif";
+      header.style.textAlign = tplConfig.headerAlign || 'left';
+      header.style.borderBottom = tplConfig.headerBottomBorder || 'none';
+      // Accent bar
+      const existingBar = header.querySelector('.cv-header-accent-bar');
+      if (existingBar) existingBar.remove();
+      if (tplConfig.headerAccentBar) {
+        const bar = document.createElement('div');
+        bar.className = 'cv-header-accent-bar';
+        bar.style.background = tplConfig.headerAccentBar;
+        header.appendChild(bar);
+      }
     }
+
+    // Name color override
+    if (nameEl && tplConfig.nameColor) {
+      nameEl.style.color = tplConfig.nameColor;
+    }
+
+    // Contact alignment for centered headers
+    if (contact && tplConfig.headerAlign === 'center') {
+      contact.style.justifyContent = 'center';
+    }
+
+    // Body font
+    cvPaper.style.fontFamily = tplConfig.bodyFont || "'Inter', sans-serif";
+
+    // Section titles
+    cvPaper.querySelectorAll('.cv-section-title').forEach(el => {
+      el.style.color = tplConfig.titleColor || '#111827';
+      el.style.fontFamily = tplConfig.headerFont || "'Inter', sans-serif";
+      el.style.borderBottom = 'none';
+      el.style.borderLeft = 'none';
+      el.style.paddingLeft = '0';
+      if (tplConfig.titleBorder === 'bottom') {
+        el.style.borderBottom = `2px solid ${tplConfig.titleBorderColor || tplConfig.titleColor}`;
+      } else if (tplConfig.titleBorder === 'left') {
+        el.style.borderLeft = `4px solid ${tplConfig.titleBorderColor || tplConfig.titleColor}`;
+        el.style.paddingLeft = '0.75rem';
+      }
+    });
+
+    // Skill tags
+    cvPaper.querySelectorAll('.cv-skill-tag').forEach(el => {
+      el.style.background = tplConfig.skillBg || '#f3f4f6';
+      el.style.color = tplConfig.skillColor || '#374151';
+      el.style.border = tplConfig.skillBorder || 'none';
+    });
+
+    // Entry title color for templates that specify it
+    if (tplConfig.nameColor) {
+      cvPaper.querySelectorAll('.cv-entry-title').forEach(el => {
+        el.style.color = tplConfig.titleColor;
+      });
+    }
+
+    // Paper background
+    if (tplConfig.paperBg) cvPaper.style.background = tplConfig.paperBg;
   }
 
   // ===== Entry Collectors =====
