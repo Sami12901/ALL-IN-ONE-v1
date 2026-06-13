@@ -418,9 +418,9 @@ document.addEventListener('DOMContentLoaded', () => {
       el.style.borderLeft = 'none';
       el.style.paddingLeft = '0';
       if (tplConfig.titleBorder === 'bottom') {
-        el.style.borderBottom = \`2px solid \${tplConfig.titleBorderColor || tplConfig.titleColor}\`;
+        el.style.borderBottom = `2px solid ${tplConfig.titleBorderColor || tplConfig.titleColor}`;
       } else if (tplConfig.titleBorder === 'left') {
-        el.style.borderLeft = \`4px solid \${tplConfig.titleBorderColor || tplConfig.titleColor}\`;
+        el.style.borderLeft = `4px solid ${tplConfig.titleBorderColor || tplConfig.titleColor}`;
         el.style.paddingLeft = '0.75rem';
       }
     });
