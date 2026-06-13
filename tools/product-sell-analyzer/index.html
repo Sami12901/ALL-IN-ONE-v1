@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Product Sell Analyzer | ALL IN ONE</title>
+  <meta name="description" content="Analyze 1000x larger Excel sales data directly in the browser to discover best and worst selling products.">
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+  <script type="module" src="../../js/components.js"></script>
+  <link rel="manifest" href="../../pwa/manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
+  <script type="module" src="../../js/main.js" defer></script>
+  <script src="script.js" defer></script>
+
+  <style>
+    .upload-area {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 3rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: var(--bg-tertiary);
+      margin-bottom: 2rem;
+    }
+    .upload-area:hover, .upload-area.dragover {
+      border-color: var(--theme-primary);
+      background: rgba(79, 70, 229, 0.05);
+    }
+    .upload-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 1rem;
+      color: var(--text-secondary);
+    }
+    
+    .loading-overlay {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+    }
+    .spinner {
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-left-color: var(--theme-primary);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* Dashboard Layout */
+    .dashboard-container {
+      display: none; /* hidden until data is loaded */
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .metric-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .metric-card.success { border-bottom: 3px solid var(--success); }
+    .metric-card.danger { border-bottom: 3px solid var(--danger); }
+    .metric-card.primary { border-bottom: 3px solid var(--theme-primary); }
+    
+    .metric-title {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    .metric-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 900px) {
+      .charts-grid { grid-template-columns: 1fr; }
+    }
+    .chart-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      position: relative;
+      height: 350px;
+    }
+
+    .data-tables-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 900px) {
+      .data-tables-grid { grid-template-columns: 1fr; }
+    }
+    .table-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      overflow-x: auto;
+    }
+    .table-card h3 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .table-card.best h3 { color: var(--success); }
+    .table-card.worst h3 { color: var(--danger); }
+    
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    .data-table th, .data-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table th {
+      color: var(--text-secondary);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .data-table td { color: var(--text-primary); }
+    
+    .rank-badge {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 24px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: var(--bg-tertiary);
+    }
+    .best .rank-badge { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+    .worst .rank-badge { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+  </style>
+</head>
+<body>
+  <app-header></app-header>
+
+  <main class="tool-layout">
+    <div class="container tool-container" style="max-width: 1400px;">
+      <div class="breadcrumb-container">
+        <ul class="breadcrumbs">
+          <li class="breadcrumb-item"><a href="../../index.html">Business Suite</a></li>
+          <li class="breadcrumb-item active">Smart Product Sell Analyzer</li>
+        </ul>
+      </div>
+
+      <div class="tool-header" style="text-align: center; margin-bottom: 2rem;">
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Smart Product Sell Analyzer</h1>
+        <p class="tool-description">Instantly process huge Excel sales datasets to uncover your best and worst selling products.</p>
+      </div>
+
+      <!-- Upload Section -->
+      <div id="upload-section">
+        <input type="file" id="file-input" accept=".xlsx, .xls, .csv" style="display: none;">
+        <div class="upload-area" id="upload-area">
+          <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <h3 style="margin-bottom: 0.5rem;">Upload Sales Data (Excel/CSV)</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">Drag and drop or click to browse. Handles 100,000+ rows instantly.</p>
+          
+          <div style="margin-top: 1.5rem; text-align: left; display: inline-block; background: var(--bg-primary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <p style="margin: 0 0 0.5rem 0; font-weight: 600; font-size: 0.85rem;">Required Columns (Flexible matching):</p>
+            <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.8rem; color: var(--text-secondary);">
+              <li>Product Name / Item Name</li>
+              <li>Sales / Revenue / Amount</li>
+              <li>Quantity / Qty (Optional)</li>
+              <li>Profit (Optional)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loading-state" class="loading-overlay">
+        <div class="spinner"></div>
+        <h3 id="loading-text">Parsing 1000x large dataset...</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">Crunching the numbers locally in your browser.</p>
+      </div>
+
+      <!-- Dashboard Results -->
+      <div id="dashboard" class="dashboard-container">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <h2 style="margin: 0;">Sales Analysis Report</h2>
+          <button id="btn-new-analysis" class="btn btn-outline" style="padding: 0.5rem 1rem;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            Upload New File
+          </button>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-card primary">
+            <div class="metric-title">Total Revenue</div>
+            <div class="metric-value" id="val-revenue">$0</div>
+          </div>
+          <div class="metric-card success">
+            <div class="metric-title">Total Profit</div>
+            <div class="metric-value" id="val-profit">$0</div>
+          </div>
+          <div class="metric-card primary">
+            <div class="metric-title">Total Items Sold</div>
+            <div class="metric-value" id="val-qty">0</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">Unique Products</div>
+            <div class="metric-value" id="val-products">0</div>
+          </div>
+        </div>
+
+        <div class="charts-grid">
+          <div class="chart-container">
+            <canvas id="revenueChart"></canvas>
+          </div>
+          <div class="chart-container">
+            <canvas id="profitChart"></canvas>
+          </div>
+        </div>
+
+        <div class="data-tables-grid">
+          <div class="table-card best">
+            <h3>
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+              Top 10 Best Sellers (By Revenue)
+            </h3>
+            <table class="data-table" id="table-best-sellers">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Product Name</th>
+                  <th>Revenue</th>
+                  <th>Profit</th>
+                  <th>Qty</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-card worst">
+            <h3>
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>
+              Bottom 10 Worst Sellers (By Revenue/Profit)
+            </h3>
+            <table class="data-table" id="table-worst-sellers">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Product Name</th>
+                  <th>Revenue</th>
+                  <th>Profit</th>
+                  <th>Qty</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <app-footer></app-footer>
+</body>
+</html>
