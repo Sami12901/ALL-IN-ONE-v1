@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Professional CV Builder Pro - ALL IN ONE</title>
+  <meta name="description" content="Create stunning professional CVs with live preview. Export to PDF. ATS-friendly templates for Students, Developers, Designers & Executives.">
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/tools-shared.css">
+  <script type="module" src="../../js/components.js"></script>
+  <link rel="manifest" href="../../pwa/manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+  <!-- html2pdf for PDF export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&family=Roboto:wght@300;400;500;700&family=Lora:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===== CV Builder Layout ===== */
+    .cv-app {
+      display: flex;
+      height: calc(100vh - 70px);
+      overflow: hidden;
+      background: var(--bg-primary);
+    }
+
+    /* ===== Left Panel - Form ===== */
+    .cv-form-panel {
+      width: 420px;
+      min-width: 380px;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .form-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(79,70,229,0.1), rgba(168,85,247,0.05));
+    }
+    .form-header h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Section Tabs */
+    .section-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-primary);
+    }
+    .section-tab {
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .section-tab:hover { border-color: var(--accent); color: var(--accent); }
+    .section-tab.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    /* Form Sections */
+    .form-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem 1.25rem;
+    }
+    .form-section { display: none; }
+    .form-section.active { display: block; }
+
+    .form-group {
+      margin-bottom: 0.85rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 0.3rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 0.55rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
+    }
+    .form-group textarea { resize: vertical; min-height: 60px; }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    /* Repeatable Entry Cards */
+    .entry-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.85rem;
+      margin-bottom: 0.75rem;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+    .entry-card:hover { border-color: var(--accent); }
+    .entry-card .delete-entry {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: rgba(239,68,68,0.15);
+      color: #ef4444;
+      border: none;
+      border-radius: 6px;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: all 0.2s;
+    }
+    .entry-card .delete-entry:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    .add-entry-btn {
+      width: 100%;
+      padding: 0.6rem;
+      border-radius: 8px;
+      border: 2px dashed var(--border);
+      background: transparent;
+      color: var(--accent);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 0.5rem;
+    }
+    .add-entry-btn:hover {
+      border-color: var(--accent);
+      background: rgba(79,70,229,0.05);
+    }
+
+    /* ===== Right Panel - Preview ===== */
+    .cv-preview-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .preview-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+      flex-wrap: wrap;
+    }
+    .preview-toolbar label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .preview-toolbar select {
+      padding: 0.35rem 0.6rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 0.82rem;
+    }
+
+    .export-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 1rem;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .export-pdf {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #fff;
+      margin-left: auto;
+    }
+    .export-pdf:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(99,102,241,0.4); }
+
+    .preview-scroll {
+      flex: 1;
+      overflow-y: auto;
+      background: #e5e7eb;
+      display: flex;
+      justify-content: center;
+      padding: 2rem;
+    }
+    [data-theme="dark"] .preview-scroll { background: #1a1a2e; }
+
+    /* ===== CV Paper ===== */
+    .cv-paper {
+      width: 210mm;
+      min-height: 297mm;
+      background: #fff;
+      color: #1f2937;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+      font-family: 'Inter', sans-serif;
+      font-size: 10pt;
+      line-height: 1.5;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ===== Template: Modern ===== */
+    .tpl-modern .cv-header {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: #fff;
+      padding: 2.5rem 2.5rem 2rem;
+    }
+    .tpl-modern .cv-header h1 { font-size: 26pt; font-weight: 700; margin: 0 0 0.2rem; }
+    .tpl-modern .cv-header .cv-title { font-size: 12pt; font-weight: 400; opacity: 0.9; margin: 0 0 1rem; }
+    .tpl-modern .cv-contact {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 9pt;
+      opacity: 0.95;
+    }
+    .tpl-modern .cv-contact span { display: flex; align-items: center; gap: 0.3rem; }
+    .tpl-modern .cv-body { padding: 2rem 2.5rem; }
+    .tpl-modern .cv-section { margin-bottom: 1.5rem; }
+    .tpl-modern .cv-section-title {
+      font-size: 12pt;
+      font-weight: 700;
+      color: #4f46e5;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      border-bottom: 2px solid #4f46e5;
+      padding-bottom: 0.35rem;
+      margin-bottom: 0.8rem;
+    }
+    .tpl-modern .cv-entry { margin-bottom: 0.9rem; }
+    .tpl-modern .cv-entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .tpl-modern .cv-entry-title { font-weight: 700; font-size: 10.5pt; color: #111827; }
+    .tpl-modern .cv-entry-date { font-size: 9pt; color: #6b7280; font-style: italic; }
+    .tpl-modern .cv-entry-subtitle { font-size: 9.5pt; color: #4b5563; font-weight: 500; }
+    .tpl-modern .cv-entry-desc { font-size: 9.5pt; color: #374151; margin-top: 0.25rem; }
+    .tpl-modern .cv-skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .tpl-modern .cv-skill-tag {
+      padding: 0.25rem 0.65rem;
+      background: rgba(79,70,229,0.1);
+      color: #4f46e5;
+      border-radius: 4px;
+      font-size: 9pt;
+      font-weight: 500;
+    }
+    .tpl-modern .cv-summary { font-size: 10pt; color: #374151; line-height: 1.6; }
+
+    /* ===== Template: Classic ===== */
+    .tpl-classic .cv-header {
+      padding: 2rem 2.5rem;
+      border-bottom: 3px solid #1f2937;
+      text-align: center;
+    }
+    .tpl-classic .cv-header h1 { font-family: 'Playfair Display', serif; font-size: 28pt; font-weight: 700; margin: 0 0 0.2rem; color: #1f2937; }
+    .tpl-classic .cv-header .cv-title { font-size: 11pt; color: #6b7280; margin: 0 0 0.75rem; }
+    .tpl-classic .cv-contact {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+      font-size: 9pt;
+      color: #4b5563;
+    }
+    .tpl-classic .cv-body { padding: 1.5rem 2.5rem; }
+    .tpl-classic .cv-section { margin-bottom: 1.25rem; }
+    .tpl-classic .cv-section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 13pt;
+      font-weight: 700;
+      color: #1f2937;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      border-bottom: 1px solid #d1d5db;
+      padding-bottom: 0.3rem;
+      margin-bottom: 0.75rem;
+    }
+    .tpl-classic .cv-entry { margin-bottom: 0.9rem; }
+    .tpl-classic .cv-entry-header { display: flex; justify-content: space-between; align-items: baseline; }
+    .tpl-classic .cv-entry-title { font-weight: 700; font-size: 10.5pt; }
+    .tpl-classic .cv-entry-date { font-size: 9pt; color: #6b7280; }
+    .tpl-classic .cv-entry-subtitle { font-size: 9.5pt; color: #4b5563; }
+    .tpl-classic .cv-entry-desc { font-size: 9.5pt; color: #374151; margin-top: 0.2rem; }
+    .tpl-classic .cv-skills-grid { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .tpl-classic .cv-skill-tag {
+      padding: 0.2rem 0.6rem;
+      border: 1px solid #d1d5db;
+      border-radius: 3px;
+      font-size: 9pt;
+      color: #374151;
+    }
+    .tpl-classic .cv-summary { font-size: 10pt; color: #374151; line-height: 1.6; }
+
+    /* ===== Template: Developer ===== */
+    .tpl-developer .cv-header {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 2rem 2.5rem;
+      font-family: 'Roboto', monospace;
+    }
+    .tpl-developer .cv-header h1 { font-size: 24pt; font-weight: 700; margin: 0 0 0.2rem; color: #38bdf8; }
+    .tpl-developer .cv-header .cv-title { font-size: 11pt; color: #94a3b8; margin: 0 0 0.75rem; }
+    .tpl-developer .cv-contact { display: flex; flex-wrap: wrap; gap: 1rem; font-size: 9pt; color: #94a3b8; }
+    .tpl-developer .cv-body { padding: 1.5rem 2.5rem; }
+    .tpl-developer .cv-section { margin-bottom: 1.25rem; }
+    .tpl-developer .cv-section-title {
+      font-size: 12pt;
+      font-weight: 700;
+      color: #38bdf8;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      border-left: 4px solid #38bdf8;
+      padding-left: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .tpl-developer .cv-entry { margin-bottom: 0.9rem; }
+    .tpl-developer .cv-entry-header { display: flex; justify-content: space-between; align-items: baseline; }
+    .tpl-developer .cv-entry-title { font-weight: 700; font-size: 10.5pt; }
+    .tpl-developer .cv-entry-date { font-size: 9pt; color: #6b7280; }
+    .tpl-developer .cv-entry-subtitle { font-size: 9.5pt; color: #4b5563; }
+    .tpl-developer .cv-entry-desc { font-size: 9.5pt; color: #374151; margin-top: 0.2rem; }
+    .tpl-developer .cv-skills-grid { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .tpl-developer .cv-skill-tag {
+      padding: 0.25rem 0.6rem;
+      background: #1e293b;
+      color: #38bdf8;
+      border-radius: 4px;
+      font-size: 9pt;
+      font-weight: 500;
+      border: 1px solid #334155;
+    }
+    .tpl-developer .cv-summary { font-size: 10pt; color: #374151; line-height: 1.6; }
+
+    /* ===== Template: Executive ===== */
+    .tpl-executive .cv-header {
+      background: linear-gradient(135deg, #1e3a5f, #2d5a87);
+      color: #fff;
+      padding: 2.5rem 2.5rem 2rem;
+      position: relative;
+    }
+    .tpl-executive .cv-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #c9a84c, #e8c860, #c9a84c);
+    }
+    .tpl-executive .cv-header h1 { font-family: 'Lora', serif; font-size: 26pt; font-weight: 700; margin: 0 0 0.2rem; }
+    .tpl-executive .cv-header .cv-title { font-size: 11pt; opacity: 0.9; margin: 0 0 0.75rem; letter-spacing: 2px; text-transform: uppercase; }
+    .tpl-executive .cv-contact { display: flex; flex-wrap: wrap; gap: 1.25rem; font-size: 9pt; opacity: 0.9; }
+    .tpl-executive .cv-body { padding: 1.5rem 2.5rem; }
+    .tpl-executive .cv-section { margin-bottom: 1.25rem; }
+    .tpl-executive .cv-section-title {
+      font-family: 'Lora', serif;
+      font-size: 12pt;
+      font-weight: 700;
+      color: #1e3a5f;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      border-bottom: 2px solid #c9a84c;
+      padding-bottom: 0.3rem;
+      margin-bottom: 0.75rem;
+    }
+    .tpl-executive .cv-entry { margin-bottom: 0.9rem; }
+    .tpl-executive .cv-entry-header { display: flex; justify-content: space-between; align-items: baseline; }
+    .tpl-executive .cv-entry-title { font-weight: 700; font-size: 10.5pt; color: #1e3a5f; }
+    .tpl-executive .cv-entry-date { font-size: 9pt; color: #6b7280; }
+    .tpl-executive .cv-entry-subtitle { font-size: 9.5pt; color: #4b5563; }
+    .tpl-executive .cv-entry-desc { font-size: 9.5pt; color: #374151; margin-top: 0.2rem; }
+    .tpl-executive .cv-skills-grid { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .tpl-executive .cv-skill-tag {
+      padding: 0.25rem 0.65rem;
+      background: rgba(30,58,95,0.08);
+      color: #1e3a5f;
+      border-radius: 4px;
+      font-size: 9pt;
+      font-weight: 500;
+    }
+    .tpl-executive .cv-summary { font-size: 10pt; color: #374151; line-height: 1.6; }
+
+    /* ===== Photo ===== */
+    .cv-photo {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid rgba(255,255,255,0.4);
+      float: right;
+      margin-left: 1rem;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 900px) {
+      .cv-app { flex-direction: column; }
+      .cv-form-panel { width: 100%; min-width: 0; max-height: 50vh; }
+      .cv-paper { width: 100%; min-height: auto; }
+      .preview-scroll { padding: 1rem; }
+    }
+
+    /* Photo upload area */
+    .photo-upload-area {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 2px dashed var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      overflow: hidden;
+      transition: border-color 0.2s;
+      margin-bottom: 0.75rem;
+    }
+    .photo-upload-area:hover { border-color: var(--accent); }
+    .photo-upload-area img { width: 100%; height: 100%; object-fit: cover; }
+    .photo-upload-area svg { opacity: 0.4; }
+  </style>
+</head>
+<body>
+  <app-header></app-header>
+
+  <div class="cv-app" id="cv-app">
+    <!-- LEFT: Form Panel -->
+    <div class="cv-form-panel">
+      <div class="form-header">
+        <h2>📄 CV Builder Pro</h2>
+      </div>
+
+      <div class="section-tabs" id="section-tabs">
+        <button class="section-tab active" data-section="personal">Personal</button>
+        <button class="section-tab" data-section="summary">Summary</button>
+        <button class="section-tab" data-section="education">Education</button>
+        <button class="section-tab" data-section="experience">Experience</button>
+        <button class="section-tab" data-section="skills">Skills</button>
+        <button class="section-tab" data-section="projects">Projects</button>
+        <button class="section-tab" data-section="certifications">Certs</button>
+        <button class="section-tab" data-section="languages">Languages</button>
+        <button class="section-tab" data-section="references">References</button>
+      </div>
+
+      <div class="form-scroll" id="form-scroll">
+        <!-- Personal Information -->
+        <div class="form-section active" data-section="personal">
+          <div class="photo-upload-area" id="photo-upload" title="Upload Photo">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"></circle><path d="M20 21a8 8 0 1 0-16 0"></path></svg>
+          </div>
+          <input type="file" id="photo-input" accept="image/*" hidden>
+
+          <div class="form-row">
+            <div class="form-group"><label>First Name</label><input type="text" id="firstName" placeholder="John"></div>
+            <div class="form-group"><label>Last Name</label><input type="text" id="lastName" placeholder="Doe"></div>
+          </div>
+          <div class="form-group"><label>Job Title</label><input type="text" id="jobTitle" placeholder="Senior Software Engineer"></div>
+          <div class="form-row">
+            <div class="form-group"><label>Email</label><input type="email" id="email" placeholder="john@example.com"></div>
+            <div class="form-group"><label>Phone</label><input type="tel" id="phone" placeholder="+880 1234-567890"></div>
+          </div>
+          <div class="form-group"><label>Address</label><input type="text" id="address" placeholder="Dhaka, Bangladesh"></div>
+          <div class="form-row">
+            <div class="form-group"><label>LinkedIn</label><input type="text" id="linkedin" placeholder="linkedin.com/in/johndoe"></div>
+            <div class="form-group"><label>Website / GitHub</label><input type="text" id="website" placeholder="github.com/johndoe"></div>
+          </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="form-section" data-section="summary">
+          <div class="form-group"><label>Professional Summary</label><textarea id="summary" rows="6" placeholder="Write a brief professional summary about yourself..."></textarea></div>
+        </div>
+
+        <!-- Education -->
+        <div class="form-section" data-section="education">
+          <div id="education-entries"></div>
+          <button class="add-entry-btn" onclick="addEducation()">+ Add Education</button>
+        </div>
+
+        <!-- Experience -->
+        <div class="form-section" data-section="experience">
+          <div id="experience-entries"></div>
+          <button class="add-entry-btn" onclick="addExperience()">+ Add Experience</button>
+        </div>
+
+        <!-- Skills -->
+        <div class="form-section" data-section="skills">
+          <div class="form-group">
+            <label>Skills (comma separated)</label>
+            <textarea id="skills" rows="4" placeholder="JavaScript, React, Node.js, Python, SQL, Git, Docker..."></textarea>
+          </div>
+        </div>
+
+        <!-- Projects -->
+        <div class="form-section" data-section="projects">
+          <div id="project-entries"></div>
+          <button class="add-entry-btn" onclick="addProject()">+ Add Project</button>
+        </div>
+
+        <!-- Certifications -->
+        <div class="form-section" data-section="certifications">
+          <div id="cert-entries"></div>
+          <button class="add-entry-btn" onclick="addCert()">+ Add Certification</button>
+        </div>
+
+        <!-- Languages -->
+        <div class="form-section" data-section="languages">
+          <div id="lang-entries"></div>
+          <button class="add-entry-btn" onclick="addLang()">+ Add Language</button>
+        </div>
+
+        <!-- References -->
+        <div class="form-section" data-section="references">
+          <div id="ref-entries"></div>
+          <button class="add-entry-btn" onclick="addRef()">+ Add Reference</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Preview Panel -->
+    <div class="cv-preview-panel">
+      <div class="preview-toolbar">
+        <label>Template:</label>
+        <select id="template-select">
+          <option value="modern">🎨 Modern</option>
+          <option value="classic">📜 Classic</option>
+          <option value="developer">💻 Developer</option>
+          <option value="executive">👔 Executive</option>
+        </select>
+
+        <label>Color:</label>
+        <input type="color" id="accent-color" value="#4f46e5" style="width:30px;height:28px;border:none;border-radius:4px;cursor:pointer;">
+
+        <button class="export-btn export-pdf" id="export-pdf-btn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Export PDF
+        </button>
+      </div>
+
+      <div class="preview-scroll">
+        <div class="cv-paper tpl-modern" id="cv-paper">
+          <!-- CV content renders here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
