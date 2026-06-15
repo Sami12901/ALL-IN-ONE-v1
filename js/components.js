@@ -39,66 +39,63 @@ class AppHeader extends HTMLElement {
     applyTheme(activeTheme); // Ensure theme is loaded
 
     this.innerHTML = `
-      <div class="dev-banner" style="background: linear-gradient(90deg, var(--accent), #e11d48); color: white; text-align: center; padding: 0.65rem 1rem; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em; display: flex; align-items: center; justify-content: center; gap: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); font-family: var(--font-display);">
+      <div class="dev-banner">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: block;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
         <span>THIS WEBSITE IS CURRENTLY UNDER ACTIVE DEVELOPMENT</span>
       </div>
-      <header class="app-header glass-panel">
-        <div class="container nav-container" style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 1.5rem; height: 70px;">
+      <header class="app-header">
+        <div class="container nav-container">
           <!-- Brand -->
-          <a href="${prefix}index.html" class="nav-brand" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text-primary); font-family: var(--font-display); font-weight: 800; font-size: 1.25rem;">
-            <div style="width: 34px; height: 34px; background: var(--accent-gradient); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900;">A</div>
+          <a href="${prefix}index.html" class="nav-brand">
+            <div class="nav-brand-logo">A</div>
             <span>ALL IN ONE</span>
           </a>
 
           <!-- Header Search -->
-          <div class="nav-search-container" style="position: relative; flex: 1; max-width: 350px; margin: 0 1.5rem; display: none;">
-            <input type="text" id="nav-search-input" placeholder="Search tools..." style="width: 100%; padding: 0.5rem 1rem; padding-left: 2rem; border-radius: var(--radius-full); background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); outline: none; font-size: 0.875rem;" aria-label="Search tools">
-            <svg style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; fill: var(--text-tertiary);" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-            <div id="nav-search-results" class="glass-panel" style="position: absolute; top: 110%; left: 0; width: 100%; max-height: 250px; overflow-y: auto; z-index: 200; display: none; flex-direction: column; padding: 0.25rem;"></div>
+          <div class="nav-search-container" style="display: none;">
+            <input type="text" id="nav-search-input" class="nav-search-input" placeholder="Search tools..." aria-label="Search tools">
+            <svg class="nav-search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <div id="nav-search-results" class="nav-search-results glass-panel"></div>
           </div>
 
           <!-- Desktop Navigation -->
-          <nav class="desktop-navigation" style="display: flex; align-items: center; gap: 1.5rem;">
-            <a href="${prefix}index.html" class="nav-link" style="color: var(--text-secondary); font-weight: 500; font-size: 0.95rem; transition: var(--transition);">Dashboard</a>
-            <a href="${prefix}pages/about.html" class="nav-link" style="color: var(--text-secondary); font-weight: 500; font-size: 0.95rem; transition: var(--transition);">About</a>
-            <a href="${prefix}pages/contact.html" class="nav-link" style="color: var(--text-secondary); font-weight: 500; font-size: 0.95rem; transition: var(--transition);">Support</a>
+          <nav class="desktop-navigation">
+            <a href="${prefix}index.html" class="nav-link">Dashboard</a>
+            <a href="${prefix}pages/about.html" class="nav-link">About</a>
+            <a href="${prefix}pages/contact.html" class="nav-link">Support</a>
             
             <!-- Dark Mode Toggle -->
-            <button id="header-theme-toggle" class="btn-secondary" style="border: 1px solid var(--border); background: var(--bg-tertiary); color: var(--text-primary); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition);" aria-label="Toggle theme">
-              <span class="theme-icon" style="display: flex; align-items: center; justify-content: center;">${activeTheme === 'dark' ? SUN_SVG : MOON_SVG}</span>
+            <button id="header-theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+              <span class="theme-icon">${activeTheme === 'dark' ? SUN_SVG : MOON_SVG}</span>
             </button>
 
             <!-- Mobile Menu Toggle Button -->
-            <button id="mobile-menu-toggle" style="background: transparent; border: none; padding: 0.5rem; color: var(--text-primary); cursor: pointer; display: none;" aria-label="Toggle menu">${HAMBURGER_SVG}</button>
+            <button id="mobile-menu-toggle" class="mobile-menu-toggle" aria-label="Toggle menu">${HAMBURGER_SVG}</button>
           </nav>
         </div>
       </header>
 
       <!-- Mobile Menu Drawer Overlay -->
-      <div id="mobile-drawer" class="glass-panel" style="position: fixed; top: 0; right: -280px; width: 280px; height: 100%; z-index: 1000; box-shadow: -5px 0 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; padding: 1.5rem; transition: right 0.3s ease-in-out;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1.5rem;">
-          <span style="font-family: var(--font-display); font-weight: 700; font-size: 1.15rem;">Navigation</span>
-          <button id="mobile-drawer-close" style="background: transparent; border: none; padding: 0.5rem; color: var(--text-secondary); cursor: pointer;" aria-label="Close menu">${CLOSE_SVG}</button>
+      <div id="mobile-drawer" class="mobile-drawer glass-panel">
+        <div class="mobile-drawer-header">
+          <span class="mobile-drawer-title">Navigation</span>
+          <button id="mobile-drawer-close" class="mobile-drawer-close" aria-label="Close menu">${CLOSE_SVG}</button>
         </div>
-        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
-          <a href="${prefix}index.html" style="color: var(--text-primary); text-decoration: none; font-weight: 600;">Dashboard</a>
-          <a href="${prefix}pages/about.html" style="color: var(--text-primary); text-decoration: none; font-weight: 600;">About Us</a>
-          <a href="${prefix}pages/contact.html" style="color: var(--text-primary); text-decoration: none; font-weight: 600;">Support Form</a>
-          <a href="${prefix}pages/privacy.html" style="color: var(--text-primary); text-decoration: none; font-weight: 600;">Privacy Policy</a>
-          <a href="${prefix}pages/terms.html" style="color: var(--text-primary); text-decoration: none; font-weight: 600;">Terms of Service</a>
+        <div class="mobile-drawer-links">
+          <a href="${prefix}index.html">Dashboard</a>
+          <a href="${prefix}pages/about.html">About Us</a>
+          <a href="${prefix}pages/contact.html">Support Form</a>
+          <a href="${prefix}pages/privacy.html">Privacy Policy</a>
+          <a href="${prefix}pages/terms.html">Terms of Service</a>
         </div>
       </div>
-      <div id="mobile-drawer-backdrop" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 999; display: none;"></div>
+      <div id="mobile-drawer-backdrop" class="mobile-drawer-backdrop"></div>
     `;
 
     // Initialize Header Interactions
     this.setupThemeToggle();
     this.setupMobileDrawer();
     this.setupQuickSearch(prefix);
-    this.checkResponsive();
-
-    window.addEventListener('resize', () => this.checkResponsive());
   }
 
   setupThemeToggle() {
@@ -187,29 +184,6 @@ class AppHeader extends HTMLElement {
       }
     });
   }
-
-  checkResponsive() {
-    const desktopLinks = this.querySelectorAll('.desktop-navigation > a');
-    const menuToggle = this.querySelector('#mobile-menu-toggle');
-    const navSearch = this.querySelector('.nav-search-container');
-    const brandText = this.querySelector('.nav-brand span');
-
-    if (window.innerWidth < 768) {
-      desktopLinks.forEach(link => link.style.display = 'none');
-      menuToggle.style.display = 'block';
-      if (brandText) brandText.style.display = 'none'; // Hide "ALL IN ONE" text on mobile to fit search
-      if (navSearch) {
-        navSearch.style.margin = '0 0.5rem';
-      }
-    } else {
-      desktopLinks.forEach(link => link.style.display = 'block');
-      menuToggle.style.display = 'none';
-      if (brandText) brandText.style.display = 'inline';
-      if (navSearch) {
-        navSearch.style.margin = '0 1.5rem';
-      }
-    }
-  }
 }
 
 // 2. Breadcrumbs Component
@@ -247,12 +221,12 @@ class AppBreadcrumbs extends HTMLElement {
   render(prefix, categoryId, toolName) {
     const categoryName = categoryId.charAt(0).toUpperCase() + categoryId.slice(1);
     this.innerHTML = `
-      <div class="container" style="margin-top: 1.5rem;">
+      <div class="container">
         <nav class="breadcrumb-container" aria-label="Breadcrumb">
-          <ol class="breadcrumbs" style="display: flex; align-items: center; gap: 0.5rem; list-style: none; padding: 0; font-size: 0.85rem;">
-            <li class="breadcrumb-item"><a href="${prefix}index.html" style="color: var(--text-tertiary); text-decoration: none;">Home</a></li>
-            <li class="breadcrumb-item"><a href="${prefix}index.html?cat=${categoryId}" style="color: var(--text-tertiary); text-decoration: none;">${categoryName}</a></li>
-            <li class="breadcrumb-item active" aria-current="page" style="color: var(--text-secondary); font-weight: 500;">${toolName}</li>
+          <ol class="breadcrumbs">
+            <li class="breadcrumb-item"><a href="${prefix}index.html">Home</a></li>
+            <li class="breadcrumb-item"><a href="${prefix}index.html?cat=${categoryId}">${categoryName}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">${toolName}</li>
           </ol>
         </nav>
       </div>
@@ -267,13 +241,13 @@ class AppFooter extends HTMLElement {
     const currentYear = new Date().getFullYear();
 
     this.innerHTML = `
-      <footer class="app-footer glass-panel" style="margin-top: auto; border-top: 1px solid var(--border); padding: 3rem 0; background: var(--glass-bg);">
+      <footer class="app-footer">
         <div class="container">
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2.5rem; margin-bottom: 2rem;">
+          <div class="footer-grid">
             <!-- Brand Info -->
-            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-              <span style="font-family: var(--font-display); font-weight: 800; font-size: 1.2rem; color: var(--text-primary);">ALL IN ONE</span>
-              <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">150+ free web utilities in one tab. Fast, secure, client-side tools processed locally inside your browser.</p>
+            <div class="footer-brand-section">
+              <span class="footer-brand-title">ALL IN ONE</span>
+              <p class="footer-brand-desc">150+ free web utilities in one tab. Fast, secure, client-side tools processed locally inside your browser.</p>
               
               <!-- PWA Install Button -->
               <button id="pwa-install-btn" class="btn btn-primary" style="display: none; width: fit-content; padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: var(--radius-sm); margin-top: 0.5rem; align-items: center; gap: 0.35rem;">
@@ -282,34 +256,34 @@ class AppFooter extends HTMLElement {
             </div>
             
             <!-- Quick Links -->
-            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-              <span style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 0.35rem;">Navigation</span>
-              <a href="${prefix}index.html" style="font-size: 0.9rem; color: var(--text-secondary); text-decoration: none; transition: var(--transition);">Dashboard Portal</a>
-              <a href="${prefix}pages/about.html" style="font-size: 0.9rem; color: var(--text-secondary); text-decoration: none; transition: var(--transition);">About the Project</a>
-              <a href="${prefix}pages/contact.html" style="font-size: 0.9rem; color: var(--text-secondary); text-decoration: none; transition: var(--transition);">Support Form</a>
+            <div class="footer-links-section">
+              <span class="footer-links-title">Navigation</span>
+              <a href="${prefix}index.html">Dashboard Portal</a>
+              <a href="${prefix}pages/about.html">About the Project</a>
+              <a href="${prefix}pages/contact.html">Support Form</a>
             </div>
 
             <!-- Categories -->
-            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-              <span style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 0.35rem;">Popular Categories</span>
-              <a href="${prefix}index.html?cat=developer" style="font-size: 0.9rem; color: var(--text-secondary); text-decoration: none; transition: var(--transition);">Developer Tools</a>
-              <a href="${prefix}index.html?cat=text" style="font-size: 0.9rem; color: var(--text-secondary); text-decoration: none; transition: var(--transition);">Text Tools</a>
-              <a href="${prefix}index.html?cat=color" style="font-size: 0.9rem; color: var(--text-secondary); text-decoration: none; transition: var(--transition);">Color Tools</a>
+            <div class="footer-links-section">
+              <span class="footer-links-title">Popular Categories</span>
+              <a href="${prefix}index.html?cat=developer">Developer Tools</a>
+              <a href="${prefix}index.html?cat=text">Text Tools</a>
+              <a href="${prefix}index.html?cat=color">Color Tools</a>
             </div>
 
             <!-- Legal Documents -->
-            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-              <span style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 0.35rem;">Legal</span>
-              <a href="${prefix}pages/privacy.html" style="font-size: 0.9rem; color: var(--text-secondary); text-decoration: none; transition: var(--transition);">Privacy Policy</a>
-              <a href="${prefix}pages/terms.html" style="font-size: 0.9rem; color: var(--text-secondary); text-decoration: none; transition: var(--transition);">Terms of Service</a>
-              <div style="font-size: 0.8rem; color: var(--text-tertiary); display: flex; align-items: center; gap: 0.4rem; margin-top: 0.25rem;">
-                <span style="width: 8px; height: 8px; background: var(--success); border-radius: 50%;"></span>
+            <div class="footer-links-section">
+              <span class="footer-links-title">Legal</span>
+              <a href="${prefix}pages/privacy.html">Privacy Policy</a>
+              <a href="${prefix}pages/terms.html">Terms of Service</a>
+              <div class="footer-status-indicator">
+                <span class="footer-status-dot"></span>
                 <span>All operations client-side</span>
               </div>
             </div>
           </div>
 
-          <div style="border-top: 1px solid var(--border); padding-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem; align-items: center; justify-content: space-between; font-size: 0.85rem; color: var(--text-tertiary);">
+          <div class="footer-bottom">
             <span>&copy; ${currentYear} ALL IN ONE Tools. Released under the MIT License.</span>
             <span>Created for ALL TYPE USER.</span>
           </div>
