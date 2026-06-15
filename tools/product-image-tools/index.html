@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Image Tools - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Professional product image toolkit: background remover, resizer, watermark stamper, and thumbnail generator. All processed locally in your browser.">
+  <meta name="keywords" content="product image, background remover, resizer, watermark, thumbnail, ecommerce, marketing, free, online, tool">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/product-image-tools/">
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/tools-shared.css">
+  <link rel="stylesheet" href="./style.css">
+
+  <script type="module" src="../../js/components.js"></script>
+  <script type="module" src="./script.js" defer></script>
+  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
+</head>
+<body>
+  <!-- Header Web Component -->
+  <app-header></app-header>
+
+  <!-- Breadcrumbs -->
+  <app-breadcrumbs></app-breadcrumbs>
+
+  <!-- Main Work Container -->
+  <main class="tool-layout">
+    <div class="container tool-container">
+      <div class="tool-header">
+        <h1>Product Image Tools</h1>
+        <p class="tool-description">Professional toolkit for e-commerce product images. Remove backgrounds, resize, add watermarks, and generate thumbnails — all processed locally in your browser.</p>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div class="pit-tabs" role="tablist">
+        <button class="pit-tab active" data-tab="bg-remover" role="tab" aria-selected="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5z"></path><path d="M3 16l5-5 4 4"></path><path d="M14 14l3-3 4 4"></path><circle cx="15" cy="8" r="2"></circle></svg>
+          <span>BG Remover</span>
+        </button>
+        <button class="pit-tab" data-tab="resizer" role="tab" aria-selected="false">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+          <span>Resizer</span>
+        </button>
+        <button class="pit-tab" data-tab="watermark" role="tab" aria-selected="false">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span>Watermark</span>
+        </button>
+        <button class="pit-tab" data-tab="thumbnail" role="tab" aria-selected="false">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect></svg>
+          <span>Thumbnails</span>
+        </button>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════ -->
+      <!-- TAB 1: BACKGROUND REMOVER                      -->
+      <!-- ═══════════════════════════════════════════════ -->
+      <div class="pit-tab-content active" id="tab-bg-remover">
+        <div class="tool-workarea split-view">
+          <!-- Controls Panel -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5z"></path><path d="M3 16l5-5 4 4"></path></svg>
+              Background Remover
+            </h2>
+
+            <!-- Upload Area -->
+            <div class="file-drag-area" id="bgr-drop-zone">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <p style="font-weight: 600;">Drop product image here or click to upload</p>
+              <p style="font-size: 0.8rem; color: var(--text-tertiary);">PNG, JPG, WebP up to 20MB</p>
+              <input type="file" id="bgr-file-input" accept="image/*" hidden>
+            </div>
+
+            <!-- Color Tolerance -->
+            <div class="form-group">
+              <label>Color Tolerance</label>
+              <div class="range-group">
+                <input type="range" class="range-slider" id="bgr-tolerance" min="0" max="100" value="30">
+                <span class="range-value" id="bgr-tolerance-val">30</span>
+              </div>
+            </div>
+
+            <!-- Target Color -->
+            <div class="form-group">
+              <label>Target Background Color</label>
+              <div style="display: flex; gap: 0.75rem; align-items: center;">
+                <input type="color" id="bgr-color" value="#ffffff" style="width: 48px; height: 36px; border: none; cursor: pointer; border-radius: var(--radius-sm);">
+                <button class="btn btn-secondary" id="bgr-eyedropper-btn" style="flex: 1;">Pick from Image</button>
+              </div>
+            </div>
+
+            <!-- Replace With -->
+            <div class="form-group">
+              <label>Replace With</label>
+              <div class="pit-replace-options">
+                <label class="checkbox-label"><input type="radio" name="bgr-replace" value="transparent" checked> Transparent</label>
+                <label class="checkbox-label"><input type="radio" name="bgr-replace" value="white"> White</label>
+                <label class="checkbox-label"><input type="radio" name="bgr-replace" value="custom"> Custom Color</label>
+              </div>
+              <input type="color" id="bgr-replace-color" value="#f0f0f0" style="display: none; width: 48px; height: 36px; border: none; cursor: pointer; border-radius: var(--radius-sm); margin-top: 0.5rem;">
+            </div>
+
+            <div class="action-bar">
+              <button class="btn btn-primary" id="bgr-process-btn" disabled>Remove Background</button>
+              <button class="btn btn-secondary" id="bgr-reset-btn" disabled>Reset</button>
+            </div>
+          </div>
+
+          <!-- Preview Panel -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">Preview</h2>
+            <div class="pit-preview-area" id="bgr-preview">
+              <div class="pit-placeholder">
+                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                <p>Upload an image to preview</p>
+              </div>
+              <canvas id="bgr-canvas" style="display: none;"></canvas>
+            </div>
+            <div class="action-bar" id="bgr-download-bar" style="display: none;">
+              <button class="btn btn-primary" id="bgr-download-btn">Download PNG</button>
+              <button class="btn btn-secondary" id="bgr-download-jpg-btn">Download JPG</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════ -->
+      <!-- TAB 2: RESIZER                                 -->
+      <!-- ═══════════════════════════════════════════════ -->
+      <div class="pit-tab-content" id="tab-resizer">
+        <div class="tool-workarea split-view">
+          <!-- Controls Panel -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+              Image Resizer
+            </h2>
+
+            <div class="file-drag-area" id="rsz-drop-zone">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <p style="font-weight: 600;">Drop product image here</p>
+              <p style="font-size: 0.8rem; color: var(--text-tertiary);">PNG, JPG, WebP up to 20MB</p>
+              <input type="file" id="rsz-file-input" accept="image/*" hidden>
+            </div>
+
+            <!-- Original Dimensions Display -->
+            <div class="pit-info-strip" id="rsz-original-info" style="display: none;">
+              <span>Original:</span>
+              <strong id="rsz-orig-dims">0 × 0</strong>
+              <span id="rsz-orig-size"></span>
+            </div>
+
+            <!-- Presets -->
+            <div class="form-group">
+              <label>Quick Presets</label>
+              <div class="pit-preset-grid">
+                <button class="pit-preset-btn" data-w="800" data-h="800">800×800<br><small>E-commerce</small></button>
+                <button class="pit-preset-btn" data-w="1000" data-h="1000">1000×1000<br><small>Amazon</small></button>
+                <button class="pit-preset-btn" data-w="1080" data-h="1080">1080×1080<br><small>Instagram</small></button>
+                <button class="pit-preset-btn" data-w="1200" data-h="630">1200×630<br><small>Facebook</small></button>
+                <button class="pit-preset-btn" data-w="1500" data-h="1500">1500×1500<br><small>Hi-Res</small></button>
+                <button class="pit-preset-btn" data-w="500" data-h="500">500×500<br><small>Thumbnail</small></button>
+              </div>
+            </div>
+
+            <!-- Custom Dimensions -->
+            <div class="form-group">
+              <label>Custom Dimensions (px)</label>
+              <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.5rem; align-items: center;">
+                <input type="number" class="form-input" id="rsz-width" placeholder="Width" min="1" max="10000">
+                <label class="checkbox-label" style="margin: 0; font-size: 0.85rem;">
+                  <input type="checkbox" id="rsz-lock-ratio" checked>
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </label>
+                <input type="number" class="form-input" id="rsz-height" placeholder="Height" min="1" max="10000">
+              </div>
+            </div>
+
+            <!-- Output Format -->
+            <div class="form-group">
+              <label>Output Format</label>
+              <select class="form-select" id="rsz-format">
+                <option value="png">PNG (Lossless)</option>
+                <option value="jpeg">JPG (Lossy)</option>
+                <option value="webp" selected>WebP (Best)</option>
+              </select>
+            </div>
+
+            <!-- Quality -->
+            <div class="form-group">
+              <label>Quality</label>
+              <div class="range-group">
+                <input type="range" class="range-slider" id="rsz-quality" min="10" max="100" value="90">
+                <span class="range-value" id="rsz-quality-val">90%</span>
+              </div>
+            </div>
+
+            <div class="action-bar">
+              <button class="btn btn-primary" id="rsz-process-btn" disabled>Resize Image</button>
+              <button class="btn btn-secondary" id="rsz-reset-btn" disabled>Reset</button>
+            </div>
+          </div>
+
+          <!-- Preview Panel -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">Preview</h2>
+            <div class="pit-preview-area" id="rsz-preview">
+              <div class="pit-placeholder">
+                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                <p>Upload an image to preview</p>
+              </div>
+              <canvas id="rsz-canvas" style="display: none;"></canvas>
+            </div>
+            <div class="pit-info-strip" id="rsz-result-info" style="display: none;">
+              <span>Result:</span>
+              <strong id="rsz-result-dims">0 × 0</strong>
+              <span id="rsz-result-size"></span>
+            </div>
+            <div class="action-bar" id="rsz-download-bar" style="display: none;">
+              <button class="btn btn-primary" id="rsz-download-btn">Download</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════ -->
+      <!-- TAB 3: WATERMARK                               -->
+      <!-- ═══════════════════════════════════════════════ -->
+      <div class="pit-tab-content" id="tab-watermark">
+        <div class="tool-workarea split-view">
+          <!-- Controls Panel -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              Watermark Stamper
+            </h2>
+
+            <div class="file-drag-area" id="wm-drop-zone">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <p style="font-weight: 600;">Drop product image here</p>
+              <p style="font-size: 0.8rem; color: var(--text-tertiary);">PNG, JPG, WebP up to 20MB</p>
+              <input type="file" id="wm-file-input" accept="image/*" hidden>
+            </div>
+
+            <!-- Watermark Text -->
+            <div class="form-group">
+              <label>Watermark Text</label>
+              <input type="text" class="form-input" id="wm-text" placeholder="Your Brand Name" value="© Your Brand">
+            </div>
+
+            <!-- Font Size -->
+            <div class="form-group">
+              <label>Font Size</label>
+              <div class="range-group">
+                <input type="range" class="range-slider" id="wm-font-size" min="12" max="200" value="48">
+                <span class="range-value" id="wm-font-size-val">48px</span>
+              </div>
+            </div>
+
+            <!-- Opacity -->
+            <div class="form-group">
+              <label>Opacity</label>
+              <div class="range-group">
+                <input type="range" class="range-slider" id="wm-opacity" min="5" max="100" value="30">
+                <span class="range-value" id="wm-opacity-val">30%</span>
+              </div>
+            </div>
+
+            <!-- Color -->
+            <div class="form-group">
+              <label>Watermark Color</label>
+              <div style="display: flex; gap: 0.75rem; align-items: center;">
+                <input type="color" id="wm-color" value="#ffffff" style="width: 48px; height: 36px; border: none; cursor: pointer; border-radius: var(--radius-sm);">
+                <span style="font-size: 0.85rem; color: var(--text-secondary);">Text color</span>
+              </div>
+            </div>
+
+            <!-- Position -->
+            <div class="form-group">
+              <label>Position</label>
+              <div class="pit-position-grid">
+                <button class="pit-pos-btn" data-pos="top-left" title="Top Left">↖</button>
+                <button class="pit-pos-btn" data-pos="top-center" title="Top Center">↑</button>
+                <button class="pit-pos-btn" data-pos="top-right" title="Top Right">↗</button>
+                <button class="pit-pos-btn" data-pos="center-left" title="Center Left">←</button>
+                <button class="pit-pos-btn active" data-pos="center" title="Center">⊕</button>
+                <button class="pit-pos-btn" data-pos="center-right" title="Center Right">→</button>
+                <button class="pit-pos-btn" data-pos="bottom-left" title="Bottom Left">↙</button>
+                <button class="pit-pos-btn" data-pos="bottom-center" title="Bottom Center">↓</button>
+                <button class="pit-pos-btn" data-pos="bottom-right" title="Bottom Right">↘</button>
+              </div>
+            </div>
+
+            <!-- Rotation -->
+            <div class="form-group">
+              <label>Rotation</label>
+              <div class="range-group">
+                <input type="range" class="range-slider" id="wm-rotation" min="-90" max="90" value="-30">
+                <span class="range-value" id="wm-rotation-val">-30°</span>
+              </div>
+            </div>
+
+            <!-- Tiled option -->
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="wm-tiled">
+                Tile watermark across entire image
+              </label>
+            </div>
+
+            <div class="action-bar">
+              <button class="btn btn-primary" id="wm-process-btn" disabled>Apply Watermark</button>
+              <button class="btn btn-secondary" id="wm-reset-btn" disabled>Reset</button>
+            </div>
+          </div>
+
+          <!-- Preview Panel -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">Preview</h2>
+            <div class="pit-preview-area" id="wm-preview">
+              <div class="pit-placeholder">
+                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                <p>Upload an image to preview</p>
+              </div>
+              <canvas id="wm-canvas" style="display: none;"></canvas>
+            </div>
+            <div class="action-bar" id="wm-download-bar" style="display: none;">
+              <button class="btn btn-primary" id="wm-download-btn">Download PNG</button>
+              <button class="btn btn-secondary" id="wm-download-jpg-btn">Download JPG</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════ -->
+      <!-- TAB 4: THUMBNAIL GENERATOR                     -->
+      <!-- ═══════════════════════════════════════════════ -->
+      <div class="pit-tab-content" id="tab-thumbnail">
+        <div class="tool-workarea">
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect></svg>
+              Thumbnail Generator
+            </h2>
+
+            <div class="file-drag-area" id="thumb-drop-zone">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <p style="font-weight: 600;">Drop product image here</p>
+              <p style="font-size: 0.8rem; color: var(--text-tertiary);">PNG, JPG, WebP up to 20MB</p>
+              <input type="file" id="thumb-file-input" accept="image/*" hidden>
+            </div>
+
+            <div class="form-group">
+              <label>Select Sizes to Generate</label>
+              <div class="pit-thumb-sizes">
+                <label class="checkbox-label"><input type="checkbox" class="thumb-size-check" data-w="150" data-h="150" checked> 150×150 (Icon)</label>
+                <label class="checkbox-label"><input type="checkbox" class="thumb-size-check" data-w="300" data-h="300" checked> 300×300 (Small)</label>
+                <label class="checkbox-label"><input type="checkbox" class="thumb-size-check" data-w="500" data-h="500" checked> 500×500 (Medium)</label>
+                <label class="checkbox-label"><input type="checkbox" class="thumb-size-check" data-w="800" data-h="800" checked> 800×800 (E-commerce)</label>
+                <label class="checkbox-label"><input type="checkbox" class="thumb-size-check" data-w="1080" data-h="1080"> 1080×1080 (Instagram)</label>
+                <label class="checkbox-label"><input type="checkbox" class="thumb-size-check" data-w="1200" data-h="630"> 1200×630 (Facebook OG)</label>
+                <label class="checkbox-label"><input type="checkbox" class="thumb-size-check" data-w="1200" data-h="1200"> 1200×1200 (Hi-Res)</label>
+              </div>
+            </div>
+
+            <!-- Background fill for non-square ratios -->
+            <div class="form-group">
+              <label>Background Fill (for non-matching ratios)</label>
+              <div style="display: flex; gap: 0.75rem; align-items: center;">
+                <input type="color" id="thumb-bg-color" value="#ffffff" style="width: 48px; height: 36px; border: none; cursor: pointer; border-radius: var(--radius-sm);">
+                <label class="checkbox-label" style="margin: 0;">
+                  <input type="checkbox" id="thumb-transparent"> Transparent (PNG only)
+                </label>
+              </div>
+            </div>
+
+            <div class="action-bar">
+              <button class="btn btn-primary" id="thumb-generate-btn" disabled>Generate Thumbnails</button>
+              <button class="btn btn-secondary" id="thumb-download-all-btn" disabled>Download All (ZIP)</button>
+            </div>
+          </div>
+
+          <!-- Thumbnails Grid -->
+          <div id="thumb-results" class="pit-thumb-results" style="display: none;">
+            <!-- Generated thumbnails will appear here -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer Web Component -->
+  <app-footer></app-footer>
+
+  <!-- Structured schema for search engine rich snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Product Image Tools",
+    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/product-image-tools/",
+    "description": "Professional product image toolkit: background remover, resizer, watermark stamper, and thumbnail generator.",
+    "applicationCategory": "DesignApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas."
+  }
+  </script>
+</body>
+</html>
