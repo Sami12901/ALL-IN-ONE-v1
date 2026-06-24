@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function handleFile(file) {
-    if (!file.type.startsWith('image/')) {
+    if (file.type && !file.type.startsWith('image/')) {
       alert('Please upload a valid image file.');
       return;
     }
