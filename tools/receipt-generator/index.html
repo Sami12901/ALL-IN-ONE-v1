@@ -1,458 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Receipt Generator - ALL IN ONE</title>
-  <meta name="description" content="Generate and print beautiful digital POS receipts for your store.">
-  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
-  
-  <!-- Core CSS -->
+  <title>Receipt Generator - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Create digital purchase receipts.">
+  <meta name="keywords" content="receipt, proof, purchase, free, online, tool, utility">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/receipt-generator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
-  <!-- Component Scripts -->
   <script type="module" src="../../js/components.js"></script>
-  
-  <style>
-    /* E-commerce Tool Theming */
-    :root {
-      --ecom-primary: #14b8a6; /* Teal */
-      --ecom-secondary: #0f766e;
-      --ecom-bg: rgba(20, 184, 166, 0.05);
-    }
-    
-    [data-theme="light"] {
-      --ecom-bg: rgba(255, 255, 255, 0.8);
-    }
-    
-    .ecom-gradient {
-      background: linear-gradient(135deg, #2dd4bf, #0f766e);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    
-    .layout-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-    
-    @media (min-width: 1024px) {
-      .layout-container {
-        grid-template-columns: 500px 1fr;
-      }
-    }
-    
-    .glass-card {
-      background: var(--ecom-bg);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(20, 184, 166, 0.2);
-      border-radius: var(--radius-lg);
-      padding: 1.5rem;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    }
-
-    .form-group {
-      margin-bottom: 1.25rem;
-    }
-    
-    .form-group label {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-    }
-
-    .form-group input, .form-group textarea, .form-group select {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: var(--bg-tertiary);
-      color: var(--text-primary);
-      font-family: var(--font-sans);
-      transition: var(--transition);
-      font-size: 0.95rem;
-    }
-    
-    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-      outline: none;
-      border-color: var(--ecom-primary);
-      box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
-    }
-
-    .item-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
-    }
-
-    .btn-ecom {
-      background: linear-gradient(135deg, var(--ecom-primary), var(--ecom-secondary));
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: var(--radius-sm);
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--text-primary);
-      border: 1px solid var(--border);
-      padding: 0.5rem 1rem;
-      border-radius: var(--radius-sm);
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      width: 100%;
-    }
-
-    .btn-outline:hover {
-      background: var(--bg-hover);
-    }
-
-    /* Product Builder Section */
-    .product-container {
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 1rem;
-      margin-bottom: 1rem;
-      position: relative;
-      transition: border-color 0.2s;
-    }
-
-    .product-container:hover {
-      border-color: rgba(20, 184, 166, 0.5);
-    }
-
-    .remove-btn {
-      position: absolute;
-      top: -10px;
-      right: -10px;
-      background: #ef4444;
-      color: white;
-      border: none;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 1rem;
-      line-height: 1;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-
-    /* Thermal Receipt Styling */
-    .receipt-preview {
-      background: #ffffff;
-      color: #000000;
-      padding: 2rem 1.5rem;
-      margin: 0 auto;
-      max-width: 320px; /* Thermal width 80mm approx */
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 0.85rem;
-      line-height: 1.4;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      border: 1px solid #e2e8f0;
-      position: relative;
-    }
-
-    [data-theme="dark"] .receipt-preview {
-      background: #ffffff;
-    }
-
-    /* Jagged edge effect for top and bottom */
-    .receipt-preview::before,
-    .receipt-preview::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 10px;
-      background-size: 20px 20px;
-    }
-    .receipt-preview::before {
-      top: -10px;
-      background-image: radial-gradient(circle at 10px 0, transparent 10px, #ffffff 11px);
-    }
-    .receipt-preview::after {
-      bottom: -10px;
-      background-image: radial-gradient(circle at 10px 20px, transparent 10px, #ffffff 11px);
-    }
-
-    .r-center { text-align: center; }
-    .r-bold { font-weight: bold; }
-    .r-divider {
-      border-bottom: 1px dashed #000;
-      margin: 0.75rem 0;
-    }
-
-    .r-header-title {
-      font-size: 1.25rem;
-      margin-bottom: 0.25rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .r-header-text {
-      font-size: 0.8rem;
-    }
-
-    .r-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 0.5rem 0;
-    }
-
-    .r-table th, .r-table td {
-      padding: 0.25rem 0;
-      vertical-align: top;
-    }
-
-    .r-table th {
-      border-bottom: 1px dashed #000;
-      text-align: left;
-    }
-
-    .r-col-qty { width: 15%; text-align: center; }
-    .r-col-desc { width: 55%; padding-right: 0.5rem; word-break: break-all; }
-    .r-col-amt { width: 30%; text-align: right; }
-
-    .r-totals {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.25rem;
-    }
-
-    .r-total-grand {
-      font-size: 1.1rem;
-      font-weight: bold;
-      border-top: 2px dashed #000;
-      padding-top: 0.5rem;
-      margin-top: 0.5rem;
-    }
-
-    .r-barcode {
-      margin-top: 1.5rem;
-      text-align: center;
-      font-family: 'Libre Barcode 39 Text', 'Courier New', monospace;
-      font-size: 2rem;
-    }
-
-    /* Print adjustments */
-    @media print {
-      body * { visibility: hidden; }
-      * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-      }
-      app-header, .glass-card, .tool-title, .tool-description, .no-print { display: none !important; }
-      .receipt-preview, .receipt-preview * { visibility: visible; }
-      .receipt-preview {
-        position: absolute;
-        left: 0;
-        top: 0;
-        margin: 0;
-        box-shadow: none;
-        border: none;
-      }
-      .receipt-preview::before, .receipt-preview::after {
-        display: none; /* remove jagged edges for actual thermal printing or pdf */
-      }
-      @page { margin: 0; size: 80mm auto; }
-    }
-  </style>
-  <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Text&display=swap" rel="stylesheet">
+  <script type="module" src="./script.js" defer></script>
 </head>
 <body>
+  <!-- Header Web Component -->
   <app-header></app-header>
   
-  <main class="container" style="padding: 2rem 1.5rem;">
-    <div style="text-align: center; margin-bottom: 2rem;" class="no-print">
-      <span style="display: inline-block; padding: 0.25rem 1rem; background: rgba(20, 184, 166, 0.1); color: var(--ecom-primary); border-radius: 20px; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 1rem;">E-Commerce Tools</span>
-      <h1 class="tool-title" style="margin-bottom: 0.5rem;"><span class="ecom-gradient">Receipt</span> Generator</h1>
-      <p class="tool-description" style="max-width: 600px; margin: 0 auto;">Generate professional digital thermal receipts for POS or e-commerce purchases.</p>
-    </div>
-    
-    <div class="layout-container">
-      <!-- Left Panel: Input Form -->
-      <div class="glass-card no-print" style="max-height: 85vh; overflow-y: auto;">
-        
-        <form id="receipt-form">
-          <h2 style="font-family: var(--font-display); font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--ecom-primary)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            Receipt Details
-          </h2>
+  <!-- Breadcrumbs -->
+  <app-breadcrumbs></app-breadcrumbs>
 
-          <div class="item-grid">
-            <div class="form-group">
-              <label>Currency Symbol</label>
-              <input type="text" id="r-currency" value="৳">
-            </div>
-            <div class="form-group">
-              <label>Date / Time</label>
-              <input type="text" id="r-date" value="11/06/2026 23:45">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Store Name</label>
-            <input type="text" id="r-store" value="ZARA STYLES DHAKA">
-          </div>
-          
-          <div class="form-group">
-            <label>Address / Contact Info</label>
-            <textarea id="r-address" rows="2">Gulshan Avenue, Dhaka 1212&#10;Phone: +8801700000000</textarea>
-          </div>
-
-          <div class="item-grid">
-            <div class="form-group">
-              <label>Receipt No.</label>
-              <input type="text" id="r-no" value="#INV-9908">
-            </div>
-            <div class="form-group">
-              <label>Cashier / Staff</label>
-              <input type="text" id="r-staff" value="John Doe">
-            </div>
-          </div>
-          
-          <div style="height: 1px; background: var(--border); margin: 1.5rem 0;"></div>
-          
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-            <h3 style="font-size: 0.95rem; color: var(--text-secondary); margin: 0;">Items Purchased</h3>
-            <button type="button" id="add-item-btn" class="btn-outline" style="width: auto; padding: 0.25rem 0.75rem; font-size: 0.8rem;">+ Add Item</button>
-          </div>
-          
-          <div id="items-wrapper">
-            <!-- Items injected via JS -->
-          </div>
-
-          <div style="height: 1px; background: var(--border); margin: 1.5rem 0;"></div>
-
-          <div class="item-grid">
-            <div class="form-group">
-              <label>Tax (%)</label>
-              <input type="number" id="r-tax" value="5" min="0" step="0.1">
-            </div>
-            <div class="form-group">
-              <label>Discount Amount</label>
-              <input type="number" id="r-discount" value="100" min="0" step="1">
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label>Payment Method</label>
-            <input type="text" id="r-payment" value="bKash / Card ending in 4421">
-          </div>
-          
-          <div class="form-group">
-            <label>Footer Note</label>
-            <input type="text" id="r-footer" value="Thank you for shopping with us! Return within 7 days.">
-          </div>
-
-        </form>
+  <!-- Main Work Container -->
+  <main class="tool-layout">
+    <div class="container tool-container">
+      <div class="tool-header">
+        <h1>Receipt Generator</h1>
+        <p class="tool-description">Create digital purchase receipts.</p>
       </div>
+
+      <!-- Tool Workspace -->
       
-      <!-- Right Panel: Document Preview -->
-      <div style="display: flex; flex-direction: column; align-items: center;">
-        <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem; width: 100%; max-width: 320px;" class="no-print">
-          <button id="print-btn" class="btn-ecom">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-            Print Receipt
-          </button>
+      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
+        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
+        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
+        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
+          The <strong>Receipt Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
+        </p>
+        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
+          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
+            <div><strong>Description:</strong> Create digital purchase receipts.</div>
+            <div><strong>Inputs:</strong> receipt, proof, purchase</div>
+            <div><strong>Category:</strong> ecommerce</div>
+          </div>
         </div>
-
-        <div class="receipt-preview" id="doc-preview">
-          
-          <div class="r-center">
-            <div class="r-header-title r-bold" id="p-store">ZARA STYLES DHAKA</div>
-            <div class="r-header-text" id="p-address" style="white-space: pre-wrap;">Gulshan Avenue, Dhaka 1212
-Phone: +8801700000000</div>
-          </div>
-          
-          <div class="r-divider"></div>
-          
-          <div style="display: flex; justify-content: space-between;">
-            <div>Receipt: <span id="p-no">#INV-9908</span></div>
-            <div id="p-date">11/06/2026 23:45</div>
-          </div>
-          <div>Cashier: <span id="p-staff">John Doe</span></div>
-
-          <div class="r-divider"></div>
-
-          <table class="r-table">
-            <thead>
-              <tr>
-                <th class="r-col-qty">QTY</th>
-                <th class="r-col-desc">ITEM</th>
-                <th class="r-col-amt r-center" style="text-align: right;">AMT</th>
-              </tr>
-            </thead>
-            <tbody id="p-items">
-              <!-- Items here -->
-            </tbody>
-          </table>
-
-          <div class="r-divider"></div>
-
-          <div class="r-totals">
-            <span>Subtotal</span>
-            <span id="p-subtotal">৳ 4500.00</span>
-          </div>
-          <div class="r-totals">
-            <span>Tax (<span id="p-tax-rate">5</span>%)</span>
-            <span id="p-tax-amt">৳ 225.00</span>
-          </div>
-          <div class="r-totals">
-            <span>Discount</span>
-            <span id="p-discount-amt">- ৳ 100.00</span>
-          </div>
-
-          <div class="r-totals r-total-grand">
-            <span>TOTAL</span>
-            <span id="p-grand">৳ 4625.00</span>
-          </div>
-
-          <div class="r-divider" style="margin-top: 1rem;"></div>
-          
-          <div class="r-center" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
-            Paid via: <span id="p-payment">bKash / Card ending in 4421</span>
-          </div>
-
-          <div class="r-center" id="p-footer" style="margin-bottom: 1rem;">
-            Thank you for shopping with us! Return within 7 days.
-          </div>
-
-          <div class="r-barcode" id="p-barcode">
-            *9908*
-          </div>
-
-        </div>
+        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
+    
     </div>
   </main>
 
-  <script src="script.js"></script>
+  <!-- Footer Web Component -->
+  <app-footer></app-footer>
+
+  <!-- Structured schema for search engine rich snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Receipt Generator",
+    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/receipt-generator/",
+    "description": "Create digital purchase receipts.",
+    "applicationCategory": "UtilityPage",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5."
+  }
+  </script>
 </body>
 </html>

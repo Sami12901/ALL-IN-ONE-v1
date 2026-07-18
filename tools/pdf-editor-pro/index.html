@@ -3,317 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PDF Editor Pro - Edit, Whiteout, & Annotate - ALL IN ONE</title>
-  <meta name="description" content="Professional PDF Editor. Add text, erase existing text with whiteout, draw, and sign PDF files entirely offline.">
+  <title>PDF Editor Pro - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Edit PDF, Add Text, Images, Shapes, Links, Annotate, Fill Forms, Sign PDF.">
+  <meta name="keywords" content="pdf, document, pdf editor pro, free, online, tool, utility">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/pdf-editor-pro/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
   <script type="module" src="../../js/components.js"></script>
-  <link rel="manifest" href="../../pwa/manifest.json">
-    <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">`n  <meta name="theme-color" content="#4f46e5">
-  
-  <!-- PDF.js for rendering -->
-  <script src="../../assets/lib/pdf.min.js"></script>
-  <!-- PDF-lib for saving modifications -->
-  <script src="../../assets/lib/pdf-lib.min.js"></script>
-  <!-- Fontkit for custom fonts -->
-  <script src="../../assets/lib/fontkit.min.js"></script>
-
-  <style>
-    /* Editor Layout */
-    .editor-layout {
-      display: flex;
-      flex-direction: column;
-      height: calc(100vh - 70px);
-      background: var(--bg-primary);
-      overflow: hidden;
-    }
-
-    .editor-toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.75rem 1.5rem;
-      background: var(--bg-secondary);
-      border-bottom: 1px solid var(--border);
-      flex-wrap: wrap;
-      gap: 1rem;
-      z-index: 10;
-    }
-
-    .toolbar-group {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: var(--bg-primary);
-      padding: 0.25rem;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
-    }
-
-    .tool-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-secondary);
-      padding: 0.5rem;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-    }
-
-    .tool-btn:hover {
-      background: var(--bg-tertiary);
-      color: var(--text-primary);
-    }
-
-    .tool-btn.active {
-      background: var(--accent-glow);
-      color: var(--accent);
-    }
-
-    .tool-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .page-info {
-      font-size: 0.85rem;
-      font-weight: 600;
-      min-width: 80px;
-      text-align: center;
-      color: var(--text-secondary);
-    }
-
-    /* Workspace */
-    .editor-workspace {
-      flex: 1;
-      overflow: auto;
-      padding: 2rem;
-      background: #1e1e1e;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      position: relative;
-    }
-
-    /* PDF Canvas & Overlay Wrapper */
-    .pdf-page-wrapper {
-      position: relative;
-      background: white;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
-      margin: 0 auto;
-    }
-
-    .pdf-canvas {
-      display: block;
-    }
-
-    .pdf-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    }
-
-    /* Interactive Elements on Overlay */
-    .annotation {
-      position: absolute;
-      pointer-events: auto;
-      border: 1px dashed transparent;
-    }
-    
-    .annotation:hover {
-      border-color: var(--accent);
-      cursor: move;
-    }
-
-    .annotation.selected {
-      border-color: var(--accent);
-      outline: 2px solid var(--accent-glow);
-    }
-
-    /* Whiteout Box */
-    .whiteout-box {
-      background: white;
-    }
-
-    /* Text Input Box */
-    .text-box {
-      background: transparent;
-      outline: none;
-      border: none;
-      font-family: Arial, sans-serif;
-      resize: none;
-      overflow: hidden;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      padding: 0;
-      margin: 0;
-      line-height: 1.2;
-    }
-
-    /* Upload Screen */
-    .upload-screen {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--bg-primary);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 50;
-      padding: 2rem;
-      text-align: center;
-    }
-
-    .upload-area {
-      border: 2px dashed var(--border);
-      border-radius: var(--radius-lg);
-      padding: 4rem 2rem;
-      max-width: 500px;
-      width: 100%;
-      background: var(--bg-secondary);
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .upload-area:hover { border-color: var(--accent); background: var(--accent-glow); }
-
-    /* Delete Button for annotations */
-    .delete-btn {
-      position: absolute;
-      top: -25px;
-      right: -10px;
-      background: #ef4444;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      font-size: 12px;
-      cursor: pointer;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-    }
-    .annotation.selected .delete-btn { display: flex; }
-
-    /* Crosshair for drawing */
-    .drawing-mode { cursor: crosshair !important; }
-    .drawing-mode .pdf-overlay { pointer-events: auto; }
-  </style>
+  <script type="module" src="./script.js" defer></script>
 </head>
-<body style="overflow: hidden;">
+<body>
+  <!-- Header Web Component -->
   <app-header></app-header>
+  
+  <!-- Breadcrumbs -->
+  <app-breadcrumbs></app-breadcrumbs>
 
-  <div class="editor-layout">
-    
-    <!-- Upload Screen -->
-    <div class="upload-screen" id="upload-screen">
-      <h1 class="gradient-text" style="font-family: var(--font-display); font-size: 2.5rem; margin-bottom: 1rem;">PDF Editor Pro</h1>
-      <p style="color: var(--text-secondary); margin-bottom: 2rem; max-width: 600px;">
-        Open-source overlay editor. Erase existing text using the Whiteout tool and type new text directly onto the document. 100% offline and private.
-      </p>
+  <!-- Main Work Container -->
+  <main class="tool-layout">
+    <div class="container tool-container">
+      <div class="tool-header">
+        <h1>PDF Editor Pro</h1>
+        <p class="tool-description">Edit PDF, Add Text, Images, Shapes, Links, Annotate, Fill Forms, Sign PDF.</p>
+      </div>
+
+      <!-- Tool Workspace -->
       
-      <div class="upload-area" onclick="document.getElementById('file-input').click()">
-        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1rem;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="12" y2="12"></line><line x1="15" y1="15" x2="12" y2="12"></line></svg>
-        <h3 style="margin-bottom: 0.5rem; color: var(--text-primary);">Open PDF Document</h3>
-        <p style="color: var(--text-tertiary); font-size: 0.9rem;">Click or drag and drop here</p>
-      </div>
-      <input type="file" id="file-input" accept="application/pdf" style="display: none;">
-      
-      <a href="../../index.html" class="btn btn-secondary" style="margin-top: 2rem;">&larr; Back to Dashboard</a>
-    </div>
-
-    <!-- Main Toolbar -->
-    <div class="editor-toolbar" style="display: none;" id="editor-toolbar">
-      <!-- File Info & Pages -->
-      <div style="display: flex; align-items: center; gap: 1rem;">
-        <button class="btn btn-secondary" style="padding: 0.4rem 0.75rem; font-size: 0.8rem;" onclick="location.reload()">Close</button>
-        
-        <div class="toolbar-group">
-          <button class="tool-btn" id="prev-page" title="Previous Page" disabled>
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
-          </button>
-          <span class="page-info"><span id="page-num">1</span> / <span id="page-count">-</span></span>
-          <button class="tool-btn" id="next-page" title="Next Page" disabled>
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
-          </button>
+      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
+        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
+        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
+        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
+          The <strong>PDF Editor Pro</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
+        </p>
+        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
+          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
+            <div><strong>Description:</strong> Edit PDF, Add Text, Images, Shapes, Links, Annotate, Fill Forms, Sign PDF.</div>
+            <div><strong>Inputs:</strong> pdf, document, pdf editor pro</div>
+            <div><strong>Category:</strong> pdf</div>
+          </div>
         </div>
-        
-        <div class="toolbar-group">
-          <button class="tool-btn" id="zoom-out" title="Zoom Out">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
-          </button>
-          <span id="zoom-val" style="font-size: 0.8rem; font-weight: 600; width: 45px; text-align: center;">100%</span>
-          <button class="tool-btn" id="zoom-in" title="Zoom In">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
-          </button>
-        </div>
+        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-
-      <!-- Editing Tools -->
-      <div class="toolbar-group">
-        <!-- Whiteout Tool -->
-        <button class="tool-btn" id="tool-whiteout" title="Whiteout (Erase text)">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="7.5 4.21 12 6.81 16.5 4.21"></polyline><polyline points="7.5 19.79 7.5 14.6 3 12"></polyline><polyline points="21 12 16.5 14.6 16.5 19.79"></polyline><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-          <span style="font-size: 0.75rem; margin-left: 0.25rem;">Erase</span>
-        </button>
-        
-        <div style="width: 1px; height: 16px; background: var(--border); margin: 0 0.25rem;"></div>
-        
-        <!-- Add Text Tool -->
-        <button class="tool-btn" id="tool-text" title="Add Text">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
-          <span style="font-size: 0.75rem; margin-left: 0.25rem;">Text</span>
-        </button>
-        
-        <!-- Text Options -->
-        <select id="font-family" style="background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border); border-radius: 4px; padding: 0.2rem; font-size: 0.8rem; outline: none; max-width: 120px;">
-          <option value="Helvetica">Helvetica (Standard)</option>
-        </select>
-
-        <input type="color" id="text-color" value="#000000" style="width: 24px; height: 24px; border: none; border-radius: 4px; padding: 0; cursor: pointer;" title="Text Color">
-        
-        <select id="text-size" style="background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border); border-radius: 4px; padding: 0.2rem; font-size: 0.8rem; outline: none;">
-          <option value="10">10px</option>
-          <option value="12">12px</option>
-          <option value="14" selected>14px</option>
-          <option value="16">16px</option>
-          <option value="18">18px</option>
-          <option value="24">24px</option>
-          <option value="32">32px</option>
-          <option value="48">48px</option>
-        </select>
-      </div>
-
-      <!-- Export -->
-      <div>
-        <button class="btn btn-primary" id="export-pdf" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-          Save PDF
-        </button>
-      </div>
-    </div>
-
-    <!-- Workspace -->
-    <div class="editor-workspace" id="workspace">
-      <div class="pdf-page-wrapper" id="page-wrapper">
-        <canvas class="pdf-canvas" id="pdf-canvas"></canvas>
-        <div class="pdf-overlay" id="pdf-overlay"></div>
-      </div>
-    </div>
     
-  </div>
+    </div>
+  </main>
 
-  <script src="script.js"></script>
+  <!-- Footer Web Component -->
+  <app-footer></app-footer>
+
+  <!-- Structured schema for search engine rich snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "PDF Editor Pro",
+    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/pdf-editor-pro/",
+    "description": "Edit PDF, Add Text, Images, Shapes, Links, Annotate, Fill Forms, Sign PDF.",
+    "applicationCategory": "UtilityPage",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5."
+  }
+  </script>
 </body>
 </html>

@@ -1,374 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Passport Expiry Checker - ALL IN ONE</title>
-  <meta name="description" content="Batch check passenger passport expiration dates and ensure 6-month validity rules for your travel agency.">
-  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
-  
-  <!-- Core CSS -->
+  <title>Passport Expiry Checker - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Batch check passport expiration dates.">
+  <meta name="keywords" content="passport, expiry, alert, free, online, tool, utility">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/passport-expiry-checker/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
-  <!-- Component Scripts -->
   <script type="module" src="../../js/components.js"></script>
-  
-  <style>
-    /* Travel Tool Theming */
-    :root {
-      --travel-primary: #0ea5e9; /* Sky Blue */
-      --travel-secondary: #0284c7;
-      --travel-bg: rgba(240, 249, 255, 0.05);
-      --status-valid: #10b981;
-      --status-warning: #f59e0b;
-      --status-expired: #ef4444;
-    }
-    
-    [data-theme="light"] {
-      --travel-bg: rgba(255, 255, 255, 0.8);
-    }
-    
-    .travel-gradient {
-      background: linear-gradient(135deg, #38bdf8, #0284c7);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    
-    .layout-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-    
-    @media (min-width: 992px) {
-      .layout-container {
-        grid-template-columns: 350px 1fr;
-      }
-    }
-    
-    .glass-card {
-      background: var(--travel-bg);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(14, 165, 233, 0.2);
-      border-radius: var(--radius-lg);
-      padding: 1.5rem;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    }
-
-    .glass-card-inner {
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 1.25rem;
-    }
-    
-    .form-group {
-      margin-bottom: 1.25rem;
-    }
-    
-    .form-group label {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: var(--bg-tertiary);
-      color: var(--text-primary);
-      font-family: var(--font-sans);
-      transition: var(--transition);
-      font-size: 1rem;
-    }
-
-    .form-group input:focus {
-      outline: none;
-      border-color: var(--travel-primary);
-      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
-    }
-
-    .btn-travel {
-      background: linear-gradient(135deg, var(--travel-primary), var(--travel-secondary));
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: var(--radius-sm);
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-    
-    .btn-travel:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--text-primary);
-      border: 1px solid var(--border);
-      padding: 0.5rem 1rem;
-      border-radius: var(--radius-sm);
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.85rem;
-    }
-
-    .btn-outline:hover {
-      background: var(--bg-hover);
-    }
-
-    /* Status Badges */
-    .status-badge {
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .badge-valid {
-      background: rgba(16, 185, 129, 0.15);
-      color: #10b981;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-
-    .badge-warning {
-      background: rgba(245, 158, 11, 0.15);
-      color: #f59e0b;
-      border: 1px solid rgba(245, 158, 11, 0.3);
-    }
-
-    .badge-expired {
-      background: rgba(239, 68, 68, 0.15);
-      color: #ef4444;
-      border: 1px solid rgba(239, 68, 68, 0.3);
-    }
-
-    /* Table Styles */
-    .data-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      margin-top: 1rem;
-    }
-
-    .data-table th, .data-table td {
-      padding: 1rem;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .data-table th {
-      color: var(--text-secondary);
-      font-weight: 600;
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      position: sticky;
-      top: 0;
-      background: var(--bg-secondary);
-      z-index: 10;
-    }
-
-    .data-table tbody tr {
-      transition: all 0.2s;
-    }
-
-    .data-table tbody tr:hover {
-      background: var(--bg-hover);
-    }
-
-    .table-container {
-      overflow-x: auto;
-      max-height: 500px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      background: var(--bg-secondary);
-    }
-
-    .action-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-tertiary);
-      cursor: pointer;
-      padding: 0.25rem;
-      border-radius: var(--radius-sm);
-      transition: all 0.2s;
-    }
-
-    .action-btn:hover {
-      color: #ef4444;
-      background: rgba(239, 68, 68, 0.1);
-    }
-
-    .stat-row {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .stat-box {
-      flex: 1;
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border);
-      padding: 1rem;
-      border-radius: var(--radius-sm);
-      text-align: center;
-    }
-
-    .stat-box.highlight {
-      border-color: var(--travel-primary);
-      background: rgba(14, 165, 233, 0.05);
-    }
-
-    .stat-val {
-      font-size: 1.75rem;
-      font-weight: 800;
-      font-family: var(--font-display);
-      margin-bottom: 0.25rem;
-    }
-
-    .stat-label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-secondary);
-    }
-  </style>
+  <script type="module" src="./script.js" defer></script>
 </head>
 <body>
+  <!-- Header Web Component -->
   <app-header></app-header>
   
-  <main class="container" style="padding: 2rem 1.5rem;">
-    <div style="text-align: center; margin-bottom: 3rem;">
-      <span style="display: inline-block; padding: 0.25rem 1rem; background: rgba(14, 165, 233, 0.1); color: var(--travel-primary); border-radius: 20px; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 1rem;">Travel Agency Tools</span>
-      <h1 class="tool-title" style="margin-bottom: 0.5rem;"><span class="travel-gradient">Passport Expiry</span> Checker</h1>
-      <p class="tool-description" style="max-width: 600px; margin: 0 auto;">Batch verify passport expiration dates and automatically check the 6-month validity rule against departure dates.</p>
-    </div>
-    
-    <div class="layout-container">
-      <!-- Left Panel: Input Form -->
-      <div class="glass-card">
-        <h2 style="font-family: var(--font-display); font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--travel-primary)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-          Add Passport
-        </h2>
-        
-        <form id="passport-form">
-          <div class="form-group">
-            <label for="p-name">Passenger Name</label>
-            <input type="text" id="p-name" placeholder="John Doe" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="p-number">Passport Number</label>
-            <input type="text" id="p-number" placeholder="A1234567" style="text-transform: uppercase;" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="p-expiry">Passport Expiry Date</label>
-            <input type="date" id="p-expiry" required>
-          </div>
+  <!-- Breadcrumbs -->
+  <app-breadcrumbs></app-breadcrumbs>
 
-          <div class="form-group" style="padding-top: 1rem; border-top: 1px dashed var(--border);">
-            <label for="p-departure">Trip Departure Date (Optional) <span style="font-weight: 400; font-size: 0.75rem;">For 6-month rule</span></label>
-            <input type="date" id="p-departure">
-          </div>
-          
-          <button type="submit" class="btn-travel">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            Add to Checker
-          </button>
-        </form>
-
-        <div class="glass-card-inner" style="margin-top: 2rem;">
-          <h3 style="font-size: 0.9rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.25rem;">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-            The 6-Month Rule
-          </h3>
-          <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">Most countries require passports to be valid for at least <strong>6 months</strong> beyond the date of entry. This tool automatically flags passports that violate this rule.</p>
-        </div>
+  <!-- Main Work Container -->
+  <main class="tool-layout">
+    <div class="container tool-container">
+      <div class="tool-header">
+        <h1>Passport Expiry Checker</h1>
+        <p class="tool-description">Batch check passport expiration dates.</p>
       </div>
+
+      <!-- Tool Workspace -->
       
-      <!-- Right Panel: Database -->
-      <div>
-        <!-- Stats Summary -->
-        <div class="stat-row">
-          <div class="stat-box highlight">
-            <div class="stat-val travel-gradient" id="stat-total">0</div>
-            <div class="stat-label">Total Checked</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-val" id="stat-valid" style="color: var(--status-valid);">0</div>
-            <div class="stat-label">Valid</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-val" id="stat-warning" style="color: var(--status-warning);">0</div>
-            <div class="stat-label">&lt; 6 Months</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-val" id="stat-expired" style="color: var(--status-expired);">0</div>
-            <div class="stat-label">Expired</div>
+      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
+        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
+        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
+        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
+          The <strong>Passport Expiry Checker</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
+        </p>
+        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
+          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
+            <div><strong>Description:</strong> Batch check passport expiration dates.</div>
+            <div><strong>Inputs:</strong> passport, expiry, alert</div>
+            <div><strong>Category:</strong> travel</div>
           </div>
         </div>
-
-        <div class="glass-card" style="padding: 1rem 1.5rem; margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem;">
-          <h2 style="font-family: var(--font-display); font-weight: 700; font-size: 1.25rem;">Batch Results</h2>
-          <div style="display: flex; gap: 0.5rem;">
-            <button id="clear-btn" class="btn-outline" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-              Clear All
-            </button>
-          </div>
-        </div>
-
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Passenger</th>
-                <th>Passport No.</th>
-                <th>Expiry Date</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="passport-tbody">
-              <!-- Rows will be injected by JS -->
-            </tbody>
-          </table>
-          <div id="empty-state" style="text-align: center; padding: 4rem 1rem; color: var(--text-tertiary);">
-            <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1" style="margin-bottom: 1rem; opacity: 0.5;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            <p>No passports added yet.</p>
-            <p style="font-size: 0.85rem; margin-top: 0.5rem;">Fill out the form to start checking expiry statuses.</p>
-          </div>
-        </div>
-
+        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
+    
     </div>
   </main>
 
-  <script src="script.js"></script>
+  <!-- Footer Web Component -->
+  <app-footer></app-footer>
+
+  <!-- Structured schema for search engine rich snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Passport Expiry Checker",
+    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/passport-expiry-checker/",
+    "description": "Batch check passport expiration dates.",
+    "applicationCategory": "UtilityPage",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5."
+  }
+  </script>
 </body>
 </html>

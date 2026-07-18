@@ -4,28 +4,42 @@ document.addEventListener('DOMContentLoaded', () => {
   const fileInfo = document.getElementById('file-info');
   const fileNameDisplay = document.getElementById('file-name');
   const fileSizeDisplay = document.getElementById('file-size');
-  const clearBtn = document.getElementById('clear-btn');
-  
   const optionsPanel = document.getElementById('options-panel');
   const actionsPanel = document.getElementById('actions-panel');
-  const compressBtn = document.getElementById('compress-btn');
+  const clearBtn = document.getElementById('clear-btn');
+  const saveBtn = document.getElementById('save-btn');
   
   const loadingContainer = document.getElementById('loading-container');
   const loadingFill = document.getElementById('loading-fill');
-  const loadingText = document.getElementById('loading-text');
   const loadingPercent = document.getElementById('loading-percent');
+  const loadingText = document.getElementById('loading-text');
 
-  const resultPanel = document.getElementById('result-panel');
-  const newSizeDisplay = document.getElementById('new-size-display');
-  const savingsDisplay = document.getElementById('savings-display');
-  const downloadBtn = document.getElementById('download-btn');
+  const compLevelSelect = document.getElementById('compression-level');
+  const customOptions = document.getElementById('custom-options');
+  const customQuality = document.getElementById('custom-quality');
+  const customScale = document.getElementById('custom-scale');
+  const qualityVal = document.getElementById('quality-val');
+  const scaleVal = document.getElementById('scale-val');
+
+  compLevelSelect.addEventListener('change', () => {
+    if (compLevelSelect.value === 'custom') {
+      customOptions.style.display = 'flex';
+    } else {
+      customOptions.style.display = 'none';
+    }
+  });
+
+  customQuality.addEventListener('input', () => {
+    qualityVal.textContent = customQuality.value;
+  });
+
+  customScale.addEventListener('input', () => {
+    scaleVal.textContent = customScale.value;
+  });
 
   let currentFile = null;
-  let fileArrayBuffer = null;
-  let compressedBytes = null;
 
-  // --- UI Interactions ---
-
+  // Handle drag and drop events
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
     dropZone.addEventListener(eventName, preventDefaults, false);
   });
@@ -36,162 +50,184 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   ['dragenter', 'dragover'].forEach(eventName => {
-    dropZone.addEventListener(eventName, () => dropZone.classList.add('drag-over'), false);
+    dropZone.addEventListener(eventName, () => {
+      dropZone.classList.add('drag-over');
+    }, false);
   });
 
   ['dragleave', 'drop'].forEach(eventName => {
-    dropZone.addEventListener(eventName, () => dropZone.classList.remove('drag-over'), false);
+    dropZone.addEventListener(eventName, () => {
+      dropZone.classList.remove('drag-over');
+    }, false);
   });
 
   dropZone.addEventListener('drop', (e) => {
     const dt = e.dataTransfer;
-    handleFiles(dt.files);
+    const files = dt.files;
+    handleFile(files[0]);
   });
 
   fileInput.addEventListener('change', function() {
-    handleFiles(this.files);
+    if (this.files.length > 0) {
+      handleFile(this.files[0]);
+    }
   });
 
-  async function handleFiles(files) {
-    if (files.length === 0) return;
-    const file = files[0];
-    if (file.type !== 'application/pdf') {
-      alert('Please upload a valid PDF file.');
-      return;
+  function handleFile(file) {
+    if (file && file.type === 'application/pdf') {
+      currentFile = file;
+      updateUI();
+    } else {
+      alert("Please upload a valid PDF file.");
     }
+  }
 
-    currentFile = file;
-    fileNameDisplay.textContent = file.name;
-    fileSizeDisplay.textContent = formatBytes(file.size);
-    
-    dropZone.style.display = 'none';
-    fileInfo.style.display = 'flex';
-    
-    try {
-      fileArrayBuffer = await file.arrayBuffer();
+  function updateUI() {
+    if (currentFile) {
+      dropZone.style.display = 'none';
+      fileInfo.style.display = 'flex';
       optionsPanel.style.display = 'block';
       actionsPanel.style.display = 'flex';
-    } catch (err) {
-      console.error(err);
-      alert('Error loading PDF file.');
-      clearFile();
+      
+      fileNameDisplay.textContent = currentFile.name;
+      fileSizeDisplay.textContent = (currentFile.size / (1024 * 1024)).toFixed(2) + ' MB';
+    } else {
+      dropZone.style.display = 'block';
+      fileInfo.style.display = 'none';
+      optionsPanel.style.display = 'none';
+      actionsPanel.style.display = 'none';
+      fileInput.value = '';
     }
   }
 
-  clearBtn.addEventListener('click', clearFile);
-
-  function clearFile() {
+  clearBtn.addEventListener('click', () => {
     currentFile = null;
-    fileArrayBuffer = null;
-    compressedBytes = null;
-    fileInput.value = '';
+    updateUI();
+  });
+
+  saveBtn.addEventListener('click', async () => {
+    if (!currentFile) return;
+
+    const compLevel = document.getElementById('compression-level').value;
     
-    dropZone.style.display = 'block';
-    fileInfo.style.display = 'none';
-    optionsPanel.style.display = 'none';
-    actionsPanel.style.display = 'none';
-    loadingContainer.style.display = 'none';
-    resultPanel.style.display = 'none';
-  }
+    // Configure quality and scale based on compression level
+    let quality = 0.7;
+    let scale = 1.5;
+    
+    if (compLevel === 'high') {
+      quality = 0.5;
+      scale = 1.0;
+    } else if (compLevel === 'medium') {
+      quality = 0.7;
+      scale = 1.5;
+    } else if (compLevel === 'low') {
+      quality = 0.9;
+      scale = 2.0;
+    } else if (compLevel === 'custom') {
+      quality = parseInt(customQuality.value) / 100;
+      scale = parseFloat(customScale.value);
+    }
 
-  // --- Compress Logic ---
-
-  compressBtn.addEventListener('click', async () => {
-    if (!fileArrayBuffer) return;
-
-    compressBtn.disabled = true;
-    optionsPanel.style.display = 'none';
-    actionsPanel.style.display = 'none';
+    saveBtn.disabled = true;
+    clearBtn.disabled = true;
     loadingContainer.style.display = 'flex';
-    
-    updateLoading(20, 'Analyzing PDF Structure...');
+    optionsPanel.style.opacity = '0.5';
 
     try {
-      const level = document.querySelector('input[name="compression"]:checked').value;
-      
-      updateLoading(40, 'Rebuilding PDF Streams...');
-      
-      // Basic compression through pdf-lib serialization and metadata stripping
-      const pdfDoc = await PDFLib.PDFDocument.load(fileArrayBuffer, { ignoreEncryption: true });
-      
-      updateLoading(60, 'Optimizing Objects...');
-      
-      if (level === 'high' || level === 'medium') {
-        // Strip metadata to save space
-        pdfDoc.setTitle('');
-        pdfDoc.setAuthor('');
-        pdfDoc.setSubject('');
-        pdfDoc.setKeywords([]);
-        pdfDoc.setProducer('');
-        pdfDoc.setCreator('');
+      const arrayBuffer = await currentFile.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const numPages = pdf.numPages;
+
+      const { PDFDocument } = PDFLib;
+      const newPdfDoc = await PDFDocument.create();
+
+      for (let i = 1; i <= numPages; i++) {
+        updateProgress(Math.round(((i - 1) / numPages) * 100), `Compressing page ${i} of ${numPages}...`);
+        
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({ scale: scale });
+        
+        // Render page to canvas
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        
+        await page.render({
+          canvasContext: context,
+          viewport: viewport
+        }).promise;
+        
+        // Convert canvas to optimized JPEG
+        const imgDataUrl = canvas.toDataURL('image/jpeg', quality);
+        const base64Data = imgDataUrl.split(',')[1];
+        const binaryString = window.atob(base64Data);
+        const len = binaryString.length;
+        const bytes = new Uint8Array(len);
+        for (let j = 0; j < len; j++) {
+          bytes[j] = binaryString.charCodeAt(j);
+        }
+        
+        // Embed the JPEG into the new PDF
+        const pdfImage = await newPdfDoc.embedJpg(bytes);
+        
+        // Add a page matching the image dimensions
+        const pdfPage = newPdfDoc.addPage([pdfImage.width, pdfImage.height]);
+        pdfPage.drawImage(pdfImage, {
+          x: 0,
+          y: 0,
+          width: pdfImage.width,
+          height: pdfImage.height
+        });
       }
 
-      updateLoading(80, 'Saving Optimized PDF...');
+      updateProgress(95, 'Finalizing PDF...');
       
-      // useObjectStreams: true is key for pdf-lib to compress output
-      compressedBytes = await pdfDoc.save({ useObjectStreams: true });
+      const pdfBytes = await newPdfDoc.save();
       
-      updateLoading(100, 'Done!');
+      updateProgress(100, 'Done!');
+      
+      // Compute savings
+      const originalSize = currentFile.size;
+      const newSize = pdfBytes.length;
+      let savings = 0;
+      if (newSize < originalSize) {
+        savings = Math.round((1 - (newSize / originalSize)) * 100);
+      }
+      
+      if (newSize > originalSize) {
+        alert("The original PDF was already highly compressed. The output file size increased because pages were converted to images.");
+      } else {
+        alert(`Successfully compressed! Saved ~${savings}% of original file size.`);
+      }
 
-      setTimeout(() => {
-        showResults(currentFile.size, compressedBytes.length);
-      }, 500);
-
-    } catch (err) {
-      console.error(err);
+      // Trigger download
+      let newFilename = currentFile.name.replace(/\.pdf$/i, '') + '-compressed.pdf';
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = newFilename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+    } catch (error) {
+      console.error('Error compressing PDF:', error);
       alert('An error occurred while compressing the PDF.');
-      clearFile();
+    } finally {
+      saveBtn.disabled = false;
+      clearBtn.disabled = false;
+      loadingContainer.style.display = 'none';
+      optionsPanel.style.opacity = '1';
+      updateProgress(0, 'Compressing PDF...');
     }
   });
 
-  function showResults(oldSize, newSize) {
-    loadingContainer.style.display = 'none';
-    resultPanel.style.display = 'block';
-
-    newSizeDisplay.textContent = formatBytes(newSize);
-    
-    if (newSize < oldSize) {
-      const savings = (((oldSize - newSize) / oldSize) * 100).toFixed(1);
-      savingsDisplay.textContent = `${savings}% saved`;
-      savingsDisplay.style.color = 'var(--success)';
-    } else {
-      savingsDisplay.textContent = 'Already optimized';
-      savingsDisplay.style.color = 'var(--text-secondary)';
-    }
-  }
-
-  downloadBtn.addEventListener('click', () => {
-    if (!compressedBytes) return;
-    downloadFile(compressedBytes, `compressed_${currentFile.name}`, 'application/pdf');
-  });
-
-  // --- Utils ---
-
-  function updateLoading(percent, text) {
-    loadingPercent.textContent = `${percent}%`;
-    loadingFill.style.width = `${percent}%`;
+  function updateProgress(percent, text) {
+    loadingFill.style.width = percent + '%';
+    loadingPercent.textContent = percent + '%';
     loadingText.textContent = text;
   }
-
-  function formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-  }
-
-  function downloadFile(data, filename, type) {
-    const blob = data instanceof Blob ? data : new Blob([data], { type });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
-
 });

@@ -3,306 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Product Sell Analyzer | ALL IN ONE</title>
-  <meta name="description" content="Analyze 1000x larger Excel sales data directly in the browser to discover best and worst selling products.">
+  <title>Product Sell Analyzer - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Analyze 100k+ rows of Excel sales data to find best/worst products">
+  <meta name="keywords" content="excel, sales, product, analyzer, revenue, profit, best seller, worst seller, free, online, tool, utility">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/product-sell-analyzer/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-
   <script type="module" src="../../js/components.js"></script>
-  <link rel="manifest" href="../../pwa/manifest.json">
-  <meta name="theme-color" content="#4f46e5">
-  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
-  <script type="module" src="../../js/main.js" defer></script>
-  <script src="script.js" defer></script>
-
-  <style>
-    .upload-area {
-      border: 2px dashed var(--border);
-      border-radius: var(--radius-lg);
-      padding: 3rem 2rem;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      background: var(--bg-tertiary);
-      margin-bottom: 2rem;
-    }
-    .upload-area:hover, .upload-area.dragover {
-      border-color: var(--theme-primary);
-      background: rgba(79, 70, 229, 0.05);
-    }
-    .upload-icon {
-      width: 48px;
-      height: 48px;
-      margin: 0 auto 1rem;
-      color: var(--text-secondary);
-    }
-    
-    .loading-overlay {
-      display: none;
-      text-align: center;
-      padding: 2rem;
-    }
-    .spinner {
-      border: 4px solid rgba(255, 255, 255, 0.1);
-      border-left-color: var(--theme-primary);
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 1rem;
-    }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-    /* Dashboard Layout */
-    .dashboard-container {
-      display: none; /* hidden until data is loaded */
-    }
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-    .metric-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 1.5rem;
-      text-align: center;
-      box-shadow: var(--shadow-sm);
-    }
-    .metric-card.success { border-bottom: 3px solid var(--success); }
-    .metric-card.danger { border-bottom: 3px solid var(--danger); }
-    .metric-card.primary { border-bottom: 3px solid var(--theme-primary); }
-    
-    .metric-title {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-    }
-    .metric-value {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--text-primary);
-    }
-
-    .charts-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-    @media (max-width: 900px) {
-      .charts-grid { grid-template-columns: 1fr; }
-    }
-    .chart-container {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 1.5rem;
-      position: relative;
-      height: 350px;
-    }
-
-    .data-tables-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-    }
-    @media (max-width: 900px) {
-      .data-tables-grid { grid-template-columns: 1fr; }
-    }
-    .table-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 1.5rem;
-      overflow-x: auto;
-    }
-    .table-card h3 {
-      margin-top: 0;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .table-card.best h3 { color: var(--success); }
-    .table-card.worst h3 { color: var(--danger); }
-    
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.9rem;
-    }
-    .data-table th, .data-table td {
-      padding: 0.75rem;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-    }
-    .data-table th {
-      color: var(--text-secondary);
-      font-weight: 600;
-      white-space: nowrap;
-    }
-    .data-table td { color: var(--text-primary); }
-    
-    .rank-badge {
-      display: inline-block;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      text-align: center;
-      line-height: 24px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      background: var(--bg-tertiary);
-    }
-    .best .rank-badge { background: rgba(16, 185, 129, 0.2); color: var(--success); }
-    .worst .rank-badge { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
-  </style>
+  <script type="module" src="./script.js" defer></script>
 </head>
 <body>
+  <!-- Header Web Component -->
   <app-header></app-header>
+  
+  <!-- Breadcrumbs -->
+  <app-breadcrumbs></app-breadcrumbs>
 
+  <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container" style="max-width: 1400px;">
-      <div class="breadcrumb-container">
-        <ul class="breadcrumbs">
-          <li class="breadcrumb-item"><a href="../../index.html">Business Suite</a></li>
-          <li class="breadcrumb-item active">Smart Product Sell Analyzer</li>
-        </ul>
+    <div class="container tool-container">
+      <div class="tool-header">
+        <h1>Product Sell Analyzer</h1>
+        <p class="tool-description">Analyze 100k+ rows of Excel sales data to find best/worst products</p>
       </div>
 
-      <div class="tool-header" style="text-align: center; margin-bottom: 2rem;">
-        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Smart Product Sell Analyzer</h1>
-        <p class="tool-description">Instantly process huge Excel sales datasets to uncover your best and worst selling products.</p>
+      <!-- Tool Workspace -->
+      
+      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
+        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
+        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
+        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
+          The <strong>Product Sell Analyzer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
+        </p>
+        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
+          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
+            <div><strong>Description:</strong> Analyze 100k+ rows of Excel sales data to find best/worst products</div>
+            <div><strong>Inputs:</strong> excel, sales, product, analyzer, revenue, profit, best seller, worst seller</div>
+            <div><strong>Category:</strong> excel</div>
+          </div>
+        </div>
+        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-
-      <!-- Upload Section -->
-      <div id="upload-section">
-        <input type="file" id="file-input" accept=".xlsx, .xls, .csv" style="display: none;">
-        <div class="upload-area" id="upload-area">
-          <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15v4a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="17 8 12 3 7 8"></polyline>
-            <line x1="12" y1="3" x2="12" y2="15"></line>
-          </svg>
-          <h3 style="margin-bottom: 0.5rem;">Upload Sales Data (Excel/CSV)</h3>
-          <p style="color: var(--text-secondary); font-size: 0.9rem;">Drag and drop or click to browse. Handles 100,000+ rows instantly.</p>
-          
-          <div style="margin-top: 1.5rem; text-align: left; display: inline-block; background: var(--bg-primary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
-            <p style="margin: 0 0 0.5rem 0; font-weight: 600; font-size: 0.85rem;">Required Columns (Flexible matching):</p>
-            <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.8rem; color: var(--text-secondary);">
-              <li>Product Name / Item Name</li>
-              <li>Sales / Revenue / Amount</li>
-              <li>Quantity / Qty (Optional)</li>
-              <li>Profit (Optional)</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <!-- Loading State -->
-      <div id="loading-state" class="loading-overlay">
-        <div class="spinner"></div>
-        <h3 id="loading-text">Parsing 1000x large dataset...</h3>
-        <p style="color: var(--text-secondary); font-size: 0.9rem;">Crunching the numbers locally in your browser.</p>
-      </div>
-
-      <!-- Dashboard Results -->
-      <div id="dashboard" class="dashboard-container">
-        
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-          <h2 style="margin: 0;">Sales Analysis Report</h2>
-          <button id="btn-new-analysis" class="btn btn-outline" style="padding: 0.5rem 1rem;">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-            Upload New File
-          </button>
-        </div>
-
-        <div class="metrics-grid">
-          <div class="metric-card primary">
-            <div class="metric-title">Total Revenue</div>
-            <div class="metric-value" id="val-revenue">$0</div>
-          </div>
-          <div class="metric-card success">
-            <div class="metric-title">Total Profit</div>
-            <div class="metric-value" id="val-profit">$0</div>
-          </div>
-          <div class="metric-card primary">
-            <div class="metric-title">Total Items Sold</div>
-            <div class="metric-value" id="val-qty">0</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-title">Unique Products</div>
-            <div class="metric-value" id="val-products">0</div>
-          </div>
-        </div>
-
-        <div class="charts-grid">
-          <div class="chart-container">
-            <canvas id="revenueChart"></canvas>
-          </div>
-          <div class="chart-container">
-            <canvas id="profitChart"></canvas>
-          </div>
-        </div>
-
-        <div class="data-tables-grid">
-          <div class="table-card best">
-            <h3>
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
-              Top 10 Best Sellers (By Revenue)
-            </h3>
-            <table class="data-table" id="table-best-sellers">
-              <thead>
-                <tr>
-                  <th>Rank</th>
-                  <th>Product Name</th>
-                  <th>Revenue</th>
-                  <th>Profit</th>
-                  <th>Qty</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Populated by JS -->
-              </tbody>
-            </table>
-          </div>
-
-          <div class="table-card worst">
-            <h3>
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>
-              Bottom 10 Worst Sellers (By Revenue/Profit)
-            </h3>
-            <table class="data-table" id="table-worst-sellers">
-              <thead>
-                <tr>
-                  <th>Rank</th>
-                  <th>Product Name</th>
-                  <th>Revenue</th>
-                  <th>Profit</th>
-                  <th>Qty</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Populated by JS -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-      </div>
-
+    
     </div>
   </main>
 
+  <!-- Footer Web Component -->
   <app-footer></app-footer>
+
+  <!-- Structured schema for search engine rich snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Product Sell Analyzer",
+    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/product-sell-analyzer/",
+    "description": "Analyze 100k+ rows of Excel sales data to find best/worst products",
+    "applicationCategory": "UtilityPage",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5."
+  }
+  </script>
 </body>
 </html>

@@ -1,316 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Order Analyzer - ALL IN ONE</title>
-  <meta name="description" content="Analyze your e-commerce order volumes, success rates, and trends.">
-  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
-  
-  <!-- Core CSS -->
+  <title>Order Analyzer - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Analyze order volumes and trends.">
+  <meta name="keywords" content="order, sales, analytics, free, online, tool, utility">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/order-analyzer/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
-  <!-- Component Scripts -->
   <script type="module" src="../../js/components.js"></script>
-  
-  <style>
-    /* E-commerce Tool Theming */
-    :root {
-      --ecom-primary: #8b5cf6; /* Purple/Violet */
-      --ecom-secondary: #6d28d9;
-      --ecom-bg: rgba(139, 92, 246, 0.05);
-    }
-    
-    [data-theme="light"] {
-      --ecom-bg: rgba(255, 255, 255, 0.8);
-    }
-    
-    .ecom-gradient {
-      background: linear-gradient(135deg, #a78bfa, #6d28d9);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    
-    .layout-container {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-    
-    @media (min-width: 900px) {
-      .layout-container {
-        grid-template-columns: 400px 1fr;
-      }
-    }
-    
-    .glass-card {
-      background: var(--ecom-bg);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(139, 92, 246, 0.2);
-      border-radius: var(--radius-lg);
-      padding: 2rem;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    }
-
-    .form-group {
-      margin-bottom: 1.25rem;
-    }
-    
-    .form-group label {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-    }
-
-    .input-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .input-icon {
-      position: absolute;
-      left: 1rem;
-      color: var(--text-secondary);
-      font-weight: 600;
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: var(--bg-tertiary);
-      color: var(--text-primary);
-      font-family: var(--font-sans);
-      transition: var(--transition);
-      font-size: 1rem;
-    }
-    
-    .form-group input.has-icon {
-      padding-left: 2.5rem;
-    }
-
-    .form-group input:focus {
-      outline: none;
-      border-color: var(--ecom-primary);
-      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
-    }
-
-    /* Results Panel */
-    .result-panel {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-    }
-
-    @media (max-width: 600px) {
-      .result-panel {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .stat-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: transform 0.2s;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--ecom-primary);
-    }
-
-    .stat-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1rem;
-    }
-
-    .stat-label {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 0.25rem;
-    }
-
-    .stat-value {
-      font-size: 2rem;
-      font-weight: 800;
-      font-family: var(--font-display);
-      color: var(--text-primary);
-    }
-
-    .stat-subtext {
-      font-size: 0.85rem;
-      margin-top: 0.5rem;
-    }
-
-    /* Specific Card Colors */
-    .card-success .stat-icon { background: rgba(16, 185, 129, 0.1); color: #10b981; }
-    .card-success .stat-value { color: #10b981; }
-    
-    .card-danger .stat-icon { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
-    .card-danger .stat-value { color: #ef4444; }
-
-    .card-warning .stat-icon { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
-    .card-warning .stat-value { color: #f59e0b; }
-
-    .card-revenue .stat-icon { background: rgba(139, 92, 246, 0.1); color: var(--ecom-primary); }
-    .card-revenue .stat-value { color: var(--ecom-primary); }
-
-    .currency-selector {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 2rem;
-      justify-content: center;
-    }
-
-    .currency-btn {
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border);
-      color: var(--text-primary);
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.2s;
-    }
-
-    .currency-btn.active {
-      background: var(--ecom-primary);
-      color: white;
-      border-color: var(--ecom-primary);
-    }
-  </style>
+  <script type="module" src="./script.js" defer></script>
 </head>
 <body>
+  <!-- Header Web Component -->
   <app-header></app-header>
   
-  <main class="container" style="padding: 2rem 1.5rem;">
-    <div style="text-align: center; margin-bottom: 2rem;">
-      <span style="display: inline-block; padding: 0.25rem 1rem; background: rgba(139, 92, 246, 0.1); color: var(--ecom-primary); border-radius: 20px; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 1rem;">E-Commerce Tools</span>
-      <h1 class="tool-title" style="margin-bottom: 0.5rem;"><span class="ecom-gradient">Order Analyzer</span></h1>
-      <p class="tool-description" style="max-width: 600px; margin: 0 auto;">Track delivery success, return rates, and calculate estimated revenue from your order data.</p>
-    </div>
+  <!-- Breadcrumbs -->
+  <app-breadcrumbs></app-breadcrumbs>
 
-    <div class="currency-selector" id="currency-tabs">
-      <button class="currency-btn active" data-currency="৳">BDT (৳)</button>
-      <button class="currency-btn" data-currency="$">USD ($)</button>
-      <button class="currency-btn" data-currency="€">EUR (€)</button>
-      <button class="currency-btn" data-currency="£">GBP (£)</button>
-    </div>
+  <!-- Main Work Container -->
+  <main class="tool-layout">
+    <div class="container tool-container">
+      <div class="tool-header">
+        <h1>Order Analyzer</h1>
+        <p class="tool-description">Analyze order volumes and trends.</p>
+      </div>
+
+      <!-- Tool Workspace -->
+      
+      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
+        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
+        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
+        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
+          The <strong>Order Analyzer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
+        </p>
+        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
+          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
+            <div><strong>Description:</strong> Analyze order volumes and trends.</div>
+            <div><strong>Inputs:</strong> order, sales, analytics</div>
+            <div><strong>Category:</strong> ecommerce</div>
+          </div>
+        </div>
+        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+      </div>
     
-    <div class="layout-container">
-      <!-- Input Section -->
-      <div class="glass-card">
-        <h2 style="font-family: var(--font-display); font-weight: 700; margin-bottom: 1.5rem; font-size: 1.25rem;">Order Data</h2>
-        
-        <div class="form-group">
-          <label>Total Dispatched Orders</label>
-          <input type="number" id="val-total" value="1000" min="1" step="1">
-        </div>
-
-        <div style="height: 1px; background: var(--border); margin: 1.5rem 0;"></div>
-
-        <div class="form-group">
-          <label>Successful Deliveries</label>
-          <input type="number" id="val-success" value="850" min="0" step="1">
-        </div>
-
-        <div class="form-group">
-          <label>Returned / RTO Orders</label>
-          <input type="number" id="val-return" value="120" min="0" step="1">
-        </div>
-
-        <div class="form-group">
-          <label>Cancelled (Before Dispatch)</label>
-          <input type="number" id="val-cancel" value="30" min="0" step="1">
-        </div>
-
-        <div style="height: 1px; background: var(--border); margin: 1.5rem 0;"></div>
-
-        <div class="form-group">
-          <label>Average Order Value (AOV)</label>
-          <div class="input-wrapper">
-            <span class="input-icon">৳</span>
-            <input type="number" id="val-aov" class="has-icon" value="1500" min="0" step="0.01">
-          </div>
-        </div>
-      </div>
-
-      <!-- Result Section -->
-      <div class="result-panel">
-        
-        <!-- Delivery Rate -->
-        <div class="stat-card card-success">
-          <div class="stat-icon">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-          </div>
-          <div>
-            <div class="stat-label">Delivery Success Rate</div>
-            <div class="stat-value" id="res-success-rate">85.0%</div>
-            <div class="stat-subtext" style="color: var(--text-secondary);">Target: > 80%</div>
-          </div>
-        </div>
-
-        <!-- Return Rate -->
-        <div class="stat-card card-danger">
-          <div class="stat-icon">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg>
-          </div>
-          <div>
-            <div class="stat-label">Return / RTO Rate</div>
-            <div class="stat-value" id="res-return-rate">12.0%</div>
-            <div class="stat-subtext" style="color: var(--text-secondary);">Target: < 15%</div>
-          </div>
-        </div>
-
-        <!-- Cancellation Rate -->
-        <div class="stat-card card-warning">
-          <div class="stat-icon">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-          </div>
-          <div>
-            <div class="stat-label">Cancellation Rate</div>
-            <div class="stat-value" id="res-cancel-rate">3.0%</div>
-            <div class="stat-subtext" style="color: var(--text-secondary);">Pre-dispatch cancellations</div>
-          </div>
-        </div>
-
-        <!-- Revenue Estimate -->
-        <div class="stat-card card-revenue">
-          <div class="stat-icon">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-          </div>
-          <div>
-            <div class="stat-label">Estimated Gross Revenue</div>
-            <div class="stat-value" id="res-revenue">৳ 1,275,000</div>
-            <div class="stat-subtext" id="res-lost-revenue" style="color: #ef4444; font-weight: 600;">Lost to Returns: ৳ 180,000</div>
-          </div>
-        </div>
-
-      </div>
     </div>
   </main>
 
-  <script src="script.js"></script>
+  <!-- Footer Web Component -->
+  <app-footer></app-footer>
+
+  <!-- Structured schema for search engine rich snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Order Analyzer",
+    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/order-analyzer/",
+    "description": "Analyze order volumes and trends.",
+    "applicationCategory": "UtilityPage",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5."
+  }
+  </script>
 </body>
 </html>

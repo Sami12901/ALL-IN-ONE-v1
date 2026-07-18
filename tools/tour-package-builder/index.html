@@ -1,613 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tour Package Builder - ALL IN ONE</title>
-  <meta name="description" content="Build and design comprehensive, visual tour package itineraries for your clients.">
-  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
-  
-  <!-- Core CSS -->
+  <title>Tour Package Builder - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Build and price comprehensive tour packages.">
+  <meta name="keywords" content="tour, package, itinerary, free, online, tool, utility">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/tour-package-builder/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
-  <!-- Component Scripts -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script type="module" src="../../js/components.js"></script>
-  
-  <style>
-    /* Travel Tool Theming */
-    :root {
-      --travel-primary: #0ea5e9; /* Sky Blue */
-      --travel-secondary: #0284c7;
-      --travel-bg: rgba(240, 249, 255, 0.05);
-    }
-    
-    [data-theme="light"] {
-      --travel-bg: rgba(255, 255, 255, 0.8);
-    }
-    
-    .travel-gradient {
-      background: linear-gradient(135deg, #38bdf8, #0284c7);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    
-    .layout-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-    
-    @media (min-width: 1024px) {
-      .layout-container {
-        grid-template-columns: 450px 1fr;
-      }
-    }
-    
-    .glass-card {
-      background: var(--travel-bg);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(14, 165, 233, 0.2);
-      border-radius: var(--radius-lg);
-      padding: 1.5rem;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    }
-
-    .form-group {
-      margin-bottom: 1.25rem;
-    }
-    
-    .form-group label {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-    }
-
-    .form-group input, .form-group textarea, .form-group select {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: var(--bg-tertiary);
-      color: var(--text-primary);
-      font-family: var(--font-sans);
-      transition: var(--transition);
-      font-size: 0.95rem;
-    }
-    
-    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-      outline: none;
-      border-color: var(--travel-primary);
-      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
-    }
-
-    .form-group input[type="file"] {
-      padding: 0.5rem;
-      font-size: 0.85rem;
-      background: var(--bg-secondary);
-      cursor: pointer;
-    }
-
-    .item-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
-    }
-
-    .btn-travel {
-      background: linear-gradient(135deg, var(--travel-primary), var(--travel-secondary));
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: var(--radius-sm);
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--text-primary);
-      border: 1px solid var(--border);
-      padding: 0.5rem 1rem;
-      border-radius: var(--radius-sm);
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      width: 100%;
-    }
-
-    .btn-outline:hover {
-      background: var(--bg-hover);
-    }
-
-    /* Day Builder Section */
-    .day-container {
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 1rem;
-      margin-bottom: 1rem;
-      position: relative;
-      transition: border-color 0.2s;
-    }
-
-    .day-container:hover {
-      border-color: rgba(14, 165, 233, 0.5);
-    }
-
-    .remove-btn {
-      position: absolute;
-      top: -10px;
-      right: -10px;
-      background: #ef4444;
-      color: white;
-      border: none;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 1rem;
-      line-height: 1;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-
-    /* Print / PDF Document Styling with CSS Variables for Theming */
-    .doc-preview {
-      --theme-primary: #0ea5e9;
-      --theme-header-bg: #0f172a;
-      --theme-header-text: #ffffff;
-      --theme-font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      
-      background: #ffffff;
-      color: #1e293b;
-      min-height: 842px;
-      padding: 0;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-      border-radius: 4px;
-      position: relative;
-      font-family: var(--theme-font);
-      overflow: hidden;
-    }
-
-    [data-theme="dark"] .doc-preview {
-      background: #ffffff;
-    }
-
-    .doc-hero {
-      position: relative;
-      height: 300px;
-      background: var(--theme-header-bg);
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 2.5rem;
-      color: var(--theme-header-text);
-    }
-
-    .doc-hero-img {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      opacity: 0.5;
-      z-index: 1;
-    }
-
-    .doc-hero-content {
-      position: relative;
-      z-index: 2;
-    }
-
-    .doc-title {
-      font-size: 2.5rem;
-      font-weight: 800;
-      margin-bottom: 0.5rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .doc-subtitle {
-      font-size: 1.2rem;
-      font-weight: 400;
-      opacity: 0.9;
-    }
-
-    .doc-meta-strip {
-      background: var(--theme-primary);
-      color: #ffffff;
-      padding: 1rem 2.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 600;
-    }
-
-    .doc-content {
-      padding: 2.5rem;
-    }
-
-    .doc-section-title {
-      font-size: 1.5rem;
-      color: #0f172a;
-      border-bottom: 2px solid #e2e8f0;
-      padding-bottom: 0.5rem;
-      margin-bottom: 1.5rem;
-      font-weight: 700;
-    }
-
-    /* Timeline Styling */
-    .itinerary-timeline {
-      position: relative;
-      padding-left: 2rem;
-      margin-bottom: 2rem;
-    }
-
-    .itinerary-timeline::before {
-      content: '';
-      position: absolute;
-      left: 7px;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background: #e2e8f0;
-    }
-
-    .day-item {
-      position: relative;
-      margin-bottom: 2rem;
-    }
-
-    .day-item:last-child {
-      margin-bottom: 0;
-    }
-
-    .day-marker {
-      position: absolute;
-      left: -2rem;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: var(--theme-primary);
-      border: 3px solid #ffffff;
-      box-shadow: 0 0 0 2px #e2e8f0;
-    }
-
-    .day-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--theme-primary);
-      margin-bottom: 0.5rem;
-      margin-top: -3px;
-    }
-
-    .day-desc {
-      font-size: 0.95rem;
-      color: #475569;
-      line-height: 1.6;
-    }
-
-    .day-image {
-      margin-top: 1rem;
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-
-    /* Custom Section Card Styling */
-    .custom-section-card {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-left: 4px solid var(--theme-primary);
-      border-radius: 8px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    
-    .custom-section-card .day-title {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-size: 1.25rem;
-      color: #0f172a;
-      margin-top: 0;
-    }
-
-    .custom-section-card .day-desc {
-      color: #334155;
-      font-size: 0.95rem;
-      line-height: 1.6;
-    }
-
-    /* Lists */
-    .inc-exc-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      margin-bottom: 2rem;
-    }
-
-    .list-box h4 {
-      color: #0f172a;
-      margin-bottom: 1rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .list-box ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .list-box ul li {
-      font-size: 0.9rem;
-      color: #475569;
-      margin-bottom: 0.5rem;
-      padding-left: 1.5rem;
-      position: relative;
-    }
-
-    .list-box.inc ul li::before {
-      content: '✓';
-      position: absolute;
-      left: 0;
-      color: #10b981;
-      font-weight: bold;
-    }
-
-    .list-box.exc ul li::before {
-      content: '✕';
-      position: absolute;
-      left: 0;
-      color: #ef4444;
-      font-weight: bold;
-    }
-
-    /* Print adjustments */
-    @media print {
-      body * { visibility: hidden; }
-      * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-      }
-      app-header, .glass-card, .tool-title, .tool-description, .no-print { display: none !important; }
-      .doc-preview, .doc-preview * { visibility: visible; }
-      .doc-preview {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        box-shadow: none;
-        border-radius: 0;
-      }
-      @page { margin: 0; }
-    }
-  </style>
+  <script type="module" src="./script.js" defer></script>
 </head>
 <body>
+  <!-- Header Web Component -->
   <app-header></app-header>
   
-  <main class="container" style="padding: 2rem 1.5rem;">
-    <div style="text-align: center; margin-bottom: 2rem;" class="no-print">
-      <span style="display: inline-block; padding: 0.25rem 1rem; background: rgba(14, 165, 233, 0.1); color: var(--travel-primary); border-radius: 20px; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 1rem;">Travel Agency Tools</span>
-      <h1 class="tool-title" style="margin-bottom: 0.5rem;"><span class="travel-gradient">Tour Package</span> Builder</h1>
-      <p class="tool-description" style="max-width: 600px; margin: 0 auto;">Design stunning visual day-by-day itineraries with 26+ custom themes and local image uploads.</p>
-    </div>
-    
-    <div class="layout-container">
-      <!-- Left Panel: Input Form -->
-      <div class="glass-card no-print" style="max-height: 85vh; overflow-y: auto;">
-        
-        <form id="tour-form">
-          <h2 style="font-family: var(--font-display); font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--travel-primary)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            Package Details
-          </h2>
+  <!-- Breadcrumbs -->
+  <app-breadcrumbs></app-breadcrumbs>
 
-          <div class="form-group">
-            <label>Document Theme <span style="font-weight: 400; font-size: 0.75rem; color: var(--travel-primary);">26 Themes Available</span></label>
-            <select id="doc-theme">
-              <!-- Options injected via JS -->
-            </select>
-          </div>
-
-          <div style="height: 1px; background: var(--border); margin: 1.5rem 0;"></div>
-
-          <h3 style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1rem;">Agency Branding</h3>
-          <div class="form-group">
-            <label>Agency Name</label>
-            <input type="text" id="a-name" placeholder="e.g. Dream Travels" value="Dream Travels">
-          </div>
-          <div class="form-group">
-            <label>Agency Logo <span style="font-weight: 400; font-size: 0.75rem;">Upload or Paste URL</span></label>
-            <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
-              <input type="file" id="a-logo-upload" accept="image/*" style="flex: 1;">
-            </div>
-            <input type="text" id="a-logo-url" placeholder="Or paste logo URL here..." value="">
-          </div>
-
-          <div style="height: 1px; background: var(--border); margin: 1.5rem 0;"></div>
-
-          <div class="form-group">
-            <label>Package Title</label>
-            <input type="text" id="p-title" placeholder="e.g. Wonders of Dubai" value="Wonders of Dubai">
-          </div>
-          
-          <div class="form-group">
-            <label>Sub-title / Short Description</label>
-            <input type="text" id="p-subtitle" placeholder="e.g. An exclusive 5-Day Desert Safari & City Tour" value="An exclusive 5-Day Desert Safari & City Tour">
-          </div>
-          
-          <div class="form-group">
-            <label>Hero Image <span style="font-weight: 400; font-size: 0.75rem;">Upload or Paste URL</span></label>
-            <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
-              <input type="file" id="p-image-upload" accept="image/*" style="flex: 1;">
-            </div>
-            <input type="text" id="p-image-url" placeholder="Or paste image URL here..." value="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80">
-          </div>
-
-          <div style="height: 1px; background: var(--border); margin: 1.5rem 0;"></div>
-          
-          <h3 style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1rem;">Content Format</h3>
-          <div class="form-group">
-            <label>Format Type</label>
-            <select id="p-format">
-              <option value="timeline">Day-by-Day Timeline (Full Tours)</option>
-              <option value="sections">Custom Sections (Tickets, Visa, Hotel Only)</option>
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <label>Main Content Heading</label>
-            <input type="text" id="p-content-heading" value="TOUR ITINERARY" placeholder="e.g. TOUR ITINERARY or PACKAGE DETAILS">
-          </div>
-          
-          <div class="item-grid">
-            <div class="form-group">
-              <label>Duration</label>
-              <input type="text" id="p-duration" placeholder="e.g. 4 Nights / 5 Days" value="4 Nights / 5 Days">
-            </div>
-            <div class="form-group">
-              <label>Price Display</label>
-              <input type="text" id="p-price" placeholder="e.g. ৳45,000 / Pax" value="৳45,000 / Pax">
-            </div>
-          </div>
-
-          <div style="height: 1px; background: var(--border); margin: 1.5rem 0;"></div>
-          
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-            <h3 style="font-size: 0.95rem; color: var(--text-secondary); margin: 0;">Day-by-Day Itinerary</h3>
-            <button type="button" id="add-day-btn" class="btn-outline" style="width: auto; padding: 0.25rem 0.75rem; font-size: 0.8rem;">+ Add Day</button>
-          </div>
-          
-          <div id="days-wrapper">
-            <!-- Days injected via JS -->
-          </div>
-
-          <div style="height: 1px; background: var(--border); margin: 1.5rem 0;"></div>
-
-          <div class="form-group">
-            <label>Inclusions (One per line)</label>
-            <textarea id="p-inc" rows="4">Return Air Ticket
-4-Star Hotel Accommodation
-Daily Buffet Breakfast
-Desert Safari with BBQ Dinner
-Half Day City Tour
-Airport Transfers</textarea>
-          </div>
-
-          <div class="form-group">
-            <label>Exclusions (One per line)</label>
-            <textarea id="p-exc" rows="4">Visa Fees (Unless requested)
-Tourism Dirham Fee
-Personal Expenses
-Lunch & Dinner
-Travel Insurance</textarea>
-          </div>
-        </form>
+  <!-- Main Work Container -->
+  <main class="tool-layout">
+    <div class="container tool-container">
+      <div class="tool-header">
+        <h1>Tour Package Builder</h1>
+        <p class="tool-description">Build and price comprehensive tour packages.</p>
       </div>
+
+      <!-- Tool Workspace -->
       
-      <!-- Right Panel: Document Preview -->
-      <div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; margin-bottom: 1rem; gap: 1rem;" class="no-print">
-          <button id="download-img-btn" class="btn-outline" style="width: 100%;">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            Download Image
-          </button>
-          <button id="print-btn" class="btn-travel" style="width: 100%;">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-            Export PDF Brochure
-          </button>
-        </div>
-
-        <div class="doc-preview" id="doc-preview">
-          <!-- Agency Header -->
-          <div class="doc-agency-header" style="padding: 1rem 2.5rem; display: flex; align-items: center; gap: 1rem; border-bottom: 1px solid #e2e8f0; background: #ffffff;">
-            <img id="doc-agency-logo" src="" alt="Logo" style="height: 40px; display: none; object-fit: contain;">
-            <div id="doc-agency-name" style="font-weight: 700; font-size: 1.2rem; color: var(--theme-primary);">Dream Travels</div>
-          </div>
-          
-          <!-- Hero Section -->
-          <div class="doc-hero">
-            <img src="" alt="Hero" class="doc-hero-img" id="doc-hero-img">
-            <div class="doc-hero-content">
-              <div class="doc-title" id="doc-title">Wonders of Dubai</div>
-              <div class="doc-subtitle" id="doc-subtitle">An exclusive 5-Day Desert Safari & City Tour</div>
-            </div>
-          </div>
-          
-          <!-- Meta Strip -->
-          <div class="doc-meta-strip">
-            <div class="doc-meta-item">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-              <span id="doc-duration">4 Nights / 5 Days</span>
-            </div>
-            <div class="doc-meta-item">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-              <span>Package Starts From: <strong id="doc-price">৳45,000 / Pax</strong></span>
-            </div>
-          </div>
-
-          <!-- Content Section -->
-          <div class="doc-content">
-            
-            <div class="doc-section-title" id="doc-content-heading">TOUR ITINERARY</div>
-            <div class="itinerary-timeline" id="doc-timeline">
-              <!-- Timeline/Sections injected via JS -->
-            </div>
-
-            <div class="doc-section-title">PACKAGE DETAILS</div>
-            <div class="inc-exc-grid">
-              <div class="list-box inc">
-                <h4>
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                  Inclusions
-                </h4>
-                <ul id="doc-inc">
-                  <!-- Inclusions -->
-                </ul>
-              </div>
-              <div class="list-box exc">
-                <h4>
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#ef4444" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                  Exclusions
-                </h4>
-                <ul id="doc-exc">
-                  <!-- Exclusions -->
-                </ul>
-              </div>
-            </div>
+      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
+        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
+        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
+        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
+          The <strong>Tour Package Builder</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
+        </p>
+        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
+          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
+            <div><strong>Description:</strong> Build and price comprehensive tour packages.</div>
+            <div><strong>Inputs:</strong> tour, package, itinerary</div>
+            <div><strong>Category:</strong> travel</div>
           </div>
         </div>
+        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
+    
     </div>
   </main>
 
-  <script src="script.js"></script>
+  <!-- Footer Web Component -->
+  <app-footer></app-footer>
+
+  <!-- Structured schema for search engine rich snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Tour Package Builder",
+    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/tour-package-builder/",
+    "description": "Build and price comprehensive tour packages.",
+    "applicationCategory": "UtilityPage",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5."
+  }
+  </script>
 </body>
 </html>

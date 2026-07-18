@@ -1,307 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inventory Analyzer - ALL IN ONE</title>
-  <meta name="description" content="Monitor your e-commerce stock levels, calculate reorder points, and track inventory value.">
-  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
-  
-  <!-- Core CSS -->
+  <title>Inventory Analyzer - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Monitor inventory turnover and levels.">
+  <meta name="keywords" content="inventory, stock, warehouse, free, online, tool, utility">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/inventory-analyzer/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
-  <!-- Component Scripts -->
   <script type="module" src="../../js/components.js"></script>
-  
-  <style>
-    /* E-commerce Tool Theming */
-    :root {
-      --ecom-primary: #0284c7; /* Sky Blue Dark */
-      --ecom-secondary: #0369a1;
-      --ecom-bg: rgba(2, 132, 199, 0.05);
-    }
-    
-    [data-theme="light"] {
-      --ecom-bg: rgba(255, 255, 255, 0.8);
-    }
-    
-    .ecom-gradient {
-      background: linear-gradient(135deg, #38bdf8, #0284c7);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    
-    .layout-container {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-    
-    @media (min-width: 900px) {
-      .layout-container {
-        grid-template-columns: 400px 1fr;
-      }
-    }
-    
-    .glass-card {
-      background: var(--ecom-bg);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(2, 132, 199, 0.2);
-      border-radius: var(--radius-lg);
-      padding: 2rem;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    }
-
-    .form-group {
-      margin-bottom: 1.25rem;
-    }
-    
-    .form-group label {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-    }
-
-    .input-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .input-icon {
-      position: absolute;
-      left: 1rem;
-      color: var(--text-secondary);
-      font-weight: 600;
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: var(--bg-tertiary);
-      color: var(--text-primary);
-      font-family: var(--font-sans);
-      transition: var(--transition);
-      font-size: 1rem;
-    }
-    
-    .form-group input.has-icon {
-      padding-left: 2.5rem;
-    }
-
-    .form-group input:focus {
-      outline: none;
-      border-color: var(--ecom-primary);
-      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
-    }
-
-    /* Results Panel */
-    .result-panel {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-    }
-
-    @media (max-width: 600px) {
-      .result-panel {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .stat-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: transform 0.2s;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--ecom-primary);
-    }
-
-    .stat-card.full-width {
-      grid-column: 1 / -1;
-      background: linear-gradient(135deg, rgba(2, 132, 199, 0.1), rgba(3, 105, 161, 0.05));
-      border-color: var(--ecom-primary);
-    }
-
-    .stat-label {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 0.25rem;
-    }
-
-    .stat-value {
-      font-size: 2rem;
-      font-weight: 800;
-      font-family: var(--font-display);
-      color: var(--text-primary);
-    }
-
-    .full-width .stat-value {
-      font-size: 2.5rem;
-      color: var(--ecom-primary);
-    }
-
-    .stat-subtext {
-      font-size: 0.85rem;
-      margin-top: 0.5rem;
-      font-weight: 600;
-    }
-
-    .currency-selector {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 2rem;
-      justify-content: center;
-    }
-
-    .currency-btn {
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border);
-      color: var(--text-primary);
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.2s;
-    }
-
-    .currency-btn.active {
-      background: var(--ecom-primary);
-      color: white;
-      border-color: var(--ecom-primary);
-    }
-
-    /* Warning states */
-    .text-danger { color: #ef4444 !important; }
-    .text-warning { color: #f59e0b !important; }
-    .text-success { color: #10b981 !important; }
-  </style>
+  <script type="module" src="./script.js" defer></script>
 </head>
 <body>
+  <!-- Header Web Component -->
   <app-header></app-header>
   
-  <main class="container" style="padding: 2rem 1.5rem;">
-    <div style="text-align: center; margin-bottom: 2rem;">
-      <span style="display: inline-block; padding: 0.25rem 1rem; background: rgba(2, 132, 199, 0.1); color: var(--ecom-primary); border-radius: 20px; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 1rem;">E-Commerce Tools</span>
-      <h1 class="tool-title" style="margin-bottom: 0.5rem;"><span class="ecom-gradient">Inventory Analyzer</span></h1>
-      <p class="tool-description" style="max-width: 600px; margin: 0 auto;">Track stock levels, calculate reorder points, and manage your tied-up capital efficiently.</p>
-    </div>
+  <!-- Breadcrumbs -->
+  <app-breadcrumbs></app-breadcrumbs>
 
-    <div class="currency-selector" id="currency-tabs">
-      <button class="currency-btn active" data-currency="৳">BDT (৳)</button>
-      <button class="currency-btn" data-currency="$">USD ($)</button>
-      <button class="currency-btn" data-currency="€">EUR (€)</button>
-      <button class="currency-btn" data-currency="£">GBP (£)</button>
-    </div>
+  <!-- Main Work Container -->
+  <main class="tool-layout">
+    <div class="container tool-container">
+      <div class="tool-header">
+        <h1>Inventory Analyzer</h1>
+        <p class="tool-description">Monitor inventory turnover and levels.</p>
+      </div>
+
+      <!-- Tool Workspace -->
+      
+      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
+        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
+        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
+        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
+          The <strong>Inventory Analyzer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
+        </p>
+        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
+          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
+            <div><strong>Description:</strong> Monitor inventory turnover and levels.</div>
+            <div><strong>Inputs:</strong> inventory, stock, warehouse</div>
+            <div><strong>Category:</strong> ecommerce</div>
+          </div>
+        </div>
+        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+      </div>
     
-    <div class="layout-container">
-      <!-- Input Section -->
-      <div class="glass-card">
-        <h2 style="font-family: var(--font-display); font-weight: 700; margin-bottom: 1.5rem; font-size: 1.25rem;">Inventory Data</h2>
-        
-        <div class="form-group">
-          <label>Current Stock (Units)</label>
-          <input type="number" id="val-stock" value="500" min="0" step="1">
-        </div>
-
-        <div class="form-group">
-          <label>Average Daily Sales (Units)</label>
-          <input type="number" id="val-daily-sales" value="15" min="1" step="1">
-        </div>
-
-        <div style="height: 1px; background: var(--border); margin: 1.5rem 0;"></div>
-
-        <div class="form-group">
-          <label>Unit Cost Price</label>
-          <div class="input-wrapper">
-            <span class="input-icon">৳</span>
-            <input type="number" id="val-cost" class="has-icon" value="250" min="0" step="0.01">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Supplier Lead Time (Days)</label>
-          <input type="number" id="val-lead-time" value="14" min="1" step="1">
-          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">Days taken for new stock to arrive</div>
-        </div>
-
-        <div class="form-group">
-          <label>Safety Stock (Days)</label>
-          <input type="number" id="val-safety" value="5" min="0" step="1">
-          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">Buffer days to prevent stockouts</div>
-        </div>
-      </div>
-
-      <!-- Result Section -->
-      <div class="result-panel">
-        
-        <!-- Days of Stock Remaining (Full Width) -->
-        <div class="stat-card full-width">
-          <div>
-            <div class="stat-label">Days of Stock Remaining</div>
-            <div class="stat-value" id="res-days-remaining">33 Days</div>
-            <div class="stat-subtext" id="res-status" style="color: #10b981;">Status: Healthy Stock Level</div>
-          </div>
-        </div>
-
-        <!-- Reorder Point -->
-        <div class="stat-card">
-          <div>
-            <div class="stat-label">Reorder Point (ROP)</div>
-            <div class="stat-value" id="res-rop">285 Units</div>
-            <div class="stat-subtext" style="color: var(--text-secondary);">Order when stock hits this level</div>
-          </div>
-        </div>
-
-        <!-- Safety Stock Units -->
-        <div class="stat-card">
-          <div>
-            <div class="stat-label">Safety Stock Required</div>
-            <div class="stat-value" id="res-safety-units">75 Units</div>
-            <div class="stat-subtext" style="color: var(--text-secondary);">Buffer for unexpected delays</div>
-          </div>
-        </div>
-
-        <!-- Total Inventory Value -->
-        <div class="stat-card">
-          <div>
-            <div class="stat-label">Total Inventory Value</div>
-            <div class="stat-value" id="res-inv-value">৳ 125,000</div>
-            <div class="stat-subtext" style="color: var(--text-secondary);">Capital tied up in current stock</div>
-          </div>
-        </div>
-
-        <!-- Monthly Sales Velocity -->
-        <div class="stat-card">
-          <div>
-            <div class="stat-label">Monthly Sales Velocity</div>
-            <div class="stat-value" id="res-velocity">450 Units</div>
-            <div class="stat-subtext" style="color: var(--text-secondary);">Estimated units sold per month</div>
-          </div>
-        </div>
-
-      </div>
     </div>
   </main>
 
-  <script src="script.js"></script>
+  <!-- Footer Web Component -->
+  <app-footer></app-footer>
+
+  <!-- Structured schema for search engine rich snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Inventory Analyzer",
+    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/inventory-analyzer/",
+    "description": "Monitor inventory turnover and levels.",
+    "applicationCategory": "UtilityPage",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5."
+  }
+  </script>
 </body>
 </html>

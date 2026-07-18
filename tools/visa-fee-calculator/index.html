@@ -1,477 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visa Fee Calculator - ALL IN ONE</title>
-  <meta name="description" content="Calculate complete visa processing costs including embassy fees, VFS charges, and agency margins.">
-  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
-  
-  <!-- Core CSS -->
+  <title>Visa Fee Calculator - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Calculate total visa processing costs.">
+  <meta name="keywords" content="visa, cost, travel, free, online, tool, utility">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/visa-fee-calculator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
-  <!-- Component Scripts -->
   <script type="module" src="../../js/components.js"></script>
-  
-  <style>
-    /* Travel Tool Theming */
-    :root {
-      --travel-primary: #0ea5e9; /* Sky Blue */
-      --travel-secondary: #0284c7;
-      --travel-bg: rgba(240, 249, 255, 0.05);
-    }
-    
-    [data-theme="light"] {
-      --travel-bg: rgba(255, 255, 255, 0.8);
-    }
-    
-    .travel-gradient {
-      background: linear-gradient(135deg, #38bdf8, #0284c7);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    
-    .layout-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-    
-    @media (min-width: 992px) {
-      .layout-container {
-        grid-template-columns: 400px 1fr;
-      }
-    }
-    
-    .glass-card {
-      background: var(--travel-bg);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(14, 165, 233, 0.2);
-      border-radius: var(--radius-lg);
-      padding: 1.5rem;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    }
-
-    .glass-card-inner {
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 1.25rem;
-    }
-    
-    .form-group {
-      margin-bottom: 1.25rem;
-    }
-    
-    .form-group label {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-    }
-
-    .input-wrapper {
-      position: relative;
-    }
-
-    .input-prefix {
-      position: absolute;
-      left: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-tertiary);
-      font-weight: 600;
-    }
-
-    .form-group input, .form-group select {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: var(--bg-tertiary);
-      color: var(--text-primary);
-      font-family: var(--font-sans);
-      transition: var(--transition);
-      font-size: 1rem;
-    }
-
-    .form-group input.has-prefix { padding-left: 2rem; }
-    
-    .form-group input:focus, .form-group select:focus {
-      outline: none;
-      border-color: var(--travel-primary);
-      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
-    }
-
-    /* Checkbox list styling */
-    .addon-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.75rem 1rem;
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      margin-bottom: 0.5rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .addon-item:hover {
-      border-color: rgba(14, 165, 233, 0.4);
-    }
-
-    .addon-item.selected {
-      border-color: var(--travel-primary);
-      background: rgba(14, 165, 233, 0.05);
-    }
-
-    .addon-item input[type="checkbox"] {
-      width: auto;
-      margin-right: 1rem;
-      cursor: pointer;
-    }
-
-    .addon-price {
-      font-weight: 600;
-      font-family: monospace;
-      color: var(--travel-primary);
-    }
-
-    .btn-travel {
-      background: linear-gradient(135deg, var(--travel-primary), var(--travel-secondary));
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: var(--radius-sm);
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      font-size: 1rem;
-    }
-    
-    .btn-travel:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--text-primary);
-      border: 1px solid var(--border);
-      padding: 0.5rem 1rem;
-      border-radius: var(--radius-sm);
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.85rem;
-    }
-
-    .btn-outline:hover {
-      background: var(--bg-hover);
-    }
-
-    /* Output Results Styling */
-    .receipt-container {
-      background: #ffffff;
-      color: #1a1a1a;
-      border-radius: var(--radius-md);
-      padding: 2rem;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-      position: relative;
-    }
-
-    [data-theme="dark"] .receipt-container {
-      background: #f8fafc; /* Keep it light for receipt feel */
-    }
-
-    .receipt-header {
-      text-align: center;
-      border-bottom: 2px dashed #cbd5e1;
-      padding-bottom: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .receipt-title {
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: 1.5rem;
-      color: #0f172a;
-      margin-bottom: 0.25rem;
-    }
-
-    .receipt-subtitle {
-      font-size: 0.85rem;
-      color: #64748b;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .receipt-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.75rem 0;
-      border-bottom: 1px solid #f1f5f9;
-      font-size: 0.95rem;
-    }
-
-    .receipt-row:last-of-type {
-      border-bottom: none;
-    }
-
-    .receipt-label {
-      color: #475569;
-    }
-
-    .receipt-value {
-      font-weight: 600;
-      color: #0f172a;
-      font-family: monospace;
-      font-size: 1rem;
-    }
-
-    .receipt-total-section {
-      background: #f1f5f9;
-      border-radius: var(--radius-sm);
-      padding: 1.5rem;
-      margin-top: 1.5rem;
-    }
-
-    .total-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .total-label {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #0f172a;
-    }
-
-    .total-value {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--travel-secondary);
-      font-family: var(--font-display);
-    }
-    
-    .per-person-note {
-      text-align: right;
-      font-size: 0.85rem;
-      color: #64748b;
-      margin-top: 0.5rem;
-    }
-
-    /* Print Styles */
-    @media print {
-      body * { visibility: hidden; }
-      app-header, .glass-card, .tool-title, .tool-description { display: none !important; }
-      .receipt-container, .receipt-container * { visibility: visible; }
-      .receipt-container {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        box-shadow: none;
-        border-radius: 0;
-      }
-      .no-print { display: none !important; }
-    }
-  </style>
+  <script type="module" src="./script.js" defer></script>
 </head>
 <body>
+  <!-- Header Web Component -->
   <app-header></app-header>
   
-  <main class="container" style="padding: 2rem 1.5rem;">
-    <div style="text-align: center; margin-bottom: 3rem;" class="no-print">
-      <span style="display: inline-block; padding: 0.25rem 1rem; background: rgba(14, 165, 233, 0.1); color: var(--travel-primary); border-radius: 20px; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 1rem;">Travel Agency Tools</span>
-      <h1 class="tool-title" style="margin-bottom: 0.5rem;"><span class="travel-gradient">Visa Fee</span> Calculator</h1>
-      <p class="tool-description" style="max-width: 600px; margin: 0 auto;">Generate accurate visa quotations by combining embassy fees, VFS charges, optional add-ons, and agency service margins.</p>
-    </div>
-    
-    <div class="layout-container">
-      <!-- Left Panel: Input Form -->
-      <div class="glass-card no-print">
-        <h2 style="font-family: var(--font-display); font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--travel-primary)" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-          Cost Parameters
-        </h2>
-        
-        <form id="visa-form">
-          <div class="form-group">
-            <label for="currency-select">Currency</label>
-            <select id="currency-select">
-              <option value="BDT">BDT (৳)</option>
-              <option value="USD">USD ($)</option>
-              <option value="EUR">EUR (€)</option>
-              <option value="GBP">GBP (£)</option>
-              <option value="INR">INR (₹)</option>
-              <option value="AED">AED (د.إ)</option>
-            </select>
-          </div>
+  <!-- Breadcrumbs -->
+  <app-breadcrumbs></app-breadcrumbs>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-            <div class="form-group">
-              <label for="num-pax">Applicants (Pax)</label>
-              <input type="number" id="num-pax" value="1" min="1" required>
-            </div>
-            <div class="form-group">
-              <label for="country-name">Destination</label>
-              <input type="text" id="country-name" placeholder="e.g. Schengen">
-            </div>
-          </div>
-          
-          <div style="height: 1px; background: var(--border); margin: 1rem 0;"></div>
-
-          <div class="form-group">
-            <label for="embassy-fee">Embassy / Consular Fee <span style="font-weight: 400; font-size: 0.75rem;">Per person</span></label>
-            <div class="input-wrapper">
-              <span class="input-prefix curr-sym">৳</span>
-              <input type="number" id="embassy-fee" class="has-prefix" value="9500" min="0" step="0.01">
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label for="vfs-fee">VFS / Application Center Fee <span style="font-weight: 400; font-size: 0.75rem;">Per person</span></label>
-            <div class="input-wrapper">
-              <span class="input-prefix curr-sym">৳</span>
-              <input type="number" id="vfs-fee" class="has-prefix" value="3200" min="0" step="0.01">
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label for="agency-fee">Agency Service Charge <span style="font-weight: 400; font-size: 0.75rem;">Per person</span></label>
-            <div class="input-wrapper">
-              <span class="input-prefix curr-sym">৳</span>
-              <input type="number" id="agency-fee" class="has-prefix" value="2500" min="0" step="0.01">
-            </div>
-          </div>
-
-          <div style="height: 1px; background: var(--border); margin: 1.5rem 0 1rem;"></div>
-          <h3 style="font-size: 0.95rem; margin-bottom: 1rem; color: var(--text-secondary);">Optional Add-ons (Per Person)</h3>
-          
-          <label class="addon-item">
-            <div style="display: flex; align-items: center;">
-              <input type="checkbox" id="addon-insurance">
-              <div>
-                <div style="font-weight: 600; font-size: 0.9rem;">Travel Insurance</div>
-                <div style="font-size: 0.75rem; color: var(--text-tertiary);">Mandatory for Schengen</div>
-              </div>
-            </div>
-            <div class="input-wrapper" style="width: 100px;">
-              <span class="input-prefix curr-sym" style="font-size: 0.8rem;">৳</span>
-              <input type="number" id="val-insurance" class="has-prefix" value="1800" min="0" style="padding: 0.4rem 0.5rem 0.4rem 1.5rem; font-size: 0.85rem;" onclick="event.preventDefault();">
-            </div>
-          </label>
-
-          <label class="addon-item">
-            <div style="display: flex; align-items: center;">
-              <input type="checkbox" id="addon-lounge">
-              <div>
-                <div style="font-weight: 600; font-size: 0.9rem;">Premium Lounge</div>
-                <div style="font-size: 0.75rem; color: var(--text-tertiary);">VFS VIP service</div>
-              </div>
-            </div>
-            <div class="input-wrapper" style="width: 100px;">
-              <span class="input-prefix curr-sym" style="font-size: 0.8rem;">৳</span>
-              <input type="number" id="val-lounge" class="has-prefix" value="4500" min="0" style="padding: 0.4rem 0.5rem 0.4rem 1.5rem; font-size: 0.85rem;" onclick="event.preventDefault();">
-            </div>
-          </label>
-
-          <label class="addon-item">
-            <div style="display: flex; align-items: center;">
-              <input type="checkbox" id="addon-courier">
-              <div>
-                <div style="font-weight: 600; font-size: 0.9rem;">Courier Service</div>
-                <div style="font-size: 0.75rem; color: var(--text-tertiary);">Passport home delivery</div>
-              </div>
-            </div>
-            <div class="input-wrapper" style="width: 100px;">
-              <span class="input-prefix curr-sym" style="font-size: 0.8rem;">৳</span>
-              <input type="number" id="val-courier" class="has-prefix" value="500" min="0" style="padding: 0.4rem 0.5rem 0.4rem 1.5rem; font-size: 0.85rem;" onclick="event.preventDefault();">
-            </div>
-          </label>
-          
-          <button type="button" id="reset-btn" class="btn-outline" style="width: 100%; justify-content: center; margin-top: 1.5rem;">Reset Calculator</button>
-        </form>
+  <!-- Main Work Container -->
+  <main class="tool-layout">
+    <div class="container tool-container">
+      <div class="tool-header">
+        <h1>Visa Fee Calculator</h1>
+        <p class="tool-description">Calculate total visa processing costs.</p>
       </div>
+
+      <!-- Tool Workspace -->
       
-      <!-- Right Panel: Receipt View -->
-      <div>
-        <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;" class="no-print">
-          <button id="print-btn" class="btn-outline">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-            Print Quotation
-          </button>
-        </div>
-
-        <div class="receipt-container" id="receipt">
-          <div class="receipt-header">
-            <div class="receipt-title">VISA QUOTATION</div>
-            <div class="receipt-subtitle" id="receipt-destination">Schengen Visa</div>
-            <div style="margin-top: 0.5rem; font-size: 0.85rem; color: #94a3b8;" id="receipt-date">Date: 12 Oct 2026</div>
-          </div>
-
-          <div style="margin-bottom: 1.5rem; font-size: 0.95rem; color: #0f172a; font-weight: 600;">
-            Breakdown per applicant (1 Pax):
-          </div>
-
-          <div class="receipt-row">
-            <span class="receipt-label">Embassy / Consular Fee</span>
-            <span class="receipt-value" id="out-embassy">৳ 9,500</span>
-          </div>
-          <div class="receipt-row">
-            <span class="receipt-label">VFS / Processing Center Fee</span>
-            <span class="receipt-value" id="out-vfs">৳ 3,200</span>
-          </div>
-          <div class="receipt-row">
-            <span class="receipt-label">Agency Service Charge</span>
-            <span class="receipt-value" id="out-agency">৳ 2,500</span>
-          </div>
-          
-          <div id="out-addons-container">
-            <!-- Addons injected via JS -->
-          </div>
-
-          <div style="border-top: 1px dashed #cbd5e1; margin-top: 1rem; padding-top: 1rem;">
-            <div class="receipt-row">
-              <span class="receipt-label" style="font-weight: 600;">Total per Applicant</span>
-              <span class="receipt-value" id="out-per-pax" style="color: var(--travel-secondary);">৳ 15,200</span>
-            </div>
-          </div>
-
-          <div class="receipt-total-section">
-            <div class="total-row">
-              <span class="total-label">GRAND TOTAL</span>
-              <span class="total-value" id="out-grand-total">৳ 15,200</span>
-            </div>
-            <div class="per-person-note" id="out-pax-count">Based on 1 Applicant(s)</div>
-          </div>
-          
-          <div style="margin-top: 2rem; text-align: center; font-size: 0.8rem; color: #94a3b8;">
-            * Visa fees are subject to change by the embassy without prior notice.<br>
-            * Agency fees are non-refundable in case of visa refusal.
+      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
+        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
+        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
+        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
+          The <strong>Visa Fee Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
+        </p>
+        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
+          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
+            <div><strong>Description:</strong> Calculate total visa processing costs.</div>
+            <div><strong>Inputs:</strong> visa, cost, travel</div>
+            <div><strong>Category:</strong> travel</div>
           </div>
         </div>
+        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
+    
     </div>
   </main>
 
-  <script src="script.js"></script>
+  <!-- Footer Web Component -->
+  <app-footer></app-footer>
+
+  <!-- Structured schema for search engine rich snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Visa Fee Calculator",
+    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/visa-fee-calculator/",
+    "description": "Calculate total visa processing costs.",
+    "applicationCategory": "UtilityPage",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5."
+  }
+  </script>
 </body>
 </html>

@@ -3,341 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PDF Split - Extract and Split PDF Files Online - ALL IN ONE</title>
-  <meta name="description" content="Split your PDF files into multiple smaller files or extract specific pages. 100% offline and secure.">
-  <meta name="keywords" content="pdf split, extract pdf, split pdf offline, free pdf tools">
+  <title>PDF Split - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Split by Pages, Split by Range, Extract Pages, Split Every Page.">
+  <meta name="keywords" content="pdf, document, pdf split, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/pdf-split/">
-  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
   <script type="module" src="../../js/components.js"></script>
-  <link rel="manifest" href="../../pwa/manifest.json">
-  <meta name="theme-color" content="#4f46e5">
-  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
-  <script type="module" src="../../js/main.js" defer></script>
-  
-  <!-- PDF-lib and JSZip for client-side manipulation -->
-  <script src="../../assets/lib/pdf-lib.min.js"></script>
-  <script src="../../assets/lib/jszip.min.js"></script>
-
-  <style>
-    .upload-area {
-      border: 2px dashed var(--border);
-      border-radius: var(--radius-lg);
-      padding: 3rem 1.5rem;
-      text-align: center;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      background: var(--bg-secondary);
-      position: relative;
-    }
-    
-    .upload-area:hover, .upload-area.drag-over {
-      border-color: var(--accent);
-      background: var(--accent-glow);
-    }
-    
-    .file-info {
-      margin-top: 1.5rem;
-      display: none;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem;
-      background: var(--bg-primary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-    }
-    
-    .file-details {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-      flex: 1;
-      overflow: hidden;
-    }
-    
-    .file-name {
-      font-weight: 600;
-      color: var(--text-primary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    
-    .file-size {
-      font-size: 0.8rem;
-      color: var(--text-tertiary);
-    }
-    
-    .btn-remove {
-      background: none;
-      border: none;
-      color: var(--danger);
-      cursor: pointer;
-      padding: 0.5rem;
-      border-radius: var(--radius-sm);
-      transition: background 0.2s ease;
-    }
-    
-    .btn-remove:hover {
-      background: rgba(239, 68, 68, 0.1);
-    }
-    
-    .split-options {
-      margin-top: 1.5rem;
-      display: none;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-    
-    .option-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-    
-    .option-group label {
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-    
-    .radio-group {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1rem;
-    }
-    
-    .radio-card {
-      position: relative;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 1rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      background: var(--bg-secondary);
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-    
-    .radio-card:hover {
-      border-color: var(--accent);
-    }
-    
-    .radio-card input[type="radio"] {
-      position: absolute;
-      opacity: 0;
-    }
-    
-    .radio-card input[type="radio"]:checked + .radio-content {
-      color: var(--accent);
-    }
-    
-    .radio-card:has(input[type="radio"]:checked) {
-      border-color: var(--accent);
-      background: var(--accent-glow);
-    }
-    
-    .radio-title {
-      font-weight: 600;
-      font-size: 1rem;
-    }
-    
-    .radio-desc {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-    }
-    
-    .range-input-wrapper {
-      display: none;
-      flex-direction: column;
-      gap: 0.5rem;
-      margin-top: 1rem;
-    }
-    
-    .range-input {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      font-family: var(--font-mono);
-    }
-    
-    .range-input:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
-    
-    .range-help {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-    }
-
-    .actions-panel {
-      margin-top: 1.5rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: flex-end;
-    }
-
-    .progress-container {
-      display: none;
-      margin-top: 1.5rem;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    
-    .progress-bar {
-      height: 8px;
-      background: var(--bg-primary);
-      border-radius: var(--radius-full);
-      overflow: hidden;
-      border: 1px solid var(--border);
-    }
-    
-    .progress-fill {
-      height: 100%;
-      background: var(--accent-gradient);
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-  </style>
+  <script type="module" src="./script.js" defer></script>
 </head>
 <body>
+  <!-- Header Web Component -->
   <app-header></app-header>
+  
+  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
+  <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
-      <div class="tool-header" style="text-align: center;">
-        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">PDF Split</h1>
-        <p class="tool-description">Extract pages or split your PDF files. 100% Secure & Client-Side.</p>
+      <div class="tool-header">
+        <h1>PDF Split</h1>
+        <p class="tool-description">Split by Pages, Split by Range, Extract Pages, Split Every Page.</p>
       </div>
 
-      <div class="glass-panel" style="padding: 2rem; max-width: 800px; margin: 0 auto;">
-        
-        <!-- Upload Area -->
-        <div class="upload-area" id="drop-zone">
-          <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1rem;">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-            <line x1="12" y1="18" x2="12" y2="12"></line>
-            <line x1="9" y1="15" x2="12" y2="12"></line>
-            <line x1="15" y1="15" x2="12" y2="12"></line>
-          </svg>
-          <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: var(--text-primary);">Drag & Drop PDF Here</h3>
-          <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">or click to browse from your device</p>
-          <button class="btn btn-secondary" onclick="document.getElementById('file-input').click()">
-            Choose PDF File
-          </button>
-          <input type="file" id="file-input" accept="application/pdf" style="display: none;">
-        </div>
-
-        <!-- File Info -->
-        <div class="file-info" id="file-info">
-          <div class="file-details">
-            <span class="file-name" id="file-name">document.pdf</span>
-            <span class="file-size" id="file-size">1.2 MB &bull; 10 pages</span>
-          </div>
-          <button class="btn-remove" id="clear-btn" title="Remove File">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
-
-        <!-- Split Options -->
-        <div class="split-options" id="split-options">
-          <div class="option-group">
-            <label>Split Method</label>
-            <div class="radio-group">
-              <label class="radio-card">
-                <input type="radio" name="split-mode" value="all" checked>
-                <div class="radio-content">
-                  <div class="radio-title">Split Every Page</div>
-                  <div class="radio-desc">Extract each page into a separate PDF</div>
-                </div>
-              </label>
-              
-              <label class="radio-card">
-                <input type="radio" name="split-mode" value="range">
-                <div class="radio-content">
-                  <div class="radio-title">Custom Range</div>
-                  <div class="radio-desc">Extract specific pages or ranges</div>
-                </div>
-              </label>
-              
-              <label class="radio-card">
-                <input type="radio" name="split-mode" value="extract">
-                <div class="radio-content">
-                  <div class="radio-title">Extract Range as One</div>
-                  <div class="radio-desc">Merge specific pages into one PDF</div>
-                </div>
-              </label>
-            </div>
-          </div>
-          
-          <div class="range-input-wrapper" id="range-wrapper">
-            <label for="page-ranges" style="font-weight: 600; color: var(--text-primary);">Page Ranges</label>
-            <input type="text" id="page-ranges" class="range-input" placeholder="e.g., 1-3, 5, 8-10">
-            <div class="range-help">Enter page numbers and/or ranges separated by commas (e.g., 1-5, 8, 11-13). Max page: <span id="max-pages">?</span></div>
+      <!-- Tool Workspace -->
+      
+      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
+        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
+        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
+        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
+          The <strong>PDF Split</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
+        </p>
+        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
+          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
+            <div><strong>Description:</strong> Split by Pages, Split by Range, Extract Pages, Split Every Page.</div>
+            <div><strong>Inputs:</strong> pdf, document, pdf split</div>
+            <div><strong>Category:</strong> pdf</div>
           </div>
         </div>
-
-        <!-- Progress -->
-        <div class="progress-container" id="progress-container">
-          <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-secondary);">
-            <span id="progress-text">Splitting PDF...</span>
-            <span id="progress-percent">0%</span>
-          </div>
-          <div class="progress-bar">
-            <div class="progress-fill" id="progress-fill"></div>
-          </div>
-        </div>
-
-        <!-- Actions -->
-        <div class="actions-panel" id="actions-panel" style="display: none;">
-          <button class="btn btn-primary" id="split-btn">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <line x1="2" y1="12" x2="22" y2="12"></line>
-            </svg>
-            Split PDF
-          </button>
-        </div>
-
+        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-
-      <!-- Features Section -->
-      <div style="max-width: 800px; margin: 3rem auto 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
-        <div class="glass-panel" style="padding: 1.5rem;">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 0.75rem;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-          <h4 style="margin-bottom: 0.5rem; font-size: 1.05rem;">100% Private</h4>
-          <p style="font-size: 0.85rem; color: var(--text-secondary);">Your files never leave your device. All splitting happens directly in your browser securely.</p>
-        </div>
-        <div class="glass-panel" style="padding: 1.5rem;">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 0.75rem;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-          <h4 style="margin-bottom: 0.5rem; font-size: 1.05rem;">Lightning Fast</h4>
-          <p style="font-size: 0.85rem; color: var(--text-secondary);">No server upload limits. Process large PDFs instantly using your device's power.</p>
-        </div>
-        <div class="glass-panel" style="padding: 1.5rem;">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 0.75rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          <h4 style="margin-bottom: 0.5rem; font-size: 1.05rem;">Offline Ready</h4>
-          <p style="font-size: 0.85rem; color: var(--text-secondary);">Install our PWA and split PDFs anytime, anywhere, without an internet connection.</p>
-        </div>
-      </div>
-
+    
     </div>
   </main>
 
+  <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <script src="script.js"></script>
+  <!-- Structured schema for search engine rich snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "PDF Split",
+    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/pdf-split/",
+    "description": "Split by Pages, Split by Range, Extract Pages, Split Every Page.",
+    "applicationCategory": "UtilityPage",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5."
+  }
+  </script>
 </body>
 </html>

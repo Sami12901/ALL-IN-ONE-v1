@@ -3,309 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Brand Asset Manager | ALL IN ONE</title>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
+  <title>Brand Asset Manager - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Organize and manage premium brand files.">
+  <meta name="keywords" content="assets, files, manager, free, online, tool, utility">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/brand-asset-manager/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
-
-  <style>
-    .manager-container {
-      display: grid;
-      grid-template-columns: 250px 1fr;
-      min-height: calc(100vh - 80px);
-      gap: 1.5rem;
-      margin-top: 2rem;
-    }
-
-    /* Sidebar */
-    .sidebar {
-      background: var(--glass-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--glass-border);
-      border-radius: var(--radius-lg);
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      height: max-content;
-      position: sticky;
-      top: 2rem;
-    }
-
-    .folder-item {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.75rem 1rem;
-      border-radius: var(--radius-md);
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .folder-item:hover {
-      background: var(--bg-secondary);
-      color: var(--text-primary);
-    }
-
-    .folder-item.active {
-      background: var(--theme-primary);
-      color: white;
-    }
-
-    /* Main Area */
-    .main-area {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .header-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--glass-bg);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--glass-border);
-      padding: 1rem 1.5rem;
-      border-radius: var(--radius-lg);
-    }
-
-    .btn-upload {
-      background: var(--theme-primary);
-      color: white;
-      border: none;
-      padding: 0.6rem 1.2rem;
-      border-radius: var(--radius-md);
-      font-weight: 500;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: opacity 0.2s;
-    }
-
-    .btn-upload:hover {
-      opacity: 0.9;
-    }
-
-    /* Asset Grid */
-    .asset-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .asset-card {
-      background: var(--glass-bg);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--glass-border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.2s;
-    }
-
-    .asset-card:hover {
-      transform: translateY(-4px);
-    }
-
-    .asset-preview {
-      height: 150px;
-      background: var(--bg-tertiary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .asset-preview img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-    }
-
-    .asset-info {
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .asset-name {
-      font-weight: 500;
-      color: var(--text-primary);
-      font-size: 0.9rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .asset-meta {
-      font-size: 0.75rem;
-      color: var(--text-secondary);
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .asset-actions {
-      display: flex;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-    }
-
-    .btn-icon {
-      flex: 1;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      color: var(--text-secondary);
-      padding: 0.4rem;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-    }
-
-    .btn-icon:hover {
-      background: var(--theme-primary);
-      color: white;
-      border-color: var(--theme-primary);
-    }
-
-    .btn-icon.delete:hover {
-      background: #ef4444;
-      border-color: #ef4444;
-    }
-
-    /* Colors View (Special Grid) */
-    .color-card {
-      height: 120px;
-      border-radius: var(--radius-md);
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 1rem;
-      cursor: pointer;
-      position: relative;
-      border: 1px solid var(--glass-border);
-    }
-    .color-hex {
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(4px);
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-      color: white;
-      font-size: 0.8rem;
-      font-weight: 600;
-      font-family: monospace;
-      width: max-content;
-    }
-
-    .empty-state {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 4rem 2rem;
-      color: var(--text-secondary);
-      background: var(--glass-bg);
-      border-radius: var(--radius-lg);
-      border: 1px dashed var(--glass-border);
-    }
-
-    @media (max-width: 768px) {
-      .manager-container {
-        grid-template-columns: 1fr;
-      }
-      .sidebar {
-        flex-direction: row;
-        overflow-x: auto;
-        position: static;
-        padding: 1rem;
-      }
-      .folder-item {
-        white-space: nowrap;
-      }
-    }
-  </style>
-  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
+  
+  <script type="module" src="../../js/components.js"></script>
+  <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-
-  <!-- Background effects -->
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
+  <!-- Header Web Component -->
+  <app-header></app-header>
   
-  <!-- Navigation -->
-  <nav class="top-nav">
-    <div class="nav-container">
-      <a href="../../index.html" class="logo">
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="15 18 9 12 15 6"></polyline>
-        </svg>
-        ALL IN ONE
-      </a>
-    </div>
-  </nav>
+  <!-- Breadcrumbs -->
+  <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Content -->
-  <main class="container">
-    <header class="tool-header">
-      <h1>Brand Asset Manager</h1>
-      <p>Organize your premium brand files securely in your browser.</p>
-    </header>
-
-    <div class="manager-container">
-      
-      <!-- Sidebar -->
-      <aside class="sidebar" id="folder-list">
-        <div class="folder-item active" data-folder="logos">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
-          Logos
-        </div>
-        <div class="folder-item" data-folder="graphics">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-          Graphics
-        </div>
-        <div class="folder-item" data-folder="colors">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
-          Brand Colors
-        </div>
-      </aside>
-
-      <!-- Main Area -->
-      <div class="main-area">
-        
-        <div class="header-bar">
-          <h2 id="current-folder-title" style="font-size: 1.2rem; margin: 0; color: var(--text-primary);">Logos</h2>
-          
-          <!-- Hidden Inputs -->
-          <input type="file" id="file-input" multiple accept="image/png, image/jpeg, image/svg+xml, image/webp" style="display: none;">
-          <input type="color" id="color-input" style="display: none;">
-
-          <button class="btn-upload" id="btn-upload">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-            <span id="btn-upload-text">Upload File</span>
-          </button>
-        </div>
-
-        <div class="asset-grid" id="asset-grid">
-          <!-- Assets will be injected here via JS -->
-        </div>
-
+  <!-- Main Work Container -->
+  <main class="tool-layout">
+    <div class="container tool-container">
+      <div class="tool-header">
+        <h1>Brand Asset Manager</h1>
+        <p class="tool-description">Organize and manage premium brand files.</p>
       </div>
 
+      <!-- Tool Workspace -->
+      
+      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
+        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
+        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
+        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
+          The <strong>Brand Asset Manager</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
+        </p>
+        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
+          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
+            <div><strong>Description:</strong> Organize and manage premium brand files.</div>
+            <div><strong>Inputs:</strong> assets, files, manager</div>
+            <div><strong>Category:</strong> luxury</div>
+          </div>
+        </div>
+        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+      </div>
+    
     </div>
   </main>
 
-  <script src="script.js"></script>
+  <!-- Footer Web Component -->
+  <app-footer></app-footer>
+
+  <!-- Structured schema for search engine rich snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Brand Asset Manager",
+    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/brand-asset-manager/",
+    "description": "Organize and manage premium brand files.",
+    "applicationCategory": "UtilityPage",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5."
+  }
+  </script>
 </body>
 </html>
