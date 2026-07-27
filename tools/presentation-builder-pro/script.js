@@ -68,7 +68,7 @@ class SlideEngine {
     this.thumbnailContainer.innerHTML = '';
     this.slides.forEach((slide, index) => {
       const thumb = document.createElement('div');
-      thumb.className = \`slide-thumbnail \${slide.id === this.activeSlideId ? 'active' : ''}\`;
+      thumb.className = `slide-thumbnail \${slide.id === this.activeSlideId ? 'active' : ''}`;
       thumb.onclick = () => {
         this.activeSlideId = slide.id;
         this.selectElement(null);
@@ -88,7 +88,7 @@ class SlideEngine {
         this.deleteSlide(slide.id);
       };
       
-      thumb.innerHTML = \`<div style="transform: scale(0.2); width: 960px; height: 540px; transform-origin: top left; pointer-events:none;">\${this.renderSlidePreview(slide)}</div>\`;
+      thumb.innerHTML = `<div style="transform: scale(0.2); width: 960px; height: 540px; transform-origin: top left; pointer-events:none;">\${this.renderSlidePreview(slide)}</div>`;
       thumb.appendChild(num);
       if (this.slides.length > 1) thumb.appendChild(del);
       
@@ -101,9 +101,9 @@ class SlideEngine {
     let html = '';
     slide.elements.forEach(el => {
       if (el.type === 'text') {
-        html += \`<div style="position:absolute; left:\${el.x}px; top:\${el.y}px; width:\${el.width}px; font-size:\${el.fontSize}; color:\${el.color};">\${el.content}</div>\`;
+        html += `<div style="position:absolute; left:\${el.x}px; top:\${el.y}px; width:\${el.width}px; font-size:\${el.fontSize}; color:\${el.color};">\${el.content}</div>`;
       } else if (el.type === 'image') {
-        html += \`<img style="position:absolute; left:\${el.x}px; top:\${el.y}px; width:\${el.width}px; height:\${el.height}px;" src="\${el.src}">\`;
+        html += `<img style="position:absolute; left:\${el.x}px; top:\${el.y}px; width:\${el.width}px; height:\${el.height}px;" src="\${el.src}">`;
       }
     });
     return html;
@@ -120,7 +120,7 @@ class SlideEngine {
     
     slide.elements.forEach(el => {
       const div = document.createElement('div');
-      div.className = \`canvas-element \${el.id === this.selectedElementId ? 'selected' : ''}\`;
+      div.className = `canvas-element \${el.id === this.selectedElementId ? 'selected' : ''}`;
       div.id = el.id;
       div.style.left = el.x + 'px';
       div.style.top = el.y + 'px';
