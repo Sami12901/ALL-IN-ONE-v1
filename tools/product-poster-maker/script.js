@@ -31,11 +31,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const canvas = document.getElementById('poster-canvas');
   const wrapper = document.getElementById('poster-preview-wrapper');
   const imageUpload = document.getElementById('p-image-upload');
+  const logoUpload = document.getElementById('p-logo-upload');
   const outImage = document.getElementById('out-image');
+  const outLogo = document.getElementById('out-logo');
   const outPlaceholder = document.getElementById('out-placeholder');
   
   let currentSize = 'size-square';
   let uploadedImage = null;
+  let uploadedLogo = null;
 
   // --- Dynamic Scaling for Preview ---
   // The canvas is strictly 1080px or 1240px wide for high-res export.
@@ -185,11 +188,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // --- Logo Upload ---
+  logoUpload.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        uploadedLogo = event.target.result;
+        outLogo.src = uploadedLogo;
+        outLogo.style.display = 'block';
+        saveData();
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
   // --- Data Persistence ---
   function saveData() {
     const data = {
       size: currentSize,
       image: uploadedImage,
+      logo: uploadedLogo,
       themeValue: themeSelect.value,
       colors: { bg: colors.bg.value, text: colors.text.value, accent: colors.accent.value }
     };
@@ -215,6 +234,11 @@ document.addEventListener('DOMContentLoaded', () => {
           outImage.src = uploadedImage;
           outImage.style.display = 'block';
           outPlaceholder.style.display = 'none';
+        }
+        if (data.logo) {
+          uploadedLogo = data.logo;
+          outLogo.src = uploadedLogo;
+          outLogo.style.display = 'block';
         }
         if (data.colors) {
           colors.bg.value = colors.bgText.value = data.colors.bg;
