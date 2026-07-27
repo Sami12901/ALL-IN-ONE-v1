@@ -3,70 +3,104 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Morse Code Translator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Translate text to Morse code signals and vice versa.">
-  <meta name="keywords" content="morse, code, translator, beeps, free, online, tool, utility">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/morse-code-translator/">
+  <title>Morse Code Translator & Audio Player - ALL IN ONE</title>
+  <meta name="description" content="Translate text to Morse code and play it with audio beeps.">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+  <style>
+    .converter-layout {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    @media (max-width: 768px) {
+      .converter-layout {
+        grid-template-columns: 1fr;
+      }
+      .swap-btn { transform: rotate(90deg); }
+    }
+    .panel {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .swap-btn {
+      background: var(--surface);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin: 0 auto;
+    }
+    .swap-btn:hover {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+    .play-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #10b981;
+      color: #fff;
+      border: none;
+    }
+    .play-btn:hover { background: #059669; }
+    .play-btn:disabled { background: var(--stroke); cursor: not-allowed; opacity: 0.7; }
+  </style>
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Morse Code Translator</h1>
-        <p class="tool-description">Translate text to Morse code signals and vice versa.</p>
+        <p class="tool-description">Translate text to Morse code and listen to the audio beeps.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Morse Code Translator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Translate text to Morse code signals and vice versa.</div>
-            <div><strong>Inputs:</strong> morse, code, translator, beeps</div>
-            <div><strong>Category:</strong> text</div>
+      <div class="tool-panel glass-panel converter-layout">
+        <div class="panel">
+          <label id="input-label" style="font-weight: 600; font-size: 0.9rem;">English Text</label>
+          <textarea id="input-text" class="form-textarea" rows="10" placeholder="Type text here..."></textarea>
+          <div class="toolbar">
+            <button class="btn btn-secondary btn-sm" id="btn-paste">Paste</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <button id="swap-btn" class="swap-btn" aria-label="Swap directions">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><path d="M7 16V4M7 4L3 8M7 4L11 8M17 8v12M17 20l-4-4M17 20l4-4"></path></svg>
+        </button>
+
+        <div class="panel">
+          <label id="output-label" style="font-weight: 600; font-size: 0.9rem;">Morse Code</label>
+          <textarea id="output-text" class="form-textarea font-mono" rows="10" placeholder=".-.." readonly></textarea>
+          <div class="toolbar">
+            <button class="btn btn-primary btn-sm play-btn" id="btn-play">
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Play Audio
+            </button>
+            <button class="btn btn-secondary btn-sm" id="btn-copy">Copy Result</button>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
-
-  <!-- Footer Web Component -->
-  <app-footer></app-footer>
-
-  <!-- Structured schema for search engine rich snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Morse Code Translator",
-    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/morse-code-translator/",
-    "description": "Translate text to Morse code signals and vice versa.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
-  }
-  </script>
 </body>
 </html>
