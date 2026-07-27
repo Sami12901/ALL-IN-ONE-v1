@@ -4,68 +4,189 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Resume Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Auto-generate a professional resume from your basic details.">
-  <meta name="keywords" content="cv, resume, job, career, resume generator, free, online, tool, utility">
+  <meta name="description" content="Auto-generate a professional resume from your basic details. Features multiple structural layouts and instant PDF export.">
+  <meta name="keywords" content="resume generator, cv maker, resume templates, free resume builder, online, tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/resume-generator/">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  <link rel="stylesheet" href="style.css">
   
   <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <script type="module" src="../../js/main.js"></script>
+  <!-- html2pdf for offline PDF generation -->
+  <script src="../../assets/lib/html2pdf.bundle.min.js"></script>
+  
+  <link rel="manifest" href="../../pwa/manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
+    <div class="container tool-container" style="max-width: 1600px;">
       <div class="tool-header">
-        <h1>Resume Generator</h1>
-        <p class="tool-description">Auto-generate a professional resume from your basic details.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Resume Generator</h1>
+        <p class="tool-description">Quickly generate a beautiful resume by choosing a structural layout and filling in your details.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Resume Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Auto-generate a professional resume from your basic details.</div>
-            <div><strong>Inputs:</strong> cv, resume, job, career, resume generator</div>
-            <div><strong>Category:</strong> cv</div>
+      <div class="resume-workspace">
+        
+        <!-- Left Panel: Form Editor -->
+        <div class="resume-editor glass-panel">
+          
+          <div class="form-group template-selector-group">
+            <label style="font-size: 1.1rem; color: var(--accent);">1. Choose a Layout</label>
+            <div class="template-cards">
+              <div class="template-card active" data-layout="layout-classic">
+                <div class="tc-preview tc-classic"></div>
+                <span>Classic</span>
+              </div>
+              <div class="template-card" data-layout="layout-modern">
+                <div class="tc-preview tc-modern"></div>
+                <span>Modern 2-Col</span>
+              </div>
+              <div class="template-card" data-layout="layout-minimal">
+                <div class="tc-preview tc-minimal"></div>
+                <span>Minimalist</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="border-top: 1px solid var(--border); margin: 1.5rem 0;"></div>
+          <h3 class="section-heading">2. Fill in Details</h3>
+
+          <div class="resume-sections">
+            <div class="form-grid">
+              <!-- Basic Info -->
+              <div class="form-group" style="grid-column: span 2;">
+                <label>Full Name</label>
+                <input type="text" id="r-name" class="form-input" placeholder="e.g. Jane Smith">
+              </div>
+              <div class="form-group">
+                <label>Job Title</label>
+                <input type="text" id="r-title" class="form-input" placeholder="e.g. Product Manager">
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="r-email" class="form-input" placeholder="jane@example.com">
+              </div>
+              <div class="form-group">
+                <label>Phone</label>
+                <input type="tel" id="r-phone" class="form-input" placeholder="+1 234 567 890">
+              </div>
+              <div class="form-group">
+                <label>Location</label>
+                <input type="text" id="r-location" class="form-input" placeholder="San Francisco, CA">
+              </div>
+
+              <!-- Summary -->
+              <div class="form-group" style="grid-column: span 2;">
+                <label>Professional Summary</label>
+                <textarea id="r-summary" class="form-textarea" style="min-height: 100px;" placeholder="Briefly describe your career goals and key achievements..."></textarea>
+              </div>
+
+              <!-- Experience Input (Simplified, single text block for quick gen) -->
+              <div class="form-group" style="grid-column: span 2;">
+                <label>Experience (Text Format)</label>
+                <p style="font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 0.5rem;">Use standard formatting. E.g.,<br><strong>Company Name | Role | Dates</strong><br>- Achieved X by doing Y...</p>
+                <textarea id="r-experience" class="form-textarea" style="min-height: 150px;"></textarea>
+              </div>
+
+              <!-- Education Input -->
+              <div class="form-group" style="grid-column: span 2;">
+                <label>Education (Text Format)</label>
+                <textarea id="r-education" class="form-textarea" style="min-height: 100px;"></textarea>
+              </div>
+
+              <!-- Skills Input -->
+              <div class="form-group" style="grid-column: span 2;">
+                <label>Skills (Comma separated)</label>
+                <input type="text" id="r-skills" class="form-input" placeholder="e.g. Leadership, Agile, Python, Data Analysis">
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="resume-global-actions">
+            <button id="download-pdf-btn" class="btn btn-primary" style="flex: 1; justify-content: center;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Generate PDF
+            </button>
+            <button id="load-sample-btn" class="btn btn-secondary">Load Sample</button>
+            <button id="clear-btn" class="btn btn-secondary" title="Clear">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </button>
+          </div>
+
+        </div>
+        
+        <!-- Right Panel: Live Preview -->
+        <div class="resume-preview-container">
+          <div class="resume-preview-wrapper" id="resume-preview-wrapper">
+            <!-- Actual A4 Paper Rendering -->
+            <div class="resume-document layout-classic" id="resume-document">
+              
+              <!-- Layout sections are injected via CSS Grid based on class -->
+              <div class="r-header">
+                <h1 id="out-name">Jane Smith</h1>
+                <h2 id="out-title">Product Manager</h2>
+                <div class="r-contact">
+                  <span id="out-email">jane@example.com</span>
+                  <span class="sep">•</span>
+                  <span id="out-phone">+1 234 567 890</span>
+                  <span class="sep">•</span>
+                  <span id="out-location">San Francisco, CA</span>
+                </div>
+              </div>
+
+              <div class="r-body">
+                
+                <div class="r-main-col">
+                  <!-- Summary -->
+                  <div class="r-section" id="sec-summary">
+                    <h3 class="r-sec-title">Summary</h3>
+                    <p class="r-sec-text" id="out-summary">Professional summary goes here...</p>
+                  </div>
+
+                  <!-- Experience -->
+                  <div class="r-section" id="sec-experience">
+                    <h3 class="r-sec-title">Experience</h3>
+                    <div class="r-sec-text" id="out-experience" style="white-space: pre-wrap;">Experience goes here...</div>
+                  </div>
+                </div>
+
+                <div class="r-side-col">
+                  <!-- Skills -->
+                  <div class="r-section" id="sec-skills">
+                    <h3 class="r-sec-title">Skills</h3>
+                    <div class="r-skills-list" id="out-skills">
+                      <!-- tags injected -->
+                    </div>
+                  </div>
+
+                  <!-- Education -->
+                  <div class="r-section" id="sec-education">
+                    <h3 class="r-sec-title">Education</h3>
+                    <div class="r-sec-text" id="out-education" style="white-space: pre-wrap;">Education goes here...</div>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+        
       </div>
-    
     </div>
   </main>
 
-  <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Resume Generator",
-    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/resume-generator/",
-    "description": "Auto-generate a professional resume from your basic details.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
-  }
-  </script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
