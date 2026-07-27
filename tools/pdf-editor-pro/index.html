@@ -3,70 +3,222 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PDF Editor Pro - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Edit PDF, Add Text, Images, Shapes, Links, Annotate, Fill Forms, Sign PDF.">
-  <meta name="keywords" content="pdf, document, pdf editor pro, free, online, tool, utility">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/pdf-editor-pro/">
+  <title>PDF Editor Pro - ALL IN ONE</title>
+  <meta name="description" content="Edit PDFs locally in your browser. Add text, draw signatures, and export securely.">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <!-- PDF.js for rendering (using unpkg or cdnjs) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <!-- PDF-lib for modifying PDFs -->
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+  <style>
+    .editor-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 1.5rem;
+      height: 800px;
+    }
+    @media (max-width: 768px) {
+      .editor-layout { grid-template-columns: 1fr; height: auto; }
+    }
+    
+    .sidebar {
+      background: rgba(15, 15, 15, 0.4);
+      border: 1px solid var(--stroke);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    .workspace {
+      background: #e5e7eb; /* Light grey backdrop for PDF */
+      border-radius: 1rem;
+      border: 1px solid var(--stroke);
+      overflow: auto;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 2rem;
+    }
+    
+    /* Document Container wraps the canvas to allow absolute positioned overlays */
+    .doc-container {
+      position: relative;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+    
+    #pdf-canvas {
+      display: block;
+      background: white;
+      max-width: 100%;
+    }
+    
+    #overlay-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      cursor: crosshair;
+      z-index: 10;
+    }
+
+    .tool-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .tool-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .toolbar-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 0.95rem;
+    }
+    .toolbar-btn:hover { background: rgba(255,255,255,0.1); }
+    .toolbar-btn.active {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--stroke);
+    }
+    .pagination button {
+      background: transparent; border: none; color: var(--text); cursor: pointer; padding: 0.25rem 0.5rem;
+    }
+    .pagination button:disabled { color: var(--muted); cursor: not-allowed; }
+
+    .upload-area {
+      border: 2px dashed var(--stroke);
+      border-radius: 0.5rem;
+      padding: 2rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .upload-area:hover { border-color: var(--accent); }
+    
+    .floating-text-input {
+      position: absolute;
+      background: transparent;
+      border: 1px dashed var(--accent);
+      color: black;
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 16px;
+      padding: 0;
+      margin: 0;
+      z-index: 20;
+      outline: none;
+      resize: both;
+      overflow: hidden;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  </style>
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
         <h1>PDF Editor Pro</h1>
-        <p class="tool-description">Edit PDF, Add Text, Images, Shapes, Links, Annotate, Fill Forms, Sign PDF.</p>
+        <p class="tool-description">A powerful, entirely client-side PDF editor. Draw signatures, add text, and export securely.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>PDF Editor Pro</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Edit PDF, Add Text, Images, Shapes, Links, Annotate, Fill Forms, Sign PDF.</div>
-            <div><strong>Inputs:</strong> pdf, document, pdf editor pro</div>
-            <div><strong>Category:</strong> pdf</div>
+      <div class="tool-panel glass-panel editor-layout">
+        
+        <!-- Sidebar Toolbar -->
+        <div class="sidebar">
+          
+          <div class="upload-area" id="upload-btn">
+            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.5" fill="none" style="margin-bottom:0.5rem; color: var(--muted);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <div style="font-size:0.9rem; font-weight:600;">Open PDF File</div>
+            <div style="font-size:0.75rem; color:var(--muted);">Max 50MB. Processed Locally.</div>
+            <input type="file" id="file-input" accept="application/pdf" style="display:none;">
+          </div>
+
+          <div class="tool-group">
+            <label>Navigation</label>
+            <div class="pagination">
+              <button id="btn-prev" disabled>&#8592; Prev</button>
+              <span id="page-info" style="font-size: 0.85rem;">0 / 0</span>
+              <button id="btn-next" disabled>Next &#8594;</button>
+            </div>
+          </div>
+
+          <div class="tool-group">
+            <label>Tools</label>
+            <button class="toolbar-btn active" id="tool-view" data-tool="view">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> View / Pan
+            </button>
+            <button class="toolbar-btn" id="tool-text" data-tool="text">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg> Add Text
+            </button>
+            <button class="toolbar-btn" id="tool-draw" data-tool="draw">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg> Draw Signature
+            </button>
+            <button class="toolbar-btn" id="btn-clear-draw" style="margin-top: 0.5rem; color: #ef4444; border-color: rgba(239,68,68,0.3);">
+              Clear Current Page Edits
+            </button>
+          </div>
+
+          <div style="flex-grow: 1;"></div>
+
+          <button class="btn btn-primary" id="btn-export" style="width: 100%; justify-content: center; padding: 1rem;" disabled>
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> Export PDF
+          </button>
+          
+        </div>
+
+        <!-- Workspace -->
+        <div class="workspace" id="workspace">
+          <div class="doc-container" id="doc-container" style="display: none;">
+            <canvas id="pdf-canvas"></canvas>
+            <canvas id="overlay-canvas"></canvas>
+            <div id="text-layer" style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events: none;"></div>
+          </div>
+          
+          <div id="empty-state" style="text-align: center; color: var(--muted); margin-top: 4rem;">
+            <svg viewBox="0 0 24 24" width="64" height="64" stroke="currentColor" stroke-width="1" fill="none" style="margin: 0 auto 1rem; opacity: 0.5;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            <h2>No Document Loaded</h2>
+            <p>Upload a PDF file using the sidebar to begin editing.</p>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
       </div>
-    
     </div>
   </main>
-
-  <!-- Footer Web Component -->
-  <app-footer></app-footer>
-
-  <!-- Structured schema for search engine rich snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "PDF Editor Pro",
-    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/pdf-editor-pro/",
-    "description": "Edit PDF, Add Text, Images, Shapes, Links, Annotate, Fill Forms, Sign PDF.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
-  }
-  </script>
 </body>
 </html>
