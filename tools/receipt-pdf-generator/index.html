@@ -3,70 +3,123 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Receipt PDF Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Generate Payment and Booking Receipts.">
-  <meta name="keywords" content="pdf, document, receipt pdf generator, free, online, tool, utility">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/receipt-pdf-generator/">
+  <title>Receipt Generator - ALL IN ONE</title>
+  <meta name="description" content="Generate professional PDF payment receipts instantly.">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+  <style>
+    .layout { display: flex; flex-direction: column; gap: 2rem; max-width: 1000px; margin: 0 auto; }
+    
+    .section-card { background: var(--surface); border: 1px solid var(--stroke); padding: 1.5rem; border-radius: 0.5rem; }
+    .section-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 1rem; color: var(--accent); border-bottom: 1px solid var(--stroke); padding-bottom: 0.5rem; }
+    
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+    @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+    
+    .form-group { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+    .form-group label { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+    
+    .items-table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+    .items-table th, .items-table td { padding: 0.5rem; text-align: left; border-bottom: 1px solid var(--stroke); }
+    .items-table th { color: var(--muted); font-size: 0.9rem; }
+    .items-table input { width: 100%; box-sizing: border-box; }
+    .btn-remove-item { background: #ef4444; color: white; border: none; border-radius: 4px; padding: 0.3rem 0.5rem; cursor: pointer; }
+    
+    .totals-area { display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; margin-top: 1rem; }
+    .totals-row { display: flex; justify-content: space-between; width: 300px; font-weight: 600; }
+  </style>
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
-      <div class="tool-header">
-        <h1>Receipt PDF Generator</h1>
-        <p class="tool-description">Generate Payment and Booking Receipts.</p>
+      <div class="tool-header" style="text-align: center; max-width: 600px; margin: 0 auto 2rem;">
+        <h1>Receipt Generator</h1>
+        <p class="tool-description">Create digital PDF payment receipts for your customers quickly and securely.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Receipt PDF Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Generate Payment and Booking Receipts.</div>
-            <div><strong>Inputs:</strong> pdf, document, receipt pdf generator</div>
-            <div><strong>Category:</strong> pdf</div>
+      <div class="layout">
+        
+        <div class="grid-2">
+          <!-- From -->
+          <div class="section-card">
+            <div class="section-title">Business Info</div>
+            <div class="form-group"><label>Business Name</label><input type="text" id="inv-from-name" class="form-input" placeholder="ACME Store"></div>
+            <div class="form-group"><label>Address</label><textarea id="inv-from-address" class="form-input" rows="3" placeholder="123 Retail Rd&#10;City, State 12345"></textarea></div>
+            <div class="form-group"><label>Contact</label><input type="text" id="inv-from-contact" class="form-input" placeholder="store@acme.com"></div>
+          </div>
+          
+          <!-- To -->
+          <div class="section-card">
+            <div class="section-title">Received From</div>
+            <div class="form-group"><label>Customer Name</label><input type="text" id="inv-to-name" class="form-input" placeholder="Jane Doe"></div>
+            <div class="form-group"><label>Customer Info (Optional)</label><textarea id="inv-to-address" class="form-input" rows="3" placeholder="Email or Address"></textarea></div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="section-card">
+          <div class="section-title">Payment Details</div>
+          <div class="grid-3">
+            <div class="form-group"><label>Receipt Number</label><input type="text" id="inv-num" class="form-input" value="REC-001"></div>
+            <div class="form-group"><label>Date Paid</label><input type="date" id="inv-date" class="form-input"></div>
+            <div class="form-group">
+              <label>Payment Method</label>
+              <select id="inv-method" class="form-input">
+                <option value="Credit Card">Credit Card</option>
+                <option value="Cash">Cash</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+                <option value="PayPal">PayPal</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="form-group"><label>Currency Symbol</label><input type="text" id="inv-currency" class="form-input" value="$"></div>
+            <div class="form-group"><label>Tax Rate (%)</label><input type="number" id="inv-tax" class="form-input" value="0" min="0"></div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-title">Items Paid</div>
+          <table class="items-table" id="items-table">
+            <thead>
+              <tr>
+                <th style="width: 50%;">Description</th>
+                <th style="width: 15%;">Qty</th>
+                <th style="width: 20%;">Price</th>
+                <th style="width: 15%;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="items-body">
+              <!-- JS injected -->
+            </tbody>
+          </table>
+          <button class="btn btn-secondary" id="btn-add-item">+ Add Item</button>
+          
+          <div class="totals-area">
+            <div class="totals-row"><span>Subtotal:</span> <span id="ui-subtotal">$0.00</span></div>
+            <div class="totals-row"><span>Tax:</span> <span id="ui-tax">$0.00</span></div>
+            <div class="totals-row" style="font-size: 1.2rem; color: var(--accent); margin-top: 0.5rem;"><span>Total Paid:</span> <span id="ui-total">$0.00</span></div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" id="btn-generate" style="padding: 1.5rem; font-size: 1.2rem; justify-content: center;">
+          Generate PDF Receipt
+        </button>
+        
       </div>
-    
     </div>
   </main>
-
-  <!-- Footer Web Component -->
-  <app-footer></app-footer>
-
-  <!-- Structured schema for search engine rich snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Receipt PDF Generator",
-    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/receipt-pdf-generator/",
-    "description": "Generate Payment and Booking Receipts.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
-  }
-  </script>
 </body>
 </html>
