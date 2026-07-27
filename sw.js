@@ -1,5 +1,5 @@
 // ALL IN ONE Service Worker
-const CACHE_NAME = 'all-in-one-cache-v52';
+const CACHE_NAME = 'all-in-one-cache-v53';
 
 // Only pre-cache the core shell. Individual tools are cached at runtime
 // via the network-first strategy in the fetch handler below.
@@ -8,6 +8,7 @@ const PRECACHE_ASSETS = [
   './index.html',
   './css/main.css',
   './css/dashboard.css',
+  './css/portfolio.css',
   './css/tools-shared.css',
   './js/main.js',
   './js/dashboard.js',
