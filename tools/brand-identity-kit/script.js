@@ -22,50 +22,51 @@ document.addEventListener('DOMContentLoaded', () => {
     logo: document.getElementById('out-logo-cover')
   };
 
-  // 42+ Typography Themes
+  // 42+ Full Layout Themes
+  // Structure: { head, body, label, classes }
   const themesData = {
-    'theme-1': { head: 'Playfair Display', body: 'Lato', label: 'Classic Luxury' },
-    'theme-2': { head: 'Cinzel', body: 'Montserrat', label: 'Modern Elegance' },
-    'theme-3': { head: 'Bodoni Moda', body: 'Inter', label: 'High Fashion' },
-    'theme-4': { head: 'Inter', body: 'Roboto', label: 'Tech Minimalist' },
-    'theme-5': { head: 'Oswald', body: 'Open Sans', label: 'Bold Industrial' },
-    'theme-6': { head: 'Raleway', body: 'Roboto Slab', label: 'Refined Serif' },
-    'theme-7': { head: 'Merriweather', body: 'Source Sans 3', label: 'Editorial' },
-    'theme-8': { head: 'Lora', body: 'Merriweather Sans', label: 'Literary' },
-    'theme-9': { head: 'PT Serif', body: 'PT Sans', label: 'Academic' },
-    'theme-10': { head: 'Roboto Condensed', body: 'Roboto', label: 'Compact Modern' },
-    'theme-11': { head: 'Ubuntu', body: 'Open Sans', label: 'Friendly Tech' },
-    'theme-12': { head: 'Fira Sans', body: 'Merriweather', label: 'Dynamic Contrast' },
-    'theme-13': { head: 'Poppins', body: 'Roboto', label: 'Geometric Pop' },
-    'theme-14': { head: 'Nunito', body: 'Nunito Sans', label: 'Soft Rounded' },
-    'theme-15': { head: 'Quicksand', body: 'Open Sans', label: 'Light Airy' },
-    'theme-16': { head: 'Work Sans', body: 'Roboto', label: 'Pragmatic' },
-    'theme-17': { head: 'Rubik', body: 'Karla', label: 'Chunky Grotesk' },
-    'theme-18': { head: 'Cormorant Garamond', body: 'Proza Libre', label: 'Vogue Editorial' },
-    'theme-19': { head: 'Libre Baskerville', body: 'Source Sans 3', label: 'Heritage' },
-    'theme-20': { head: 'Josefin Sans', body: 'Lato', label: 'Vintage Geometric' },
-    'theme-21': { head: 'Abril Fatface', body: 'Lato', label: 'Bold Editorial' },
-    'theme-22': { head: 'Arvo', body: 'Lato', label: 'Slab Impact' },
-    'theme-23': { head: 'Bebas Neue', body: 'Montserrat', label: 'Cinematic' },
-    'theme-24': { head: 'Anton', body: 'Roboto', label: 'Heavy Impact' },
-    'theme-25': { head: 'Fjalla One', body: 'Noto Sans', label: 'Tall Modern' },
-    'theme-26': { head: 'Dancing Script', body: 'Lato', label: 'Script Elegance' },
-    'theme-27': { head: 'Pacifico', body: 'Open Sans', label: 'Casual Script' },
-    'theme-28': { head: 'Crimson Text', body: 'Work Sans', label: 'Traditional Serif' },
-    'theme-29': { head: 'Bitter', body: 'Source Sans 3', label: 'Solid Slab' },
-    'theme-30': { head: 'DM Serif Display', body: 'DM Sans', label: 'Contemporary Serif' },
-    'theme-31': { head: 'EB Garamond', body: 'Montserrat', label: 'Classic Revival' },
-    'theme-32': { head: 'Space Grotesk', body: 'Space Mono', label: 'Developer Minimal' },
-    'theme-33': { head: 'Syne', body: 'Inter', label: 'Avant Garde' },
-    'theme-34': { head: 'Bungee', body: 'Roboto', label: 'Retro Arcade' },
-    'theme-35': { head: 'Righteous', body: 'Open Sans', label: 'Deco Modern' },
-    'theme-36': { head: 'Lobster', body: 'Lato', label: 'Playful Script' },
-    'theme-37': { head: 'Zilla Slab', body: 'Lato', label: 'Friendly Slab' },
-    'theme-38': { head: 'Archivo Black', body: 'Archivo', label: 'Ultra Bold' },
-    'theme-39': { head: 'Comfortaa', body: 'Open Sans', label: 'Organic Rounded' },
-    'theme-40': { head: 'Manrope', body: 'Roboto', label: 'Modern Geometric' },
-    'theme-41': { head: 'Mulish', body: 'Nunito', label: 'Clean Interface' },
-    'theme-42': { head: 'Outfit', body: 'Roboto', label: 'Brand Geometric' }
+    'theme-1': { head: 'Playfair Display', body: 'Lato', label: 'Classic Luxury', classes: 'cover-center color-circ typo-stack bg-light' },
+    'theme-2': { head: 'Cinzel', body: 'Montserrat', label: 'Modern Elegance', classes: 'cover-split color-sq typo-split bg-light' },
+    'theme-3': { head: 'Bodoni Moda', body: 'Inter', label: 'High Fashion', classes: 'cover-left color-row typo-cards bg-dark' },
+    'theme-4': { head: 'Inter', body: 'Roboto', label: 'Tech Minimalist', classes: 'cover-minimal color-circ typo-split bg-light' },
+    'theme-5': { head: 'Oswald', body: 'Open Sans', label: 'Bold Industrial', classes: 'cover-split color-row typo-stack bg-dark' },
+    'theme-6': { head: 'Raleway', body: 'Roboto Slab', label: 'Refined Serif', classes: 'cover-left color-sq typo-split bg-light' },
+    'theme-7': { head: 'Merriweather', body: 'Source Sans 3', label: 'Editorial', classes: 'cover-center color-row typo-cards bg-light' },
+    'theme-8': { head: 'Lora', body: 'Merriweather Sans', label: 'Literary', classes: 'cover-left color-circ typo-stack bg-dark' },
+    'theme-9': { head: 'PT Serif', body: 'PT Sans', label: 'Academic', classes: 'cover-split color-sq typo-split bg-light' },
+    'theme-10': { head: 'Roboto Condensed', body: 'Roboto', label: 'Compact Modern', classes: 'cover-minimal color-row typo-cards bg-dark' },
+    'theme-11': { head: 'Ubuntu', body: 'Open Sans', label: 'Friendly Tech', classes: 'cover-center color-circ typo-split bg-light' },
+    'theme-12': { head: 'Fira Sans', body: 'Merriweather', label: 'Dynamic Contrast', classes: 'cover-split color-row typo-stack bg-dark' },
+    'theme-13': { head: 'Poppins', body: 'Roboto', label: 'Geometric Pop', classes: 'cover-left color-sq typo-cards bg-light' },
+    'theme-14': { head: 'Nunito', body: 'Nunito Sans', label: 'Soft Rounded', classes: 'cover-center color-circ typo-stack bg-light' },
+    'theme-15': { head: 'Quicksand', body: 'Open Sans', label: 'Light Airy', classes: 'cover-minimal color-row typo-split bg-light' },
+    'theme-16': { head: 'Work Sans', body: 'Roboto', label: 'Pragmatic', classes: 'cover-split color-sq typo-cards bg-dark' },
+    'theme-17': { head: 'Rubik', body: 'Karla', label: 'Chunky Grotesk', classes: 'cover-left color-row typo-stack bg-light' },
+    'theme-18': { head: 'Cormorant Garamond', body: 'Proza Libre', label: 'Vogue Editorial', classes: 'cover-center color-circ typo-split bg-dark' },
+    'theme-19': { head: 'Libre Baskerville', body: 'Source Sans 3', label: 'Heritage', classes: 'cover-split color-sq typo-cards bg-light' },
+    'theme-20': { head: 'Josefin Sans', body: 'Lato', label: 'Vintage Geometric', classes: 'cover-left color-row typo-stack bg-dark' },
+    'theme-21': { head: 'Abril Fatface', body: 'Lato', label: 'Bold Editorial', classes: 'cover-center color-sq typo-split bg-light' },
+    'theme-22': { head: 'Arvo', body: 'Lato', label: 'Slab Impact', classes: 'cover-minimal color-circ typo-cards bg-light' },
+    'theme-23': { head: 'Bebas Neue', body: 'Montserrat', label: 'Cinematic', classes: 'cover-split color-row typo-split bg-dark' },
+    'theme-24': { head: 'Anton', body: 'Roboto', label: 'Heavy Impact', classes: 'cover-left color-sq typo-stack bg-dark' },
+    'theme-25': { head: 'Fjalla One', body: 'Noto Sans', label: 'Tall Modern', classes: 'cover-center color-circ typo-split bg-light' },
+    'theme-26': { head: 'Dancing Script', body: 'Lato', label: 'Script Elegance', classes: 'cover-split color-row typo-cards bg-light' },
+    'theme-27': { head: 'Pacifico', body: 'Open Sans', label: 'Casual Script', classes: 'cover-minimal color-sq typo-stack bg-dark' },
+    'theme-28': { head: 'Crimson Text', body: 'Work Sans', label: 'Traditional Serif', classes: 'cover-left color-circ typo-split bg-light' },
+    'theme-29': { head: 'Bitter', body: 'Source Sans 3', label: 'Solid Slab', classes: 'cover-center color-row typo-cards bg-dark' },
+    'theme-30': { head: 'DM Serif Display', body: 'DM Sans', label: 'Contemporary Serif', classes: 'cover-split color-sq typo-stack bg-light' },
+    'theme-31': { head: 'EB Garamond', body: 'Montserrat', label: 'Classic Revival', classes: 'cover-left color-circ typo-split bg-light' },
+    'theme-32': { head: 'Space Grotesk', body: 'Space Mono', label: 'Developer Minimal', classes: 'cover-minimal color-row typo-cards bg-dark' },
+    'theme-33': { head: 'Syne', body: 'Inter', label: 'Avant Garde', classes: 'cover-split color-sq typo-stack bg-dark' },
+    'theme-34': { head: 'Bungee', body: 'Roboto', label: 'Retro Arcade', classes: 'cover-center color-circ typo-split bg-light' },
+    'theme-35': { head: 'Righteous', body: 'Open Sans', label: 'Deco Modern', classes: 'cover-left color-row typo-cards bg-light' },
+    'theme-36': { head: 'Lobster', body: 'Lato', label: 'Playful Script', classes: 'cover-split color-sq typo-stack bg-light' },
+    'theme-37': { head: 'Zilla Slab', body: 'Lato', label: 'Friendly Slab', classes: 'cover-minimal color-circ typo-split bg-dark' },
+    'theme-38': { head: 'Archivo Black', body: 'Archivo', label: 'Ultra Bold', classes: 'cover-center color-row typo-cards bg-dark' },
+    'theme-39': { head: 'Comfortaa', body: 'Open Sans', label: 'Organic Rounded', classes: 'cover-left color-sq typo-stack bg-light' },
+    'theme-40': { head: 'Manrope', body: 'Roboto', label: 'Modern Geometric', classes: 'cover-split color-circ typo-split bg-light' },
+    'theme-41': { head: 'Mulish', body: 'Nunito', label: 'Clean Interface', classes: 'cover-center color-row typo-cards bg-light' },
+    'theme-42': { head: 'Outfit', body: 'Roboto', label: 'Brand Geometric', classes: 'cover-minimal color-sq typo-stack bg-dark' }
   };
 
   // Populate Select Options
@@ -73,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
   Object.keys(themesData).forEach(key => {
     const opt = document.createElement('option');
     opt.value = key;
-    opt.textContent = `${themesData[key].head} & ${themesData[key].body} (${themesData[key].label})`;
+    opt.textContent = `${themesData[key].label} (${themesData[key].head})`;
     inputs.font.appendChild(opt);
   });
   inputs.font.value = 'theme-1';
@@ -168,9 +169,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load external fonts dynamically
     loadFonts(theme.head, theme.body);
 
-    // Apply CSS Variables for Fonts dynamically instead of static classes
+    // Apply CSS Variables for Fonts dynamically
     docEl.style.setProperty('--f-head', `"${theme.head}", serif`);
     docEl.style.setProperty('--f-body', `"${theme.body}", sans-serif`);
+    
+    // Apply Structural CSS classes for the Layout
+    docEl.className = `brand-doc ${theme.classes}`;
 
     // Colors
     const palette = generatePalette(inputs.color.value);
