@@ -3,70 +3,99 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hajj & Umrah Document Builder - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Generate Pilgrim Forms and Package Documents.">
-  <meta name="keywords" content="pdf, document, hajj umrah document builder, free, online, tool, utility">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/hajj-umrah-document-builder/">
+  <title>Hajj & Umrah Document Builder - ALL IN ONE</title>
+  <meta name="description" content="Generate professional Hajj and Umrah package confirmation documents.">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    .layout { display: flex; flex-direction: column; gap: 2rem; max-width: 900px; margin: 0 auto; }
+    
+    .section-card { background: var(--surface); border: 1px solid var(--stroke); padding: 1.5rem; border-radius: 0.5rem; }
+    .section-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 1rem; color: #2ecc71; border-bottom: 1px solid var(--stroke); padding-bottom: 0.5rem; }
+    
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+    @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+    
+    .form-group { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+    .form-group label { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+  </style>
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
-      <div class="tool-header">
-        <h1>Hajj & Umrah Document Builder</h1>
-        <p class="tool-description">Generate Pilgrim Forms and Package Documents.</p>
+      <div class="tool-header" style="text-align: center; max-width: 600px; margin: 0 auto 2rem;">
+        <h1>Hajj & Umrah Document</h1>
+        <p class="tool-description">Create official booking confirmations and itineraries for Hajj & Umrah pilgrims.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Hajj & Umrah Document Builder</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Generate Pilgrim Forms and Package Documents.</div>
-            <div><strong>Inputs:</strong> pdf, document, hajj umrah document builder</div>
-            <div><strong>Category:</strong> pdf</div>
+      <div class="layout">
+        
+        <div class="section-card">
+          <div class="section-title">Agency Details</div>
+          <div class="grid-2">
+            <div class="form-group"><label>Agency Name</label><input type="text" id="h-agency" class="form-input" placeholder="Al-Hijrah Tours"></div>
+            <div class="form-group"><label>License / Registration No.</label><input type="text" id="h-lic" class="form-input" placeholder="Lic-12345"></div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+        
+        <div class="section-card">
+          <div class="section-title">Pilgrim Details</div>
+          <div class="grid-2">
+            <div class="form-group"><label>Lead Pilgrim Name</label><input type="text" id="h-name" class="form-input" placeholder="Abdullah Rahman"></div>
+            <div class="form-group"><label>Passport Number</label><input type="text" id="h-pass" class="form-input"></div>
+          </div>
+          <div class="grid-3">
+            <div class="form-group">
+              <label>Package Type</label>
+              <select id="h-type" class="form-input">
+                <option value="Umrah Package">Umrah Package</option>
+                <option value="Hajj Package">Hajj Package</option>
+                <option value="Ramadan Umrah">Ramadan Umrah</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Total Passengers</label><input type="number" id="h-pax" class="form-input" value="1" min="1"></div>
+            <div class="form-group"><label>Booking Ref</label><input type="text" id="h-ref" class="form-input" value="HU-001"></div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-title">Itinerary & Accommodation</div>
+          <div class="grid-2">
+            <div class="form-group"><label>Arrival Date</label><input type="date" id="h-arr" class="form-input"></div>
+            <div class="form-group"><label>Departure Date</label><input type="date" id="h-dep" class="form-input"></div>
+          </div>
+          <div class="grid-2">
+            <div class="form-group"><label>Makkah Hotel</label><input type="text" id="h-mak" class="form-input" placeholder="Makkah Clock Royal Tower"></div>
+            <div class="form-group"><label>Nights in Makkah</label><input type="number" id="h-mak-n" class="form-input" value="5"></div>
+          </div>
+          <div class="grid-2">
+            <div class="form-group"><label>Madinah Hotel</label><input type="text" id="h-mad" class="form-input" placeholder="Pullman Zamzam Madina"></div>
+            <div class="form-group"><label>Nights in Madinah</label><input type="number" id="h-mad-n" class="form-input" value="5"></div>
+          </div>
+          <div class="form-group">
+            <label>Transport Arrangements</label>
+            <input type="text" id="h-trans" class="form-input" placeholder="VIP Private GMC (Jeddah-Makkah-Madinah-Airport)">
+          </div>
+        </div>
+
+        <button class="btn btn-primary" id="btn-generate" style="padding: 1.5rem; font-size: 1.2rem; justify-content: center; background-color: #27ae60;">
+          Generate Official Confirmation
+        </button>
+        
       </div>
-    
     </div>
   </main>
-
-  <!-- Footer Web Component -->
-  <app-footer></app-footer>
-
-  <!-- Structured schema for search engine rich snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Hajj & Umrah Document Builder",
-    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/hajj-umrah-document-builder/",
-    "description": "Generate Pilgrim Forms and Package Documents.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
-  }
-  </script>
 </body>
 </html>
