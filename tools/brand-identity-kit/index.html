@@ -4,68 +4,217 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Brand Identity Kit Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create comprehensive luxury brand guidelines.">
-  <meta name="keywords" content="brand, identity, design, free, online, tool, utility">
+  <meta name="description" content="Create comprehensive luxury brand guidelines and export as PDF.">
+  <meta name="keywords" content="brand, identity, design, brand guidelines, pdf generator">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/brand-identity-kit/">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  <link rel="stylesheet" href="style.css">
   
   <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <script type="module" src="../../js/main.js"></script>
+  
+  <!-- Local Libraries -->
+  <script src="../../assets/lib/html2pdf.bundle.min.js"></script>
+
+  <!-- Google Fonts for Brand Previews -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Cinzel:wght@400..900&family=Inter:wght@100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+  <link rel="manifest" href="../../pwa/manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
+    <div class="container tool-container" style="max-width: 1500px;">
       <div class="tool-header">
-        <h1>Brand Identity Kit Generator</h1>
-        <p class="tool-description">Create comprehensive luxury brand guidelines.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Brand Identity Kit</h1>
+        <p class="tool-description">Generate comprehensive, luxury brand guidelines and export as a multi-page PDF.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Brand Identity Kit Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create comprehensive luxury brand guidelines.</div>
-            <div><strong>Inputs:</strong> brand, identity, design</div>
-            <div><strong>Category:</strong> luxury</div>
+      <div class="editor-workspace">
+        
+        <!-- Left Panel: Data Entry -->
+        <div class="opt-input-panel glass-panel">
+          
+          <h3 class="section-heading">Brand Profile</h3>
+          <div class="form-grid">
+            <div class="form-group" style="grid-column: span 2;">
+              <label>Brand Name</label>
+              <input type="text" id="inp-name" class="form-input" value="AURA">
+            </div>
+            <div class="form-group" style="grid-column: span 2;">
+              <label>Tagline</label>
+              <input type="text" id="inp-tagline" class="form-input" value="Elevate your everyday.">
+            </div>
+            <div class="form-group" style="grid-column: span 2;">
+              <label>Mission Statement</label>
+              <textarea id="inp-mission" class="form-input" rows="2">To craft timeless, sustainable goods that bring minimalist luxury to modern living.</textarea>
+            </div>
           </div>
+
+          <h3 class="section-heading" style="margin-top: 1.5rem;">Visuals</h3>
+          <div class="form-grid">
+            <div class="form-group" style="grid-column: span 2;">
+              <label>Brand Logo</label>
+              <input type="file" id="inp-logo" class="form-input" accept="image/*" style="padding: 0.4rem;">
+            </div>
+            <div class="form-group">
+              <label>Primary Brand Color</label>
+              <input type="color" id="inp-color" class="form-input" value="#1a365d" style="height: 45px; padding: 0.2rem;">
+              <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">Other shades generated automatically.</div>
+            </div>
+            <div class="form-group">
+              <label>Typography Pairing</label>
+              <select id="inp-font" class="form-select">
+                <option value="font-playfair">Playfair Display & Lato (Classic Luxury)</option>
+                <option value="font-cinzel">Cinzel & Montserrat (Modern Elegance)</option>
+                <option value="font-bodoni">Bodoni Moda & Inter (High Fashion)</option>
+                <option value="font-inter">Inter & Roboto (Tech Minimalist)</option>
+              </select>
+            </div>
+          </div>
+          
+          <div style="border-top: 1px solid var(--border); margin: 1.5rem 0;"></div>
+          
+          <button id="btn-export" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 1rem;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><polyline points="9 15 12 18 15 15"></polyline></svg>
+            Export Guidelines (PDF)
+          </button>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+        
+        <!-- Right Panel: Preview Area -->
+        <div class="opt-dashboard-panel glass-panel preview-panel">
+          
+          <div class="canvas-wrapper">
+             
+             <!-- Scalable Wrapper that fits to screen -->
+             <div class="scale-wrapper" id="scale-wrapper">
+                
+                <!-- The Actual Document to export -->
+                <div id="pdf-document" class="brand-doc font-playfair">
+                  
+                  <!-- PAGE 1: Cover & Intro -->
+                  <div class="a4-page page-1">
+                     <div class="doc-header">
+                       <h1 id="out-name-title" class="bh-title">AURA</h1>
+                       <div class="bh-subtitle">Brand Guidelines</div>
+                     </div>
+                     
+                     <div class="doc-body content-center">
+                        <img id="out-logo-cover" class="cover-logo" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 30'><text y='20' font-family='Arial' font-size='20' font-weight='bold' fill='%231a365d'>AURA</text></svg>" alt="Logo">
+                        <h2 id="out-tagline" class="cover-tagline">Elevate your everyday.</h2>
+                     </div>
+                     
+                     <div class="doc-footer">
+                        <div class="mission-box">
+                          <h4 class="section-title">The Mission</h4>
+                          <p id="out-mission" class="mission-text">To craft timeless, sustainable goods that bring minimalist luxury to modern living.</p>
+                        </div>
+                     </div>
+                  </div>
+
+                  <!-- PAGE 2: Color Palette -->
+                  <div class="a4-page page-2">
+                     <div class="doc-header-small">
+                        <h2>01. Color Palette</h2>
+                     </div>
+                     
+                     <div class="doc-body color-grid">
+                        
+                        <div class="color-swatch main-color">
+                           <div class="swatch-box" id="swatch-main" style="background-color: #1a365d;"></div>
+                           <div class="swatch-details">
+                             <div class="sw-name">Primary</div>
+                             <div class="sw-val">HEX: <span id="hex-main">#1a365d</span></div>
+                             <div class="sw-val">RGB: <span id="rgb-main">26, 54, 93</span></div>
+                             <div class="sw-val">CMYK: <span id="cmyk-main">72, 42, 0, 64</span></div>
+                           </div>
+                        </div>
+
+                        <div class="color-swatch sec-color">
+                           <div class="swatch-box" id="swatch-sec" style="background-color: #2c5282;"></div>
+                           <div class="swatch-details">
+                             <div class="sw-name">Secondary</div>
+                             <div class="sw-val">HEX: <span id="hex-sec">#2c5282</span></div>
+                             <div class="sw-val">RGB: <span id="rgb-sec">44, 82, 130</span></div>
+                             <div class="sw-val">CMYK: <span id="cmyk-sec">66, 37, 0, 49</span></div>
+                           </div>
+                        </div>
+
+                        <div class="color-swatch light-color">
+                           <div class="swatch-box" id="swatch-light" style="background-color: #ebf8ff;"></div>
+                           <div class="swatch-details">
+                             <div class="sw-name">Light Accent</div>
+                             <div class="sw-val">HEX: <span id="hex-light">#ebf8ff</span></div>
+                             <div class="sw-val">RGB: <span id="rgb-light">235, 248, 255</span></div>
+                             <div class="sw-val">CMYK: <span id="cmyk-light">8, 3, 0, 0</span></div>
+                           </div>
+                        </div>
+
+                     </div>
+                     
+                     <div class="doc-body-text">
+                        <p>Our color palette is the foundation of our visual identity. Consistent use of these colors ensures brand recognition and a cohesive luxury experience.</p>
+                     </div>
+                  </div>
+
+                  <!-- PAGE 3: Typography -->
+                  <div class="a4-page page-3">
+                     <div class="doc-header-small">
+                        <h2>02. Typography</h2>
+                     </div>
+                     
+                     <div class="doc-body typo-section">
+                        
+                        <div class="typo-block heading-typo">
+                           <h3 class="font-label">Primary / Headings</h3>
+                           <div class="font-name" id="out-font-h">Playfair Display</div>
+                           <div class="font-alphabet font-h-style">
+                             Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj Kk Ll Mm Nn Oo Pp Qq Rr Ss Tt Uu Vv Ww Xx Yy Zz<br>
+                             0123456789 !@#$%&*()
+                           </div>
+                           <div class="font-example font-h-style">
+                              The quick brown fox jumps over the lazy dog.
+                           </div>
+                        </div>
+
+                        <div class="typo-block body-typo">
+                           <h3 class="font-label">Secondary / Body Text</h3>
+                           <div class="font-name" id="out-font-b">Lato</div>
+                           <div class="font-alphabet font-b-style">
+                             Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj Kk Ll Mm Nn Oo Pp Qq Rr Ss Tt Uu Vv Ww Xx Yy Zz<br>
+                             0123456789 !@#$%&*()
+                           </div>
+                           <div class="font-example font-b-style">
+                              Typography plays a crucial role in our communications. This secondary font is used for long-form reading, offering supreme legibility and a modern touch that perfectly complements our primary serif.
+                           </div>
+                        </div>
+
+                     </div>
+                  </div>
+
+                </div>
+
+             </div>
+
+          </div>
+          
+        </div>
+
       </div>
-    
     </div>
   </main>
 
-  <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Brand Identity Kit Generator",
-    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/brand-identity-kit/",
-    "description": "Create comprehensive luxury brand guidelines.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
-  }
-  </script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
