@@ -1,262 +1,135 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const dropZone = document.getElementById('drop-zone');
-  const fileInput = document.getElementById('file-input');
-  const imagesGrid = document.getElementById('images-grid');
-  const optionsPanel = document.getElementById('options-panel');
-  const actionsPanel = document.getElementById('actions-panel');
-  const clearBtn = document.getElementById('clear-btn');
-  const saveBtn = document.getElementById('save-btn');
-  
-  const loadingContainer = document.getElementById('loading-container');
-  const loadingFill = document.getElementById('loading-fill');
-  const loadingPercent = document.getElementById('loading-percent');
-  const loadingText = document.getElementById('loading-text');
+// JPG to PDF Logic
 
-  let imageFiles = [];
+class JpgToPdf {
+  constructor() {
+    this.uploadZone = document.getElementById('upload-zone');
+    this.btnBrowse = document.getElementById('btn-browse');
+    this.fileInput = document.getElementById('file-input');
+    
+    this.workspace = document.getElementById('workspace');
+    this.fileListEl = document.getElementById('file-list');
+    this.btnChange = document.getElementById('btn-change');
+    this.btnExecute = document.getElementById('btn-execute');
 
-  // Handle drag and drop events
-  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-    dropZone.addEventListener(eventName, preventDefaults, false);
-  });
+    this.files = [];
 
-  function preventDefaults(e) {
-    e.preventDefault();
-    e.stopPropagation();
+    this.bindEvents();
   }
 
-  ['dragenter', 'dragover'].forEach(eventName => {
-    dropZone.addEventListener(eventName, () => {
-      dropZone.classList.add('drag-over');
-    }, false);
-  });
+  bindEvents() {
+    this.btnBrowse.addEventListener('click', () => this.fileInput.click());
+    this.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
 
-  ['dragleave', 'drop'].forEach(eventName => {
-    dropZone.addEventListener(eventName, () => {
-      dropZone.classList.remove('drag-over');
-    }, false);
-  });
-
-  dropZone.addEventListener('drop', (e) => {
-    const dt = e.dataTransfer;
-    const files = dt.files;
-    handleFiles(files);
-  });
-
-  fileInput.addEventListener('change', function() {
-    handleFiles(this.files);
-    // Reset input so the same files can be selected again if needed
-    this.value = '';
-  });
-
-  function handleFiles(files) {
-    const validImageTypes = ['image/jpeg', 'image/png', 'image/webp'];
-    let added = false;
-    
-    Array.from(files).forEach(file => {
-      if (validImageTypes.includes(file.type)) {
-        imageFiles.push(file);
-        added = true;
-      }
+    this.uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); this.uploadZone.classList.add('dragover'); });
+    this.uploadZone.addEventListener('dragleave', () => this.uploadZone.classList.remove('dragover'));
+    this.uploadZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      this.uploadZone.classList.remove('dragover');
+      if (e.dataTransfer.files.length > 0) this.handleFiles(e.dataTransfer.files);
     });
 
-    if (added) {
-      updateUI();
-    } else {
-      alert("Please upload valid image files (JPG, PNG, WEBP).");
-    }
+    this.btnChange.addEventListener('click', () => {
+      this.files = [];
+      this.uploadZone.style.display = 'block';
+      this.workspace.style.display = 'none';
+      this.fileListEl.innerHTML = '';
+      this.fileInput.value = '';
+    });
+
+    this.btnExecute.addEventListener('click', () => this.execute());
   }
 
-  function updateUI() {
-    imagesGrid.innerHTML = '';
+  handleFiles(fileList) {
+    const newFiles = Array.from(fileList).filter(f => f.type === 'image/jpeg' || f.type === 'image/jpg');
+    if (newFiles.length === 0) {
+      alert('Please select valid JPG images.');
+      return;
+    }
     
-    if (imageFiles.length > 0) {
-      optionsPanel.style.display = 'block';
-      actionsPanel.style.display = 'flex';
-      dropZone.style.padding = '1.5rem';
-      
-      imageFiles.forEach((file, index) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const card = document.createElement('div');
-          card.className = 'image-card';
-          card.innerHTML = `
-            <img src="${e.target.result}" alt="Uploaded image ${index + 1}">
-            <button class="remove-btn" data-index="${index}" title="Remove image">×</button>
-          `;
-          imagesGrid.appendChild(card);
-        };
-        reader.readAsDataURL(file);
-      });
+    this.files = [...this.files, ...newFiles];
+    
+    this.uploadZone.style.display = 'none';
+    this.workspace.style.display = 'block';
+    
+    this.renderList();
+  }
+  
+  removeFile(index) {
+    this.files.splice(index, 1);
+    if (this.files.length === 0) {
+      this.btnChange.click();
     } else {
-      optionsPanel.style.display = 'none';
-      actionsPanel.style.display = 'none';
-      dropZone.style.padding = '3rem 1.5rem';
+      this.renderList();
     }
   }
 
-  // Use event delegation for remove buttons
-  imagesGrid.addEventListener('click', (e) => {
-    if (e.target.classList.contains('remove-btn')) {
-      const index = parseInt(e.target.getAttribute('data-index'));
-      imageFiles.splice(index, 1);
-      updateUI();
-    }
-  });
+  renderList() {
+    this.fileListEl.innerHTML = '';
+    this.files.forEach((f, i) => {
+      const el = document.createElement('div');
+      el.className = 'file-item';
+      
+      const name = document.createElement('span');
+      name.textContent = f.name;
+      name.style.fontWeight = '600';
+      name.style.overflow = 'hidden';
+      name.style.textOverflow = 'ellipsis';
+      name.style.whiteSpace = 'nowrap';
+      
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-secondary';
+      btn.innerHTML = '&times;';
+      btn.style.padding = '0.2rem 0.6rem';
+      btn.onclick = () => this.removeFile(i);
+      
+      el.appendChild(name);
+      el.appendChild(btn);
+      this.fileListEl.appendChild(el);
+    });
+  }
 
-  clearBtn.addEventListener('click', () => {
-    imageFiles = [];
-    updateUI();
-  });
+  async execute() {
+    if (this.files.length === 0) return;
 
-  saveBtn.addEventListener('click', async () => {
-    if (imageFiles.length === 0) return;
-
-    const orientation = document.getElementById('page-orientation').value;
-    const margin = parseInt(document.getElementById('page-margin').value);
-
-    saveBtn.disabled = true;
-    clearBtn.disabled = true;
-    loadingContainer.style.display = 'flex';
-    optionsPanel.style.opacity = '0.5';
-    imagesGrid.style.opacity = '0.5';
+    this.btnExecute.disabled = true;
+    this.btnExecute.textContent = 'Converting...';
 
     try {
-      // Create a new PDFDocument
-      const { PDFDocument } = PDFLib;
-      const pdfDoc = await PDFDocument.create();
-
-      for (let i = 0; i < imageFiles.length; i++) {
-        updateProgress(Math.round(((i) / imageFiles.length) * 100), `Processing image ${i + 1} of ${imageFiles.length}...`);
-        
-        const file = imageFiles[i];
+      const pdfDoc = await window.PDFLib.PDFDocument.create();
+      
+      for (let file of this.files) {
         const arrayBuffer = await file.arrayBuffer();
+        const image = await pdfDoc.embedJpg(arrayBuffer);
+        const { width, height } = image.scale(1);
         
-        let pdfImage;
-        if (file.type === 'image/jpeg') {
-          pdfImage = await pdfDoc.embedJpg(arrayBuffer);
-        } else if (file.type === 'image/png') {
-          pdfImage = await pdfDoc.embedPng(arrayBuffer);
-        } else if (file.type === 'image/webp') {
-          // pdf-lib doesn't natively support webp well sometimes, but let's try.
-          // In actual implementations we might need to convert it to png/jpg first via canvas,
-          // but for now let's hope it works or we use canvas fallback.
-          pdfImage = await embedWebPWithCanvasFallback(pdfDoc, file);
-        }
-
-        const imgDims = pdfImage.scale(1);
-        
-        let pageWidth = imgDims.width + margin * 2;
-        let pageHeight = imgDims.height + margin * 2;
-        
-        if (orientation === 'portrait') {
-          // Fixed A4 portrait (595.28 x 841.89)
-          pageWidth = 595.28;
-          pageHeight = 841.89;
-        } else if (orientation === 'landscape') {
-          // Fixed A4 landscape
-          pageWidth = 841.89;
-          pageHeight = 595.28;
-        }
-
-        const page = pdfDoc.addPage([pageWidth, pageHeight]);
-        
-        // Calculate dimensions to fit image in page if A4 is selected
-        let finalWidth = imgDims.width;
-        let finalHeight = imgDims.height;
-        
-        if (orientation !== 'auto') {
-          const availWidth = pageWidth - margin * 2;
-          const availHeight = pageHeight - margin * 2;
-          
-          const scale = Math.min(availWidth / imgDims.width, availHeight / imgDims.height);
-          
-          if (scale < 1 || orientation !== 'auto') {
-            finalWidth = imgDims.width * scale;
-            finalHeight = imgDims.height * scale;
-          }
-        }
-        
-        // Center image
-        const x = (pageWidth - finalWidth) / 2;
-        const y = (pageHeight - finalHeight) / 2;
-
-        page.drawImage(pdfImage, {
-          x: x,
-          y: y,
-          width: finalWidth,
-          height: finalHeight,
+        const page = pdfDoc.addPage([width, height]);
+        page.drawImage(image, {
+          x: 0,
+          y: 0,
+          width: width,
+          height: height,
         });
       }
 
-      updateProgress(90, 'Finalizing PDF...');
-      
       const pdfBytes = await pdfDoc.save();
-      
-      updateProgress(100, 'Done!');
-      
-      // Trigger download
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
+      
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'converted_images.pdf';
-      document.body.appendChild(a);
+      a.download = `images-to-pdf.pdf`;
       a.click();
-      document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-      alert('An error occurred while generating the PDF.');
+    } catch (e) {
+      console.error(e);
+      alert('Error saving PDF: ' + e.message);
     } finally {
-      saveBtn.disabled = false;
-      clearBtn.disabled = false;
-      loadingContainer.style.display = 'none';
-      optionsPanel.style.opacity = '1';
-      imagesGrid.style.opacity = '1';
-      updateProgress(0, 'Generating PDF...');
+      this.btnExecute.disabled = false;
+      this.btnExecute.textContent = 'Convert to PDF & Download';
     }
-  });
+  }
+}
 
-  function updateProgress(percent, text) {
-    loadingFill.style.width = percent + '%';
-    loadingPercent.textContent = percent + '%';
-    loadingText.textContent = text;
-  }
-  
-  // Helper for webp via canvas
-  async function embedWebPWithCanvasFallback(pdfDoc, file) {
-    return new Promise((resolve, reject) => {
-      const url = URL.createObjectURL(file);
-      const img = new Image();
-      img.onload = async () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0);
-        // Convert to PNG data URL
-        const pngDataUrl = canvas.toDataURL('image/png');
-        URL.revokeObjectURL(url);
-        
-        // Convert data URL to Uint8Array
-        const base64Data = pngDataUrl.split(',')[1];
-        const binaryString = window.atob(base64Data);
-        const len = binaryString.length;
-        const bytes = new Uint8Array(len);
-        for (let i = 0; i < len; i++) {
-          bytes[i] = binaryString.charCodeAt(i);
-        }
-        
-        try {
-          const pdfImg = await pdfDoc.embedPng(bytes);
-          resolve(pdfImg);
-        } catch (e) {
-          reject(e);
-        }
-      };
-      img.onerror = reject;
-      img.src = url;
-    });
-  }
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => window.jpgToPdf = new JpgToPdf(), 300);
 });
