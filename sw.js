@@ -1,5 +1,5 @@
 // ALL IN ONE Service Worker
-const CACHE_NAME = 'all-in-one-cache-v51';
+const CACHE_NAME = 'all-in-one-cache-v52';
 
 // Only pre-cache the core shell. Individual tools are cached at runtime
 // via the network-first strategy in the fetch handler below.
