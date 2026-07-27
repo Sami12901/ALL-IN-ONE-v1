@@ -3,70 +3,72 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Markdown to HTML Converter - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Convert markdown documentation into clean HTML.">
-  <meta name="keywords" content="markdown, html, convert, render, free, online, tool, utility">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/markdown-to-html/">
+  <title>Markdown to HTML Converter - ALL IN ONE</title>
+  <meta name="description" content="Instantly convert Markdown text into clean HTML code.">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+  <!-- Marked.js for fast markdown parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    .split-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 768px) { .split-layout { grid-template-columns: 1fr; } }
+    .panel { display: flex; flex-direction: column; gap: 0.5rem; }
+    .toolbar { display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; }
+    .preview-box {
+      background: var(--surface); border: 1px solid var(--stroke); border-radius: 0.5rem;
+      padding: 1.5rem; overflow-y: auto; height: 300px; color: var(--text);
+    }
+    /* Basic markdown preview styles */
+    .preview-box h1, .preview-box h2, .preview-box h3 { margin-top: 0; color: var(--text); }
+    .preview-box p { margin-bottom: 1rem; line-height: 1.6; }
+    .preview-box code { background: rgba(255,255,255,0.1); padding: 0.2em 0.4em; border-radius: 3px; font-family: var(--font-mono); font-size: 0.9em; }
+    .preview-box pre { background: rgba(0,0,0,0.5); padding: 1rem; border-radius: 5px; overflow-x: auto; }
+    .preview-box a { color: var(--accent); }
+    .preview-box blockquote { border-left: 4px solid var(--accent); margin: 0; padding-left: 1rem; color: var(--muted); }
+  </style>
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Markdown to HTML Converter</h1>
-        <p class="tool-description">Convert markdown documentation into clean HTML.</p>
+        <h1>Markdown to HTML</h1>
+        <p class="tool-description">Convert your Markdown notes into clean, structured HTML code and preview it instantly.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Markdown to HTML Converter</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Convert markdown documentation into clean HTML.</div>
-            <div><strong>Inputs:</strong> markdown, html, convert, render</div>
-            <div><strong>Category:</strong> text</div>
+      <div class="tool-panel glass-panel">
+        <div class="split-layout" style="margin-bottom: 1.5rem;">
+          <div class="panel">
+            <label style="font-weight: 600; font-size: 0.9rem;">Markdown Input</label>
+            <textarea id="input-text" class="form-textarea font-mono" rows="12" placeholder="# Hello World\n\n**Bold** and *italic* text..."></textarea>
+            <div class="toolbar">
+              <button class="btn btn-secondary btn-sm" id="btn-clear">Clear</button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <label style="font-weight: 600; font-size: 0.9rem;">HTML Output Code</label>
+            <textarea id="output-text" class="form-textarea font-mono" rows="12" placeholder="<h1>Hello World</h1>..." readonly></textarea>
+            <div class="toolbar">
+              <span></span>
+              <button class="btn btn-primary btn-sm" id="btn-copy">Copy HTML Code</button>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="panel">
+          <label style="font-weight: 600; font-size: 0.9rem;">Live Preview</label>
+          <div class="preview-box" id="preview-box">
+            <div style="color: var(--muted); text-align: center; margin-top: 2rem;">Preview will appear here...</div>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
-
-  <!-- Footer Web Component -->
-  <app-footer></app-footer>
-
-  <!-- Structured schema for search engine rich snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Markdown to HTML Converter",
-    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/markdown-to-html/",
-    "description": "Convert markdown documentation into clean HTML.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
-  }
-  </script>
 </body>
 </html>

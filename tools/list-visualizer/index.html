@@ -3,70 +3,91 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>List Visualizer & Bullets - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Convert plain lists into formatted bullet points.">
-  <meta name="keywords" content="list, bullets, html, markdown, free, online, tool, utility">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/list-visualizer/">
+  <title>List Visualizer - ALL IN ONE</title>
+  <meta name="description" content="Format raw text into structured visual lists instantly.">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+  <style>
+    .split-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 768px) { .split-layout { grid-template-columns: 1fr; } }
+    .panel { display: flex; flex-direction: column; gap: 0.5rem; }
+    .toolbar { display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; }
+    .preview-box {
+      background: var(--surface); border: 1px solid var(--stroke); border-radius: 0.5rem;
+      padding: 1.5rem; overflow-y: auto; height: 350px; color: var(--text);
+    }
+    
+    /* Dynamic List Styles */
+    .preview-box ul { list-style-type: disc; padding-left: 2rem; margin-bottom: 1rem; }
+    .preview-box ol { list-style-type: decimal; padding-left: 2rem; margin-bottom: 1rem; }
+    .preview-box li { margin-bottom: 0.5rem; }
+    
+    /* Styling options for lists */
+    .preview-box.style-minimal ul { list-style-type: none; padding-left: 0; }
+    .preview-box.style-minimal ul li { 
+      padding: 0.75rem 1rem; background: rgba(255,255,255,0.05); margin-bottom: 0.5rem; border-radius: 0.25rem; 
+    }
+    
+    .preview-box.style-check ul { list-style-type: none; padding-left: 0; }
+    .preview-box.style-check ul li { position: relative; padding-left: 2rem; margin-bottom: 0.75rem; }
+    .preview-box.style-check ul li::before { 
+      content: '✓'; position: absolute; left: 0; color: #10b981; font-weight: bold;
+    }
+  </style>
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>List Visualizer & Bullets</h1>
-        <p class="tool-description">Convert plain lists into formatted bullet points.</p>
+        <h1>List Visualizer</h1>
+        <p class="tool-description">Instantly convert raw lines of text into beautiful HTML lists.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>List Visualizer & Bullets</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Convert plain lists into formatted bullet points.</div>
-            <div><strong>Inputs:</strong> list, bullets, html, markdown</div>
-            <div><strong>Category:</strong> text</div>
+      <div class="tool-panel glass-panel">
+        <div style="margin-bottom: 1.5rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+          <label style="font-weight: 600;">List Type:</label>
+          <select id="list-type" class="form-input">
+            <option value="ul">Unordered List (Bullets)</option>
+            <option value="ol">Ordered List (Numbers)</option>
+          </select>
+
+          <label style="font-weight: 600; margin-left: 1rem;">Visual Style:</label>
+          <select id="list-style" class="form-input">
+            <option value="standard">Standard Default</option>
+            <option value="minimal">Minimal Cards</option>
+            <option value="check">Checkmarks</option>
+          </select>
+        </div>
+
+        <div class="split-layout">
+          <div class="panel">
+            <label style="font-weight: 600; font-size: 0.9rem;">Raw Lines Input</label>
+            <textarea id="input-text" class="form-textarea" rows="14" placeholder="Apple\nBanana\nOrange..."></textarea>
+            <div class="toolbar">
+              <span class="text-xs text-muted" id="line-count">0 items</span>
+              <button class="btn btn-secondary btn-sm" id="btn-clear">Clear</button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <label style="font-weight: 600; font-size: 0.9rem;">Visual Preview</label>
+            <div class="preview-box" id="preview-box">
+              <!-- Visual list injected here -->
+            </div>
+            <div class="toolbar">
+              <span></span>
+              <button class="btn btn-primary btn-sm" id="btn-copy">Copy HTML Code</button>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
     </div>
   </main>
-
-  <!-- Footer Web Component -->
-  <app-footer></app-footer>
-
-  <!-- Structured schema for search engine rich snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "List Visualizer & Bullets",
-    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/list-visualizer/",
-    "description": "Convert plain lists into formatted bullet points.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
-  }
-  </script>
 </body>
 </html>
