@@ -12,61 +12,213 @@
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Specific overrides for this app to maximize canvas space */
+    .tool-layout { padding: 1rem 0 !important; }
+    .tool-container { max-width: 1600px !important; margin: 0 auto; width: 95%; height: 85vh; display: flex; flex-direction: column; }
+    
+    .builder-toolbar {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem;
+      border-bottom: 1px solid var(--stroke);
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .builder-main {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+    
+    .builder-sidebar {
+      width: 250px;
+      border-right: 1px solid var(--stroke);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      overflow-y: auto;
+      background: rgba(0,0,0,0.2);
+    }
+    
+    .slide-thumbnail {
+      aspect-ratio: 16/9;
+      background: #fff;
+      border: 2px solid var(--stroke);
+      border-radius: 8px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: #333;
+      transition: border-color 0.2s;
+    }
+    .slide-thumbnail.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+    .slide-number {
+      position: absolute;
+      bottom: 4px;
+      left: 4px;
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+    }
+    .delete-slide {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: var(--error);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 10px;
+      cursor: pointer;
+      display: none;
+    }
+    .slide-thumbnail:hover .delete-slide { display: block; }
+    
+    .builder-canvas-container {
+      flex: 1;
+      padding: 2rem;
+      background: rgba(10,10,10,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: auto;
+      position: relative;
+    }
+    
+    .slide-canvas {
+      width: 960px; /* Standard 16:9 1080p roughly */
+      height: 540px;
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      position: relative;
+      overflow: hidden;
+      transform-origin: center;
+      color: #000;
+    }
+    
+    .canvas-element {
+      position: absolute;
+      cursor: move;
+      border: 1px dashed transparent;
+    }
+    
+    .canvas-element:hover { border-color: rgba(0,0,0,0.2); }
+    .canvas-element.selected { border-color: var(--accent); }
+    
+    .canvas-text {
+      padding: 8px;
+      min-width: 100px;
+      min-height: 40px;
+      outline: none;
+    }
+    
+    .canvas-image {
+      width: 200px;
+      height: auto;
+      pointer-events: none; /* Let the wrapper handle drag */
+    }
+    
+    .resize-handle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: var(--accent);
+      bottom: -5px;
+      right: -5px;
+      cursor: se-resize;
+      display: none;
+    }
+    .canvas-element.selected .resize-handle { display: block; }
+    
+    .prop-panel {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--surface);
+      border: 1px solid var(--stroke);
+      border-radius: 8px;
+      padding: 10px;
+      display: none;
+      z-index: 100;
+    }
+  </style>
+
+  <!-- External Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
   <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
-  <app-breadcrumbs></app-breadcrumbs>
 
   <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
-      <div class="tool-header">
-        <h1>Presentation Builder Pro</h1>
-        <p class="tool-description">Create, edit, and export professional presentations to PPTX and PDF.</p>
+    <div class="container tool-container glass-panel" style="padding: 0;">
+      
+      <!-- Toolbar -->
+      <div class="builder-toolbar">
+        <h2 style="font-family: var(--font-display); font-size: 1.5rem; margin-right: auto; font-style: italic;">Presentation Builder</h2>
+        
+        <button id="add-slide-btn" class="btn btn-secondary">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+          Add Slide
+        </button>
+        
+        <div style="width:1px; height:24px; background:var(--stroke); margin: 0 0.5rem;"></div>
+        
+        <button id="add-text-btn" class="btn btn-secondary">Add Text</button>
+        <button id="add-image-btn" class="btn btn-secondary">Add Image</button>
+        
+        <input type="file" id="image-upload" accept="image/*" style="display:none;">
+        
+        <div style="width:1px; height:24px; background:var(--stroke); margin: 0 0.5rem;"></div>
+        
+        <button id="export-pptx-btn" class="btn btn-primary">Export PPTX</button>
+        <button id="export-pdf-btn" class="btn btn-primary">Export PDF</button>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Presentation Builder Pro</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, edit, and export professional presentations to PPTX and PDF.</div>
-            <div><strong>Inputs:</strong> slide, presentation, pitch, deck, presentation builder pro</div>
-            <div><strong>Category:</strong> slide</div>
+      <div class="builder-main">
+        <!-- Sidebar -->
+        <div class="builder-sidebar" id="slide-thumbnails">
+          <!-- Thumbnails injected here -->
+        </div>
+
+        <!-- Canvas -->
+        <div class="builder-canvas-container" id="canvas-container">
+          <div class="slide-canvas" id="slide-canvas">
+            <!-- Active slide elements injected here -->
+          </div>
+          
+          <!-- Element Properties Panel -->
+          <div class="prop-panel" id="prop-panel">
+            <div style="display:flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 12px; color: var(--muted);">Font Size</label>
+              <input type="number" id="prop-font-size" class="form-input" style="padding: 4px; font-size:12px; width: 60px;" value="24">
+              <label style="font-size: 12px; color: var(--muted);">Color</label>
+              <input type="color" id="prop-color" value="#000000" style="border:none; width:100%;">
+              <button id="prop-delete" class="btn btn-secondary" style="padding: 4px 8px; font-size:12px; margin-top: 8px; color: var(--error);">Delete</button>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+      
     </div>
   </main>
-
-  <!-- Footer Web Component -->
-  <app-footer></app-footer>
-
-  <!-- Structured schema for search engine rich snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Presentation Builder Pro",
-    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/presentation-builder-pro/",
-    "description": "Create, edit, and export professional presentations to PPTX and PDF.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
-  }
-  </script>
 </body>
 </html>
