@@ -140,3 +140,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 2000);
   }
 });
+
+// Add ScrollTrigger for Sections
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Animate section titles and cards on scroll
+    gsap.utils.toArray('.section-title').forEach(title => {
+      gsap.from(title, {
+        scrollTrigger: {
+          trigger: title,
+          start: 'top 85%',
+        },
+        y: 50,
+        opacity: 0,
+        duration: 1,
+        ease: 'power3.out'
+      });
+    });
+
+    gsap.utils.toArray('.glass-panel, .benefit-card').forEach(card => {
+      gsap.from(card, {
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 90%',
+        },
+        y: 30,
+        opacity: 0,
+        scale: 0.95,
+        duration: 0.8,
+        ease: 'back.out(1.2)'
+      });
+    });
+  }
+});
