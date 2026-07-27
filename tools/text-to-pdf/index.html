@@ -3,70 +3,81 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Text to PDF - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Convert TXT files to PDF.">
-  <meta name="keywords" content="pdf, document, text to pdf, free, online, tool, utility">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/text-to-pdf/">
+  <title>Text to PDF - ALL IN ONE</title>
+  <meta name="description" content="Convert your raw text into a formatted PDF document.">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    .layout { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
+    @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+    
+    .editor-card { background: var(--surface); border: 1px solid var(--stroke); padding: 1.5rem; border-radius: 0.5rem; display: flex; flex-direction: column; gap: 1rem; }
+    .options-card { background: rgba(0,0,0,0.3); border: 1px solid var(--stroke); padding: 1.5rem; border-radius: 0.5rem; display: flex; flex-direction: column; gap: 1rem; height: fit-content; }
+    
+    .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    .form-group label { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+  </style>
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
-      <div class="tool-header">
+    <div class="container tool-container" style="max-width: 1200px;">
+      <div class="tool-header" style="text-align: center; max-width: 600px; margin: 0 auto 2rem;">
         <h1>Text to PDF</h1>
-        <p class="tool-description">Convert TXT files to PDF.</p>
+        <p class="tool-description">Paste your raw text, configure your font settings, and instantly generate a formatted, paginated PDF document.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Text to PDF</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Convert TXT files to PDF.</div>
-            <div><strong>Inputs:</strong> pdf, document, text to pdf</div>
-            <div><strong>Category:</strong> pdf</div>
+      <div class="layout">
+        
+        <div class="editor-card glass-panel">
+          <div class="form-group" style="height: 100%;">
+            <label>Document Content</label>
+            <textarea id="pdf-text" class="form-input" style="height: 400px; resize: vertical; font-family: monospace; font-size: 1rem;" placeholder="Start typing or paste your text here..."></textarea>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="options-card glass-panel">
+          <div class="form-group">
+            <label>Font Family</label>
+            <select id="pdf-font" class="form-input">
+              <option value="helvetica" selected>Helvetica (Clean)</option>
+              <option value="times">Times New Roman (Formal)</option>
+              <option value="courier">Courier (Monospace)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Font Size</label>
+            <input type="number" id="pdf-size" class="form-input" value="12" min="8" max="72">
+          </div>
+          <div class="form-group">
+            <label>Line Height</label>
+            <input type="number" id="pdf-line-height" class="form-input" value="1.5" step="0.1" min="1" max="3">
+          </div>
+          <div class="form-group">
+            <label>Page Size</label>
+            <select id="pdf-format" class="form-input">
+              <option value="a4" selected>A4</option>
+              <option value="letter">US Letter</option>
+            </select>
+          </div>
+          
+          <button class="btn btn-primary" id="btn-execute" style="width: 100%; justify-content: center; padding: 1rem; font-size: 1rem; margin-top: 1rem;">
+            Generate PDF
+          </button>
+        </div>
+
       </div>
-    
     </div>
   </main>
-
-  <!-- Footer Web Component -->
-  <app-footer></app-footer>
-
-  <!-- Structured schema for search engine rich snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Text to PDF",
-    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/text-to-pdf/",
-    "description": "Convert TXT files to PDF.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
-  }
-  </script>
 </body>
 </html>
