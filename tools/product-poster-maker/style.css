@@ -1,146 +1,306 @@
-/* Product Poster Maker - Custom Styles */
+/* Product Poster Maker Styles */
 
-.ppm-format-grid {
+.poster-workspace {
+  display: grid;
+  grid-template-columns: 450px 1fr;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+@media (max-width: 1024px) {
+  .poster-workspace {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Editor Panel ─── */
+.poster-editor {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 200px);
+  position: sticky;
+  top: 100px;
+  overflow-y: auto;
+}
+
+@media (max-width: 1024px) {
+  .poster-editor {
+    position: static;
+    height: auto;
+  }
+}
+
+.form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.form-grid .form-group {
+  margin-bottom: 0;
+}
+
+.poster-global-actions {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
   gap: 0.75rem;
 }
 
-.ppm-format-btn {
+/* Size Selector */
+.size-selector {
+  display: flex;
+  gap: 10px;
+}
+.size-btn {
+  flex: 1;
+  background: var(--bg-primary);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 15px 10px;
+  cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 0.75rem;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  color: var(--text-secondary);
-  font-family: var(--font-sans);
-  cursor: pointer;
-  transition: all 0.25s ease;
-  text-align: center;
+  gap: 10px;
+  transition: all 0.2s;
 }
-
-.ppm-format-btn span {
-  font-size: 0.9rem;
-  font-weight: 600;
+.size-btn:hover { border-color: var(--accent); }
+.size-btn.active {
+  border-color: var(--accent);
+  background: rgba(99, 102, 241, 0.1);
 }
-
-.ppm-format-btn small {
+.size-btn span {
   font-size: 0.75rem;
-  color: var(--text-tertiary);
-  margin-top: 0.25rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 1.3;
 }
+.size-btn.active span { color: var(--accent); }
 
-.ppm-format-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: rgba(99, 102, 241, 0.05);
+.size-icon {
+  background: transparent;
+  border: 2px solid var(--text-tertiary);
+  border-radius: 4px;
 }
+.size-btn.active .size-icon { border-color: var(--accent); background: var(--accent); opacity: 0.2;}
+.icon-square { width: 24px; height: 24px; }
+.icon-story { width: 20px; height: 35px; }
+.icon-a4 { width: 24px; height: 34px; }
 
-.ppm-format-btn.active {
-  border-color: var(--accent);
-  background: rgba(99, 102, 241, 0.15);
-  color: var(--accent);
+/* Color Pickers */
+.color-picker-wrap {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
-
-.ppm-color-picker {
+.color-picker-wrap input[type="color"] {
   width: 40px;
   height: 40px;
   padding: 0;
   border: none;
-  border-radius: 50%;
+  border-radius: var(--radius-sm);
+  background: none;
   cursor: pointer;
-  background: transparent;
-  overflow: hidden;
+}
+.color-picker-wrap input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+.color-picker-wrap input[type="color"]::-webkit-color-swatch { border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.color-picker-wrap input[type="text"] {
+  flex: 1;
+  text-transform: uppercase;
 }
 
-.ppm-color-picker::-webkit-color-swatch-wrapper {
-  padding: 0;
-}
-
-.ppm-color-picker::-webkit-color-swatch {
-  border: 2px solid var(--border);
-  border-radius: 50%;
-}
-
-.ppm-upload-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem 1rem;
-  background: var(--bg-tertiary);
-  border: 2px dashed var(--border);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-align: center;
-}
-
-.ppm-upload-box svg {
-  color: var(--text-tertiary);
-  margin-bottom: 0.5rem;
-}
-
-.ppm-upload-box span {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.ppm-upload-box:hover, .ppm-upload-box.dragover {
-  border-color: var(--accent);
-  background: rgba(99, 102, 241, 0.05);
-}
-
-.ppm-upload-box.has-image {
-  border-style: solid;
-  border-color: var(--success);
-  background: rgba(16, 185, 129, 0.05);
-}
-
-.ppm-upload-box.has-image svg {
-  color: var(--success);
-}
-
-.ppm-preview-container {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* ─── Preview Panel ─── */
+.poster-preview-container {
   background: var(--bg-tertiary);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 1.5rem;
-  min-height: 400px;
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 200px);
   overflow: hidden;
-  
-  /* Checkerboard pattern */
-  background-image: 
-    linear-gradient(45deg, rgba(128,128,128,0.1) 25%, transparent 25%),
-    linear-gradient(-45deg, rgba(128,128,128,0.1) 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, rgba(128,128,128,0.1) 75%),
-    linear-gradient(-45deg, transparent 75%, rgba(128,128,128,0.1) 75%);
-  background-size: 20px 20px;
-  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
 }
 
-#poster-canvas {
-  max-width: 100%;
-  max-height: 600px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-  border-radius: 4px;
+@media (max-width: 1024px) {
+  .poster-preview-container {
+    height: 600px;
+  }
 }
 
-@media (max-width: 768px) {
-  .ppm-format-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .ppm-preview-container {
-    min-height: 300px;
-    padding: 1rem;
-  }
+/* ─── Canvas System ─── */
+/* The poster-canvas defines the ACTUAL export resolution. 
+   We keep it large so the export PNG is high quality. */
+
+.poster-canvas {
+  position: relative;
+  background-color: var(--p-bg, #0f172a);
+  color: var(--p-text, #ffffff);
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  /* Use transform for preview scaling. */
+  transform-origin: center center;
 }
+
+/* Exact Pixel Dimensions for High Quality Export */
+.size-square {
+  width: 1080px;
+  height: 1080px;
+}
+.size-story {
+  width: 1080px;
+  height: 1920px;
+}
+.size-a4 {
+  width: 1240px; /* 150 DPI A4 approx */
+  height: 1754px;
+}
+
+/* Scale down visually in the app */
+/* Container width is roughly 600-800px max on desktop */
+.poster-preview-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+/* By using JS we will dynamically calculate a transform scale based on wrapper size */
+
+
+/* ─── Poster Design Elements (Responsive to its own container) ─── */
+.p-content {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 8%;
+  z-index: 2;
+}
+
+.p-header {
+  text-align: center;
+  margin-bottom: 5%;
+}
+
+.p-tagline {
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: var(--p-accent, #10b981);
+  margin: 0 0 10px 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.p-name {
+  font-size: 5rem;
+  font-weight: 800;
+  color: var(--p-text);
+  margin: 0;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.p-image-area {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  min-height: 300px;
+}
+
+.p-image-area img {
+  max-width: 90%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 30px rgba(0,0,0,0.5));
+}
+
+.p-image-placeholder {
+  width: 80%;
+  height: 80%;
+  border: 4px dashed rgba(255,255,255,0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 40px;
+}
+.p-image-placeholder span {
+  font-size: 2rem;
+  color: rgba(255,255,255,0.4);
+  font-weight: 600;
+}
+
+.p-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 5%;
+}
+
+.p-features {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.p-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 1.8rem;
+  font-weight: 500;
+}
+
+.p-feature-item::before {
+  content: '✓';
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  background: var(--p-accent, #10b981);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.p-price-box {
+  background: var(--p-accent, #10b981);
+  color: #ffffff; /* always white text on accent bg usually */
+  padding: 30px 50px;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+
+.p-old-price {
+  font-size: 2rem;
+  text-decoration: line-through;
+  opacity: 0.8;
+  font-weight: 600;
+  margin-bottom: -10px;
+}
+
+.p-price {
+  font-size: 6rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Adjustments for different layouts using container queries or simply CSS overrides based on canvas class */
+.size-story .p-name { font-size: 6.5rem; }
+.size-story .p-feature-item { font-size: 2.2rem; }
+.size-story .p-price { font-size: 7rem; }
+.size-story .p-footer { flex-direction: column; align-items: center; gap: 40px; text-align: center; }
+.size-story .p-price-box { align-items: center; width: 100%; }
+
+.size-a4 .p-name { font-size: 5.5rem; }
+.size-a4 .p-footer { align-items: center; }

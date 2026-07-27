@@ -4,68 +4,171 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product Poster Maker - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create A4 Posters, Social Media Posters, Flyers, and Discount Banners for your products.">
-  <meta name="keywords" content="product, poster, flyer, banner, design, ecommerce, marketing, free, online, tool, utility">
+  <meta name="description" content="Create high-quality product posters, social media banners, and flyers instantly. 100% free and offline-ready.">
+  <meta name="keywords" content="product poster maker, social media banner, flyer generator, product marketing, online tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/product-poster-maker/">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  <link rel="stylesheet" href="style.css">
   
   <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <script type="module" src="../../js/main.js"></script>
+  <!-- html2canvas for offline PNG generation -->
+  <script src="../../assets/lib/html2canvas.min.js"></script>
+  
+  <link rel="manifest" href="../../pwa/manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
+    <div class="container tool-container" style="max-width: 1600px;">
       <div class="tool-header">
-        <h1>Product Poster Maker</h1>
-        <p class="tool-description">Create A4 Posters, Social Media Posters, Flyers, and Discount Banners for your products.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Product Poster Maker</h1>
+        <p class="tool-description">Instantly generate stunning marketing graphics, flyers, and social media banners for your products.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Product Poster Maker</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create A4 Posters, Social Media Posters, Flyers, and Discount Banners for your products.</div>
-            <div><strong>Inputs:</strong> product, poster, flyer, banner, design, ecommerce, marketing</div>
-            <div><strong>Category:</strong> product-marketing</div>
+      <div class="poster-workspace">
+        
+        <!-- Left Panel: Form Editor -->
+        <div class="poster-editor glass-panel">
+          
+          <h3 class="section-heading">1. Canvas Size</h3>
+          <div class="size-selector">
+            <button class="size-btn active" data-size="size-square">
+              <div class="size-icon icon-square"></div>
+              <span>Instagram<br>(1080x1080)</span>
+            </button>
+            <button class="size-btn" data-size="size-story">
+              <div class="size-icon icon-story"></div>
+              <span>Story/Reel<br>(1080x1920)</span>
+            </button>
+            <button class="size-btn" data-size="size-a4">
+              <div class="size-icon icon-a4"></div>
+              <span>A4 Print<br>(210x297mm)</span>
+            </button>
+          </div>
+
+          <div style="border-top: 1px solid var(--border); margin: 1.5rem 0;"></div>
+          <h3 class="section-heading">2. Product Details</h3>
+
+          <div class="form-grid">
+            <div class="form-group" style="grid-column: span 2;">
+              <label>Product Name</label>
+              <input type="text" id="p-name" class="form-input" placeholder="e.g. Wireless Noise-Cancelling Headphones">
+            </div>
+            
+            <div class="form-group" style="grid-column: span 2;">
+              <label>Tagline / Highlight</label>
+              <input type="text" id="p-tagline" class="form-input" placeholder="e.g. Experience pure sound.">
+            </div>
+
+            <div class="form-group">
+              <label>Current Price</label>
+              <input type="text" id="p-price" class="form-input" placeholder="e.g. $199">
+            </div>
+            <div class="form-group">
+              <label>Original Price (Optional)</label>
+              <input type="text" id="p-old-price" class="form-input" placeholder="e.g. $299">
+            </div>
+
+            <div class="form-group" style="grid-column: span 2;">
+              <label>Features (Comma separated)</label>
+              <input type="text" id="p-features" class="form-input" placeholder="e.g. 40h Battery, Bluetooth 5.2, Active Noise Cancellation">
+            </div>
+            
+            <div class="form-group" style="grid-column: span 2;">
+              <label>Product Image</label>
+              <input type="file" id="p-image-upload" class="form-input" accept="image/png, image/jpeg, image/webp">
+              <p style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.25rem;">Transparent PNGs work best for product shots.</p>
+            </div>
+          </div>
+
+          <div style="border-top: 1px solid var(--border); margin: 1.5rem 0;"></div>
+          <h3 class="section-heading">3. Branding</h3>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Background Color</label>
+              <div class="color-picker-wrap">
+                <input type="color" id="color-bg" value="#0f172a">
+                <input type="text" id="color-bg-text" class="form-input" value="#0f172a">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Text Color</label>
+              <div class="color-picker-wrap">
+                <input type="color" id="color-text" value="#ffffff">
+                <input type="text" id="color-text-text" class="form-input" value="#ffffff">
+              </div>
+            </div>
+            <div class="form-group" style="grid-column: span 2;">
+              <label>Accent / Price Color</label>
+              <div class="color-picker-wrap">
+                <input type="color" id="color-accent" value="#10b981">
+                <input type="text" id="color-accent-text" class="form-input" value="#10b981">
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="poster-global-actions">
+            <button id="download-img-btn" class="btn btn-primary" style="flex: 1; justify-content: center;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download PNG
+            </button>
+            <button id="load-sample-btn" class="btn btn-secondary">Load Sample</button>
+          </div>
+
+        </div>
+        
+        <!-- Right Panel: Live Preview -->
+        <div class="poster-preview-container">
+          <!-- The wrapper scales the canvas visually for the screen -->
+          <div class="poster-preview-wrapper" id="poster-preview-wrapper">
+            <!-- The actual poster canvas that gets exported -->
+            <div class="poster-canvas size-square" id="poster-canvas">
+              
+              <!-- Content Overlay -->
+              <div class="p-content">
+                <div class="p-header">
+                  <h2 class="p-tagline" id="out-tagline">Experience pure sound.</h2>
+                  <h1 class="p-name" id="out-name">Wireless Headphones</h1>
+                </div>
+                
+                <div class="p-image-area">
+                  <img src="" id="out-image" style="display: none;" alt="Product Image">
+                  <div class="p-image-placeholder" id="out-placeholder">
+                    <span>Upload Product Image</span>
+                  </div>
+                </div>
+
+                <div class="p-footer">
+                  <div class="p-features" id="out-features">
+                    <!-- Features injected here -->
+                  </div>
+                  <div class="p-price-box">
+                    <span class="p-old-price" id="out-old-price" style="display: none;"></span>
+                    <span class="p-price" id="out-price">$199</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+        
       </div>
-    
     </div>
   </main>
 
-  <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Product Poster Maker",
-    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/product-poster-maker/",
-    "description": "Create A4 Posters, Social Media Posters, Flyers, and Discount Banners for your products.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
-  }
-  </script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
