@@ -4,14 +4,80 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Instagram Caption Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your Instagram Caption Generator online.">
-  <meta name="keywords" content="marketing, digital, social, free, online, tool, utility">
+  <meta name="description" content="Generate high-converting, aesthetic Instagram captions with emojis and hashtags using our free AI generator.">
+  <meta name="keywords" content="instagram, caption, generator, ai, social media, marketing, free, online, tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/instagram-caption-generator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .split-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .split-layout { grid-template-columns: 1fr; }
+    }
+    .input-panel, .output-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .caption-card {
+      position: relative;
+      background: rgba(15, 15, 15, 0.4);
+      border: 1px solid var(--stroke);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      white-space: pre-wrap;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      transition: all 0.3s ease;
+    }
+    .caption-card:hover {
+      border-color: var(--accent);
+      background: rgba(20, 20, 20, 0.6);
+    }
+    .copy-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+      padding: 0.25rem 0.75rem;
+      border-radius: 99px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .copy-btn:hover {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+    .loader {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 2rem;
+      color: var(--muted);
+    }
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2px solid var(--stroke);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,47 +92,68 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Instagram Caption Generator</h1>
-        <p class="tool-description">Create, analyze, and manage your Instagram Caption Generator online.</p>
+        <h1>IG Caption Generator</h1>
+        <p class="tool-description">Generate engaging, aesthetic Instagram captions optimized for engagement.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Instagram Caption Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your Instagram Caption Generator online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, social</div>
-            <div><strong>Category:</strong> digital-marketing</div>
+      <div class="tool-panel glass-panel split-layout">
+        
+        <!-- Input Panel -->
+        <div class="input-panel">
+          
+          <div class="form-group">
+            <label for="topic" style="font-weight: 600; margin-bottom: 0.5rem; display: block;">What is your post about?</label>
+            <textarea id="topic" class="form-textarea" rows="4" placeholder="e.g., A photo of my morning coffee in Paris, feeling peaceful and ready for the day..."></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="tone" style="font-weight: 600; margin-bottom: 0.5rem; display: block;">Tone of Voice</label>
+            <select id="tone" class="form-select" style="width: 100%; padding: 0.75rem; border-radius: 0.5rem; background: var(--bg); color: var(--text); border: 1px solid var(--stroke);">
+              <option value="aesthetic">Aesthetic & Minimal</option>
+              <option value="inspirational">Inspirational & Deep</option>
+              <option value="funny">Funny & Witty</option>
+              <option value="sales">Sales & Promotional</option>
+              <option value="casual">Casual & Friendly</option>
+            </select>
+          </div>
+          
+          <div style="display: flex; gap: 1.5rem; margin-top: 0.5rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+              <input type="checkbox" id="include-emojis" checked style="accent-color: var(--accent); width: 1.25rem; height: 1.25rem;">
+              <span>Include Emojis ✨</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+              <input type="checkbox" id="include-hashtags" checked style="accent-color: var(--accent); width: 1.25rem; height: 1.25rem;">
+              <span>Include Hashtags #️⃣</span>
+            </label>
+          </div>
+          
+          <button id="generate-btn" class="btn btn-primary" style="margin-top: 1rem; width: 100%; justify-content: center; font-size: 1.1rem; padding: 1rem;">
+            Generate Captions
+          </button>
+          
+          <div id="ai-status" style="font-size: 0.8rem; color: var(--muted); text-align: center; margin-top: 0.5rem;">
+            <!-- AI status indicator injected here -->
+          </div>
+          
+        </div>
+        
+        <!-- Output Panel -->
+        <div class="output-panel">
+          <div id="loader" class="loader">
+            <div class="spinner"></div> Generating magic...
+          </div>
+          
+          <div id="results-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <!-- Initial Empty State -->
+            <div style="text-align: center; padding: 3rem 1rem; color: var(--muted); border: 1px dashed var(--stroke); border-radius: 1rem;">
+              Your generated captions will appear here.
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
       </div>
-    
     </div>
   </main>
-
-  <!-- Footer Web Component -->
-  <app-footer></app-footer>
-
-  <!-- Structured schema for search engine rich snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Instagram Caption Generator",
-    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/instagram-caption-generator/",
-    "description": "Create, analyze, and manage your Instagram Caption Generator online.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
-  }
-  </script>
 </body>
 </html>
