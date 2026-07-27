@@ -4,15 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lorem Ipsum Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Generate placeholder text with custom counts.">
-  <meta name="keywords" content="lorem, ipsum, placeholder, dummy, text, free, online, tool, utility">
+  <meta name="description" content="Generate random placeholder text (Lorem Ipsum) with custom paragraphs, sentences, or words. Free, offline-ready tool.">
+  <meta name="keywords" content="lorem ipsum, generator, placeholder text, dummy text, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/lorem-ipsum-generator/">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  <link rel="stylesheet" href="style.css">
   
   <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <script type="module" src="../../js/main.js"></script>
+  <link rel="manifest" href="../../pwa/manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
 </head>
 <body>
   <!-- Header Web Component -->
@@ -25,35 +30,73 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Lorem Ipsum Generator</h1>
-        <p class="tool-description">Generate placeholder text with custom counts.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Lorem Ipsum Generator</h1>
+        <p class="tool-description">Generate placeholder text with custom counts of paragraphs, sentences, or words.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Lorem Ipsum Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Generate placeholder text with custom counts.</div>
-            <div><strong>Inputs:</strong> lorem, ipsum, placeholder, dummy, text</div>
-            <div><strong>Category:</strong> text</div>
+      <div class="tool-workarea">
+        <!-- Configuration Panel -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            Generator Settings
+          </h2>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem;">
+            <div class="form-group">
+              <label for="generate-type">Generate Type</label>
+              <select id="generate-type" class="form-select">
+                <option value="paragraphs">Paragraphs</option>
+                <option value="sentences">Sentences</option>
+                <option value="words">Words</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="generate-count">Count</label>
+              <input type="number" id="generate-count" class="form-input" value="3" min="1" max="500">
+            </div>
+          </div>
+          
+          <div class="checkbox-group" style="margin-top: 1rem;">
+            <label class="checkbox-label">
+              <input type="checkbox" id="start-with-lorem" checked>
+              Start with "Lorem ipsum dolor sit amet..."
+            </label>
+          </div>
+
+          <div class="action-bar" style="margin-top: 1.5rem;">
+            <button id="generate-btn" class="btn btn-primary" style="flex: 1; justify-content: center;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Generate Text
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+        
+        <!-- Output Panel -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Generated Output
+          </h2>
+          <div class="output-box" id="output-text" style="min-height: 250px; font-family: var(--font-sans);">
+            <!-- Output will be generated here -->
+          </div>
+          <button class="copy-btn" id="copy-btn" title="Copy to clipboard">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copy Text
+          </button>
+        </div>
       </div>
-    
+      
     </div>
   </main>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
+  <script type="module" src="script.js"></script>
+  
   <!-- Structured schema for search engine rich snippets -->
   <script type="application/ld+json">
   {
@@ -61,7 +104,7 @@
     "@type": "WebApplication",
     "name": "Lorem Ipsum Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/lorem-ipsum-generator/",
-    "description": "Generate placeholder text with custom counts.",
+    "description": "Generate random placeholder text (Lorem Ipsum) with custom paragraphs, sentences, or words.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

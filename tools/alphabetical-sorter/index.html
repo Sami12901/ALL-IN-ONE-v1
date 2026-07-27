@@ -4,15 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Alphabetical Sorter - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Sort lines of text alphabetically or numerically.">
-  <meta name="keywords" content="sort, lines, alphabetical, order, free, online, tool, utility">
+  <meta name="description" content="Sort lines of text alphabetically or numerically. Remove duplicates and empty lines instantly. Free and offline-ready.">
+  <meta name="keywords" content="alphabetical sorter, sort text, sort lines, a-z, z-a, remove duplicates, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/alphabetical-sorter/">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  <link rel="stylesheet" href="style.css">
   
   <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <script type="module" src="../../js/main.js"></script>
+  <link rel="manifest" href="../../pwa/manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
 </head>
 <body>
   <!-- Header Web Component -->
@@ -25,35 +30,83 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Alphabetical Sorter</h1>
-        <p class="tool-description">Sort lines of text alphabetically or numerically.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Alphabetical Sorter</h1>
+        <p class="tool-description">Sort lines of text alphabetically (A-Z or Z-A) with options to remove duplicates and empty lines.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Alphabetical Sorter</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Sort lines of text alphabetically or numerically.</div>
-            <div><strong>Inputs:</strong> sort, lines, alphabetical, order</div>
-            <div><strong>Category:</strong> text</div>
+      <div class="tool-workarea split-view">
+        
+        <!-- Left Panel: Input -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            Original List
+          </h2>
+          
+          <div class="form-group" style="flex: 1;">
+            <textarea id="input-text" class="form-textarea" placeholder="Paste your list here (one item per line)..." style="height: 100%; min-height: 250px; resize: none;"></textarea>
+          </div>
+          
+          <div class="action-bar" style="margin-top: 1rem;">
+            <button id="clear-btn" class="btn btn-secondary" style="width: 100%;">
+              Clear Input
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+        
+        <!-- Right Panel: Controls & Output -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Sorted List
+          </h2>
+          
+          <!-- Controls -->
+          <div class="sort-controls" style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <div class="form-group" style="flex: 1; min-width: 120px;">
+              <label for="sort-order" style="font-size: 0.8rem;">Order</label>
+              <select id="sort-order" class="form-select" style="padding: 0.5rem;">
+                <option value="asc">A - Z (Ascending)</option>
+                <option value="desc">Z - A (Descending)</option>
+              </select>
+            </div>
+            <div class="checkbox-group" style="flex: 1; min-width: 150px; justify-content: center;">
+              <label class="checkbox-label" style="font-size: 0.85rem;">
+                <input type="checkbox" id="remove-duplicates" checked>
+                Remove Duplicates
+              </label>
+              <label class="checkbox-label" style="font-size: 0.85rem;">
+                <input type="checkbox" id="remove-empty" checked>
+                Remove Empty Lines
+              </label>
+            </div>
+          </div>
+          
+          <!-- Output -->
+          <div class="form-group" style="flex: 1; position: relative;">
+            <textarea id="output-text" class="form-textarea" readonly style="height: 100%; min-height: 250px; resize: none; background: var(--bg-secondary); cursor: text;" placeholder="Sorted list will appear here..."></textarea>
+            
+            <button class="copy-btn" id="copy-btn" title="Copy to clipboard">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy
+            </button>
+          </div>
+          
+          <div id="stats" style="font-size: 0.85rem; color: var(--text-tertiary); margin-top: 0.5rem; text-align: right;">
+            Lines: <span id="line-count" style="color: var(--text-primary); font-weight: 600;">0</span>
+          </div>
+        </div>
       </div>
-    
+      
     </div>
   </main>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
+  <script type="module" src="script.js"></script>
+  
   <!-- Structured schema for search engine rich snippets -->
   <script type="application/ld+json">
   {
@@ -61,7 +114,7 @@
     "@type": "WebApplication",
     "name": "Alphabetical Sorter",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/alphabetical-sorter/",
-    "description": "Sort lines of text alphabetically or numerically.",
+    "description": "Sort lines of text alphabetically or numerically. Remove duplicates and empty lines instantly.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

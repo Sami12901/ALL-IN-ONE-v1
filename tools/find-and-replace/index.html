@@ -3,16 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Find and Replace - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Search and replace text patterns using string or regex.">
-  <meta name="keywords" content="find, replace, search, regex, free, online, tool, utility">
+  <title>Find and Replace Text - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Search and replace text patterns using string matching or regular expressions. Offline-ready and 100% private.">
+  <meta name="keywords" content="find and replace, text replace, regex replace, regular expression tool, online, utility, free">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/find-and-replace/">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  <link rel="stylesheet" href="style.css">
   
   <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <script type="module" src="../../js/main.js"></script>
+  <link rel="manifest" href="../../pwa/manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
 </head>
 <body>
   <!-- Header Web Component -->
@@ -25,43 +30,92 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Find and Replace</h1>
-        <p class="tool-description">Search and replace text patterns using string or regex.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Find and Replace</h1>
+        <p class="tool-description">Search and replace text patterns instantly using string matching or regular expressions (regex).</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Find and Replace</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Search and replace text patterns using string or regex.</div>
-            <div><strong>Inputs:</strong> find, replace, search, regex</div>
-            <div><strong>Category:</strong> text</div>
+      <div class="tool-workarea split-view">
+        
+        <!-- Left Panel: Input & Config -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            Search Configuration
+          </h2>
+          
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label for="find-input">Find</label>
+            <input type="text" id="find-input" class="form-input" placeholder="Text or regex to find...">
+          </div>
+          
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label for="replace-input">Replace With</label>
+            <input type="text" id="replace-input" class="form-input" placeholder="Replacement text...">
+          </div>
+          
+          <div class="checkbox-group" style="margin-bottom: 1.5rem; flex-direction: row; gap: 1.5rem;">
+            <label class="checkbox-label">
+              <input type="checkbox" id="match-case">
+              Match Case
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="use-regex">
+              Use Regular Expression
+            </label>
+          </div>
+
+          <h2 class="panel-title" style="margin-top: 2rem;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            Original Text
+          </h2>
+          
+          <div class="form-group" style="flex: 1;">
+            <textarea id="input-text" class="form-textarea" placeholder="Paste your text here..." style="height: 100%; min-height: 200px; resize: none;"></textarea>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+        
+        <!-- Right Panel: Output -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title" style="display: flex; justify-content: space-between;">
+            <span style="display: flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              Replaced Text
+            </span>
+            <span id="match-count" style="font-size: 0.85rem; font-weight: normal; color: var(--accent); background: rgba(99, 102, 241, 0.15); padding: 0.2rem 0.6rem; border-radius: 12px; display: none;">0 matches replaced</span>
+          </h2>
+          
+          <div class="form-group" style="flex: 1; position: relative;">
+            <textarea id="output-text" class="form-textarea" readonly style="height: 100%; min-height: 400px; resize: none; background: var(--bg-secondary); cursor: text;" placeholder="Output will appear here..."></textarea>
+            
+            <button class="copy-btn" id="copy-btn" title="Copy to clipboard">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy
+            </button>
+          </div>
+          
+          <div id="regex-error" style="display: none; color: var(--error); font-size: 0.85rem; margin-top: 0.5rem; padding: 0.5rem; background: rgba(239, 68, 68, 0.1); border-radius: 4px;">
+            Invalid regular expression.
+          </div>
+        </div>
       </div>
-    
+      
     </div>
   </main>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
+  <script type="module" src="script.js"></script>
+  
   <!-- Structured schema for search engine rich snippets -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Find and Replace",
+    "name": "Find and Replace Text",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/find-and-replace/",
-    "description": "Search and replace text patterns using string or regex.",
+    "description": "Search and replace text patterns using string matching or regular expressions.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
