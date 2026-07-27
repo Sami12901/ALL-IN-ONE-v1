@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- Initial State ---
   let cvData = {
+    theme: 'theme-modern-indigo',
+    image: null,
     personal: {
       name: 'John Doe',
       title: 'Senior Software Engineer',
@@ -53,6 +55,43 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.classList.add('active');
       document.getElementById(btn.dataset.target).classList.add('active');
     });
+  });
+
+  // --- Theme & Image ---
+  const themeSelect = document.getElementById('cv-theme-select');
+  const cvDocument = document.getElementById('cv-document');
+  const imageUpload = document.getElementById('cv-image-upload');
+  const removeImageBtn = document.getElementById('remove-image-btn');
+
+  themeSelect.addEventListener('change', (e) => {
+    cvData.theme = e.target.value;
+    saveData();
+    renderPreview();
+  });
+
+  imageUpload.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        alert('Image is too large. Max size is 2MB.');
+        imageUpload.value = '';
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        cvData.image = event.target.result;
+        saveData();
+        renderPreview();
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  removeImageBtn.addEventListener('click', () => {
+    cvData.image = null;
+    imageUpload.value = '';
+    saveData();
+    renderPreview();
   });
 
   // --- Two-way Binding for Personal Info & Summary ---
@@ -244,6 +283,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- Initialize Forms ---
   function initForms() {
+    // Theme & Image
+    themeSelect.value = cvData.theme || 'theme-modern-indigo';
+    
     // Basic Info
     document.getElementById('cv-name').value = cvData.personal.name;
     document.getElementById('cv-title').value = cvData.personal.title;
@@ -277,6 +319,23 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderPreview() {
+    // Apply Theme
+    cvDocument.className = 'cv-document ' + (cvData.theme || 'theme-modern-indigo');
+
+    // Apply Image
+    const previewImageContainer = document.getElementById('preview-image-container');
+    const previewImage = document.getElementById('preview-image');
+    if (cvData.image) {
+      previewImage.src = cvData.image;
+      previewImageContainer.style.display = 'block';
+      removeImageBtn.style.display = 'block';
+    } else {
+      previewImage.src = '';
+      previewImageContainer.style.display = 'none';
+      removeImageBtn.style.display = 'none';
+      imageUpload.value = '';
+    }
+
     // Personal Details
     setContentAndVisibility('preview-name', cvData.personal.name, 'block');
     setContentAndVisibility('preview-title', cvData.personal.title, 'block');
@@ -396,6 +455,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('clear-cv-btn').addEventListener('click', () => {
     if(confirm('Are you sure you want to clear all data? This cannot be undone.')) {
       cvData = {
+        theme: 'theme-modern-indigo',
+        image: null,
         personal: { name: '', title: '', email: '', phone: '', location: '', link: '' },
         summary: '',
         experience: [],
