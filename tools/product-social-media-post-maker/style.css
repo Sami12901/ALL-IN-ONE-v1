@@ -1,0 +1,214 @@
+/* Social Media Post Maker Styles */
+
+.editor-workspace {
+  display: grid;
+  grid-template-columns: 450px 1fr;
+  gap: 1.5rem;
+  align-items: flex-start;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .editor-workspace {
+    grid-template-columns: 1fr;
+  }
+}
+
+.opt-input-panel {
+  padding: 1.5rem;
+  position: sticky;
+  top: 100px;
+}
+
+@media (max-width: 1024px) {
+  .opt-input-panel {
+    position: static;
+  }
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.preview-panel {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 500px;
+  height: calc(100vh - 150px);
+}
+
+.canvas-wrapper {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background: repeating-conic-gradient(var(--bg-tertiary) 0% 25%, transparent 0% 50%) 50% / 20px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+}
+
+/* We use CSS transform scale to fit the large 1080x1080 canvas into the preview window */
+.scale-wrapper {
+  transform-origin: center center;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* -------------------------------------
+   SOCIAL MEDIA POST DOM CANVAS
+   ------------------------------------- */
+
+.social-post {
+  --sp-accent: #4f46e5;
+  --sp-bg: #f8fafc;
+  --sp-text: #1e293b;
+  
+  background-color: var(--sp-bg);
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', -apple-system, sans-serif;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  transition: width 0.3s, height 0.3s;
+}
+
+/* Size Configurations */
+.social-post.insta-sq { width: 1080px; height: 1080px; }
+.social-post.insta-pt { width: 1080px; height: 1350px; }
+.social-post.story { width: 1080px; height: 1920px; }
+.social-post.linkedin { width: 1200px; height: 628px; }
+
+/* Internal Elements */
+.sp-bg-shape {
+  position: absolute;
+  background: var(--sp-accent);
+  z-index: 1;
+}
+
+.sp-logo {
+  position: absolute;
+  max-width: 200px;
+  max-height: 80px;
+  z-index: 10;
+  object-fit: contain;
+}
+
+.sp-text-content {
+  position: absolute;
+  z-index: 10;
+  color: var(--sp-text);
+}
+
+.sp-head {
+  font-weight: 900;
+  margin: 0 0 20px 0;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.sp-sub {
+  font-weight: 500;
+  margin: 0 0 40px 0;
+  opacity: 0.9;
+}
+
+.sp-cta {
+  display: inline-block;
+  background: var(--sp-accent);
+  color: #ffffff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.sp-image-container {
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sp-image-container img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 30px rgba(0,0,0,0.2));
+}
+
+/* =====================================
+   THEME: FLASH SALE (Bold & Angular)
+   ===================================== */
+.theme-flash .sp-bg-shape {
+  top: -10%; right: -10%; width: 60%; height: 120%;
+  transform: skewX(-15deg);
+}
+.theme-flash .sp-logo { top: 60px; left: 80px; }
+.theme-flash .sp-text-content { top: 30%; left: 80px; width: 45%; }
+.theme-flash .sp-head { font-size: 80px; }
+.theme-flash .sp-sub { font-size: 32px; }
+.theme-flash .sp-cta { padding: 20px 40px; font-size: 24px; border-radius: 50px; }
+.theme-flash .sp-image-container { right: 5%; top: 20%; width: 45%; height: 60%; }
+
+/* Story specific adjustments for Flash Sale */
+.theme-flash.story .sp-bg-shape { top: 50%; left: 0; width: 100%; height: 50%; transform: skewY(-10deg); }
+.theme-flash.story .sp-text-content { top: 15%; left: 80px; width: 80%; text-align: center; }
+.theme-flash.story .sp-image-container { top: 55%; left: 10%; width: 80%; height: 40%; }
+.theme-flash.story .sp-logo { top: 60px; left: 50%; transform: translateX(-50%); }
+
+/* Landscape specific adjustments for Flash Sale */
+.theme-flash.linkedin .sp-head { font-size: 50px; }
+.theme-flash.linkedin .sp-sub { font-size: 24px; }
+.theme-flash.linkedin .sp-text-content { top: 20%; }
+
+/* =====================================
+   THEME: NEW ARRIVAL (Sleek & Circular)
+   ===================================== */
+.theme-new .sp-bg-shape {
+  top: -20%; right: -20%; width: 800px; height: 800px;
+  border-radius: 50%;
+}
+.theme-new .sp-logo { bottom: 60px; left: 80px; }
+.theme-new .sp-text-content { top: 100px; left: 80px; width: 50%; }
+.theme-new .sp-head { font-size: 70px; letter-spacing: -2px; }
+.theme-new .sp-sub { font-size: 28px; font-weight: 400; }
+.theme-new .sp-cta { padding: 15px 0; font-size: 22px; background: transparent; color: var(--sp-accent); border-bottom: 4px solid var(--sp-accent); }
+.theme-new .sp-image-container { right: 50px; bottom: 50px; width: 50%; height: 70%; }
+
+.theme-new.story .sp-bg-shape { top: -10%; right: -50%; width: 1500px; height: 1500px; }
+.theme-new.story .sp-text-content { top: 150px; width: 80%; }
+.theme-new.story .sp-image-container { bottom: 150px; right: auto; left: 10%; width: 80%; height: 50%; }
+
+/* =====================================
+   THEME: MINIMALIST (Clean Centered)
+   ===================================== */
+.theme-minimal .sp-bg-shape { display: none; }
+.theme-minimal { border: 20px solid var(--sp-accent); }
+.theme-minimal .sp-logo { top: 60px; left: 50%; transform: translateX(-50%); }
+.theme-minimal .sp-text-content { bottom: 80px; left: 10%; width: 80%; text-align: center; }
+.theme-minimal .sp-head { font-size: 50px; letter-spacing: 5px; }
+.theme-minimal .sp-sub { font-size: 22px; margin-bottom: 20px;}
+.theme-minimal .sp-cta { padding: 15px 50px; font-size: 18px; border-radius: 4px; }
+.theme-minimal .sp-image-container { top: 180px; left: 20%; width: 60%; height: 50%; }
+
+/* =====================================
+   THEME: GIVEAWAY (Fun & Pop)
+   ===================================== */
+.theme-giveaway .sp-bg-shape {
+  bottom: 0; left: 0; width: 100%; height: 35%;
+  clip-path: polygon(0 20%, 100% 0, 100% 100%, 0% 100%);
+}
+.theme-giveaway .sp-logo { top: 60px; left: 60px; }
+.theme-giveaway .sp-text-content { bottom: 40px; left: 5%; width: 90%; text-align: center; color: #fff !important; }
+.theme-giveaway .sp-text-content * { color: #fff !important; }
+.theme-giveaway .sp-head { font-size: 90px; text-shadow: 4px 4px 0px rgba(0,0,0,0.2); }
+.theme-giveaway .sp-sub { font-size: 26px; }
+.theme-giveaway .sp-cta { padding: 15px 40px; font-size: 22px; background: #fff !important; color: var(--sp-accent) !important; border-radius: 10px; }
+.theme-giveaway .sp-image-container { top: 10%; left: 15%; width: 70%; height: 50%; }
+
+.theme-giveaway.story .sp-text-content { bottom: 100px; }
+.theme-giveaway.story .sp-bg-shape { height: 45%; }

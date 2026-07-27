@@ -3,69 +3,150 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Product Social Media Post Maker - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create Instagram, Facebook, LinkedIn, and WhatsApp promo posts for products.">
-  <meta name="keywords" content="product, social media, post, instagram, facebook, ecommerce, marketing, free, online, tool, utility">
+  <title>Social Media Post Maker - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Generate high-converting social media posts for Instagram, Facebook, and WhatsApp. Custom product layouts.">
+  <meta name="keywords" content="social media post maker, instagram layout, product post generator, offline tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/product-social-media-post-maker/">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  <link rel="stylesheet" href="style.css">
   
   <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <script type="module" src="../../js/main.js"></script>
+  
+  <!-- Local Libraries -->
+  <script src="../../assets/lib/html2canvas.min.js"></script>
+
+  <link rel="manifest" href="../../pwa/manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
+    <div class="container tool-container" style="max-width: 1500px;">
       <div class="tool-header">
-        <h1>Product Social Media Post Maker</h1>
-        <p class="tool-description">Create Instagram, Facebook, LinkedIn, and WhatsApp promo posts for products.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Social Post Maker</h1>
+        <p class="tool-description">Create perfectly sized promo graphics for Insta, FB, and WhatsApp instantly.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Product Social Media Post Maker</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create Instagram, Facebook, LinkedIn, and WhatsApp promo posts for products.</div>
-            <div><strong>Inputs:</strong> product, social media, post, instagram, facebook, ecommerce, marketing</div>
-            <div><strong>Category:</strong> product-marketing</div>
+      <div class="editor-workspace">
+        
+        <!-- Left Panel: Data Entry -->
+        <div class="opt-input-panel glass-panel">
+          
+          <h3 class="section-heading">Platform & Layout</h3>
+          <div class="form-grid" style="margin-bottom: 1.5rem;">
+            <div class="form-group" style="grid-column: span 2;">
+              <label>Post Size</label>
+              <select id="inp-size" class="form-select">
+                <option value="insta-sq">Instagram / FB Square (1080x1080)</option>
+                <option value="insta-pt">Instagram Portrait (1080x1350)</option>
+                <option value="story">Story / Reels / WhatsApp (1080x1920)</option>
+                <option value="linkedin">LinkedIn / Twitter Landscape (1200x628)</option>
+              </select>
+            </div>
+            <div class="form-group" style="grid-column: span 2;">
+              <label>Template Style</label>
+              <select id="inp-theme" class="form-select">
+                <option value="theme-flash">Flash Sale (Bold)</option>
+                <option value="theme-new">New Arrival (Sleek)</option>
+                <option value="theme-minimal">Minimalist (Clean)</option>
+                <option value="theme-giveaway">Giveaway (Fun)</option>
+              </select>
+            </div>
+          </div>
+
+          <h3 class="section-heading">Content</h3>
+          <div class="form-grid">
+            <div class="form-group" style="grid-column: span 2;">
+              <label>Headline</label>
+              <input type="text" id="inp-head" class="form-input" value="MASSIVE WEEKEND SALE">
+            </div>
+            <div class="form-group" style="grid-column: span 2;">
+              <label>Sub-headline</label>
+              <input type="text" id="inp-sub" class="form-input" value="Get up to 50% OFF all premium wireless audio gear.">
+            </div>
+            <div class="form-group" style="grid-column: span 2;">
+              <label>Call to Action (Button text)</label>
+              <input type="text" id="inp-cta" class="form-input" value="Link in Bio! 🛒">
+            </div>
+          </div>
+
+          <h3 class="section-heading" style="margin-top: 1.5rem;">Assets & Colors</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Product Image</label>
+              <input type="file" id="inp-img" class="form-input" accept="image/*" style="padding: 0.4rem;">
+            </div>
+            <div class="form-group">
+              <label>Brand Logo</label>
+              <input type="file" id="inp-logo" class="form-input" accept="image/*" style="padding: 0.4rem;">
+            </div>
+            <div class="form-group">
+              <label>Accent Color</label>
+              <input type="color" id="inp-color1" class="form-input" value="#4f46e5" style="height: 45px; padding: 0.2rem;">
+            </div>
+            <div class="form-group">
+              <label>Background Color</label>
+              <input type="color" id="inp-color2" class="form-input" value="#f8fafc" style="height: 45px; padding: 0.2rem;">
+            </div>
+          </div>
+          
+          <div style="border-top: 1px solid var(--border); margin: 1.5rem 0;"></div>
+          
+          <button id="btn-export" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 1rem;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Download HD Post
+          </button>
+        </div>
+        
+        <!-- Right Panel: Preview Area -->
+        <div class="opt-dashboard-panel glass-panel preview-panel">
+          
+          <div class="canvas-wrapper">
+             
+             <!-- Scalable Wrapper that fits to screen -->
+             <div class="scale-wrapper">
+                
+                <!-- The Actual Canvas to export -->
+                <div id="post-canvas" class="social-post theme-flash insta-sq">
+                  
+                  <div class="sp-bg-shape"></div>
+                  
+                  <img id="out-logo" class="sp-logo" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 30'><text y='20' font-family='Arial' font-size='20' font-weight='bold' fill='%23333'>LOGO</text></svg>" alt="Brand Logo" style="display: none;">
+                  
+                  <div class="sp-text-content">
+                    <h2 id="out-head" class="sp-head">MASSIVE WEEKEND SALE</h2>
+                    <p id="out-sub" class="sp-sub">Get up to 50% OFF all premium wireless audio gear.</p>
+                    <div id="out-cta" class="sp-cta">Link in Bio! 🛒</div>
+                  </div>
+                  
+                  <!-- Fallback placeholder image initially -->
+                  <div class="sp-image-container">
+                    <img id="out-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'><rect width='500' height='500' fill='%23e2e8f0'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='30' fill='%2364748b'>Upload Product Image</text></svg>" alt="Product">
+                  </div>
+                  
+                </div>
+
+             </div>
+
+          </div>
+          <div class="preview-info" style="margin-top: 15px; text-align: center; color: var(--text-secondary); font-size: 0.9rem;">
+             Output Resolution: <strong id="res-label" style="color:var(--text-primary);">1080 x 1080 px</strong>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
       </div>
-    
     </div>
   </main>
 
-  <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Product Social Media Post Maker",
-    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/product-social-media-post-maker/",
-    "description": "Create Instagram, Facebook, LinkedIn, and WhatsApp promo posts for products.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
-  }
-  </script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
