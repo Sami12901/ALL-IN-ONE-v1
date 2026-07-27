@@ -49,9 +49,13 @@ class AppHeader extends HTMLElement {
           <div style="width: 1px; height: 20px; background: var(--stroke); margin: 0 8px;" class="hide-mobile"></div>
           
           <!-- Nav Links -->
-          <a href="${prefix}index.html" style="font-size: 0.875rem; border-radius: 9999px; padding: 0.375rem 1rem; color: var(--text); background: rgba(255,255,255,0.1); text-decoration: none;">Home</a>
-          <a href="${prefix}pages/about.html" style="font-size: 0.875rem; border-radius: 9999px; padding: 0.375rem 1rem; color: var(--muted); text-decoration: none;">About</a>
-          <a href="${prefix}pages/contact.html" style="font-size: 0.875rem; border-radius: 9999px; padding: 0.375rem 1rem; color: var(--muted); text-decoration: none;">Support</a>
+          <a href="${prefix}index.html" style="font-size: 0.875rem; border-radius: 9999px; padding: 0.375rem 1rem; color: var(--text); background: rgba(255,255,255,0.1); text-decoration: none;" class="hide-mobile">Home</a>
+          <a href="${prefix}pages/about.html" style="font-size: 0.875rem; border-radius: 9999px; padding: 0.375rem 1rem; color: var(--muted); text-decoration: none;" class="hide-mobile">About</a>
+          <a href="${prefix}pages/contact.html" style="font-size: 0.875rem; border-radius: 9999px; padding: 0.375rem 1rem; color: var(--muted); text-decoration: none;" class="hide-mobile">Support</a>
+          
+          <button id="mobile-menu-toggle" aria-label="Menu" style="background:transparent; border:none; color:var(--text); cursor:pointer; padding: 0.375rem; display:none;" class="show-mobile-flex">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
         </div>
       </header>
 
@@ -71,6 +75,8 @@ class AppHeader extends HTMLElement {
     const drawer = this.querySelector('#mobile-drawer');
     const backdrop = this.querySelector('#mobile-drawer-backdrop');
     const closeBtn = this.querySelector('#mobile-drawer-close');
+
+    if (!toggleBtn || !drawer || !closeBtn || !backdrop) return;
 
     const openDrawer = () => {
       drawer.style.right = '0';
