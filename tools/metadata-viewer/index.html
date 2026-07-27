@@ -3,70 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Metadata Viewer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="View complete PDF information and metadata.">
-  <meta name="keywords" content="pdf, document, metadata viewer, free, online, tool, utility">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/metadata-viewer/">
+  <title>Metadata Viewer - ALL IN ONE</title>
+  <meta name="description" content="View the hidden properties and metadata of any PDF document securely.">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+  <style>
+    .layout { display: flex; flex-direction: column; gap: 2rem; max-width: 800px; margin: 0 auto; }
+    .upload-zone { border: 2px dashed var(--stroke); border-radius: 1rem; padding: 3rem 2rem; text-align: center; background: rgba(0,0,0,0.2); transition: all 0.2s; cursor: pointer; }
+    .upload-zone:hover, .upload-zone.dragover { border-color: var(--accent); background: rgba(var(--accent-rgb), 0.05); }
+    .file-info-card { background: var(--surface); border: 1px solid var(--stroke); padding: 1.5rem; border-radius: 0.5rem; display: flex; align-items: center; gap: 1.5rem; }
+    .file-icon { color: #ef4444; }
+    .file-details { flex-grow: 1; overflow: hidden; }
+    .file-name { font-weight: 600; font-size: 1.1rem; color: var(--text); margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    
+    .meta-card { background: rgba(0,0,0,0.3); border: 1px solid var(--stroke); padding: 2rem; border-radius: 0.5rem; margin-top: 1.5rem; }
+    .meta-row { display: flex; padding: 0.75rem 0; border-bottom: 1px solid var(--stroke); }
+    .meta-row:last-child { border-bottom: none; }
+    .meta-label { font-weight: 600; color: var(--muted); width: 120px; flex-shrink: 0; }
+    .meta-value { font-family: var(--font-mono); color: var(--text); word-break: break-all; }
+  </style>
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
-      <div class="tool-header">
+      <div class="tool-header" style="text-align: center; max-width: 600px; margin: 0 auto 2rem;">
         <h1>Metadata Viewer</h1>
-        <p class="tool-description">View complete PDF information and metadata.</p>
+        <p class="tool-description">Inspect the hidden properties, dates, and author information embedded inside your PDF.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Metadata Viewer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> View complete PDF information and metadata.</div>
-            <div><strong>Inputs:</strong> pdf, document, metadata viewer</div>
-            <div><strong>Category:</strong> pdf</div>
+      <div class="tool-panel glass-panel layout">
+        
+        <div class="upload-zone" id="upload-zone">
+          <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1" fill="none" style="margin-bottom: 1rem; color: var(--muted);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <h3 style="margin-bottom: 0.5rem;">Drop a PDF file here</h3>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem;">or click to browse</p>
+          <button class="btn btn-secondary" id="btn-browse" style="margin: 0 auto;">Select PDF</button>
+          <input type="file" id="file-input" accept="application/pdf" style="display: none;">
+        </div>
+        
+        <div id="workspace" style="display: none;">
+          <div class="file-info-card">
+            <svg class="file-icon" viewBox="0 0 24 24" width="40" height="40" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg>
+            <div class="file-details">
+              <div class="file-name" id="ui-filename">document.pdf</div>
+            </div>
+            <button class="btn btn-secondary" id="btn-change" style="font-size: 0.8rem; padding: 0.5rem 1rem;">Change File</button>
+          </div>
+
+          <div class="meta-card" id="meta-display">
+            <!-- Injected rows -->
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
       </div>
-    
     </div>
   </main>
-
-  <!-- Footer Web Component -->
-  <app-footer></app-footer>
-
-  <!-- Structured schema for search engine rich snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Metadata Viewer",
-    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/metadata-viewer/",
-    "description": "View complete PDF information and metadata.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
-  }
-  </script>
 </body>
 </html>
