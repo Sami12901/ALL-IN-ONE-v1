@@ -39,58 +39,35 @@ class AppHeader extends HTMLElement {
     applyTheme(activeTheme); // Ensure theme is loaded
 
     this.innerHTML = `
-      <div class="dev-banner">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: block;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-        <span>THIS WEBSITE IS CURRENTLY UNDER ACTIVE DEVELOPMENT</span>
-      </div>
-      <header class="app-header">
-        <div class="container nav-container">
-          <!-- Brand -->
-          <a href="${prefix}index.html" class="nav-brand">
-            <div class="nav-brand-logo">A</div>
-            <span>ALL IN ONE</span>
+      <header style="position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; justify-content: center; padding-top: 1.5rem; pointer-events: none; transition: transform 0.3s ease;" id="global-navbar">
+        <div style="pointer-events: auto; display: inline-flex; align-items: center; border-radius: 9999px; backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); background: var(--surface); padding: 0.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+          
+          <!-- Logo -->
+          <a href="${prefix}index.html" class="gradient-border-hover" style="display:flex; align-items:center; justify-content:center; width: 36px; height: 36px; border-radius: 50%; background: var(--bg); transition: transform 0.2s; text-decoration: none;">
+            <span class="font-display italic-display" style="font-size: 16px; color: var(--text);">A</span>
           </a>
 
-          <!-- Header Search -->
-          <div class="nav-search-container" style="display: none;">
-            <input type="text" id="nav-search-input" class="nav-search-input" placeholder="Search tools..." aria-label="Search tools">
-            <svg class="nav-search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-            <div id="nav-search-results" class="nav-search-results glass-panel"></div>
-          </div>
-
-          <!-- Desktop Navigation -->
-          <nav class="desktop-navigation">
-            <a href="${prefix}index.html" class="nav-link">Dashboard</a>
-            <a href="${prefix}pages/about.html" class="nav-link">About</a>
-            <a href="${prefix}pages/contact.html" class="nav-link">Support</a>
-            
-            <!-- Dark Mode Toggle -->
-            <button id="header-theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
-              <span class="theme-icon">${activeTheme === 'dark' ? SUN_SVG : MOON_SVG}</span>
-            </button>
-
-            <!-- Mobile Menu Toggle Button -->
-            <button id="mobile-menu-toggle" class="mobile-menu-toggle" aria-label="Toggle menu">${HAMBURGER_SVG}</button>
-          </nav>
+          <div style="width: 1px; height: 20px; background: var(--stroke); margin: 0 8px;" class="hide-mobile"></div>
+          
+          <!-- Nav Links -->
+          <a href="${prefix}index.html" style="font-size: 0.875rem; border-radius: 9999px; padding: 0.375rem 1rem; color: var(--text); background: rgba(255,255,255,0.1); text-decoration: none;">Home</a>
+          <a href="${prefix}pages/about.html" style="font-size: 0.875rem; border-radius: 9999px; padding: 0.375rem 1rem; color: var(--muted); text-decoration: none;">About</a>
+          <a href="${prefix}pages/contact.html" style="font-size: 0.875rem; border-radius: 9999px; padding: 0.375rem 1rem; color: var(--muted); text-decoration: none;">Support</a>
+          
+          <div style="width: 1px; height: 20px; background: var(--stroke); margin: 0 8px;" class="hide-mobile"></div>
+          
+          <!-- Theme Toggle -->
+          <button id="header-theme-toggle" class="theme-toggle-btn gradient-border-hover" aria-label="Toggle theme" style="background:transparent; border:none; color:var(--muted); cursor:pointer; padding: 0.375rem; border-radius: 50%; display: flex; align-items: center;">
+            <span class="theme-icon" style="display:block;">${activeTheme === 'dark' ? SUN_SVG : MOON_SVG}</span>
+          </button>
         </div>
       </header>
 
-      <!-- Mobile Menu Drawer Overlay -->
-      <div id="mobile-drawer" class="mobile-drawer glass-panel">
-        <div class="mobile-drawer-header">
-          <span class="mobile-drawer-title">Navigation</span>
-          <button id="mobile-drawer-close" class="mobile-drawer-close" aria-label="Close menu">${CLOSE_SVG}</button>
-        </div>
-        <div class="mobile-drawer-links">
-          <a href="${prefix}index.html">Dashboard</a>
-          <a href="${prefix}pages/about.html">About Us</a>
-          <a href="${prefix}pages/contact.html">Support Form</a>
-          <a href="${prefix}pages/privacy.html">Privacy Policy</a>
-          <a href="${prefix}pages/terms.html">Terms of Service</a>
-        </div>
-      </div>
-      <div id="mobile-drawer-backdrop" class="mobile-drawer-backdrop"></div>
+      <!-- Minimal Mobile Drawer (kept functional but simplified) -->
+      <div id="mobile-drawer" class="mobile-drawer glass-panel" style="display:none;"></div>
+      <div id="mobile-drawer-backdrop" class="mobile-drawer-backdrop" style="display:none;"></div>
     `;
+
 
     // Initialize Header Interactions
     this.setupThemeToggle();

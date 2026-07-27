@@ -26,11 +26,17 @@
   
   <!-- PWA Manifest -->
   <link rel="manifest" href="pwa/manifest.json">
-  <meta name="theme-color" content="#4f46e5">
+  <meta name="theme-color" content="#0a0a0a">
   <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico">
   
+  <!-- CDNs for Portfolio Design -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
   <!-- Stylesheets -->
   <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/portfolio.css">
   <link rel="stylesheet" href="css/dashboard.css">
   
   <!-- Core Scripts -->
@@ -39,40 +45,77 @@
   <script type="module" src="js/dashboard.js"></script>
 </head>
 <body>
+  <!-- Section 1: Loading Screen -->
+  <div id="loading-screen">
+    <div class="loader-label italic-display">ALL IN ONE</div>
+    <div class="loader-words italic-display">
+      <span class="loader-word active">Calculate</span>
+      <span class="loader-word">Format</span>
+      <span class="loader-word">Generate</span>
+      <span class="loader-word">Design</span>
+    </div>
+    <div class="loader-counter italic-display" id="loader-count">000</div>
+    <div class="loader-progress-wrap">
+      <div class="loader-progress accent-gradient" id="loader-bar"></div>
+    </div>
+  </div>
+
   <!-- Global Web Component Header -->
   <app-header></app-header>
 
   <!-- 1. Hero Section -->
-  <section class="hero-section">
-    <div class="hero-container">
-      <span class="badge">150+ Browser Utilities</span>
-      <h1 class="hero-title">All Your Favorite Tools, <span class="gradient-text">In One Tab</span></h1>
-      <p class="hero-subtitle">Fast, free, privacy-friendly online utilities. No backend processing - all actions happen locally in your browser.</p>
+  <section class="hero-section" style="position:relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; padding-top: 5rem; padding-bottom: 5rem;">
+    <!-- Background Video -->
+    <div class="hero-video-wrapper">
+      <video id="hero-video" class="hero-video" autoplay muted loop playsinline></video>
+      <div class="hero-overlay"></div>
+      <div class="hero-fade-bottom"></div>
+    </div>
+
+    <div class="hero-container" style="position: relative; z-index: 10; text-align: center; width: 100%; max-width: 800px; padding: 0 2rem;">
+      <div class="text-muted-xs blur-in" style="margin-bottom: 2rem;">COLLECTION '26</div>
+      <h1 class="italic-display name-reveal" style="font-size: clamp(4rem, 12vw, 10rem); line-height: 0.9; margin-bottom: 1.5rem; letter-spacing: -0.02em;">ALL IN ONE</h1>
       
+      <div class="blur-in" style="font-size: clamp(1.2rem, 3vw, 1.5rem); color: var(--text); margin-bottom: 3rem;">
+        <span class="font-display italic-display">150+ </span>
+        <span id="role-text" class="font-display italic-display" style="display:inline-block; animation: role-fade-in 0.4s ease-out;">Developer</span>
+        <span class="font-display italic-display"> Tools.</span>
+      </div>
+
+      <p class="hero-subtitle blur-in" style="font-size: 0.95rem; max-width: 420px; margin: 0 auto 3rem auto; color: var(--muted);">
+        Fast, free, privacy-friendly online utilities. No backend processing - all actions happen locally in your browser.
+      </p>
+
       <!-- 2. Search Tools Section -->
-      <div class="search-wrapper glass-panel">
+      <div class="search-wrapper glass-panel blur-in gradient-border-hover" style="margin: 0 auto; max-width: 500px; border-radius: 9999px; background: rgba(10,10,10,0.6); backdrop-filter: blur(20px);">
         <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/></svg>
-        <input type="text" id="tool-search" placeholder="Type json formatter, password generator, word counter..." aria-label="Search tools">
+        <input type="text" id="tool-search" placeholder="Type json formatter, password generator..." aria-label="Search tools" style="color: var(--text);">
         <button class="clear-search" id="clear-search" style="display: none;" aria-label="Clear search">&times;</button>
-        <span class="shortcut-badge">Press / to focus</span>
+        <span class="shortcut-badge" style="background: var(--surface);">/</span>
       </div>
 
       <!-- Filter Toggle Buttons -->
-      <div class="filter-group" style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 1rem; flex-wrap: wrap;">
-        <button class="filter-btn active" data-filter="all">All Tools</button>
-        <button class="filter-btn" data-filter="active">Active Only</button>
-        <button class="filter-btn" data-filter="coming">Coming Soon</button>
+      <div class="filter-group blur-in" style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap;">
+        <button class="filter-btn active" data-filter="all" style="border-radius: 99px;">All Tools</button>
+        <button class="filter-btn" data-filter="active" style="border-radius: 99px;">Active Only</button>
+        <button class="filter-btn" data-filter="coming" style="border-radius: 99px;">Coming Soon</button>
       </div>
-      
-      <div class="quick-tags">
-        <span>Popular:</span>
-        <a href="tools/json-formatter/index.html" class="quick-tag">JSON Formatter</a>
-        <a href="tools/password-generator/index.html" class="quick-tag">Password Generator</a>
-        <a href="tools/qr-code-generator/index.html" class="quick-tag">QR Code Generator</a>
-        <a href="tools/color-picker/index.html" class="quick-tag">Color Picker</a>
+
+      <div class="quick-tags blur-in" style="margin-top: 2rem; display: flex; justify-content: center; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+        <span class="text-muted-xs" style="margin-right: 0.5rem;">Popular:</span>
+        <a href="tools/json-formatter/index.html" class="quick-tag" style="border-radius: 99px; background: transparent; border: 1px solid var(--stroke); color: var(--text);">JSON Formatter</a>
+        <a href="tools/password-generator/index.html" class="quick-tag" style="border-radius: 99px; background: transparent; border: 1px solid var(--stroke); color: var(--text);">Password Generator</a>
+        <a href="tools/qr-code-generator/index.html" class="quick-tag" style="border-radius: 99px; background: transparent; border: 1px solid var(--stroke); color: var(--text);">QR Code</a>
       </div>
     </div>
-    <div class="hero-glow"></div>
+    
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator blur-in">
+      <span class="text-muted-xs">SCROLL</span>
+      <div class="scroll-line-wrap">
+        <div class="scroll-line"></div>
+      </div>
+    </div>
   </section>
 
   <!-- Business Operations Suite -->
