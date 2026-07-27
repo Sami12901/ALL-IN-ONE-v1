@@ -143,36 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const txtRemoveBg = document.getElementById('txt-remove-bg');
   
   btnRemoveBg.addEventListener('click', async () => {
-    if (!sourceImage) return;
-    
-    const originalText = txtRemoveBg.innerText;
-    txtRemoveBg.innerText = "Processing AI Model (Please wait...)";
-    btnRemoveBg.disabled = true;
-
-    try {
-      // The library accepts an image URL, Blob, File, etc.
-      // We will pass the image's src (DataURL).
-      const blob = await removeBackground(sourceImage.src);
-      
-      // Load the result blob back into our sourceImage
-      const url = URL.createObjectURL(blob);
-      const newImg = new Image();
-      newImg.onload = () => {
-        sourceImage = newImg;
-        // Turn off padding background color so transparency is visible
-        state.bgColor = 'transparent'; 
-        inputs.bgColor.value = '#000000'; // reset color picker visually
-        render();
-        txtRemoveBg.innerText = originalText;
-        btnRemoveBg.disabled = false;
-      };
-      newImg.src = url;
-    } catch (error) {
-      console.error(error);
-      alert("Error removing background. Ensure you have an internet connection for the initial model download.");
-      txtRemoveBg.innerText = originalText;
-      btnRemoveBg.disabled = false;
-    }
+    alert("AI Background Removal is temporarily disabled. The official Machine Learning model provider (IMG.LY) is currently experiencing a global CDN outage. We are waiting for them to restore access to the models.");
   });
 
   // --- Core Rendering Engine ---
