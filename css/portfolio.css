@@ -463,13 +463,19 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Base structural smoothing */
-* {
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-*:not(.btn):not(input):not(textarea) {
-  transition-duration: 0.4s;
-}
+  /* Base structural smoothing for Theme Toggling */
+  html, body, main, section, .glass-panel, .tool-panel, .tool-card, 
+  .hero-section, .hero-fade-bottom, header > div, app-header > div,
+  h1, h2, h3, h4, p, span, div, a, .form-input, .form-textarea, .form-select, pre, code {
+    transition-property: background-color, background, color, border-color, box-shadow;
+    transition-duration: 0.5s;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Prevent transition jumping on transform elements by excluding transform from universal lists */
+  .btn, .tool-card:hover, .glass-panel:hover {
+    transition-property: background-color, background, color, border-color, box-shadow, transform;
+  }
 
 /* Mobile Adjustments (Max 768px) */
 @media (max-width: 768px) {
@@ -593,40 +599,3 @@ html, body {
   }
 }
 
-/* =======================================================
-   LIGHT MODE OVERRIDES (Fixing hardcoded rgba)
-   ======================================================= */
-[data-theme="light"] .tool-panel, 
-[data-theme="light"] .form-input, 
-[data-theme="light"] .form-textarea, 
-[data-theme="light"] .form-select,
-[data-theme="light"] input[type="text"],
-[data-theme="light"] input[type="email"],
-[data-theme="light"] textarea,
-[data-theme="light"] pre, 
-[data-theme="light"] code {
-  background: rgba(255, 255, 255, 0.6) !important;
-}
-
-[data-theme="light"] .btn-secondary {
-  background: rgba(0, 0, 0, 0.05) !important;
-}
-[data-theme="light"] .btn-secondary:hover {
-  background: rgba(0, 0, 0, 0.1) !important;
-}
-
-[data-theme="light"] .tool-card:hover, 
-[data-theme="light"] .glass-panel:hover, 
-[data-theme="light"] .benefit-card:hover, 
-[data-theme="light"] .blog-card:hover {
-  background: rgba(255, 255, 255, 0.7) !important;
-}
-
-[data-theme="light"] .horizontal-pill-entry:hover {
-  background: rgba(0, 0, 0, 0.05) !important;
-}
-
-[data-theme="light"] .loader-words {
-  color: rgba(10, 10, 10, 0.8) !important;
-  background: rgba(200, 200, 200, 0.5) !important;
-}
