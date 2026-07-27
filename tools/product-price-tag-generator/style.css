@@ -1,131 +1,288 @@
-/* Product Price Tag Generator - Custom Styles */
+/* Product Price Tag Generator Styles */
 
-.ptg-template-grid {
+.editor-workspace {
+  display: grid;
+  grid-template-columns: 450px 1fr;
+  gap: 1.5rem;
+  align-items: flex-start;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .editor-workspace {
+    grid-template-columns: 1fr;
+  }
+}
+
+.opt-input-panel {
+  padding: 1.5rem;
+  position: sticky;
+  top: 100px;
+}
+
+@media (max-width: 1024px) {
+  .opt-input-panel {
+    position: static;
+  }
+}
+
+.form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
-.ptg-template-btn {
-  padding: 0.75rem;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  color: var(--text-secondary);
-  font-family: var(--font-sans);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  text-align: center;
-}
-
-.ptg-template-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: rgba(99, 102, 241, 0.05);
-}
-
-.ptg-template-btn.active {
-  border-color: var(--accent);
-  background: rgba(99, 102, 241, 0.15);
-  color: var(--accent);
-}
-
-.ptg-color-picker {
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  border: none;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  background: transparent;
-  overflow: hidden;
-}
-
-.ptg-color-picker::-webkit-color-swatch-wrapper {
-  padding: 0;
-}
-
-.ptg-color-picker::-webkit-color-swatch {
-  border: 2px solid var(--border);
-  border-radius: var(--radius-sm);
-}
-
-.ptg-upload-box {
+.preview-actions {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  background: var(--bg-tertiary);
-  border: 2px dashed var(--border);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-align: center;
-}
-
-.ptg-upload-box span {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.ptg-upload-box:hover, .ptg-upload-box.dragover {
-  border-color: var(--accent);
-  background: rgba(99, 102, 241, 0.05);
-}
-
-.ptg-upload-box.has-image {
-  border-style: solid;
-  border-color: var(--success);
-  background: rgba(16, 185, 129, 0.05);
-}
-
-.ptg-upload-box.has-image svg {
-  color: var(--success);
-}
-
-.ptg-preview-container {
+  margin-bottom: 1rem;
   width: 100%;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.preview-panel {
+  padding: 1.5rem;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  min-height: 500px;
+}
+
+.canvas-wrapper {
+  width: 100%;
+  flex: 1;
+  display: flex;
   justify-content: center;
-  background: var(--bg-tertiary);
+  align-items: center;
+  overflow: auto;
+  background: repeating-conic-gradient(var(--bg-tertiary) 0% 25%, transparent 0% 50%) 50% / 20px 20px;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: 2rem;
-  min-height: 400px;
-  overflow: hidden;
+}
+
+/* -------------------------------------
+   PRICE TAG DOM STYLING (Master Template)
+   ------------------------------------- */
+
+.price-tag {
+  --tag-bg: #ffffff;
+  --tag-text: #1f2937;
+  --tag-text-light: #6b7280;
+  --tag-accent: #ef4444; /* dynamic */
   
-  /* Checkerboard pattern */
-  background-image: 
-    linear-gradient(45deg, rgba(128,128,128,0.1) 25%, transparent 25%),
-    linear-gradient(-45deg, rgba(128,128,128,0.1) 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, rgba(128,128,128,0.1) 75%),
-    linear-gradient(-45deg, transparent 75%, rgba(128,128,128,0.1) 75%);
-  background-size: 20px 20px;
-  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  width: 350px;
+  min-height: 450px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  font-family: 'Inter', -apple-system, sans-serif;
+  overflow: hidden;
+  transition: all 0.3s;
 }
 
-#tag-canvas {
-  max-width: 100%;
-  max-height: 500px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-  border-radius: 8px; /* Visual only, drawn canvas dictates real edges */
-  transition: transform 0.2s ease;
+.pt-hole {
+  display: none;
 }
 
-#tag-canvas:hover {
-  transform: scale(1.02);
+.price-tag.hanging .pt-hole {
+  display: block;
+  width: 15px;
+  height: 15px;
+  background: var(--bg-tertiary); /* matches preview bg initially, on print white */
+  border: 2px solid #d1d5db;
+  border-radius: 50%;
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
 }
 
-@media (max-width: 768px) {
-  .ptg-template-grid {
-    grid-template-columns: 1fr;
+.price-tag.hanging {
+  padding-top: 40px;
+}
+
+.price-tag.minimal {
+  border: 1px solid #d1d5db;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Header */
+.pt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  border-bottom: 2px solid var(--tag-accent);
+  padding-bottom: 8px;
+}
+.pt-brand {
+  font-weight: 800;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.pt-variant {
+  font-size: 0.9rem;
+  color: var(--tag-text-light);
+  font-weight: 500;
+}
+
+/* Name */
+.pt-name {
+  font-size: 1.4rem;
+  line-height: 1.3;
+  margin: 0 0 20px 0;
+  font-weight: 700;
+}
+
+/* Prices */
+.pt-prices {
+  margin-top: auto;
+  margin-bottom: 20px;
+  background: #f9fafb;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.pt-mrp-wrapper, .pt-sale-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.pt-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--tag-text-light);
+}
+
+.pt-mrp {
+  font-size: 1.2rem;
+  color: var(--tag-text-light);
+  text-decoration: line-through;
+  font-weight: 600;
+}
+
+.pt-sale {
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.pt-tax {
+  font-size: 0.75rem;
+  color: var(--tag-text-light);
+  text-align: right;
+}
+
+/* Discount Badge */
+.pt-discount-badge {
+  position: absolute;
+  top: 60px;
+  right: -30px;
+  background: var(--tag-accent);
+  color: #fff;
+  font-weight: bold;
+  padding: 5px 30px;
+  transform: rotate(45deg);
+  font-size: 0.9rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.price-tag.hanging .pt-discount-badge {
+  top: 80px;
+}
+
+/* Codes */
+.pt-codes {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 15px;
+}
+
+.pt-barcode-box {
+  flex: 1;
+}
+
+.pt-barcode-box svg {
+  width: 100%;
+  height: 60px; /* controlled by jsbarcode mostly */
+}
+
+.pt-qrcode-box canvas {
+  width: 70px;
+  height: 70px;
+  border-radius: 4px;
+}
+
+/* -------------------------------------
+   PRINT STYLES
+   ------------------------------------- */
+
+#print-sheet {
+  display: none;
+}
+
+@media print {
+  .screen-only, header, app-header, app-breadcrumbs, app-footer {
+    display: none !important;
   }
   
-  .ptg-preview-container {
-    min-height: 300px;
-    padding: 1rem;
+  body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+  }
+
+  #print-sheet {
+    display: grid;
+    gap: 10px;
+    padding: 10px;
+    width: 210mm;
+    /* height: 297mm; A4 */
+    margin: 0 auto;
+    page-break-after: always;
+  }
+
+  /* Grid Layouts based on tags per page */
+  #print-sheet.tags-8 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  #print-sheet.tags-8 .price-tag { width: 100%; min-height: auto; aspect-ratio: 0.7; }
+  
+  #print-sheet.tags-15 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  #print-sheet.tags-15 .price-tag { width: 100%; min-height: auto; aspect-ratio: 0.7; padding: 15px; }
+  #print-sheet.tags-15 .pt-name { font-size: 1.1rem; }
+  #print-sheet.tags-15 .pt-sale { font-size: 1.5rem; }
+  #print-sheet.tags-15 .pt-qrcode-box canvas { width: 50px; height: 50px; }
+
+  #print-sheet.tags-24 {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+  }
+  #print-sheet.tags-24 .price-tag { width: 100%; min-height: auto; aspect-ratio: 0.7; padding: 10px; border-width: 1px;}
+  #print-sheet.tags-24 .pt-name { font-size: 0.9rem; margin-bottom: 10px;}
+  #print-sheet.tags-24 .pt-sale { font-size: 1.2rem; }
+  #print-sheet.tags-24 .pt-qrcode-box canvas { width: 40px; height: 40px; }
+  #print-sheet.tags-24 .pt-header { border-bottom-width: 1px; margin-bottom: 8px;}
+  #print-sheet.tags-24 .pt-brand { font-size: 0.8rem; }
+
+  /* Adjust holes for print */
+  .price-tag.hanging .pt-hole {
+    background: #fff;
+    border-color: #000;
   }
 }

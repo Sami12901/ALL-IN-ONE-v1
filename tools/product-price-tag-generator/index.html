@@ -4,68 +4,183 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product Price Tag Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Generate price tags with MRP, discount prices, Barcodes, and QR Codes.">
-  <meta name="keywords" content="product, price tag, generator, barcode, qrcode, ecommerce, marketing, free, online, tool, utility">
+  <meta name="description" content="Generate professional retail price tags with barcodes, QR codes, and smart discount calculations. Print offline.">
+  <meta name="keywords" content="price tag generator, product sticker, retail label maker, barcode generator, offline tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/product-price-tag-generator/">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  <link rel="stylesheet" href="style.css">
   
   <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <script type="module" src="../../js/main.js"></script>
+  
+  <!-- Local Libraries -->
+  <script src="../../assets/lib/qrious.min.js"></script>
+  <script src="../../assets/lib/JsBarcode.all.min.js"></script>
+  <script src="../../assets/lib/html2pdf.bundle.min.js"></script>
+  <script src="../../assets/lib/html2canvas.min.js"></script>
+
+  <link rel="manifest" href="../../pwa/manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
-  <main class="tool-layout">
-    <div class="container tool-container">
+  <!-- The printable sheet, hidden from screen, shown on print -->
+  <div id="print-sheet"></div>
+
+  <main class="tool-layout screen-only">
+    <div class="container tool-container" style="max-width: 1400px;">
       <div class="tool-header">
-        <h1>Product Price Tag Generator</h1>
-        <p class="tool-description">Generate price tags with MRP, discount prices, Barcodes, and QR Codes.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Price Tag Generator</h1>
+        <p class="tool-description">Design beautiful retail tags with barcodes and QR codes. Print sheets perfectly formatted for A4.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Product Price Tag Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Generate price tags with MRP, discount prices, Barcodes, and QR Codes.</div>
-            <div><strong>Inputs:</strong> product, price tag, generator, barcode, qrcode, ecommerce, marketing</div>
-            <div><strong>Category:</strong> product-marketing</div>
+      <div class="editor-workspace">
+        
+        <!-- Left Panel: Data Entry -->
+        <div class="opt-input-panel glass-panel">
+          
+          <h3 class="section-heading">Product Details</h3>
+          <div class="form-grid">
+            <div class="form-group" style="grid-column: span 2;">
+              <label>Product Name</label>
+              <input type="text" id="inp-name" class="form-input" value="Premium Wireless Headphones">
+            </div>
+            <div class="form-group">
+              <label>Brand</label>
+              <input type="text" id="inp-brand" class="form-input" value="AudioTech">
+            </div>
+            <div class="form-group">
+              <label>Size / Variant</label>
+              <input type="text" id="inp-variant" class="form-input" value="Matte Black">
+            </div>
+          </div>
+
+          <h3 class="section-heading" style="margin-top: 1.5rem;">Pricing</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Currency</label>
+              <input type="text" id="inp-currency" class="form-input" value="$">
+            </div>
+            <div class="form-group">
+              <label>Tax Note</label>
+              <input type="text" id="inp-tax" class="form-input" value="incl. VAT">
+            </div>
+            <div class="form-group">
+              <label>MRP (Original Price)</label>
+              <input type="number" id="inp-mrp" class="form-input" value="199.99">
+            </div>
+            <div class="form-group">
+              <label>Sale Price</label>
+              <input type="number" id="inp-sale" class="form-input" value="149.99">
+            </div>
+          </div>
+
+          <h3 class="section-heading" style="margin-top: 1.5rem;">Codes & Styling</h3>
+          <div class="form-grid">
+            <div class="form-group" style="grid-column: span 2;">
+              <label>SKU (Barcode Code128)</label>
+              <input type="text" id="inp-sku" class="form-input" value="SKU-8472910">
+            </div>
+            <div class="form-group" style="grid-column: span 2;">
+              <label>Link (QR Code)</label>
+              <input type="text" id="inp-link" class="form-input" value="https://example.com/product/123">
+            </div>
+            <div class="form-group">
+              <label>Theme Accent Color</label>
+              <input type="color" id="inp-color" class="form-input" value="#ef4444" style="height: 45px; padding: 0.2rem;">
+            </div>
+            <div class="form-group">
+              <label>Tag Style</label>
+              <select id="inp-style" class="form-select">
+                <option value="modern">Modern Retail</option>
+                <option value="minimal">Minimalist</option>
+                <option value="hanging">Hanging Tag (with hole)</option>
+              </select>
+            </div>
+          </div>
+          
+        </div>
+        
+        <!-- Right Panel: Preview and Print Actions -->
+        <div class="opt-dashboard-panel glass-panel preview-panel">
+          
+          <div class="preview-actions">
+            <div class="form-group" style="display: flex; align-items: center; gap: 1rem; margin: 0;">
+              <label style="margin: 0; white-space: nowrap;">Tags per page:</label>
+              <select id="sel-tags-page" class="form-select" style="width: 100px;">
+                <option value="8">8 (Large)</option>
+                <option value="15" selected>15 (Medium)</option>
+                <option value="24">24 (Small)</option>
+              </select>
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+              <button id="btn-export-png" class="btn btn-secondary">
+                Export Tag PNG
+              </button>
+              <button id="btn-print" class="btn btn-primary" style="background: linear-gradient(135deg, #10b981, #059669);">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                Print A4 Sheet
+              </button>
+            </div>
+          </div>
+
+          <div class="canvas-wrapper">
+             
+             <!-- The master template tag -->
+             <div id="master-tag" class="price-tag modern">
+                <div class="pt-hole"></div>
+                <div class="pt-header">
+                  <div class="pt-brand" id="out-brand">AudioTech</div>
+                  <div class="pt-variant" id="out-variant">Matte Black</div>
+                </div>
+                
+                <h2 class="pt-name" id="out-name">Premium Wireless Headphones</h2>
+                
+                <div class="pt-prices">
+                  <div class="pt-mrp-wrapper">
+                    <span class="pt-label">M.R.P.</span>
+                    <span class="pt-mrp"><span class="curr">$</span><span id="out-mrp">199.99</span></span>
+                  </div>
+                  <div class="pt-sale-wrapper">
+                    <span class="pt-label" style="color: var(--tag-accent);">Our Price</span>
+                    <span class="pt-sale" style="color: var(--tag-accent);"><span class="curr">$</span><span id="out-sale">149.99</span></span>
+                  </div>
+                  <div class="pt-tax" id="out-tax">incl. VAT</div>
+                </div>
+
+                <div class="pt-discount-badge" id="out-badge">
+                  Save 25%
+                </div>
+
+                <div class="pt-codes">
+                   <div class="pt-barcode-box">
+                     <svg id="barcode"></svg>
+                   </div>
+                   <div class="pt-qrcode-box">
+                     <canvas id="qrcode"></canvas>
+                   </div>
+                </div>
+             </div>
+
+          </div>
+          <div class="preview-info" style="margin-top: 15px; text-align: center; color: var(--text-secondary); font-size: 0.9rem;">
+             Live Preview. The tag will scale based on your "Tags per page" setting when printing.
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
       </div>
-    
     </div>
   </main>
 
-  <!-- Footer Web Component -->
-  <app-footer></app-footer>
+  <app-footer class="screen-only"></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Product Price Tag Generator",
-    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/product-price-tag-generator/",
-    "description": "Generate price tags with MRP, discount prices, Barcodes, and QR Codes.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
-  }
-  </script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>

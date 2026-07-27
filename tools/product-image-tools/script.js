@@ -1,5 +1,5 @@
 // Product Image Tools Logic
-import imglyRemoveBackground from '../../assets/lib/imgly/index.mjs';
+import { removeBackground } from '../../assets/lib/imgly/index.mjs';
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       // The library accepts an image URL, Blob, File, etc.
       // We will pass the image's src (DataURL).
-      const blob = await imglyRemoveBackground(sourceImage.src);
+      const blob = await removeBackground(sourceImage.src);
       
       // Load the result blob back into our sourceImage
       const url = URL.createObjectURL(blob);
