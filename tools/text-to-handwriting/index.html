@@ -3,70 +3,95 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Text to Handwriting Converter - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Render entered text onto mock paper sheets.">
-  <meta name="keywords" content="handwriting, canvas, font, draw, free, online, tool, utility">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/text-to-handwriting/">
+  <title>Text to Handwriting - ALL IN ONE</title>
+  <meta name="description" content="Convert typed text into realistic human handwriting.">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Indie+Flower&family=Shadows+Into+Light&display=swap');
+
+    .layout { display: grid; grid-template-columns: 350px 1fr; gap: 1.5rem; }
+    @media (max-width: 768px) { .layout { grid-template-columns: 1fr; } }
+    .panel { display: flex; flex-direction: column; gap: 0.5rem; }
+    
+    .canvas-container {
+      background: #f4f4f5; /* Paper color */
+      border-radius: 0.5rem;
+      border: 1px solid var(--stroke);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 500px;
+      /* Ruled paper background */
+      background-image: linear-gradient(#e5e7eb 1px, transparent 1px);
+      background-size: 100% 2rem;
+      background-position: 0 2rem;
+    }
+    
+    canvas {
+      max-width: 100%;
+      height: auto;
+    }
+    
+    .controls { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+  </style>
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Text to Handwriting Converter</h1>
-        <p class="tool-description">Render entered text onto mock paper sheets.</p>
+        <h1>Text to Handwriting</h1>
+        <p class="tool-description">Generate realistic handwritten notes on ruled paper.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Text to Handwriting Converter</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Render entered text onto mock paper sheets.</div>
-            <div><strong>Inputs:</strong> handwriting, canvas, font, draw</div>
-            <div><strong>Category:</strong> text</div>
+      <div class="tool-panel glass-panel layout">
+        <div class="panel">
+          <label style="font-weight: 600; font-size: 0.9rem;">Typed Text</label>
+          <textarea id="input-text" class="form-textarea" style="height: 200px;" placeholder="Type your assignment or letter here...">The quick brown fox jumps over the lazy dog.
+
+I am testing out this incredibly cool handwriting generator! It looks almost like real ink on paper.</textarea>
+          
+          <div class="controls mt-4">
+            <div>
+              <label class="text-xs text-muted mb-2 block">Handwriting Style</label>
+              <select id="font-select" class="form-input">
+                <option value="'Caveat', cursive">Caveat (Messy)</option>
+                <option value="'Indie Flower', cursive">Indie Flower (Neat)</option>
+                <option value="'Shadows Into Light', cursive">Shadows (Tall)</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="text-xs text-muted mb-2 block">Ink Color</label>
+              <select id="color-select" class="form-input">
+                <option value="#0f172a">Black / Dark Blue</option>
+                <option value="#1d4ed8">Classic Blue</option>
+                <option value="#b91c1c">Red</option>
+              </select>
+            </div>
+            
+            <button class="btn btn-primary" id="btn-download" style="width: 100%; justify-content: center;">
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download Image
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="panel">
+          <div class="canvas-container" id="canvas-wrapper">
+            <canvas id="handwriting-canvas" width="600" height="800"></canvas>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
-
-  <!-- Footer Web Component -->
-  <app-footer></app-footer>
-
-  <!-- Structured schema for search engine rich snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Text to Handwriting Converter",
-    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/text-to-handwriting/",
-    "description": "Render entered text onto mock paper sheets.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
-  }
-  </script>
 </body>
 </html>
