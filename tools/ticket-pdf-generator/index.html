@@ -3,70 +3,93 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ticket PDF Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create custom Travel Ticket layouts in PDF.">
-  <meta name="keywords" content="pdf, document, ticket pdf generator, free, online, tool, utility">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ticket-pdf-generator/">
+  <title>Event Ticket Generator - ALL IN ONE</title>
+  <meta name="description" content="Generate beautiful PDF event tickets instantly.">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- Basic barcode generator -->
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+
+  <style>
+    .layout { display: flex; flex-direction: column; gap: 2rem; max-width: 800px; margin: 0 auto; }
+    
+    .section-card { background: var(--surface); border: 1px solid var(--stroke); padding: 1.5rem; border-radius: 0.5rem; }
+    .section-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 1rem; color: var(--accent); border-bottom: 1px solid var(--stroke); padding-bottom: 0.5rem; }
+    
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+    @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+    
+    .form-group { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+    .form-group label { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+  </style>
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
-      <div class="tool-header">
+      <div class="tool-header" style="text-align: center; max-width: 600px; margin: 0 auto 2rem;">
         <h1>Ticket PDF Generator</h1>
-        <p class="tool-description">Create custom Travel Ticket layouts in PDF.</p>
+        <p class="tool-description">Create custom printable event tickets with barcodes. Generates standard 150x50mm landscape tickets.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Ticket PDF Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create custom Travel Ticket layouts in PDF.</div>
-            <div><strong>Inputs:</strong> pdf, document, ticket pdf generator</div>
-            <div><strong>Category:</strong> pdf</div>
+      <div class="layout">
+        
+        <div class="section-card">
+          <div class="section-title">Event Information</div>
+          <div class="form-group">
+            <label>Event Name</label>
+            <input type="text" id="t-event" class="form-input" placeholder="Summer Music Festival 2026">
+          </div>
+          <div class="form-group">
+            <label>Venue / Location</label>
+            <input type="text" id="t-venue" class="form-input" placeholder="Grand Arena, Downtown">
+          </div>
+          <div class="grid-2">
+            <div class="form-group"><label>Date</label><input type="date" id="t-date" class="form-input"></div>
+            <div class="form-group"><label>Time</label><input type="time" id="t-time" class="form-input" value="19:00"></div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="section-card">
+          <div class="section-title">Ticket Details</div>
+          <div class="grid-3">
+            <div class="form-group">
+              <label>Ticket Type</label>
+              <select id="t-type" class="form-input">
+                <option value="GENERAL ADMISSION">General Admission</option>
+                <option value="VIP PASS">VIP Pass</option>
+                <option value="BACKSTAGE">Backstage</option>
+                <option value="EARLY BIRD">Early Bird</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Price ($)</label><input type="number" id="t-price" class="form-input" value="50.00" step="0.01"></div>
+            <div class="form-group"><label>Seat / Section</label><input type="text" id="t-seat" class="form-input" placeholder="Section A, Row 4"></div>
+          </div>
+          <div class="grid-2">
+            <div class="form-group"><label>Attendee Name (Optional)</label><input type="text" id="t-name" class="form-input" placeholder="John Doe"></div>
+            <div class="form-group"><label>Ticket ID / Barcode</label><input type="text" id="t-id" class="form-input" value="TKT-9988776655"></div>
+          </div>
+        </div>
+        
+        <!-- Hidden canvas for barcode generation -->
+        <canvas id="barcode-canvas" style="display: none;"></canvas>
+
+        <button class="btn btn-primary" id="btn-generate" style="padding: 1.5rem; font-size: 1.2rem; justify-content: center;">
+          Generate Printable Ticket
+        </button>
+        
       </div>
-    
     </div>
   </main>
-
-  <!-- Footer Web Component -->
-  <app-footer></app-footer>
-
-  <!-- Structured schema for search engine rich snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Ticket PDF Generator",
-    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ticket-pdf-generator/",
-    "description": "Create custom Travel Ticket layouts in PDF.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
-  }
-  </script>
 </body>
 </html>
