@@ -4,68 +4,199 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Professional CV Builder Pro - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create your CV online with live preview, ATS-friendly templates, and export to PDF/DOCX.">
-  <meta name="keywords" content="cv, resume, job, career, professional cv builder pro, free, online, tool, utility">
+  <meta name="description" content="Create your CV online with live preview, ATS-friendly templates, and export to PDF. 100% free and offline-ready.">
+  <meta name="keywords" content="cv builder, resume maker, ats friendly cv, online resume, export pdf cv, professional resume, free, online, tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/professional-cv-builder-pro/">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  <link rel="stylesheet" href="style.css">
   
   <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <script type="module" src="../../js/main.js"></script>
+  <!-- html2pdf for offline PDF generation -->
+  <script src="../../assets/lib/html2pdf.bundle.min.js"></script>
+  
+  <link rel="manifest" href="../../pwa/manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
+    <div class="container tool-container" style="max-width: 1600px;">
       <div class="tool-header">
-        <h1>Professional CV Builder Pro</h1>
-        <p class="tool-description">Create your CV online with live preview, ATS-friendly templates, and export to PDF/DOCX.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Professional CV Builder Pro</h1>
+        <p class="tool-description">Build a modern, ATS-friendly resume instantly. Your data stays completely private and never leaves your device.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Professional CV Builder Pro</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create your CV online with live preview, ATS-friendly templates, and export to PDF/DOCX.</div>
-            <div><strong>Inputs:</strong> cv, resume, job, career, professional cv builder pro</div>
-            <div><strong>Category:</strong> cv</div>
+      <div class="tool-workarea cv-workspace">
+        
+        <!-- Left Panel: Form Editor -->
+        <div class="cv-editor glass-panel">
+          
+          <!-- Sections Navigation/Tabs -->
+          <div class="cv-sections-nav">
+            <button class="nav-btn active" data-target="sec-personal">Personal</button>
+            <button class="nav-btn" data-target="sec-summary">Summary</button>
+            <button class="nav-btn" data-target="sec-experience">Experience</button>
+            <button class="nav-btn" data-target="sec-education">Education</button>
+            <button class="nav-btn" data-target="sec-skills">Skills</button>
+          </div>
+
+          <!-- Section: Personal Info -->
+          <div class="cv-section active" id="sec-personal">
+            <h3 class="section-heading">Personal Details</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="cv-name" class="form-input" placeholder="e.g. John Doe" data-bind="name">
+              </div>
+              <div class="form-group">
+                <label>Professional Title</label>
+                <input type="text" id="cv-title" class="form-input" placeholder="e.g. Senior Software Engineer" data-bind="title">
+              </div>
+              <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="cv-email" class="form-input" placeholder="e.g. john@example.com" data-bind="email">
+              </div>
+              <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="cv-phone" class="form-input" placeholder="e.g. +1 234 567 890" data-bind="phone">
+              </div>
+              <div class="form-group">
+                <label>Location</label>
+                <input type="text" id="cv-location" class="form-input" placeholder="e.g. New York, USA" data-bind="location">
+              </div>
+              <div class="form-group">
+                <label>LinkedIn/Website URL</label>
+                <input type="text" id="cv-link" class="form-input" placeholder="e.g. linkedin.com/in/johndoe" data-bind="link">
+              </div>
+            </div>
+          </div>
+
+          <!-- Section: Professional Summary -->
+          <div class="cv-section" id="sec-summary">
+            <h3 class="section-heading">Professional Summary</h3>
+            <div class="form-group">
+              <label>Summary</label>
+              <textarea id="cv-summary" class="form-textarea" style="min-height: 150px;" placeholder="Write a brief summary of your professional background and goals..." data-bind="summary"></textarea>
+            </div>
+          </div>
+
+          <!-- Section: Experience -->
+          <div class="cv-section" id="sec-experience">
+            <h3 class="section-heading">Work Experience</h3>
+            <div id="experience-list" class="dynamic-list">
+              <!-- JS injected forms -->
+            </div>
+            <button id="add-experience-btn" class="btn btn-secondary add-btn">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              Add Experience
+            </button>
+          </div>
+
+          <!-- Section: Education -->
+          <div class="cv-section" id="sec-education">
+            <h3 class="section-heading">Education</h3>
+            <div id="education-list" class="dynamic-list">
+              <!-- JS injected forms -->
+            </div>
+            <button id="add-education-btn" class="btn btn-secondary add-btn">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              Add Education
+            </button>
+          </div>
+
+          <!-- Section: Skills -->
+          <div class="cv-section" id="sec-skills">
+            <h3 class="section-heading">Skills</h3>
+            <p style="font-size: 0.85rem; color: var(--text-tertiary); margin-bottom: 1rem;">Type a skill and press Enter or comma to add.</p>
+            <div class="form-group">
+              <div class="skills-input-container">
+                <div id="skills-tags" class="skills-tags"></div>
+                <input type="text" id="cv-skills-input" class="form-input" placeholder="e.g. JavaScript, Project Management...">
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="cv-global-actions">
+            <button id="download-pdf-btn" class="btn btn-primary" style="flex: 1; justify-content: center;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download PDF
+            </button>
+            <button id="clear-cv-btn" class="btn btn-secondary" title="Clear All Data">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </button>
+          </div>
+
+        </div>
+        
+        <!-- Right Panel: Live Preview -->
+        <div class="cv-preview-container">
+          <div class="cv-preview-wrapper" id="cv-preview-wrapper">
+            <!-- Actual A4 Paper Rendering -->
+            <div class="cv-document" id="cv-document">
+              <!-- Header -->
+              <header class="cv-doc-header">
+                <h1 class="cv-doc-name" id="preview-name">John Doe</h1>
+                <h2 class="cv-doc-title" id="preview-title">Senior Software Engineer</h2>
+                <div class="cv-doc-contact">
+                  <span id="preview-email">john@example.com</span>
+                  <span class="sep" id="sep-phone">•</span>
+                  <span id="preview-phone">+1 234 567 890</span>
+                  <span class="sep" id="sep-location">•</span>
+                  <span id="preview-location">New York, USA</span>
+                  <span class="sep" id="sep-link">•</span>
+                  <span id="preview-link">linkedin.com/in/johndoe</span>
+                </div>
+              </header>
+
+              <!-- Summary -->
+              <section class="cv-doc-section" id="preview-sec-summary">
+                <h3 class="cv-doc-sec-title">Professional Summary</h3>
+                <p class="cv-doc-text" id="preview-summary">Passionate and results-driven software engineer with over 5 years of experience...</p>
+              </section>
+
+              <!-- Experience -->
+              <section class="cv-doc-section" id="preview-sec-experience">
+                <h3 class="cv-doc-sec-title">Work Experience</h3>
+                <div id="preview-experience-list">
+                  <!-- Injected via JS -->
+                </div>
+              </section>
+
+              <!-- Education -->
+              <section class="cv-doc-section" id="preview-sec-education">
+                <h3 class="cv-doc-sec-title">Education</h3>
+                <div id="preview-education-list">
+                  <!-- Injected via JS -->
+                </div>
+              </section>
+
+              <!-- Skills -->
+              <section class="cv-doc-section" id="preview-sec-skills">
+                <h3 class="cv-doc-sec-title">Skills</h3>
+                <div class="cv-doc-skills" id="preview-skills-list">
+                  <!-- Injected via JS -->
+                  <span>JavaScript</span><span>React</span><span>Node.js</span>
+                </div>
+              </section>
+
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+        
       </div>
-    
     </div>
   </main>
 
-  <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Professional CV Builder Pro",
-    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/professional-cv-builder-pro/",
-    "description": "Create your CV online with live preview, ATS-friendly templates, and export to PDF/DOCX.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
-  }
-  </script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>

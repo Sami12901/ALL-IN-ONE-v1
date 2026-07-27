@@ -1,0 +1,365 @@
+/* CV Builder Pro Custom Styles */
+
+.cv-workspace {
+  display: grid;
+  grid-template-columns: 450px 1fr;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+@media (max-width: 1024px) {
+  .cv-workspace {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Editor Panel ─── */
+.cv-editor {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 200px);
+  position: sticky;
+  top: 100px;
+  overflow: hidden; /* Manage scroll internally */
+}
+
+@media (max-width: 1024px) {
+  .cv-editor {
+    position: static;
+    height: auto;
+  }
+}
+
+.cv-sections-nav {
+  display: flex;
+  overflow-x: auto;
+  gap: 0.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+  scrollbar-width: none;
+}
+.cv-sections-nav::-webkit-scrollbar { display: none; }
+
+.nav-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.nav-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.nav-btn.active {
+  background: rgba(99, 102, 241, 0.15);
+  color: var(--accent);
+}
+
+.cv-section {
+  display: none;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.cv-section.active {
+  display: block;
+}
+
+.section-heading {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-grid .form-group {
+  margin-bottom: 0;
+}
+
+.dynamic-item {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.dynamic-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.dynamic-item-header h4 {
+  font-size: 0.9rem;
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  color: var(--error);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: var(--radius-sm);
+}
+.remove-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.add-btn {
+  width: 100%;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+/* Skills Input */
+.skills-input-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem;
+  min-height: 48px;
+}
+
+.skills-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skill-tag {
+  background: rgba(99, 102, 241, 0.15);
+  color: var(--accent);
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.skill-tag button {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+}
+.skill-tag button:hover {
+  color: var(--text-primary);
+}
+
+.skills-input-container input {
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  flex: 1;
+  min-width: 120px;
+  outline: none;
+  font-family: var(--font-sans);
+  padding: 0.25rem;
+}
+
+.cv-global-actions {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* ─── Preview Panel ─── */
+.cv-preview-container {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  height: calc(100vh - 200px);
+}
+
+@media (max-width: 1024px) {
+  .cv-preview-container {
+    height: auto;
+    min-height: 800px;
+  }
+}
+
+.cv-preview-wrapper {
+  background: #ffffff;
+  width: 210mm; /* A4 width */
+  min-height: 297mm; /* A4 height */
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  transform-origin: top center;
+}
+
+/* Dynamic scaling for smaller screens */
+@media (max-width: 1400px) {
+  .cv-preview-wrapper {
+    transform: scale(0.85);
+    margin-bottom: -40mm; /* adjust for scale */
+  }
+}
+@media (max-width: 768px) {
+  .cv-preview-wrapper {
+    transform: scale(0.55);
+    margin-bottom: -120mm;
+  }
+}
+
+/* ─── The Actual CV Document Styling ─── */
+/* Note: This is styled completely independently of the dark theme app.
+   It must look like a printed piece of paper. */
+
+.cv-document {
+  padding: 40px 50px;
+  color: #333333;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+.cv-document * {
+  box-sizing: border-box;
+}
+
+.cv-doc-header {
+  text-align: center;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.cv-doc-name {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 5px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.cv-doc-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #4f46e5;
+  margin: 0 0 15px 0;
+}
+
+.cv-doc-contact {
+  font-size: 13px;
+  color: #64748b;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cv-doc-contact .sep {
+  color: #cbd5e1;
+}
+
+.cv-doc-section {
+  margin-bottom: 25px;
+}
+
+.cv-doc-sec-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  text-transform: uppercase;
+  margin: 0 0 12px 0;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 5px;
+}
+
+.cv-doc-text {
+  font-size: 13px;
+  color: #475569;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/* Dynamic Items */
+.cv-item {
+  margin-bottom: 15px;
+}
+.cv-item:last-child {
+  margin-bottom: 0;
+}
+
+.cv-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+.cv-item-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: #1e293b;
+}
+
+.cv-item-date {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.cv-item-subtitle {
+  font-weight: 500;
+  font-size: 13px;
+  color: #4f46e5;
+  margin-bottom: 5px;
+}
+
+.cv-item-desc {
+  font-size: 13px;
+  color: #475569;
+  white-space: pre-wrap;
+}
+
+/* Skills */
+.cv-doc-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cv-doc-skills span {
+  font-size: 12px;
+  background: #f1f5f9;
+  color: #334155;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: 500;
+}
