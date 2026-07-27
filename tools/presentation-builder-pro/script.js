@@ -395,7 +395,5 @@ class SlideEngine {
   }
 }
 
-// Init
-document.addEventListener('DOMContentLoaded', () => {
-  window.presentationApp = new SlideEngine();
-});
+// Init immediately since module is deferred
+window.presentationApp = new SlideEngine();
