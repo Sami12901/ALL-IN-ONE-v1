@@ -26,6 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
     accentText: document.getElementById('color-accent-text')
   };
 
+  const themeSelect = document.getElementById('p-theme-select');
+
   const canvas = document.getElementById('poster-canvas');
   const wrapper = document.getElementById('poster-preview-wrapper');
   const imageUpload = document.getElementById('p-image-upload');
@@ -115,8 +117,56 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   ['bg', 'text', 'accent'].forEach(type => {
-    colors[type].addEventListener('input', (e) => updateColors(e.target, type));
-    colors[type + 'Text'].addEventListener('input', (e) => updateColors(e.target, type));
+    colors[type].addEventListener('input', (e) => {
+      themeSelect.value = 'custom';
+      updateColors(e.target, type);
+    });
+    colors[type + 'Text'].addEventListener('input', (e) => {
+      themeSelect.value = 'custom';
+      updateColors(e.target, type);
+    });
+  });
+
+  // --- Theme Definitions ---
+  const presetThemes = {
+    'theme-modern-dark': { bg: '#0f172a', text: '#ffffff', accent: '#10b981' },
+    'theme-clean-light': { bg: '#f8fafc', text: '#0f172a', accent: '#2563eb' },
+    'theme-vibrant-sunset': { bg: '#4c1d95', text: '#fef3c7', accent: '#f59e0b' },
+    'theme-ocean-blue': { bg: '#083344', text: '#ecfeff', accent: '#06b6d4' },
+    'theme-nature-green': { bg: '#064e3b', text: '#f0fdf4', accent: '#84cc16' },
+    'theme-luxury-gold': { bg: '#171717', text: '#fafafa', accent: '#eab308' },
+    'theme-cyberpunk': { bg: '#09090b', text: '#e879f9', accent: '#22d3ee' },
+    'theme-pastel-pink': { bg: '#fdf2f8', text: '#831843', accent: '#f43f5e' },
+    'theme-coffee-brown': { bg: '#451a03', text: '#ffedd5', accent: '#d97706' },
+    'theme-minimal-mono': { bg: '#ffffff', text: '#000000', accent: '#52525b' },
+    'theme-royal-purple': { bg: '#2e1065', text: '#f5f3ff', accent: '#a855f7' },
+    'theme-cherry-red': { bg: '#7f1d1d', text: '#fef2f2', accent: '#ef4444' },
+    'theme-midnight-blue': { bg: '#172554', text: '#eff6ff', accent: '#3b82f6' },
+    'theme-sunny-yellow': { bg: '#fef9c3', text: '#422006', accent: '#d97706' },
+    'theme-slate-grey': { bg: '#334155', text: '#f8fafc', accent: '#94a3b8' },
+    'theme-mint-fresh': { bg: '#ccfbf1', text: '#134e4a', accent: '#14b8a6' },
+    'theme-coral-reef': { bg: '#ffe4e6', text: '#881337', accent: '#fb7185' },
+    'theme-deep-forest': { bg: '#14532d', text: '#dcfce7', accent: '#22c55e' },
+    'theme-rose-gold': { bg: '#fff1f2', text: '#4c0519', accent: '#fda4af' },
+    'theme-electric-cyan': { bg: '#164e63', text: '#cffafe', accent: '#06b6d4' },
+    'theme-warm-autumn': { bg: '#78350f', text: '#fef3c7', accent: '#f59e0b' },
+    'theme-stark-contrast': { bg: '#000000', text: '#ffffff', accent: '#ff0000' }
+  };
+
+  themeSelect.addEventListener('change', (e) => {
+    const themeKey = e.target.value;
+    if (themeKey !== 'custom' && presetThemes[themeKey]) {
+      const t = presetThemes[themeKey];
+      colors.bg.value = colors.bgText.value = t.bg;
+      colors.text.value = colors.textText.value = t.text;
+      colors.accent.value = colors.accentText.value = t.accent;
+      
+      canvas.style.setProperty('--p-bg', t.bg);
+      canvas.style.setProperty('--p-text', t.text);
+      canvas.style.setProperty('--p-accent', t.accent);
+      
+      saveData();
+    }
   });
 
   // --- Image Upload ---
@@ -140,6 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const data = {
       size: currentSize,
       image: uploadedImage,
+      themeValue: themeSelect.value,
       colors: { bg: colors.bg.value, text: colors.text.value, accent: colors.accent.value }
     };
     Object.keys(inputs).forEach(key => data[key] = inputs[key].value);
@@ -155,6 +206,9 @@ document.addEventListener('DOMContentLoaded', () => {
           currentSize = data.size;
           canvas.className = 'poster-canvas ' + currentSize;
           sizeBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.size === currentSize));
+        }
+        if (data.themeValue) {
+          themeSelect.value = data.themeValue;
         }
         if (data.image) {
           uploadedImage = data.image;
