@@ -98,6 +98,8 @@ class AppHeader extends HTMLElement {
     const searchInput = this.querySelector('#nav-search-input');
     const searchResults = this.querySelector('#nav-search-results');
 
+    if (!searchContainer) return;
+
     // Show quick search on all pages, including the dashboard
     searchContainer.style.display = 'block';
 

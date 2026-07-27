@@ -159,21 +159,21 @@ Format the output by separating each caption with three dashes "---". Do not inc
 
     let results = [];
     for (let i = 0; i < 3; i++) {
-      let caption = `\${rnd(dict.hooks)} \${rnd(dict.bodies)}`;
+      let caption = `${rnd(dict.hooks)} ${rnd(dict.bodies)}`;
       
       const cta = rnd(dict.ctas);
-      if (cta) caption += `\\n\\n\${cta}`;
+      if (cta) caption += `\n\n${cta}`;
 
       if (emojis) {
         // Sprinkle 1-2 emojis randomly or at end
-        caption += ` \${rndSubset(dict.emojis, 2).join('')}`;
+        caption += ` ${rndSubset(dict.emojis, 2).join('')}`;
       }
 
       if (hashtags) {
         // Append hash tags
         const topicHash = "#" + topic.split(' ')[0].replace(/[^a-zA-Z0-9]/g, '');
         const selectedTags = rndSubset(dict.tags, 3);
-        caption += `\\n\\n\${topicHash} \${selectedTags.join(' ')}`;
+        caption += `\n\n${topicHash} ${selectedTags.join(' ')}`;
       }
       
       results.push(caption);
