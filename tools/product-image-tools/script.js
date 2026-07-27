@@ -1,4 +1,6 @@
 // Product Image Tools Logic
+import imglyRemoveBackground from '../../assets/lib/imgly/index.mjs';
+
 document.addEventListener('DOMContentLoaded', () => {
 
   const uploadState = document.getElementById('upload-state');
@@ -131,6 +133,46 @@ document.addEventListener('DOMContentLoaded', () => {
     editorState.style.display = 'none';
     uploadState.style.display = 'block';
     fileInput.value = '';
+    // Reset background color since it might have been made transparent
+    state.bgColor = '#ffffff';
+    inputs.bgColor.value = '#ffffff';
+  });
+
+  // --- AI Background Removal ---
+  const btnRemoveBg = document.getElementById('btn-remove-bg');
+  const txtRemoveBg = document.getElementById('txt-remove-bg');
+  
+  btnRemoveBg.addEventListener('click', async () => {
+    if (!sourceImage) return;
+    
+    const originalText = txtRemoveBg.innerText;
+    txtRemoveBg.innerText = "Processing AI Model (Please wait...)";
+    btnRemoveBg.disabled = true;
+
+    try {
+      // The library accepts an image URL, Blob, File, etc.
+      // We will pass the image's src (DataURL).
+      const blob = await imglyRemoveBackground(sourceImage.src);
+      
+      // Load the result blob back into our sourceImage
+      const url = URL.createObjectURL(blob);
+      const newImg = new Image();
+      newImg.onload = () => {
+        sourceImage = newImg;
+        // Turn off padding background color so transparency is visible
+        state.bgColor = 'transparent'; 
+        inputs.bgColor.value = '#000000'; // reset color picker visually
+        render();
+        txtRemoveBg.innerText = originalText;
+        btnRemoveBg.disabled = false;
+      };
+      newImg.src = url;
+    } catch (error) {
+      console.error(error);
+      alert("Error removing background. Ensure you have an internet connection for the initial model download.");
+      txtRemoveBg.innerText = originalText;
+      btnRemoveBg.disabled = false;
+    }
   });
 
   // --- Core Rendering Engine ---
@@ -142,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.height = state.height;
 
     // 2. Clear & Fill Background (for 'contain' mode)
-    if (state.fit === 'contain') {
+    if (state.fit === 'contain' && state.bgColor !== 'transparent') {
       ctx.fillStyle = state.bgColor;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     } else {
@@ -235,11 +277,13 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-download').addEventListener('click', () => {
     if (!sourceImage) return;
     
-    // Always download as high-quality JPEG for products, 
-    // unless there's transparency needed, but 'contain' fills BG anyway.
-    const dataURL = canvas.toDataURL('image/jpeg', 0.95);
+    // If background is transparent, we MUST export as PNG. Otherwise JPEG for smaller file size.
+    let mimeType = (state.bgColor === 'transparent') ? 'image/png' : 'image/jpeg';
+    let ext = (state.bgColor === 'transparent') ? 'png' : 'jpg';
+
+    const dataURL = canvas.toDataURL(mimeType, 0.95);
     const link = document.createElement('a');
-    link.download = `product_image_${Date.now()}.jpg`;
+    link.download = `product_image_${Date.now()}.${ext}`;
     link.href = dataURL;
     link.click();
   });
