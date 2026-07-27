@@ -50,8 +50,27 @@ class AppHeader extends HTMLElement {
           
           <!-- Nav Links -->
           <a href="${prefix}index.html" style="font-size: 0.875rem; border-radius: 9999px; padding: 0.375rem 1rem; color: var(--text); background: rgba(255,255,255,0.1); text-decoration: none;" class="hide-mobile">Home</a>
-          <a href="${prefix}pages/about.html" style="font-size: 0.875rem; border-radius: 9999px; padding: 0.375rem 1rem; color: var(--muted); text-decoration: none;" class="hide-mobile">About</a>
           <a href="${prefix}pages/contact.html" style="font-size: 0.875rem; border-radius: 9999px; padding: 0.375rem 1rem; color: var(--muted); text-decoration: none;" class="hide-mobile">Support</a>
+          
+          <!-- Language Selector -->
+          <div class="custom-lang-selector" style="position: relative; display: flex; align-items: center; margin: 0 4px;">
+            <button id="lang-menu-toggle" aria-label="Language" style="background:transparent; border:none; color:var(--muted); cursor:pointer; padding: 0.375rem; border-radius: 50%; display: flex; align-items: center; transition: color 0.2s;">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20"></path><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            </button>
+            <div id="lang-dropdown" style="display: none; position: absolute; top: 120%; right: 0; background: var(--surface); border: 1px solid var(--stroke); border-radius: 0.5rem; padding: 0.5rem; flex-direction: column; gap: 0.25rem; min-width: 140px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); max-height: 300px; overflow-y: auto; z-index: 100;">
+              <button data-lang="en">English (Default)</button>
+              <button data-lang="es">Spanish</button>
+              <button data-lang="fr">French</button>
+              <button data-lang="de">German</button>
+              <button data-lang="zh-CN">Chinese</button>
+              <button data-lang="hi">Hindi</button>
+              <button data-lang="bn">Bengali</button>
+              <button data-lang="ar">Arabic</button>
+              <button data-lang="pt">Portuguese</button>
+              <button data-lang="ru">Russian</button>
+              <button data-lang="ja">Japanese</button>
+            </div>
+          </div>
           
           <button id="mobile-menu-toggle" aria-label="Menu" style="background:transparent; border:none; color:var(--text); cursor:pointer; padding: 0.375rem; display:none;" class="show-mobile-flex">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
@@ -62,12 +81,26 @@ class AppHeader extends HTMLElement {
       <!-- Minimal Mobile Drawer (kept functional but simplified) -->
       <div id="mobile-drawer" class="mobile-drawer glass-panel" style="display:none;"></div>
       <div id="mobile-drawer-backdrop" class="mobile-drawer-backdrop" style="display:none;"></div>
+      
+      <!-- Google Translate Engine & Styles -->
+      <div id="google_translate_element" style="display:none;"></div>
+      <style>
+        .goog-te-banner-frame.skiptranslate, .goog-te-gadget-icon, .goog-tooltip, .goog-tooltip:hover { display: none !important; }
+        body { top: 0px !important; }
+        .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
+        #lang-dropdown button { text-align: left; background: transparent; border: none; color: var(--text); padding: 0.5rem; border-radius: 0.25rem; cursor: pointer; font-size: 0.875rem; transition: background 0.2s; }
+        #lang-dropdown button:hover { background: rgba(255,255,255,0.1); }
+        
+        /* Force body to be dark always even if google touches it */
+        html { background-color: #050505 !important; }
+      </style>
     `;
 
 
     // Initialize Header Interactions
     this.setupMobileDrawer();
     this.setupQuickSearch(prefix);
+    this.setupLanguageTranslator();
   }
 
   setupMobileDrawer() {
@@ -147,6 +180,69 @@ class AppHeader extends HTMLElement {
         searchResults.style.display = 'none';
       }
     });
+  }
+
+  setupLanguageTranslator() {
+    // 1. Inject Google Translate Script dynamically if not exists
+    if (!document.getElementById('google-translate-script')) {
+      // Define the callback function globally
+      window.googleTranslateElementInit = function() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          autoDisplay: false
+        }, 'google_translate_element');
+      };
+      
+      const script = document.createElement('script');
+      script.id = 'google-translate-script';
+      script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+      document.body.appendChild(script);
+    }
+
+    // 2. Bind custom dropdown UI
+    const langBtn = this.querySelector('#lang-menu-toggle');
+    const langDropdown = this.querySelector('#lang-dropdown');
+    
+    if (langBtn && langDropdown) {
+      langBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        langDropdown.style.display = langDropdown.style.display === 'none' ? 'flex' : 'none';
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!langBtn.contains(e.target) && !langDropdown.contains(e.target)) {
+          langDropdown.style.display = 'none';
+        }
+      });
+
+      // 3. Bind language buttons to trigger the hidden google select box
+      const langOptions = langDropdown.querySelectorAll('button');
+      langOptions.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const langCode = btn.getAttribute('data-lang');
+          
+          // Find the hidden Google select element
+          const select = document.querySelector('.goog-te-combo');
+          if (select) {
+            select.value = langCode;
+            // Dispatch a change event so Google registers the new selection
+            select.dispatchEvent(new Event('change'));
+          } else {
+            console.warn('Google Translate not fully loaded yet.');
+            // Retry after 1 second if they click too early
+            setTimeout(() => {
+              const retrySelect = document.querySelector('.goog-te-combo');
+              if (retrySelect) {
+                retrySelect.value = langCode;
+                retrySelect.dispatchEvent(new Event('change'));
+              }
+            }, 1000);
+          }
+          
+          langDropdown.style.display = 'none';
+        });
+      });
+    }
   }
 }
 
