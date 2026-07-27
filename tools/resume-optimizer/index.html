@@ -4,68 +4,121 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Resume Optimizer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Get suggestions to improve and optimize your resume.">
-  <meta name="keywords" content="cv, resume, job, career, resume optimizer, free, online, tool, utility">
+  <meta name="description" content="Get actionable suggestions to improve your resume. Instantly analyze your CV against a Job Description completely offline.">
+  <meta name="keywords" content="resume optimizer, ats checker, resume score, cv improvement, offline tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/resume-optimizer/">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  <link rel="stylesheet" href="style.css">
   
   <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <script type="module" src="../../js/main.js"></script>
+  
+  <link rel="manifest" href="../../pwa/manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
+    <div class="container tool-container" style="max-width: 1600px;">
       <div class="tool-header">
-        <h1>Resume Optimizer</h1>
-        <p class="tool-description">Get suggestions to improve and optimize your resume.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Resume Optimizer</h1>
+        <p class="tool-description">Scan your resume for ATS best practices, metrics, action verbs, and keyword matches.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Resume Optimizer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Get suggestions to improve and optimize your resume.</div>
-            <div><strong>Inputs:</strong> cv, resume, job, career, resume optimizer</div>
-            <div><strong>Category:</strong> cv</div>
+      <div class="optimizer-workspace">
+        
+        <!-- Left Panel: Input Area -->
+        <div class="opt-input-panel glass-panel">
+          <h3 class="section-heading">1. Paste Your Content</h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">Your data is analyzed securely on your own device and never sent to a server.</p>
+
+          <div class="form-group">
+            <label>Resume / CV Text (Required)</label>
+            <textarea id="opt-resume-text" class="form-textarea" style="min-height: 250px;" placeholder="Paste your entire resume text here..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Job Description (Optional, for keyword matching)</label>
+            <textarea id="opt-jd-text" class="form-textarea" style="min-height: 150px;" placeholder="Paste the job description you are applying for..."></textarea>
+          </div>
+
+          <div class="opt-actions">
+            <button id="analyze-btn" class="btn btn-primary" style="flex: 1; justify-content: center; font-size: 1.1rem; padding: 0.75rem;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              Analyze Resume
+            </button>
+            <button id="load-sample-btn" class="btn btn-secondary">Load Sample</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+        
+        <!-- Right Panel: Dashboard -->
+        <div class="opt-dashboard-panel glass-panel" style="display: none;" id="dashboard-panel">
+          
+          <div class="dashboard-header">
+            <div class="score-container">
+              <div class="score-circle">
+                <svg viewBox="0 0 36 36" class="circular-chart">
+                  <path class="circle-bg"
+                    d="M18 2.0845
+                      a 15.9155 15.9155 0 0 1 0 31.831
+                      a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                  <path class="circle" id="score-circle-path"
+                    stroke-dasharray="0, 100"
+                    d="M18 2.0845
+                      a 15.9155 15.9155 0 0 1 0 31.831
+                      a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                  <text x="18" y="20.35" class="score-text" id="score-text">0</text>
+                </svg>
+              </div>
+              <div class="score-info">
+                <h2 id="score-title">Needs Work</h2>
+                <p>Overall ATS Readiness Score</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-tabs">
+            <button class="dash-tab active" data-target="tab-issues">Action Items <span id="badge-issues" class="badge badge-red">0</span></button>
+            <button class="dash-tab" data-target="tab-passed">Passed Checks <span id="badge-passed" class="badge badge-green">0</span></button>
+            <button class="dash-tab" data-target="tab-keywords" id="btn-tab-keywords" style="display: none;">JD Matches <span id="badge-keywords" class="badge badge-blue">0</span></button>
+          </div>
+
+          <div class="dashboard-content">
+            <!-- Issues Tab -->
+            <div class="dash-pane active" id="tab-issues">
+              <div id="issues-list" class="check-list"></div>
+            </div>
+
+            <!-- Passed Tab -->
+            <div class="dash-pane" id="tab-passed">
+              <div id="passed-list" class="check-list"></div>
+            </div>
+
+            <!-- Keywords Tab -->
+            <div class="dash-pane" id="tab-keywords">
+              <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                Based on the provided Job Description, here are the top keywords. Red indicates missing keywords in your resume.
+              </p>
+              <div id="keywords-list" class="keyword-tags"></div>
+            </div>
+          </div>
+
+        </div>
+
       </div>
-    
     </div>
   </main>
 
-  <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Resume Optimizer",
-    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/resume-optimizer/",
-    "description": "Get suggestions to improve and optimize your resume.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
-  }
-  </script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
