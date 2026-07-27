@@ -35,8 +35,7 @@ function applyTheme(theme) {
 class AppHeader extends HTMLElement {
   connectedCallback() {
     const prefix = getRootPrefix();
-    const activeTheme = getSavedTheme();
-    applyTheme(activeTheme); // Ensure theme is loaded
+    applyTheme('dark'); // Force dark mode
 
     this.innerHTML = `
       <header style="position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; justify-content: center; padding-top: 1.5rem; pointer-events: none; transition: transform 0.3s ease;" id="global-navbar">
@@ -53,13 +52,6 @@ class AppHeader extends HTMLElement {
           <a href="${prefix}index.html" style="font-size: 0.875rem; border-radius: 9999px; padding: 0.375rem 1rem; color: var(--text); background: rgba(255,255,255,0.1); text-decoration: none;">Home</a>
           <a href="${prefix}pages/about.html" style="font-size: 0.875rem; border-radius: 9999px; padding: 0.375rem 1rem; color: var(--muted); text-decoration: none;">About</a>
           <a href="${prefix}pages/contact.html" style="font-size: 0.875rem; border-radius: 9999px; padding: 0.375rem 1rem; color: var(--muted); text-decoration: none;">Support</a>
-          
-          <div style="width: 1px; height: 20px; background: var(--stroke); margin: 0 8px;" class="hide-mobile"></div>
-          
-          <!-- Theme Toggle -->
-          <button id="header-theme-toggle" class="theme-toggle-btn gradient-border-hover" aria-label="Toggle theme" style="background:transparent; border:none; color:var(--muted); cursor:pointer; padding: 0.375rem; border-radius: 50%; display: flex; align-items: center;">
-            <span class="theme-icon" style="display:block;">${activeTheme === 'dark' ? SUN_SVG : MOON_SVG}</span>
-          </button>
         </div>
       </header>
 
@@ -70,21 +62,8 @@ class AppHeader extends HTMLElement {
 
 
     // Initialize Header Interactions
-    this.setupThemeToggle();
     this.setupMobileDrawer();
     this.setupQuickSearch(prefix);
-  }
-
-  setupThemeToggle() {
-    const toggleBtn = this.querySelector('#header-theme-toggle');
-    const icon = this.querySelector('.theme-icon');
-    
-    toggleBtn.addEventListener('click', () => {
-      const currentTheme = getSavedTheme();
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      applyTheme(newTheme);
-      icon.innerHTML = newTheme === 'dark' ? SUN_SVG : MOON_SVG;
-    });
   }
 
   setupMobileDrawer() {
