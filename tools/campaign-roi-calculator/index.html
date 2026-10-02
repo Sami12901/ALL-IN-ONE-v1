@@ -3,15 +3,533 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Campaign ROI Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Calculate return on luxury marketing campaigns.">
-  <meta name="keywords" content="roi, marketing, campaign, free, online, tool, utility">
+  <title>Campaign ROI & Equity Calculator - Luxury Marketing Suite - ALL IN ONE</title>
+  <meta name="description" content="Financial modeling and long-term brand equity return calculator for luxury campaigns, high jewelry editorials, VIP salons, and ambassador sponsorships.">
+  <meta name="keywords" content="luxury campaign roi, romi, roas, luxury marketing, private salon, brand equity, high jewelry, cac, ltv">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/campaign-roi-calculator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Luxury Campaign ROI Calculator Custom Styles */
+    :root {
+      --gold-primary: #d4af37;
+      --gold-secondary: #f3e5ab;
+      --gold-muted: rgba(212, 175, 55, 0.15);
+      --gold-border: rgba(212, 175, 55, 0.35);
+      --emerald-accent: #10b981;
+      --emerald-glow: rgba(16, 185, 129, 0.15);
+      --sapphire-accent: #3b82f6;
+      --rose-accent: #f43f5e;
+      --amber-accent: #f59e0b;
+    }
+
+    .luxury-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      background: var(--gold-muted);
+      border: 1px solid var(--gold-border);
+      color: var(--gold-secondary);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.85rem;
+    }
+
+    .preset-selector-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      padding: 0.5rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+
+    .preset-chip {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.6rem 1.1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s var(--ease);
+      user-select: none;
+    }
+
+    .preset-chip:hover {
+      color: var(--text-primary);
+      border-color: var(--gold-primary);
+      background: rgba(212, 175, 55, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .preset-chip.active {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.22) 0%, rgba(212, 175, 55, 0.08) 100%);
+      border-color: var(--gold-primary);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
+    }
+
+    .preset-chip .chip-icon {
+      font-size: 1rem;
+    }
+
+    .campaign-workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+
+    @media (min-width: 1100px) {
+      .campaign-workspace-grid {
+        grid-template-columns: 460px 1fr;
+      }
+    }
+
+    .panel-section-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .cost-input-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      margin-bottom: 1rem;
+    }
+
+    .cost-input-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+
+    .cost-input-header label {
+      color: var(--text-secondary);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .cost-color-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .cost-num-input-wrap {
+      display: flex;
+      align-items: center;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.25rem 0.75rem;
+      transition: border-color 0.2s;
+    }
+
+    .cost-num-input-wrap:focus-within {
+      border-color: var(--gold-primary);
+    }
+
+    .currency-symbol {
+      color: var(--gold-secondary);
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-right: 0.25rem;
+    }
+
+    .cost-input-field {
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      font-weight: 600;
+      width: 100%;
+      outline: none;
+    }
+
+    .cost-slider {
+      width: 100%;
+      margin-top: 0.25rem;
+      appearance: none;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--bg-tertiary);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .cost-slider::-webkit-slider-thumb {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--gold-primary);
+      cursor: pointer;
+      box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+      transition: transform 0.15s;
+    }
+
+    .cost-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.25);
+    }
+
+    /* Live Allocation Bar */
+    .spend-allocation-bar {
+      height: 10px;
+      border-radius: 999px;
+      display: flex;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.05);
+      margin: 1rem 0 0.5rem 0;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
+    }
+
+    .spend-seg {
+      height: 100%;
+      transition: width 0.3s var(--ease);
+    }
+
+    .spend-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+    }
+
+    .spend-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    /* Total budget callout */
+    .total-budget-card {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(20, 20, 20, 0.4) 100%);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .total-budget-val {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      color: var(--gold-secondary);
+      font-weight: 700;
+    }
+
+    /* KPI Deck */
+    .kpi-deck {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.15rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.35rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .kpi-card:hover {
+      border-color: var(--gold-border);
+      transform: translateY(-2px);
+    }
+
+    .kpi-card.hero-kpi {
+      background: linear-gradient(145deg, rgba(16, 185, 129, 0.08) 0%, rgba(20, 20, 20, 0.5) 100%);
+      border-color: rgba(16, 185, 129, 0.35);
+      grid-column: span 1;
+    }
+
+    .kpi-card.ltv-kpi {
+      background: linear-gradient(145deg, rgba(212, 175, 55, 0.1) 0%, rgba(20, 20, 20, 0.5) 100%);
+      border-color: var(--gold-border);
+    }
+
+    .kpi-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .kpi-value {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.1;
+      margin-bottom: 0.4rem;
+    }
+
+    .kpi-value.gold {
+      color: var(--gold-secondary);
+    }
+
+    .kpi-value.emerald {
+      color: var(--emerald-accent);
+    }
+
+    .kpi-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-full);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      width: fit-content;
+    }
+
+    .pill-positive {
+      background: var(--emerald-glow);
+      color: var(--emerald-accent);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .pill-neutral {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .kpi-subtext {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      margin-top: 0.35rem;
+    }
+
+    /* Comparison Waterfall / Breakdown */
+    .flow-chart-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .waterfall-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .waterfall-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .waterfall-step {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .waterfall-step-title {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+      font-weight: 600;
+    }
+
+    .waterfall-step-amount {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .waterfall-step-sub {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    /* Financial Ledger Table */
+    .ledger-table-wrap {
+      overflow-x: auto;
+      margin-top: 1rem;
+    }
+
+    .ledger-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      text-align: left;
+    }
+
+    .ledger-table th {
+      background: var(--bg-tertiary);
+      color: var(--text-tertiary);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 0.75rem;
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ledger-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+    }
+
+    .ledger-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .ledger-table .highlight-row td {
+      font-weight: 700;
+      background: rgba(212, 175, 55, 0.05);
+      border-top: 1px solid var(--gold-border);
+      border-bottom: 1px solid var(--gold-border);
+    }
+
+    /* Executive Brief */
+    .executive-brief-card {
+      background: linear-gradient(145deg, rgba(20, 20, 24, 0.9) 0%, rgba(10, 10, 12, 0.9) 100%);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      position: relative;
+    }
+
+    .brief-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+      padding-bottom: 0.85rem;
+    }
+
+    .brief-title {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      color: var(--gold-secondary);
+      letter-spacing: 0.02em;
+    }
+
+    .brief-text-content {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.825rem;
+      line-height: 1.7;
+      color: #e5e7eb;
+      white-space: pre-wrap;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    .brief-action-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%);
+      color: #000000;
+      font-weight: 700;
+      border: none;
+      box-shadow: 0 4px 14px rgba(212, 175, 55, 0.25);
+    }
+
+    .btn-gold:hover {
+      background: linear-gradient(135deg, #e3c457 0%, #c4a133 100%);
+      transform: translateY(-1px);
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      app-header, app-breadcrumbs, app-footer, .preset-selector-bar, .brief-action-bar, .cost-slider, .panel-title-actions {
+        display: none !important;
+      }
+      .tool-container {
+        max-width: 100% !important;
+        padding: 0 !important;
+      }
+      .campaign-workspace-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .glass-panel, .kpi-card, .total-budget-card, .flow-chart-panel, .executive-brief-card {
+        background: #ffffff !important;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+      }
+      .kpi-value, .waterfall-step-amount, .total-budget-val, .brief-title {
+        color: #000000 !important;
+      }
+      .brief-text-content {
+        background: #f9f9f9 !important;
+        color: #000000 !important;
+        border: 1px solid #dddddd !important;
+        max-height: none !important;
+      }
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -24,31 +542,474 @@
 
   <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
+    <div class="container tool-container" style="max-width: 1440px;">
       <div class="tool-header">
-        <h1>Campaign ROI Calculator</h1>
-        <p class="tool-description">Calculate return on luxury marketing campaigns.</p>
+        <div class="luxury-badge">
+          <span>◆ Haute Horlogerie & High Jewelry Financial Model</span>
+        </div>
+        <h1 style="font-family: var(--font-display); font-size: 2.75rem; letter-spacing: -0.01em;">Campaign ROI & Equity Calculator</h1>
+        <p class="tool-description">
+          Financial modeling and long-term brand equity return engine for luxury Maisons. Quantify immediate commercial profitability, VIP customer acquisition cost (CAC), return on ad spend (ROAS), and 3-year lifetime equity yield across high-touch luxury activations.
+        </p>
+      </div>
+
+      <!-- Quick Preset Selector Bar -->
+      <div class="preset-selector-bar" id="preset-selector-bar" role="tablist" aria-label="Campaign Archetypes">
+        <button class="preset-chip active" data-preset="soiree" type="button">
+          <span class="chip-icon">🍸</span>
+          <span>Private VIP Soirée</span>
+        </button>
+        <button class="preset-chip" data-preset="jewelry" type="button">
+          <span class="chip-icon">💎</span>
+          <span>High Jewelry Editorial</span>
+        </button>
+        <button class="preset-chip" data-preset="digital" type="button">
+          <span class="chip-icon">📱</span>
+          <span>Digital Paid Acquisition</span>
+        </button>
+        <button class="preset-chip" data-preset="ambassador" type="button">
+          <span class="chip-icon">👑</span>
+          <span>Ambassador Sponsorship</span>
+        </button>
+        <button class="preset-chip" data-preset="popup" type="button">
+          <span class="chip-icon">🏛️</span>
+          <span>Pop-up Boutique</span>
+        </button>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Campaign ROI Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Calculate return on luxury marketing campaigns.</div>
-            <div><strong>Inputs:</strong> roi, marketing, campaign</div>
-            <div><strong>Category:</strong> luxury</div>
+      <div class="campaign-workspace-grid">
+        
+        <!-- Left Panel: Parameter Inputs & Costs Breakdown -->
+        <div class="tool-panel glass-panel" style="padding: 1.85rem;">
+          
+          <!-- Campaign Metadata -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <div>
+              <h2 class="panel-title" style="margin-bottom: 0.2rem; border-bottom: none; padding-bottom: 0; font-size: 1.25rem;">
+                Campaign Parameters
+              </h2>
+              <div style="font-size: 0.8rem; color: var(--text-tertiary);" id="active-preset-desc">
+                Intimate private collector salon & cocktail dinner (Vendôme).
+              </div>
+            </div>
+            <!-- Currency selector -->
+            <select id="currency-select" class="form-select" style="width: auto; padding: 0.4rem 0.75rem; font-size: 0.85rem;" aria-label="Currency">
+              <option value="USD" selected>USD ($)</option>
+              <option value="EUR">EUR (€)</option>
+              <option value="GBP">GBP (£)</option>
+              <option value="CHF">CHF (Fr.)</option>
+            </select>
           </div>
+
+          <!-- Total Budget Summary Card -->
+          <div class="total-budget-card">
+            <div>
+              <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); font-weight: 700;">
+                Total Campaign Budget
+              </div>
+              <div class="total-budget-val" id="disp-total-budget">$180,000</div>
+            </div>
+            <div style="text-align: right;">
+              <span class="cost-color-dot" style="background: var(--gold-primary);"></span>
+              <span style="font-size: 0.75rem; color: var(--text-secondary); margin-left: 0.25rem;">Auto-Aggregated</span>
+            </div>
+          </div>
+
+          <!-- Cost Breakdown Category Inputs -->
+          <div class="panel-section-title">
+            <span>Investment Breakdown</span>
+            <span style="font-size: 0.75rem; text-transform: none; color: var(--gold-secondary);">Adjust sliders or values</span>
+          </div>
+
+          <!-- 1. Production / Venue -->
+          <div class="cost-input-row">
+            <div class="cost-input-header">
+              <label for="inp-cost-venue">
+                <span class="cost-color-dot" style="background: var(--gold-primary);"></span>
+                Production & Venue Costs
+              </label>
+              <span style="font-size: 0.8rem; color: var(--text-tertiary);" id="pct-cost-venue">41.7%</span>
+            </div>
+            <div class="cost-num-input-wrap">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="inp-cost-venue" class="cost-input-field" min="0" step="1000" value="75000">
+            </div>
+            <input type="range" id="range-cost-venue" class="cost-slider" min="0" max="500000" step="1000" value="75000" aria-label="Production and Venue Costs Slider">
+          </div>
+
+          <!-- 2. Talent Fees -->
+          <div class="cost-input-row">
+            <div class="cost-input-header">
+              <label for="inp-cost-talent">
+                <span class="cost-color-dot" style="background: var(--rose-accent);"></span>
+                Talent & Ambassador Fees
+              </label>
+              <span style="font-size: 0.8rem; color: var(--text-tertiary);" id="pct-cost-talent">19.4%</span>
+            </div>
+            <div class="cost-num-input-wrap">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="inp-cost-talent" class="cost-input-field" min="0" step="1000" value="35000">
+            </div>
+            <input type="range" id="range-cost-talent" class="cost-slider" min="0" max="1000000" step="1000" value="35000" aria-label="Talent and Ambassador Fees Slider">
+          </div>
+
+          <!-- 3. Media Spend -->
+          <div class="cost-input-row">
+            <div class="cost-input-header">
+              <label for="inp-cost-media">
+                <span class="cost-color-dot" style="background: var(--sapphire-accent);"></span>
+                Paid Media & Editorial Amplification
+              </label>
+              <span style="font-size: 0.8rem; color: var(--text-tertiary);" id="pct-cost-media">5.6%</span>
+            </div>
+            <div class="cost-num-input-wrap">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="inp-cost-media" class="cost-input-field" min="0" step="500" value="10000">
+            </div>
+            <input type="range" id="range-cost-media" class="cost-slider" min="0" max="300000" step="500" value="10000" aria-label="Paid Media and Editorial Amplification Slider">
+          </div>
+
+          <!-- 4. Hospitality & Operations -->
+          <div class="cost-input-row">
+            <div class="cost-input-header">
+              <label for="inp-cost-hospitality">
+                <span class="cost-color-dot" style="background: var(--emerald-accent);"></span>
+                VIP Hospitality, Catering & Gifting
+              </label>
+              <span style="font-size: 0.8rem; color: var(--text-tertiary);" id="pct-cost-hospitality">33.3%</span>
+            </div>
+            <div class="cost-num-input-wrap">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="inp-cost-hospitality" class="cost-input-field" min="0" step="1000" value="60000">
+            </div>
+            <input type="range" id="range-cost-hospitality" class="cost-slider" min="0" max="300000" step="1000" value="60000" aria-label="VIP Hospitality and Logistics Slider">
+          </div>
+
+          <!-- Live Budget Allocation Visual Bar -->
+          <div class="spend-allocation-bar" id="spend-allocation-bar" title="Budget Allocation Breakdown">
+            <div class="spend-seg" id="seg-venue" style="background: var(--gold-primary); width: 41.7%;"></div>
+            <div class="spend-seg" id="seg-talent" style="background: var(--rose-accent); width: 19.4%;"></div>
+            <div class="spend-seg" id="seg-media" style="background: var(--sapphire-accent); width: 5.6%;"></div>
+            <div class="spend-seg" id="seg-hosp" style="background: var(--emerald-accent); width: 33.3%;"></div>
+          </div>
+          <div class="spend-legend">
+            <div class="spend-legend-item"><span class="cost-color-dot" style="background: var(--gold-primary);"></span> Venue/Prod</div>
+            <div class="spend-legend-item"><span class="cost-color-dot" style="background: var(--rose-accent);"></span> Talent</div>
+            <div class="spend-legend-item"><span class="cost-color-dot" style="background: var(--sapphire-accent);"></span> Media</div>
+            <div class="spend-legend-item"><span class="cost-color-dot" style="background: var(--emerald-accent);"></span> Hospitality</div>
+          </div>
+
+          <div style="border-top: 1px solid var(--border); margin: 1.5rem 0;"></div>
+
+          <!-- Commercial Returns & Client Acquisition Section -->
+          <div class="panel-section-title">
+            <span>Commercial & Client Metrics</span>
+          </div>
+
+          <!-- Attributed Direct Revenue -->
+          <div class="cost-input-row">
+            <div class="cost-input-header">
+              <label for="inp-revenue">Attributed Direct Revenue</label>
+              <span style="font-size: 0.8rem; color: var(--emerald-accent);">Gross Sales</span>
+            </div>
+            <div class="cost-num-input-wrap">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="inp-revenue" class="cost-input-field" min="0" step="5000" value="650000">
+            </div>
+            <input type="range" id="range-revenue" class="cost-slider" min="0" max="5000000" step="10000" value="650000" aria-label="Attributed Direct Revenue Slider">
+          </div>
+
+          <!-- Luxury Gross Margin % (70-90%) -->
+          <div class="cost-input-row">
+            <div class="cost-input-header">
+              <label for="inp-margin">Luxury Gross Margin %</label>
+              <span style="font-size: 0.85rem; font-weight: 700; color: var(--gold-secondary);" id="disp-margin-val">78%</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <input type="range" id="inp-margin" class="cost-slider" min="70" max="90" step="1" value="78" style="flex: 1;" aria-label="Luxury Gross Margin Percentage Slider">
+              <span style="font-size: 0.75rem; color: var(--text-tertiary); min-width: 55px; text-align: right;">(70% - 90%)</span>
+            </div>
+          </div>
+
+          <!-- Customer Acquisition Count -->
+          <div class="cost-input-row">
+            <div class="cost-input-header">
+              <label for="inp-acquisition-count">VIP Clients Acquired (New / Closed)</label>
+              <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);" id="disp-vip-val">22 VIPs</span>
+            </div>
+            <div class="cost-num-input-wrap">
+              <input type="number" id="inp-acquisition-count" class="cost-input-field" min="1" max="1000" step="1" value="22">
+            </div>
+            <input type="range" id="range-acquisition-count" class="cost-slider" min="1" max="250" step="1" value="22" aria-label="VIP Clients Acquired Slider">
+          </div>
+
+          <!-- Repeat Order Probability % -->
+          <div class="cost-input-row">
+            <div class="cost-input-header">
+              <label for="inp-repeat-prob">Repeat Order Probability (3-Yr Horizon)</label>
+              <span style="font-size: 0.85rem; font-weight: 700; color: var(--gold-secondary);" id="disp-repeat-val">55%</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <input type="range" id="inp-repeat-prob" class="cost-slider" min="10" max="90" step="1" value="55" style="flex: 1;" aria-label="Repeat Order Probability Slider">
+              <span style="font-size: 0.75rem; color: var(--text-tertiary); min-width: 55px; text-align: right;">(10% - 90%)</span>
+            </div>
+          </div>
+
+          <!-- Collapsible Advanced Horizon Controls -->
+          <details style="margin-top: 1rem; background: rgba(0,0,0,0.15); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.75rem 1rem;">
+            <summary style="cursor: pointer; font-size: 0.825rem; font-weight: 600; color: var(--text-secondary); user-select: none;">
+              + Advanced Equity & Horizon Multipliers
+            </summary>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.75rem;">
+              <div class="cost-input-row" style="margin-bottom: 0;">
+                <div class="cost-input-header">
+                  <label for="inp-repeat-freq">Projected Repeat Order Cycles (3 Years)</label>
+                  <span id="disp-repeat-freq" style="font-weight: 700; color: var(--text-primary); font-size: 0.85rem;">2.5 orders</span>
+                </div>
+                <input type="range" id="inp-repeat-freq" class="cost-slider" min="1" max="5" step="0.5" value="2.5">
+              </div>
+              <div class="cost-input-row" style="margin-bottom: 0;">
+                <div class="cost-input-header">
+                  <label for="inp-equity-halo">Brand Equity / Halo Effect Multiplier</label>
+                  <span id="disp-equity-halo" style="font-weight: 700; color: var(--gold-secondary); font-size: 0.85rem;">1.25x</span>
+                </div>
+                <input type="range" id="inp-equity-halo" class="cost-slider" min="1.0" max="2.5" step="0.05" value="1.25">
+              </div>
+            </div>
+          </details>
+
+          <!-- Action bar -->
+          <div class="action-bar" style="margin-top: 1.5rem;">
+            <button id="btn-reset" class="btn btn-secondary" style="flex: 1; justify-content: center;" type="button">
+              Reset Values
+            </button>
+            <button id="btn-sample-export" class="btn btn-primary btn-gold" style="flex: 1.3; justify-content: center;" type="button">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><polyline points="9 15 12 18 15 15"></polyline></svg>
+              Copy Executive Brief
+            </button>
+          </div>
+
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Panel: Financial Intelligence & Synthesis -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- KPI Cards Deck -->
+          <div class="kpi-deck">
+            
+            <!-- Immediate ROI % -->
+            <div class="kpi-card hero-kpi">
+              <div>
+                <div class="kpi-label">
+                  <span>Immediate ROI %</span>
+                  <span class="kpi-pill pill-positive" id="badge-roi-status">+181.7% Net</span>
+                </div>
+                <div class="kpi-value emerald" id="kpi-immediate-roi">+181.7%</div>
+              </div>
+              <div class="kpi-subtext" id="kpi-immediate-profit-sub">
+                Immediate Net Profit: <strong style="color: #fff;">$327,000</strong>
+              </div>
+            </div>
+
+            <!-- 3-Year LTV-Adjusted ROI -->
+            <div class="kpi-card ltv-kpi">
+              <div>
+                <div class="kpi-label">
+                  <span>3-Yr LTV-Adjusted ROI</span>
+                  <span class="kpi-pill pill-positive" style="background: rgba(212, 175, 55, 0.2); color: var(--gold-secondary); border-color: var(--gold-border);">Long-Term</span>
+                </div>
+                <div class="kpi-value gold" id="kpi-ltv-roi">+639.4%</div>
+              </div>
+              <div class="kpi-subtext" id="kpi-ltv-val-sub">
+                Total 3-Yr Net Value: <strong style="color: #fff;">$1,150,875</strong>
+              </div>
+            </div>
+
+            <!-- Cost per VIP Acquired (CAC) -->
+            <div class="kpi-card">
+              <div>
+                <div class="kpi-label">
+                  <span>Cost per VIP (CAC)</span>
+                  <span class="kpi-pill pill-neutral" id="kpi-cac-ratio">27.7% of AOV</span>
+                </div>
+                <div class="kpi-value" id="kpi-cac">$8,182</div>
+              </div>
+              <div class="kpi-subtext" id="kpi-aov-sub">
+                Avg. Order Value (AOV): <strong style="color: var(--text-primary);">$29,545</strong>
+              </div>
+            </div>
+
+            <!-- ROAS (Return on Ad Spend) -->
+            <div class="kpi-card">
+              <div>
+                <div class="kpi-label">
+                  <span>ROAS (Return on Ad Spend)</span>
+                  <span class="kpi-pill pill-neutral">Media Multiple</span>
+                </div>
+                <div class="kpi-value" id="kpi-roas">65.0x</div>
+              </div>
+              <div class="kpi-subtext" id="kpi-media-spend-sub">
+                On Paid Media Spend of <strong>$10,000</strong>
+              </div>
+            </div>
+
+            <!-- ROMI (Return on Marketing Investment) -->
+            <div class="kpi-card">
+              <div>
+                <div class="kpi-label">
+                  <span>ROMI (Gross Yield)</span>
+                  <span class="kpi-pill pill-neutral">Efficiency</span>
+                </div>
+                <div class="kpi-value" id="kpi-romi">2.82x</div>
+              </div>
+              <div class="kpi-subtext">
+                Gross margin dollars earned per budget $ invested
+              </div>
+            </div>
+
+            <!-- Breakeven Threshold -->
+            <div class="kpi-card">
+              <div>
+                <div class="kpi-label">
+                  <span>Breakeven Threshold</span>
+                  <span class="kpi-pill pill-neutral" id="kpi-breakeven-units">8 VIP Clients</span>
+                </div>
+                <div class="kpi-value" id="kpi-breakeven-rev">$230,769</div>
+              </div>
+              <div class="kpi-subtext">
+                Sales required at 78% margin to cover investment
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Financial Waterfall & Value Trajectory -->
+          <div class="flow-chart-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+                <span>Value Trajectory & Capital Flow</span>
+              </h3>
+              <span style="font-size: 0.75rem; color: var(--gold-secondary); font-weight: 600;">Immediate vs 3-Year Horizon</span>
+            </div>
+
+            <div class="waterfall-grid">
+              <div class="waterfall-step">
+                <span class="waterfall-step-title">Total Campaign Spend</span>
+                <span class="waterfall-step-amount" id="wf-spend" style="color: var(--rose-accent);">$180,000</span>
+                <span class="waterfall-step-sub">Capital Deployed</span>
+              </div>
+              <div class="waterfall-step">
+                <span class="waterfall-step-title">Immediate Gross Profit</span>
+                <span class="waterfall-step-amount" id="wf-gross-profit" style="color: var(--text-primary);">$507,000</span>
+                <span class="waterfall-step-sub" id="wf-margin-note">At 78% Gross Margin</span>
+              </div>
+              <div class="waterfall-step">
+                <span class="waterfall-step-title">Projected Repeat Profit</span>
+                <span class="waterfall-step-amount" id="wf-repeat-profit" style="color: var(--gold-secondary);">$697,125</span>
+                <span class="waterfall-step-sub" id="wf-repeat-note">55% Probability Cohort</span>
+              </div>
+              <div class="waterfall-step">
+                <span class="waterfall-step-title">Total 3-Yr Net Creation</span>
+                <span class="waterfall-step-amount" id="wf-total-net" style="color: var(--emerald-accent);">$1,150,875</span>
+                <span class="waterfall-step-sub">Net Wealth Created</span>
+              </div>
+            </div>
+
+            <!-- Ledger Breakdown Table -->
+            <div class="ledger-table-wrap">
+              <table class="ledger-table" id="ledger-table">
+                <thead>
+                  <tr>
+                    <th>Performance Metric</th>
+                    <th>Immediate Realized</th>
+                    <th>3-Year Equity Projection</th>
+                    <th>Variance / Multiple</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Gross Attributed Revenue</td>
+                    <td id="table-imm-rev">$650,000</td>
+                    <td id="table-proj-rev">$1,706,250</td>
+                    <td id="table-rev-multiple">2.62x Expansion</td>
+                  </tr>
+                  <tr>
+                    <td>Cost of Goods Sold (COGS)</td>
+                    <td id="table-imm-cogs">($143,000)</td>
+                    <td id="table-proj-cogs">($375,375)</td>
+                    <td>Based on Margin</td>
+                  </tr>
+                  <tr>
+                    <td>Gross Commercial Profit</td>
+                    <td id="table-imm-gp">$507,000</td>
+                    <td id="table-proj-gp">$1,330,875</td>
+                    <td id="table-gp-multiple">+162.5% Yield</td>
+                  </tr>
+                  <tr>
+                    <td>Marketing & Campaign Investment</td>
+                    <td id="table-imm-spend">($180,000)</td>
+                    <td id="table-proj-spend">($180,000)</td>
+                    <td>Fixed Upfront</td>
+                  </tr>
+                  <tr class="highlight-row">
+                    <td>Net Economic Value Created</td>
+                    <td id="table-imm-net" style="color: var(--emerald-accent);">$327,000</td>
+                    <td id="table-proj-net" style="color: var(--gold-secondary);">$1,150,875</td>
+                    <td id="table-net-gain">+251.9% Lifetime Expansion</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+
+          <!-- Executive Brief Card -->
+          <div class="executive-brief-card" id="executive-brief-card">
+            <div class="brief-header">
+              <div>
+                <span style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold-primary); font-weight: 700; display: block;">Maison Executive Report</span>
+                <h3 class="brief-title">Haute Direction Investment Brief</h3>
+              </div>
+              <div style="font-size: 0.8rem; color: var(--text-tertiary);" id="brief-timestamp">
+                October 2026
+              </div>
+            </div>
+
+            <div class="brief-text-content" id="executive-brief-text" role="region" aria-label="Executive Brief Preview">
+[MAISON EXECUTIVE BRIEF]
+CAMPAIGN: Private VIP Soirée
+BUDGET ALLOCATION: $180,000
+ATTRIBUTED DIRECT REVENUE: $650,000
+IMMEDIATE MARGIN ROI: +181.7%
+3-YEAR LTV-ADJUSTED ROI: +639.4%
+COST PER VIP ACQUIRED (CAC): $8,181.82 (AOV: $29,545.45)
+ROAS: 65.00x | ROMI: 2.82x
+BREAKEVEN REQUIREMENT: $230,769.23 (8 VIP transactions)
+SUMMARY: High-touch activation demonstrates superior capital efficiency, returning $2.82 in immediate gross margin per dollar invested, with an projected 3-year net economic creation of $1,150,875 across the acquired UHNW cohort.
+            </div>
+
+            <div class="brief-action-bar">
+              <button id="btn-copy-brief" class="btn btn-primary btn-gold" type="button">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy Executive Brief
+              </button>
+              <button id="btn-print-brief" class="btn btn-secondary" type="button">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                Print / Save PDF Brief
+              </button>
+              <button id="btn-export-json" class="btn btn-secondary" type="button">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Export JSON Model
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
-    
+
     </div>
   </main>
 
@@ -62,8 +1023,8 @@
     "@type": "WebApplication",
     "name": "Campaign ROI Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/campaign-roi-calculator/",
-    "description": "Calculate return on luxury marketing campaigns.",
-    "applicationCategory": "UtilityPage",
+    "description": "Calculate return on luxury marketing campaigns, high jewelry editorials, VIP salons, and ambassador sponsorships.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

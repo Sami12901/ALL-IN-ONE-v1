@@ -3,15 +3,398 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Customer Segmentation - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Automatically group customers using AI clustering.">
-  <meta name="keywords" content="analytics, data, luxury, ai customer segmentation, free, online, tool, utility">
+  <title>AI Customer Segmentation - Luxury Persona Intelligence - ALL IN ONE</title>
+  <meta name="description" content="Client-side behavioral clustering engine classifying luxury shoppers into distinct psychology personas, multi-attribute affinity scoring, and bespoke action playbooks for private client advisors.">
+  <meta name="keywords" content="ai customer segmentation, luxury retail, private client advisor, customer personas, the connoisseur, quiet luxury, status trendsetter, aspirational gifter, clustering engine">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-customer-segmentation/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* AI Customer Segmentation Custom Styles */
+    :root {
+      --gold-accent: #d4af37;
+      --gold-glow: rgba(212, 175, 55, 0.2);
+      --diamond-cyan: #38bdf8;
+      --persona-connoisseur: #38bdf8;
+      --persona-trendsetter: #ec4899;
+      --persona-quiet: #10b981;
+      --persona-gifter: #f59e0b;
+    }
+
+    .segmentation-layout-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 1080px) {
+      .segmentation-layout-grid {
+        grid-template-columns: 460px 1fr;
+      }
+    }
+
+    /* Tabs Bar */
+    .view-tabs-bar {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .view-tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.55rem 1.15rem;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+
+    .view-tab-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+
+    .view-tab-btn.active {
+      color: var(--accent);
+      background: rgba(78, 133, 191, 0.12);
+      border-color: rgba(78, 133, 191, 0.3);
+    }
+
+    /* Persona Badges */
+    .persona-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .badge-connoisseur {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--persona-connoisseur);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+    }
+
+    .badge-trendsetter {
+      background: rgba(236, 72, 153, 0.15);
+      color: var(--persona-trendsetter);
+      border: 1px solid rgba(236, 72, 153, 0.4);
+      box-shadow: 0 0 12px rgba(236, 72, 153, 0.2);
+    }
+
+    .badge-quiet {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--persona-quiet);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
+    }
+
+    .badge-gifter {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--persona-gifter);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.2);
+    }
+
+    /* Result Hero Panel */
+    .persona-hero-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-glow-accent {
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: var(--accent-glow);
+      filter: blur(50px);
+      pointer-events: none;
+    }
+
+    .hero-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .persona-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .persona-headline {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.15;
+    }
+
+    .persona-archetype-motto {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    /* Persona Match Breakdown Bars */
+    .affinity-breakdown-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .breakdown-bar-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .bar-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+    }
+
+    .bar-item-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .bar-item-pct {
+      font-family: monospace;
+      font-weight: 700;
+    }
+
+    .affinity-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+
+    .affinity-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Playbook Sections */
+    .playbook-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.15rem;
+    }
+
+    .playbook-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      transition: var(--transition);
+    }
+
+    .playbook-card:hover {
+      border-color: rgba(78, 133, 191, 0.3);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .playbook-card-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .playbook-script-box {
+      background: var(--bg-tertiary);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 0.85rem 1rem;
+      font-size: 0.88rem;
+      color: var(--text-primary);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .playbook-detail-text {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Dos and Don'ts Grid */
+    .rules-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+      margin-top: 0.25rem;
+    }
+
+    .rule-box {
+      padding: 0.75rem 0.9rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .rule-do {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      color: #34d399;
+    }
+
+    .rule-dont {
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      color: #f87171;
+    }
+
+    /* Persona Matrix Tabs */
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .matrix-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: relative;
+    }
+
+    .matrix-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+
+    .matrix-connoisseur::before { background: var(--persona-connoisseur); }
+    .matrix-trendsetter::before { background: var(--persona-trendsetter); }
+    .matrix-quiet::before { background: var(--persona-quiet); }
+    .matrix-gifter::before { background: var(--persona-gifter); }
+
+    /* Client Batch Table */
+    .batch-table-wrap {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+    }
+
+    .batch-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .batch-table th {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .batch-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-primary);
+      vertical-align: middle;
+    }
+
+    .batch-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Print Styles */
+    @media print {
+      app-header, app-breadcrumbs, app-footer,
+      .view-tabs-bar, .tool-panel, .action-bar, .btn,
+      #client-preset-select, .form-group {
+        display: none !important;
+      }
+      body {
+        background: #fff !important;
+        color: #000 !important;
+      }
+      .segmentation-layout-grid {
+        display: block !important;
+      }
+      .persona-hero-panel, .playbook-card, .affinity-breakdown-card {
+        background: #fff !important;
+        border: 1px solid #ccc !important;
+        color: #000 !important;
+        box-shadow: none !important;
+        margin-bottom: 1rem !important;
+      }
+      .persona-headline {
+        color: #000 !important;
+      }
+      .playbook-script-box {
+        background: #f8fafc !important;
+        color: #0f172a !important;
+        border-left: 3px solid #000 !important;
+      }
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -25,30 +408,449 @@
   <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
-      <div class="tool-header">
-        <h1>AI Customer Segmentation</h1>
-        <p class="tool-description">Automatically group customers using AI clustering.</p>
-      </div>
-
-      <!-- Tool Workspace -->
       
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AI Customer Segmentation</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Automatically group customers using AI clustering.</div>
-            <div><strong>Inputs:</strong> analytics, data, luxury, ai customer segmentation</div>
-            <div><strong>Category:</strong> luxury</div>
+      <!-- Tool Header -->
+      <div class="tool-header">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>AI Customer Segmentation</h1>
+            <p class="tool-description">
+              Client-side behavioral clustering engine classifying luxury shoppers into distinct psychology personas, multi-attribute affinity scoring, and bespoke advisor action playbooks.
+            </p>
+          </div>
+          <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+            <button id="btn-print-playbook" class="btn btn-secondary" title="Download &amp; Print Strategy Playbook">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              Print Strategy Playbook
+            </button>
+            <button id="btn-copy-playbook" class="btn btn-primary" title="Copy Advisor Talking Points to Clipboard">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Advisor Playbook
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- Navigation Tabs -->
+      <div class="view-tabs-bar">
+        <button class="view-tab-btn active" data-tab="profiler">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          Interactive Persona Profiler
+        </button>
+        <button class="view-tab-btn" data-tab="matrix">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          4 Luxury Personas Playbook
+        </button>
+        <button class="view-tab-btn" data-tab="batch">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          Client Book Classification (8 Samples)
+        </button>
+      </div>
+
+      <!-- Tab 1: Interactive Persona Profiler -->
+      <div id="tab-profiler-content" class="tab-pane active">
+        <div class="segmentation-layout-grid">
+          
+          <!-- Left: Input & Multi-Attribute Scoring Panel -->
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;">
+              <h2 class="panel-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                Shopper Attributes &amp; Signals
+              </h2>
+            </div>
+
+            <!-- Client Preset Select -->
+            <div class="form-group" style="background: var(--bg-tertiary); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+              <label for="select-preset" style="color: var(--accent); font-weight: 700; display: flex; justify-content: space-between;">
+                <span>Quick-Load VIP Preset:</span>
+                <span style="font-size: 0.75rem; color: var(--text-tertiary); font-weight: normal;">Auto-populate</span>
+              </label>
+              <select id="select-preset" class="form-select" style="font-size: 0.88rem;">
+                <option value="custom">Custom Client Configuration</option>
+                <option value="connoisseur" selected>Preset 1: Lord Harrison (Horology Patron)</option>
+                <option value="trendsetter">Preset 2: Zara Chen (Runway &amp; Hype Influencer)</option>
+                <option value="quiet">Preset 3: Henri de Montmirail (Stealth Cashmere Loyalist)</option>
+                <option value="gifter">Preset 4: Victoria Sterling (Milestone &amp; Holiday Patron)</option>
+              </select>
+            </div>
+
+            <form id="clustering-form" style="display: flex; flex-direction: column; gap: 1.1rem;">
+              
+              <!-- Client Name -->
+              <div class="form-group">
+                <label for="input-client-name">VIP Client Name / Reference</label>
+                <input type="text" id="input-client-name" class="form-input" value="Lord Harrison Sterling" placeholder="e.g. Contessa Elena Rostova">
+              </div>
+
+              <!-- 1. Annual Spend Tier -->
+              <div class="form-group">
+                <label for="select-spend">1. Annual Spend Bracket</label>
+                <select id="select-spend" class="form-select">
+                  <option value="ultra">$120,000+ (Ultra-HNW Sovereign Collector)</option>
+                  <option value="high">$50,000 - $120,000 (High-Net-Worth VIP Patron)</option>
+                  <option value="mid">$15,000 - $50,000 (Established Luxury Buyer)</option>
+                  <option value="entry">&lt; $15,000 (Curated Entry &amp; Milestone Gifter)</option>
+                </select>
+              </div>
+
+              <!-- 2. Primary Brand Motivation -->
+              <div class="form-group">
+                <label for="select-motivation">2. Core Brand Motivation</label>
+                <select id="select-motivation" class="form-select">
+                  <option value="provenance">Provenance, Heritage Craftsmanship &amp; Rarity</option>
+                  <option value="prestige">Social Status, Runway Hype &amp; Cultural Visibility</option>
+                  <option value="understated">Understated Discretion, Whisper Elegance &amp; Tactile Mastery</option>
+                  <option value="gifting">Milestone Celebration, Thoughtful Gifting &amp; White-Glove Delight</option>
+                </select>
+              </div>
+
+              <!-- 3. Preferred Product Category -->
+              <div class="form-group">
+                <label for="select-product">3. Preferred Product Category</label>
+                <select id="select-product" class="form-select">
+                  <option value="horology">Haute Horology, Grand Complications &amp; Rare Gems</option>
+                  <option value="runway">Runway Ready-to-Wear, It-Bags &amp; Statement Eyewear</option>
+                  <option value="cashmere">Pure Vicuña, Double-Faced Cashmere &amp; Unbranded Tailoring</option>
+                  <option value="leather-fragrance">Iconic Small Leather Goods, Silk Scarves &amp; Haute Parfumerie</option>
+                </select>
+              </div>
+
+              <!-- 4. Primary Purchase Trigger -->
+              <div class="form-group">
+                <label for="select-trigger">4. Primary Purchase Trigger</label>
+                <select id="select-trigger" class="form-select">
+                  <option value="atelier">Private Atelier Masterclasses &amp; Vault Auction Previews</option>
+                  <option value="fashion-week">Fashion Week Drops, Runway Debuts &amp; Red Carpet Events</option>
+                  <option value="wardrobe">Seasonal Wardrobe Transitions &amp; In-Suite Master Tailor Fittings</option>
+                  <option value="holiday">Holiday Season, Anniversaries &amp; Corporate Milestone Celebrations</option>
+                </select>
+              </div>
+
+              <!-- 5. Logo & Aesthetic Visibility -->
+              <div class="form-group">
+                <label for="select-logo">5. Logo &amp; Branding Aesthetic</label>
+                <select id="select-logo" class="form-select">
+                  <option value="subtle-archive">Archival Guilloché or Hallmark Engraving</option>
+                  <option value="bold-monogram">Bold Iconic Monogram &amp; Runway Hardware</option>
+                  <option value="zero-logo">Strictly Zero Visible Logos / Blind Edge Stitching</option>
+                  <option value="gift-packaging">Heritage Signature Ribbon &amp; Presentation Gift Box</option>
+                </select>
+              </div>
+
+              <!-- 6. Preferred Engagement Channel -->
+              <div class="form-group">
+                <label for="select-channel">6. Preferred Advisor Channel</label>
+                <select id="select-channel" class="form-select">
+                  <option value="private-vault">Confidential Private Vault Salon (White-glove)</option>
+                  <option value="vip-trunk">VIP Runway Champagne Suite &amp; WhatsApp Concierge</option>
+                  <option value="in-suite-tailor">Serene In-Suite Fitting Suite (No Sales Pressure)</option>
+                  <option value="gifting-concierge">Curated Gift Concierge with Caligraphy &amp; Courier</option>
+                </select>
+              </div>
+
+            </form>
+          </div>
+
+          <!-- Right: Clustering Engine Output & Action Playbook -->
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            
+            <!-- Result Hero Panel -->
+            <div class="persona-hero-panel" id="hero-persona-panel">
+              <div class="hero-glow-accent" id="hero-glow"></div>
+
+              <div class="hero-top-row">
+                <div class="persona-title-wrap">
+                  <div style="display: flex; align-items: center; gap: 0.6rem;">
+                    <span id="hero-persona-badge" class="persona-badge badge-connoisseur">
+                      The Connoisseur / Collector
+                    </span>
+                    <span id="hero-confidence-badge" style="font-size: 0.8rem; font-weight: 700; color: var(--accent); background: var(--bg-tertiary); padding: 0.2rem 0.55rem; border-radius: var(--radius-full); border: 1px solid var(--border);">
+                      92% Affinity
+                    </span>
+                  </div>
+                  <h2 class="persona-headline" id="hero-persona-title">The Connoisseur / Collector</h2>
+                  <p class="persona-archetype-motto" id="hero-persona-motto">
+                    "Treasures rare historical provenance, grand complications, and confidential master artisan access over fleeting fashion trends."
+                  </p>
+                </div>
+              </div>
+
+              <!-- Multi-Attribute Confidence Breakdown -->
+              <div class="affinity-breakdown-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--text-tertiary); letter-spacing: 0.05em;">
+                    Multi-Attribute Persona Affinity Distribution
+                  </span>
+                  <span style="font-size: 0.72rem; color: var(--text-tertiary);">Behavioral Clustering</span>
+                </div>
+
+                <!-- Connoisseur Bar -->
+                <div class="breakdown-bar-item">
+                  <div class="bar-item-header">
+                    <span class="bar-item-name" style="color: var(--persona-connoisseur);">
+                      <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--persona-connoisseur);"></span>
+                      The Connoisseur / Collector
+                    </span>
+                    <span class="bar-item-pct" id="score-val-connoisseur" style="color: var(--persona-connoisseur);">92%</span>
+                  </div>
+                  <div class="affinity-track">
+                    <div class="affinity-fill" id="bar-connoisseur" style="width: 92%; background: var(--persona-connoisseur);"></div>
+                  </div>
+                </div>
+
+                <!-- Status Trendsetter Bar -->
+                <div class="breakdown-bar-item">
+                  <div class="bar-item-header">
+                    <span class="bar-item-name" style="color: var(--persona-trendsetter);">
+                      <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--persona-trendsetter);"></span>
+                      The Status Trendsetter
+                    </span>
+                    <span class="bar-item-pct" id="score-val-trendsetter" style="color: var(--persona-trendsetter);">4%</span>
+                  </div>
+                  <div class="affinity-track">
+                    <div class="affinity-fill" id="bar-trendsetter" style="width: 4%; background: var(--persona-trendsetter);"></div>
+                  </div>
+                </div>
+
+                <!-- Quiet Luxury Loyalist Bar -->
+                <div class="breakdown-bar-item">
+                  <div class="bar-item-header">
+                    <span class="bar-item-name" style="color: var(--persona-quiet);">
+                      <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--persona-quiet);"></span>
+                      The Quiet Luxury Loyalist
+                    </span>
+                    <span class="bar-item-pct" id="score-val-quiet" style="color: var(--persona-quiet);">3%</span>
+                  </div>
+                  <div class="affinity-track">
+                    <div class="affinity-fill" id="bar-quiet" style="width: 3%; background: var(--persona-quiet);"></div>
+                  </div>
+                </div>
+
+                <!-- Aspirational Gifter Bar -->
+                <div class="breakdown-bar-item">
+                  <div class="bar-item-header">
+                    <span class="bar-item-name" style="color: var(--persona-gifter);">
+                      <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--persona-gifter);"></span>
+                      The Aspirational Gifter
+                    </span>
+                    <span class="bar-item-pct" id="score-val-gifter" style="color: var(--persona-gifter);">1%</span>
+                  </div>
+                  <div class="affinity-track">
+                    <div class="affinity-fill" id="bar-gifter" style="width: 1%; background: var(--persona-gifter);"></div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Bespoke Action Playbook -->
+            <div class="playbook-container" id="playbook-container">
+              
+              <!-- Conversation Starters -->
+              <div class="playbook-card">
+                <div class="playbook-card-title">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                  Tailored Private Client Advisor Conversation Starter
+                </div>
+                <div class="playbook-script-box" id="playbook-conversation-starter">
+                  "I recently had the privilege of previewing the archival schematics of our latest split-seconds chronograph, and your horological collection immediately came to mind. Our master watchmaker is visiting our Mayfair salon next Tuesday for an intimate atelier tasting—would you care to inspect the prototype?"
+                </div>
+              </div>
+
+              <!-- Private Salon Invitation Format -->
+              <div class="playbook-card">
+                <div class="playbook-card-title">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  Recommended Private Salon Invitation
+                </div>
+                <div class="playbook-detail-text" id="playbook-salon-invitation">
+                  <strong>Private Vault Complication Showcase:</strong> Confidential after-hours salon with white-glove loupe examination of archival historic timepieces, paired with vintage Krug Rosé or rare single-cask cognac in our secluded library suite.
+                </div>
+              </div>
+
+              <!-- Gifting Recommendations & Cadence Grid -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="playbook-card">
+                  <div class="playbook-card-title">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>
+                    Curated Gifting Recommendation
+                  </div>
+                  <div class="playbook-detail-text" id="playbook-gifting">
+                    Hand-stitched goat suede watch roll with numbered certificate, or a privately bound leather monograph on vintage horological calibers with personalized calligraphy.
+                  </div>
+                </div>
+
+                <div class="playbook-card">
+                  <div class="playbook-card-title">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                    Communication Cadence &amp; Channel
+                  </div>
+                  <div class="playbook-detail-text" id="playbook-cadence">
+                    <strong>Every 4–6 Weeks:</strong> Highly selective. Solely communicate when exceptional archival acquisitions or private master artisan viewings occur. Preferred: Encrypted WhatsApp/Signal or Private Client Director phone call.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Advisor Golden Rules (Do's & Don'ts) -->
+              <div class="playbook-card">
+                <div class="playbook-card-title">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                  Client Advisor Golden Protocol
+                </div>
+                <div class="rules-grid">
+                  <div class="rule-box rule-do" id="playbook-dos">
+                    <strong>DO:</strong> Speak fluent technical terminology (movement finishing, complication architecture, provenance history) and treat the client as an esteemed fellow scholar.
+                  </div>
+                  <div class="rule-box rule-dont" id="playbook-donts">
+                    <strong>DON'T:</strong> Use generic marketing buzzwords, superficial hype phrases, or apply high-pressure scarcity tactics.
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Tab 2: 4 Luxury Personas Strategy Playbook Matrix -->
+      <div id="tab-matrix-content" class="tab-pane" style="display: none;">
+        <div class="matrix-grid">
+          
+          <!-- 1. The Connoisseur / Collector -->
+          <div class="matrix-card matrix-connoisseur">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="persona-badge badge-connoisseur">Persona 1</span>
+              <span style="font-size: 0.75rem; color: var(--persona-connoisseur); font-weight: 700;">$120,000+ / yr</span>
+            </div>
+            <h3 style="font-size: 1.35rem; font-family: var(--font-display);">The Connoisseur / Collector</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+              Erudite, provenance-obsessed patron who treats acquisitions as curated investments and works of art.
+            </p>
+            <div style="font-size: 0.8rem; display: flex; flex-direction: column; gap: 0.45rem; border-top: 1px solid var(--border); padding-top: 0.75rem;">
+              <div><strong>Core Motivation:</strong> Rarity, complication mastery, museum provenance.</div>
+              <div><strong>Top Products:</strong> Haute Horology, rare gemstones, bespoke commissions.</div>
+              <div><strong>Salon Format:</strong> Private Vault Complication Showcase with archival loupe examination.</div>
+              <div><strong>Cadence:</strong> 4–6 weeks; confidential and intellectually engaging.</div>
+            </div>
+            <button class="btn btn-outline" style="font-size: 0.8rem; margin-top: auto;" data-load-preset="connoisseur">
+              Load into Profiler &rarr;
+            </button>
+          </div>
+
+          <!-- 2. The Status Trendsetter -->
+          <div class="matrix-card matrix-trendsetter">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="persona-badge badge-trendsetter">Persona 2</span>
+              <span style="font-size: 0.75rem; color: var(--persona-trendsetter); font-weight: 700;">$50k - $150k+ / yr</span>
+            </div>
+            <h3 style="font-size: 1.35rem; font-family: var(--font-display);">The Status Trendsetter</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+              Charismatic, culturally visible tastemaker thriving on priority runway access, viral drops, and red carpet distinction.
+            </p>
+            <div style="font-size: 0.8rem; display: flex; flex-direction: column; gap: 0.45rem; border-top: 1px solid var(--border); padding-top: 0.75rem;">
+              <div><strong>Core Motivation:</strong> Cultural prominence, runway exclusivity, instant recognition.</div>
+              <div><strong>Top Products:</strong> Runway Ready-to-Wear, limited-edition It-Bags, gala couture.</div>
+              <div><strong>Salon Format:</strong> VIP Runway Champagne Preview &amp; Styling Suite with photo-ready setting.</div>
+              <div><strong>Cadence:</strong> Bi-weekly or instant alerts on runway allocations via WhatsApp.</div>
+            </div>
+            <button class="btn btn-outline" style="font-size: 0.8rem; margin-top: auto;" data-load-preset="trendsetter">
+              Load into Profiler &rarr;
+            </button>
+          </div>
+
+          <!-- 3. The Quiet Luxury Loyalist -->
+          <div class="matrix-card matrix-quiet">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="persona-badge badge-quiet">Persona 3</span>
+              <span style="font-size: 0.75rem; color: var(--persona-quiet); font-weight: 700;">$50k - $120k+ / yr</span>
+            </div>
+            <h3 style="font-size: 1.35rem; font-family: var(--font-display);">The Quiet Luxury Loyalist</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+              Discreet stealth-wealth patron dedicated to tactile perfection, pure vicuña, zero visible logos, and timeless longevity.
+            </p>
+            <div style="font-size: 0.8rem; display: flex; flex-direction: column; gap: 0.45rem; border-top: 1px solid var(--border); padding-top: 0.75rem;">
+              <div><strong>Core Motivation:</strong> Understated refinement, tactile sensory mastery, supreme comfort.</div>
+              <div><strong>Top Products:</strong> Pure vicuña knitwear, bespoke tailoring, unbranded calfskin bags.</div>
+              <div><strong>Salon Format:</strong> In-Suite Trunk Fitting &amp; Fabric Masterclass with zero sales pressure.</div>
+              <div><strong>Cadence:</strong> Seasonal or quarterly; handwritten stationery correspondence.</div>
+            </div>
+            <button class="btn btn-outline" style="font-size: 0.8rem; margin-top: auto;" data-load-preset="quiet">
+              Load into Profiler &rarr;
+            </button>
+          </div>
+
+          <!-- 4. The Aspirational Gifter -->
+          <div class="matrix-card matrix-gifter">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="persona-badge badge-gifter">Persona 4</span>
+              <span style="font-size: 0.75rem; color: var(--persona-gifter); font-weight: 700;">$5k - $25k+ / yr</span>
+            </div>
+            <h3 style="font-size: 1.35rem; font-family: var(--font-display);">The Aspirational Gifter</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+              Generous, celebratory buyer seeking foolproof brand prestige for milestone anniversaries, festive holidays, and corporate tokens.
+            </p>
+            <div style="font-size: 0.8rem; display: flex; flex-direction: column; gap: 0.45rem; border-top: 1px solid var(--border); padding-top: 0.75rem;">
+              <div><strong>Core Motivation:</strong> Milestone celebration, recipient delight, immaculate packaging.</div>
+              <div><strong>Top Products:</strong> Small leather goods, signature silk scarves, haute parfumerie.</div>
+              <div><strong>Salon Format:</strong> Holiday Champagne Gifting Salon with on-site calligraphy &amp; courier.</div>
+              <div><strong>Cadence:</strong> Calendar-driven (3–4x yearly before key gifting holidays).</div>
+            </div>
+            <button class="btn btn-outline" style="font-size: 0.8rem; margin-top: auto;" data-load-preset="gifter">
+              Load into Profiler &rarr;
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Tab 3: Client Book Classification (8 Samples) -->
+      <div id="tab-batch-content" class="tab-pane" style="display: none;">
+        <div class="tool-panel glass-panel" style="gap: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+              <h2 class="panel-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                Private Client Advisor Book: Persona Segmentation
+              </h2>
+              <div style="font-size: 0.82rem; color: var(--text-tertiary); margin-top: 0.2rem;">
+                Live clustering engine results for 8 representative private luxury clients.
+              </div>
+            </div>
+            <div style="display: flex; gap: 0.4rem; align-items: center;">
+              <label for="filter-batch-persona" style="font-size: 0.82rem; color: var(--text-secondary);">Filter Persona:</label>
+              <select id="filter-batch-persona" class="form-select" style="width: auto; padding: 0.35rem 0.7rem; font-size: 0.82rem;">
+                <option value="All">All 4 Personas</option>
+                <option value="The Connoisseur / Collector">The Connoisseur</option>
+                <option value="The Status Trendsetter">The Status Trendsetter</option>
+                <option value="The Quiet Luxury Loyalist">The Quiet Luxury Loyalist</option>
+                <option value="The Aspirational Gifter">The Aspirational Gifter</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="batch-table-wrap">
+            <table class="batch-table" id="batch-clients-table">
+              <thead>
+                <tr>
+                  <th>Client / Location</th>
+                  <th>Classified Persona</th>
+                  <th>Confidence</th>
+                  <th>Annual Spend</th>
+                  <th>Core Motivation</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="batch-table-body">
+                <!-- Populated dynamically by script.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
 
@@ -62,8 +864,8 @@
     "@type": "WebApplication",
     "name": "AI Customer Segmentation",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-customer-segmentation/",
-    "description": "Automatically group customers using AI clustering.",
-    "applicationCategory": "UtilityPage",
+    "description": "Client-side behavioral clustering engine classifying luxury shoppers into distinct psychology personas, multi-attribute affinity scoring, and bespoke action playbooks for private client advisors.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

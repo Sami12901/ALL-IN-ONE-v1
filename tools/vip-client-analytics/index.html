@@ -3,15 +3,677 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VIP Client Analytics - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Track top luxury clients and their complete purchase history.">
-  <meta name="keywords" content="analytics, data, luxury, vip client analytics, free, online, tool, utility">
+  <title>VIP Client Analytics - Luxury CRM & Cohort Intelligence - ALL IN ONE</title>
+  <meta name="description" content="Portfolio-level luxury client relationship management (CRM), cohort tier analytics, concentration risk assessment, and executive dossier exports for private client advisors.">
+  <meta name="keywords" content="vip client analytics, luxury crm, private client advisor, high net worth, diamond tier, cohort analysis, concentration risk, clv, retail intelligence">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/vip-client-analytics/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* VIP Client Analytics Custom Styles */
+    :root {
+      --gold-accent: #d4af37;
+      --gold-glow: rgba(212, 175, 55, 0.2);
+      --diamond-cyan: #38bdf8;
+      --diamond-glow: rgba(56, 189, 248, 0.25);
+      --platinum-light: #f1f5f9;
+      --platinum-glow: rgba(241, 245, 249, 0.2);
+      --silver-slate: #94a3b8;
+    }
+
+    .vip-analytics-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+
+    /* KPI Header Grid */
+    .vip-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1.15rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .kpi-card:hover {
+      border-color: rgba(78, 133, 191, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .kpi-card::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+      opacity: 0.8;
+    }
+
+    .kpi-card.kpi-gold::after {
+      background: linear-gradient(90deg, #d4af37 0%, #facc15 100%);
+    }
+
+    .kpi-card.kpi-diamond::after {
+      background: linear-gradient(90deg, #38bdf8 0%, #818cf8 100%);
+    }
+
+    .kpi-card.kpi-risk::after {
+      background: linear-gradient(90deg, #f59e0b 0%, #ef4444 100%);
+    }
+
+    .kpi-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .kpi-value {
+      font-family: var(--font-display);
+      font-size: 2.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .kpi-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 0.2rem;
+    }
+
+    /* Tier Badges */
+    .tier-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .tier-diamond {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--diamond-cyan);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.18);
+    }
+
+    .tier-platinum {
+      background: rgba(241, 245, 249, 0.12);
+      color: #f8fafc;
+      border: 1px solid rgba(241, 245, 249, 0.35);
+      box-shadow: 0 0 8px rgba(241, 245, 249, 0.12);
+    }
+
+    .tier-gold {
+      background: rgba(250, 204, 21, 0.15);
+      color: #facc15;
+      border: 1px solid rgba(250, 204, 21, 0.4);
+      box-shadow: 0 0 10px rgba(250, 204, 21, 0.15);
+    }
+
+    .tier-silver {
+      background: rgba(148, 163, 184, 0.12);
+      color: #94a3b8;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    /* Tier Breakdown Bar Section */
+    .tier-breakdown-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .breakdown-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .breakdown-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .stacked-tier-bar {
+      width: 100%;
+      height: 22px;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.05);
+      overflow: hidden;
+      display: flex;
+      border: 1px solid var(--border);
+    }
+
+    .tier-segment {
+      height: 100%;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      cursor: pointer;
+    }
+
+    .tier-segment:hover {
+      filter: brightness(1.2);
+    }
+
+    .tier-segment-diamond { background: linear-gradient(90deg, #0284c7 0%, #38bdf8 100%); }
+    .tier-segment-platinum { background: linear-gradient(90deg, #94a3b8 0%, #e2e8f0 100%); }
+    .tier-segment-gold { background: linear-gradient(90deg, #d97706 0%, #facc15 100%); }
+    .tier-segment-silver { background: linear-gradient(90deg, #475569 0%, #64748b 100%); }
+
+    .tier-legend-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 0.85rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 0.85rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .legend-item:hover, .legend-item.active-filter {
+      border-color: var(--accent);
+      background: rgba(78, 133, 191, 0.12);
+    }
+
+    .legend-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .legend-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .legend-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .legend-counts {
+      font-size: 0.72rem;
+      color: var(--text-tertiary);
+    }
+
+    .legend-val {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-align: right;
+    }
+
+    /* Client Controls Toolbar */
+    .controls-toolbar {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .controls-row-top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .search-input-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 240px;
+    }
+
+    .search-input-wrap svg {
+      position: absolute;
+      left: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      pointer-events: none;
+    }
+
+    .search-input-wrap input {
+      padding-left: 2.4rem;
+    }
+
+    .filter-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+    }
+
+    .tier-filter-pills {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-pill {
+      padding: 0.4rem 0.8rem;
+      border-radius: var(--radius-full);
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .filter-pill:hover, .filter-pill.active {
+      color: var(--text-primary);
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* Portfolio Table */
+    .table-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .vip-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+
+    .vip-table th {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 600;
+      padding: 0.9rem 1.1rem;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .vip-table th.sortable {
+      cursor: pointer;
+    }
+
+    .vip-table th.sortable:hover {
+      color: var(--text-primary);
+    }
+
+    .vip-table td {
+      padding: 0.95rem 1.1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-primary);
+      vertical-align: middle;
+      transition: background 0.15s ease;
+    }
+
+    .vip-table tbody tr:hover td {
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .vip-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .client-cell {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .client-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .client-info-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .client-name-text {
+      font-weight: 700;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .client-name-text:hover {
+      color: var(--accent);
+    }
+
+    .client-subtext {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .spend-cell {
+      font-family: monospace;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .spend-bar-mini {
+      height: 4px;
+      width: 90px;
+      background: rgba(255, 255, 255, 0.07);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-top: 0.25rem;
+    }
+
+    .spend-bar-fill {
+      height: 100%;
+      background: var(--accent-gradient);
+      border-radius: var(--radius-full);
+    }
+
+    .recency-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.75rem;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+
+    .status-active .status-dot { background: var(--success); box-shadow: 0 0 6px var(--success); }
+    .status-warm .status-dot { background: var(--warning); box-shadow: 0 0 6px var(--warning); }
+    .status-dormant .status-dot { background: var(--error); box-shadow: 0 0 6px var(--error); }
+
+    .table-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .icon-action-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      padding: 0.4rem 0.55rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .icon-action-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+      background: rgba(78, 133, 191, 0.15);
+    }
+
+    .icon-action-btn.delete-btn:hover {
+      color: var(--error);
+      border-color: var(--error);
+      background: rgba(239, 68, 68, 0.12);
+    }
+
+    /* Modal Styles */
+    .vip-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .vip-modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .vip-modal {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 680px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      transform: scale(0.96);
+      transition: transform 0.25s ease;
+    }
+
+    .vip-modal-backdrop.open .vip-modal {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: var(--bg-secondary);
+      z-index: 10;
+    }
+
+    .modal-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.3rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .modal-close-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .modal-footer {
+      padding: 1.1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      background: var(--bg-secondary);
+      position: sticky;
+      bottom: 0;
+      z-index: 10;
+    }
+
+    /* Dossier Grid Details */
+    .dossier-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .dossier-stat-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem;
+      text-align: center;
+    }
+
+    .dossier-stat-label {
+      font-size: 0.72rem;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .dossier-stat-num {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-top: 0.2rem;
+      font-family: monospace;
+    }
+
+    .dossier-section {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .dossier-section-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* Print Dossier Layout */
+    @media print {
+      app-header, app-breadcrumbs, app-footer,
+      .controls-toolbar, .table-actions, .filter-actions, #btn-add-client,
+      .vip-modal-backdrop, .tool-header p, .btn {
+        display: none !important;
+      }
+      body {
+        background: #fff !important;
+        color: #000 !important;
+      }
+      .vip-analytics-container {
+        gap: 1rem !important;
+      }
+      .kpi-card, .tier-breakdown-panel, .table-container, .vip-table th, .vip-table td {
+        background: #fff !important;
+        border-color: #ddd !important;
+        color: #000 !important;
+        box-shadow: none !important;
+      }
+      .vip-table th {
+        background: #f1f5f9 !important;
+        color: #0f172a !important;
+      }
+      .kpi-value {
+        color: #0f172a !important;
+      }
+      .tier-badge {
+        border: 1px solid #94a3b8 !important;
+        color: #0f172a !important;
+      }
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -25,32 +687,356 @@
   <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
-      <div class="tool-header">
-        <h1>VIP Client Analytics</h1>
-        <p class="tool-description">Track top luxury clients and their complete purchase history.</p>
-      </div>
-
-      <!-- Tool Workspace -->
       
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>VIP Client Analytics</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Track top luxury clients and their complete purchase history.</div>
-            <div><strong>Inputs:</strong> analytics, data, luxury, vip client analytics</div>
-            <div><strong>Category:</strong> luxury</div>
+      <!-- Tool Header -->
+      <div class="tool-header">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>VIP Client Analytics</h1>
+            <p class="tool-description">
+              Portfolio-level client relationship management (CRM), cohort tier analytics, and concentration risk modeling for private client advisors.
+            </p>
+          </div>
+          <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+            <button id="btn-export-csv" class="btn btn-secondary" title="Export full VIP roster to CSV">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export CSV
+            </button>
+            <button id="btn-print-dossier" class="btn btn-secondary" title="Print Executive Portfolio Dossier">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              Print Dossier
+            </button>
+            <button id="btn-add-client" class="btn btn-primary" title="Enroll new High-Net-Worth VIP Client">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              Add VIP Client
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <div class="vip-analytics-container">
+        
+        <!-- KPI Metrics Grid -->
+        <div class="vip-kpi-grid">
+          
+          <!-- Total Portfolio Valuation -->
+          <div class="kpi-card kpi-gold">
+            <div class="kpi-label">
+              <span>Total Portfolio Valuation</span>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><path d="M12 18V6"></path></svg>
+            </div>
+            <div id="kpi-total-valuation" class="kpi-value">$1,412,500</div>
+            <div class="kpi-subtitle">
+              <span id="kpi-client-count-badge" style="color: var(--accent); font-weight: 600;">10 HNW Clients</span>
+              <span>across active book</span>
+            </div>
+          </div>
+
+          <!-- Average Order Value (AOV) -->
+          <div class="kpi-card">
+            <div class="kpi-label">
+              <span>Average Order Value (AOV)</span>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            </div>
+            <div id="kpi-aov" class="kpi-value">$18,586</div>
+            <div class="kpi-subtitle">
+              <span id="kpi-total-orders" style="color: var(--text-primary); font-weight: 600;">76 Total Orders</span>
+              <span>trailing 12mo</span>
+            </div>
+          </div>
+
+          <!-- Annual Purchase Frequency -->
+          <div class="kpi-card">
+            <div class="kpi-label">
+              <span>Annual Purchase Frequency</span>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            </div>
+            <div id="kpi-frequency" class="kpi-value">7.6 / yr</div>
+            <div class="kpi-subtitle">
+              <span style="color: var(--success); font-weight: 600;">High Engagement</span>
+              <span>cadence</span>
+            </div>
+          </div>
+
+          <!-- Concentration Risk -->
+          <div class="kpi-card kpi-risk">
+            <div class="kpi-label">
+              <span>Concentration Risk</span>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            </div>
+            <div id="kpi-concentration-risk" class="kpi-value">29.0%</div>
+            <div class="kpi-subtitle">
+              <span id="kpi-risk-badge" class="badge" style="background: rgba(245, 158, 11, 0.2); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.4); font-size: 0.72rem; padding: 0.15rem 0.45rem;">
+                Top 5% Revenue Share
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Cohort Tier Breakdown Bar Panel -->
+        <div class="tier-breakdown-panel">
+          <div class="breakdown-header">
+            <div class="breakdown-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+              VIP Cohort Tier Distribution Breakdown
+            </div>
+            <div style="font-size: 0.78rem; color: var(--text-tertiary);">
+              Click any tier below to filter client portfolio
+            </div>
+          </div>
+
+          <!-- Stacked Progress Bar -->
+          <div class="stacked-tier-bar" id="stacked-tier-bar">
+            <div class="tier-segment tier-segment-diamond" id="seg-diamond" style="width: 73.2%;" title="Diamond: $1,035,000 (73.2%)"></div>
+            <div class="tier-segment tier-segment-platinum" id="seg-platinum" style="width: 18.0%;" title="Platinum: $254,500 (18.0%)"></div>
+            <div class="tier-segment tier-segment-gold" id="seg-gold" style="width: 7.7%;" title="Gold: $108,500 (7.7%)"></div>
+            <div class="tier-segment tier-segment-silver" id="seg-silver" style="width: 1.1%;" title="Silver: $14,500 (1.1%)"></div>
+          </div>
+
+          <!-- Legend Grid -->
+          <div class="tier-legend-grid">
+            
+            <div class="legend-item" data-tier="Diamond">
+              <div class="legend-meta">
+                <span class="legend-title">
+                  <span class="legend-indicator" style="background: var(--diamond-cyan);"></span>
+                  Diamond ($100k+)
+                </span>
+                <span class="legend-counts" id="legend-counts-diamond">3 Clients (30%)</span>
+              </div>
+              <div class="legend-val" id="legend-val-diamond" style="color: var(--diamond-cyan);">$1,035,000</div>
+            </div>
+
+            <div class="legend-item" data-tier="Platinum">
+              <div class="legend-meta">
+                <span class="legend-title">
+                  <span class="legend-indicator" style="background: #e2e8f0;"></span>
+                  Platinum ($50k-$100k)
+                </span>
+                <span class="legend-counts" id="legend-counts-platinum">3 Clients (30%)</span>
+              </div>
+              <div class="legend-val" id="legend-val-platinum" style="color: #f1f5f9;">$254,500</div>
+            </div>
+
+            <div class="legend-item" data-tier="Gold">
+              <div class="legend-meta">
+                <span class="legend-title">
+                  <span class="legend-indicator" style="background: #facc15;"></span>
+                  Gold ($20k-$50k)
+                </span>
+                <span class="legend-counts" id="legend-counts-gold">3 Clients (30%)</span>
+              </div>
+              <div class="legend-val" id="legend-val-gold" style="color: #facc15;">$108,500</div>
+            </div>
+
+            <div class="legend-item" data-tier="Silver">
+              <div class="legend-meta">
+                <span class="legend-title">
+                  <span class="legend-indicator" style="background: #94a3b8;"></span>
+                  Silver ($5k-$20k)
+                </span>
+                <span class="legend-counts" id="legend-counts-silver">1 Client (10%)</span>
+              </div>
+              <div class="legend-val" id="legend-val-silver" style="color: #94a3b8;">$14,500</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Controls Toolbar -->
+        <div class="controls-toolbar">
+          <div class="controls-row-top">
+            
+            <!-- Search -->
+            <div class="search-input-wrap">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="input-search" class="form-input" placeholder="Search by name, ID, advisor, city, notes...">
+            </div>
+
+            <!-- Tier Filter Pills -->
+            <div class="tier-filter-pills" id="tier-filter-pills">
+              <button class="filter-pill active" data-filter="All">All Tiers</button>
+              <button class="filter-pill" data-filter="Diamond">Diamond</button>
+              <button class="filter-pill" data-filter="Platinum">Platinum</button>
+              <button class="filter-pill" data-filter="Gold">Gold</button>
+              <button class="filter-pill" data-filter="Silver">Silver</button>
+            </div>
+
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; border-top: 1px solid var(--border); padding-top: 0.85rem;">
+            
+            <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+              <!-- Advisor Filter -->
+              <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem;">
+                <label for="select-advisor" style="color: var(--text-tertiary); font-weight: 500;">Advisor:</label>
+                <select id="select-advisor" class="form-select" style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                  <option value="All">All Advisors</option>
+                </select>
+              </div>
+
+              <!-- Sort Filter -->
+              <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem;">
+                <label for="select-sort" style="color: var(--text-tertiary); font-weight: 500;">Sort By:</label>
+                <select id="select-sort" class="form-select" style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                  <option value="spend-desc">Annual Spend (Highest)</option>
+                  <option value="spend-asc">Annual Spend (Lowest)</option>
+                  <option value="frequency-desc">Frequency (Most Active)</option>
+                  <option value="recency-asc">Recency (Most Recent)</option>
+                  <option value="aov-desc">AOV (Highest)</option>
+                  <option value="name-asc">Client Name (A - Z)</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.6rem; align-items: center;">
+              <span id="filtered-count-text" style="font-size: 0.82rem; color: var(--text-tertiary);">
+                Showing 10 of 10 clients
+              </span>
+              <button id="btn-reset-roster" class="btn btn-outline" style="font-size: 0.78rem; padding: 0.35rem 0.7rem;" title="Reset portfolio to default 10 HNW clients">
+                Reset Demo Data
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Portfolio Table Container -->
+        <div class="table-container">
+          <table class="vip-table" id="vip-client-table">
+            <thead>
+              <tr>
+                <th class="sortable" data-col="name">VIP Client</th>
+                <th class="sortable" data-col="tier">Cohort Tier</th>
+                <th class="sortable" data-col="advisor">Private Advisor</th>
+                <th class="sortable" data-col="spend">Annual Spend</th>
+                <th class="sortable" data-col="orders">Orders</th>
+                <th class="sortable" data-col="aov">AOV</th>
+                <th class="sortable" data-col="recency">Last Purchase</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="vip-table-body">
+              <!-- Rendered dynamically by script.js -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
     </div>
   </main>
+
+  <!-- Dossier Inspector Modal -->
+  <div class="vip-modal-backdrop" id="modal-dossier-backdrop">
+    <div class="vip-modal" role="dialog" aria-modal="true" aria-labelledby="dossier-client-name">
+      <div class="modal-header">
+        <div class="modal-title">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <span id="dossier-client-name">Lord Harrison Sterling</span>
+        </div>
+        <button class="modal-close-btn" id="btn-close-dossier" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="modal-body" id="dossier-modal-content">
+        <!-- Filled dynamically by script.js -->
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btn-print-single-dossier">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          Print Client Dossier
+        </button>
+        <button class="btn btn-primary" id="btn-edit-from-dossier">
+          Edit Client Profile
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add / Edit Client Modal -->
+  <div class="vip-modal-backdrop" id="modal-client-backdrop">
+    <div class="vip-modal" role="dialog" aria-modal="true" aria-labelledby="modal-form-title">
+      <div class="modal-header">
+        <div class="modal-title">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+          <span id="modal-form-title">Add High-Net-Worth Client</span>
+        </div>
+        <button class="modal-close-btn" id="btn-close-form" aria-label="Close modal">&times;</button>
+      </div>
+
+      <form id="form-client" style="display: flex; flex-direction: column;">
+        <div class="modal-body">
+          <input type="hidden" id="form-client-edit-id" value="">
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label for="input-name">Client Full Name *</label>
+              <input type="text" id="input-name" class="form-input" placeholder="e.g. Duke Sterling" required>
+            </div>
+            <div class="form-group">
+              <label for="input-id">Client Reference ID *</label>
+              <input type="text" id="input-id" class="form-input" placeholder="e.g. VIP-LON-9921" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label for="input-advisor">Dedicated Client Advisor *</label>
+              <input type="text" id="input-advisor" class="form-input" placeholder="e.g. Camilla Laurent" required>
+            </div>
+            <div class="form-group">
+              <label for="input-location">Primary Location / Salon *</label>
+              <input type="text" id="input-location" class="form-input" placeholder="e.g. London, Mayfair" required>
+            </div>
+          </div>
+
+          <div style="border-top: 1px solid var(--border); padding-top: 1rem;">
+            <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-tertiary); letter-spacing: 0.05em; display: block; margin-bottom: 0.75rem;">
+              Financial Transactions &amp; Activity
+            </span>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.85rem;">
+              <div class="form-group">
+                <label for="input-spend">Annual Spend ($) *</label>
+                <input type="number" id="input-spend" class="form-input" min="1000" step="500" placeholder="125000" required>
+              </div>
+              <div class="form-group">
+                <label for="input-orders">Annual Orders *</label>
+                <input type="number" id="input-orders" class="form-input" min="1" max="100" placeholder="8" required>
+              </div>
+              <div class="form-group">
+                <label for="input-recency">Last Purchase (Days) *</label>
+                <input type="number" id="input-recency" class="form-input" min="0" max="730" placeholder="14" required>
+              </div>
+            </div>
+
+            <!-- Dynamic Tier Preview -->
+            <div style="margin-top: 0.75rem; display: flex; align-items: center; justify-content: space-between; background: var(--bg-tertiary); padding: 0.65rem 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+              <span style="font-size: 0.8rem; color: var(--text-secondary);">Calculated Cohort Tier:</span>
+              <span id="form-tier-preview" class="tier-badge tier-diamond">Diamond ($100k+)</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="input-category">Preferred Luxury Category</label>
+            <input type="text" id="input-category" class="form-input" placeholder="e.g. Haute Horology, Rare Emeralds, Bespoke Eveningwear">
+          </div>
+
+          <div class="form-group">
+            <label for="input-notes">Private Advisor Dossier Notes</label>
+            <textarea id="input-notes" class="form-textarea" style="min-height: 85px;" placeholder="Discreet preferences, anniversary dates, champagne of choice, salon requirements..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-form">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-client">Save Client to Portfolio</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,8 +1048,8 @@
     "@type": "WebApplication",
     "name": "VIP Client Analytics",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/vip-client-analytics/",
-    "description": "Track top luxury clients and their complete purchase history.",
-    "applicationCategory": "UtilityPage",
+    "description": "Portfolio-level luxury client relationship management (CRM), cohort tier analytics, and concentration risk modeling for private client advisors.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

@@ -3,17 +3,709 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Brand Asset Manager - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Organize and manage premium brand files.">
-  <meta name="keywords" content="assets, files, manager, free, online, tool, utility">
+  <title>Brand Asset Manager - Luxury Maison DAM Vault - ALL IN ONE</title>
+  <meta name="description" content="Local browser-based digital asset management (DAM) vault for luxury maison assets, master logos, monograms, dies, and campaign imagery.">
+  <meta name="keywords" content="brand asset manager, luxury dam, digital asset management, brand vault, vector logos, monograms, packaging dies, jszip export">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/brand-asset-manager/">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <script src="../../assets/lib/jszip.min.js"></script>
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+
+  <style>
+    /* Luxury Brand Asset Manager Bespoke Theme */
+    :root {
+      --gold-primary: #d4af37;
+      --gold-light: #f5e7a9;
+      --gold-dark: #8c6d1f;
+      --gold-gradient: linear-gradient(135deg, #f9ebb2 0%, #d4af37 50%, #996515 100%);
+      --gold-glow: rgba(212, 175, 55, 0.2);
+      --card-bg: rgba(18, 20, 26, 0.7);
+    }
+
+    .dam-container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .dam-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+      padding-bottom: 1.5rem;
+    }
+
+    .dam-header-title {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .dam-title-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .maison-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.25rem 0.75rem;
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      color: var(--gold-light);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border-radius: var(--radius-full);
+    }
+
+    .dam-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-gold {
+      background: var(--gold-gradient);
+      color: #0d0f12;
+      font-weight: 700;
+      border: none;
+      box-shadow: 0 4px 16px var(--gold-glow);
+      transition: var(--transition);
+    }
+
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(212, 175, 55, 0.35);
+      color: #000000;
+    }
+
+    /* Vault Stats Bar */
+    .vault-stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      transition: var(--transition);
+    }
+
+    .stat-card:hover {
+      border-color: rgba(212, 175, 55, 0.4);
+      background: rgba(26, 29, 38, 0.85);
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gold-light);
+      font-family: var(--font-sans);
+    }
+
+    /* Category Navigation & Search Bar */
+    .dam-controls-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      margin-bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .category-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .cat-pill {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .cat-pill:hover {
+      border-color: rgba(212, 175, 55, 0.5);
+      color: var(--text-primary);
+    }
+
+    .cat-pill.active {
+      background: rgba(212, 175, 55, 0.15);
+      border-color: var(--gold-primary);
+      color: var(--gold-light);
+      box-shadow: 0 0 12px rgba(212, 175, 55, 0.2);
+    }
+
+    .cat-count {
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 0.7rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+      color: inherit;
+    }
+
+    .filter-search-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .search-input-wrapper {
+      position: relative;
+      flex: 1;
+      min-width: 260px;
+    }
+
+    .search-input-wrapper svg {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      pointer-events: none;
+    }
+
+    .search-input-wrapper input {
+      padding-left: 2.75rem;
+    }
+
+    .view-toggles {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .icon-btn-toggle {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.5rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .icon-btn-toggle.active, .icon-btn-toggle:hover {
+      border-color: var(--gold-primary);
+      color: var(--gold-light);
+    }
+
+    /* Main DAM Workspace Layout */
+    .dam-workspace-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    @media (min-width: 1100px) {
+      .dam-workspace-layout.inspector-open {
+        grid-template-columns: 1fr 420px;
+      }
+    }
+
+    /* Dropzone Area */
+    .luxury-dropzone {
+      border: 2px dashed rgba(212, 175, 55, 0.35);
+      background: radial-gradient(circle at center, rgba(212, 175, 55, 0.04) 0%, rgba(15, 17, 23, 0.6) 100%);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      margin-bottom: 2rem;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .luxury-dropzone:hover, .luxury-dropzone.dragover {
+      border-color: var(--gold-primary);
+      background: radial-gradient(circle at center, rgba(212, 175, 55, 0.12) 0%, rgba(15, 17, 23, 0.8) 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .dropzone-icon {
+      width: 56px;
+      height: 56px;
+      color: var(--gold-primary);
+      margin-bottom: 0.75rem;
+    }
+
+    /* Assets Grid */
+    .assets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .asset-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .asset-card:hover {
+      border-color: rgba(212, 175, 55, 0.5);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(212, 175, 55, 0.15);
+    }
+
+    .asset-card.selected {
+      border-color: var(--gold-primary);
+      box-shadow: 0 0 0 2px var(--gold-primary), 0 12px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .asset-thumbnail-container {
+      width: 100%;
+      height: 220px;
+      background: radial-gradient(circle at center, #1b1e28 0%, #0e1017 100%);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 1.25rem;
+    }
+
+    .asset-thumb-pattern {
+      position: absolute;
+      inset: 0;
+      background-size: 16px 16px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      pointer-events: none;
+    }
+
+    .asset-img-preview {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+      transition: transform 0.3s ease;
+    }
+
+    .asset-card:hover .asset-img-preview {
+      transform: scale(1.05);
+    }
+
+    .asset-card-category-badge {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.25rem 0.6rem;
+      background: rgba(10, 12, 16, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      color: var(--gold-light);
+      border-radius: var(--radius-full);
+      z-index: 2;
+    }
+
+    .asset-card-format-badge {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 0.25rem 0.5rem;
+      background: rgba(10, 12, 16, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      z-index: 2;
+    }
+
+    .asset-info {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      flex: 1;
+    }
+
+    .asset-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .asset-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .asset-card-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .btn-card-action {
+      flex: 1;
+      padding: 0.4rem 0.5rem;
+      font-size: 0.75rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+
+    .btn-card-action:hover {
+      background: rgba(212, 175, 55, 0.15);
+      border-color: var(--gold-primary);
+      color: var(--gold-light);
+    }
+
+    /* List View Styling */
+    .assets-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .asset-list-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .asset-list-item:hover {
+      border-color: var(--gold-primary);
+      background: rgba(26, 29, 38, 0.85);
+    }
+
+    .asset-list-thumb {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      background: #0e1017;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      padding: 4px;
+    }
+
+    .asset-list-thumb img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    /* Metadata Inspector Panel (Right Sticky) */
+    .inspector-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      position: sticky;
+      top: 5rem;
+      max-height: calc(100vh - 6rem);
+      overflow-y: auto;
+    }
+
+    .inspector-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+      padding-bottom: 0.75rem;
+    }
+
+    .inspector-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--gold-light);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .inspector-close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 0.25rem;
+    }
+
+    .inspector-close-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .inspector-preview-box {
+      width: 100%;
+      height: 240px;
+      border-radius: var(--radius-md);
+      background: radial-gradient(circle at center, #1b1e28 0%, #0a0c10 100%);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .inspector-preview-box.velvet {
+      background: radial-gradient(circle at center, #231c17 0%, #0d0a08 100%);
+    }
+
+    .inspector-preview-box.checker {
+      background-size: 16px 16px;
+      background-position: 0 0, 8px 8px;
+      background-image: linear-gradient(45deg, #181b22 25%, transparent 25%, transparent 75%, #181b22 75%, #181b22),
+                        linear-gradient(45deg, #181b22 25%, #0e1017 25%, #0e1017 75%, #181b22 75%, #181b22);
+    }
+
+    .preview-bg-toggle {
+      position: absolute;
+      bottom: 0.5rem;
+      right: 0.5rem;
+      display: flex;
+      gap: 0.25rem;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: var(--radius-sm);
+      padding: 0.2rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .bg-dot-btn {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+    }
+
+    .meta-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .meta-table tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .meta-table td {
+      padding: 0.65rem 0;
+    }
+
+    .meta-label {
+      color: var(--text-secondary);
+      font-weight: 500;
+      width: 40%;
+    }
+
+    .meta-val {
+      color: var(--text-primary);
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .color-profile-badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .color-gold-foil {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.25), rgba(153, 101, 21, 0.35));
+      border: 1px solid var(--gold-primary);
+      color: var(--gold-light);
+    }
+
+    .color-display-p3 {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #7dd3fc;
+    }
+
+    .color-srgb {
+      background: rgba(168, 85, 247, 0.15);
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      color: #d8b4fe;
+    }
+
+    .color-cmyk {
+      background: rgba(234, 179, 8, 0.15);
+      border: 1px solid rgba(234, 179, 8, 0.4);
+      color: #fef08a;
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: #11141c;
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.15);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .modal-footer {
+      padding: 1.25rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+
+    /* Toast Notification */
+    .dam-toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #181b24;
+      border: 1px solid var(--gold-primary);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(212, 175, 55, 0.2);
+      color: var(--text-primary);
+      padding: 0.85rem 1.25rem;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      z-index: 2000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .dam-toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -24,45 +716,326 @@
 
   <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
-      <div class="tool-header">
-        <h1>Brand Asset Manager</h1>
-        <p class="tool-description">Organize and manage premium brand files.</p>
+    <div class="dam-container">
+      
+      <!-- Top Title Bar -->
+      <div class="dam-header">
+        <div class="dam-header-title">
+          <div class="dam-title-row">
+            <h1 class="gradient-text" style="font-family: var(--font-display); font-size: 2.75rem; font-weight: 700; margin: 0;">Brand Asset Manager</h1>
+            <span class="maison-badge">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              Maison DAM Vault
+            </span>
+          </div>
+          <p class="tool-description">
+            Secure client-side digital asset management repository for luxury Maisons. Inspect vector geometries, manage master monograms & packaging dies, and batch export structured brand archives.
+          </p>
+        </div>
+
+        <div class="dam-actions">
+          <button id="btn-open-upload" class="btn btn-gold">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            Upload Asset
+          </button>
+          <button id="btn-export-zip" class="btn btn-secondary" title="Export entire structured brand archive as ZIP">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Export Vault (ZIP)
+          </button>
+          <button id="btn-reset-defaults" class="btn btn-secondary" title="Restore default luxury emblems">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+            Reset
+          </button>
+        </div>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Brand Asset Manager</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Organize and manage premium brand files.</div>
-            <div><strong>Inputs:</strong> assets, files, manager</div>
-            <div><strong>Category:</strong> luxury</div>
+      <!-- Vault Metrics Overview -->
+      <div class="vault-stats-bar">
+        <div class="stat-card">
+          <span class="stat-label">Total Registered Assets</span>
+          <span class="stat-value" id="stat-total-count">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Vault Storage Footprint</span>
+          <span class="stat-value" id="stat-vault-size">0 KB</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Asset Categories Active</span>
+          <span class="stat-value" id="stat-categories-active">6/6</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Master Vector Emblems</span>
+          <span class="stat-value" id="stat-vector-count">0</span>
+        </div>
+      </div>
+
+      <!-- Filter, Category Navigation & Search -->
+      <div class="dam-controls-panel">
+        <!-- Categories Pills -->
+        <div class="category-pills" id="category-pills-bar">
+          <button class="cat-pill active" data-category="all">
+            All Assets <span class="cat-count" id="count-all">0</span>
+          </button>
+          <button class="cat-pill" data-category="Master Logos">
+            Master Logos <span class="cat-count" id="count-logos">0</span>
+          </button>
+          <button class="cat-pill" data-category="Monograms">
+            Monograms <span class="cat-count" id="count-monograms">0</span>
+          </button>
+          <button class="cat-pill" data-category="Packaging Dies">
+            Packaging Dies <span class="cat-count" id="count-dies">0</span>
+          </button>
+          <button class="cat-pill" data-category="Campaign Imagery">
+            Campaign Imagery <span class="cat-count" id="count-campaign">0</span>
+          </button>
+          <button class="cat-pill" data-category="Typography">
+            Typography <span class="cat-count" id="count-typography">0</span>
+          </button>
+          <button class="cat-pill" data-category="Press Kits">
+            Press Kits <span class="cat-count" id="count-press">0</span>
+          </button>
+        </div>
+
+        <!-- Search & View Mode Row -->
+        <div class="filter-search-row">
+          <div class="search-input-wrapper">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="dam-search-input" class="form-input" placeholder="Search by asset title, usage notes, format or tag...">
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <select id="sort-select" class="form-select" style="width: auto; min-width: 170px;">
+              <option value="newest">Sort: Newest First</option>
+              <option value="oldest">Sort: Oldest First</option>
+              <option value="name">Sort: Name (A-Z)</option>
+              <option value="size">Sort: File Size</option>
+            </select>
+
+            <div class="view-toggles">
+              <button id="view-mode-grid" class="icon-btn-toggle active" title="Grid View">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+              </button>
+              <button id="view-mode-list" class="icon-btn-toggle" title="List View">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              </button>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- Drag & Drop Zone -->
+      <div class="luxury-dropzone" id="dam-dropzone">
+        <input type="file" id="dam-file-input" accept="image/*,.svg" multiple style="display: none;">
+        <svg class="dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        <h3 style="font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 0.35rem; color: var(--gold-light);">
+          Deposit Maison Assets into Vault
+        </h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; max-width: 500px; margin: 0 auto;">
+          Drag & drop SVG vector marks, campaign photography, or packaging dies directly into this workspace, or <span style="color: var(--gold-primary); text-decoration: underline; font-weight: 600;">browse local files</span>.
+        </p>
+      </div>
+
+      <!-- Main Workspace Split Area -->
+      <div class="dam-workspace-layout" id="workspace-layout">
+        
+        <!-- Left: Asset Collection Display -->
+        <div class="assets-collection-column">
+          <!-- Empty State -->
+          <div id="empty-state" class="tool-panel glass-panel" style="display: none; text-align: center; padding: 4rem 2rem;">
+            <svg viewBox="0 0 24 24" width="60" height="60" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--text-tertiary); margin-bottom: 1rem;">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+            <h3 style="font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 0.5rem;">No Maison Assets Found</h3>
+            <p style="color: var(--text-secondary); max-width: 400px; margin: 0 auto 1.5rem;">No assets match your search criteria or category filter. Adjust your filters or upload new brand collateral.</p>
+            <button class="btn btn-secondary" onclick="document.getElementById('dam-file-input').click();">Upload First Asset</button>
+          </div>
+
+          <!-- Cards Grid Container -->
+          <div class="assets-grid" id="assets-grid-container">
+            <!-- Dynamically populated -->
+          </div>
+
+          <!-- List Container -->
+          <div class="assets-list" id="assets-list-container" style="display: none;">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Right: Metadata Inspector (Sticky) -->
+        <div class="inspector-panel" id="inspector-panel" style="display: none;">
+          <div class="inspector-header">
+            <span class="inspector-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              Asset Inspector
+            </span>
+            <button class="inspector-close-btn" id="inspector-close-btn" title="Close Inspector">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          </div>
+
+          <!-- Preview Screen with Theme Switcher -->
+          <div class="inspector-preview-box" id="inspector-preview-box">
+            <img id="insp-img" src="" alt="Asset High-Res Preview" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+            <div class="preview-bg-toggle">
+              <button class="bg-dot-btn" style="background: #0e1017;" title="Midnight Dark" onclick="window.setInspectorBg('dark')"></button>
+              <button class="bg-dot-btn" style="background: #231c17;" title="Velvet Brown" onclick="window.setInspectorBg('velvet')"></button>
+              <button class="bg-dot-btn" style="background: #ffffff;" title="Pristine White" onclick="window.setInspectorBg('white')"></button>
+              <button class="bg-dot-btn" style="background: repeating-conic-gradient(#555 0% 25%, #222 0% 50%) 50% / 8px 8px;" title="Transparency Grid" onclick="window.setInspectorBg('checker')"></button>
+            </div>
+          </div>
+
+          <h3 id="insp-title" style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); word-break: break-word;">Asset Name</h3>
+          
+          <!-- Detailed Metadata Table -->
+          <table class="meta-table">
+            <tbody>
+              <tr>
+                <td class="meta-label">Category</td>
+                <td class="meta-val" id="insp-category">-</td>
+              </tr>
+              <tr>
+                <td class="meta-label">Pixel Geometry</td>
+                <td class="meta-val" id="insp-dimensions">-</td>
+              </tr>
+              <tr>
+                <td class="meta-label">Aspect Ratio</td>
+                <td class="meta-val" id="insp-ratio">-</td>
+              </tr>
+              <tr>
+                <td class="meta-label">Format / MIME</td>
+                <td class="meta-val" id="insp-format">-</td>
+              </tr>
+              <tr>
+                <td class="meta-label">Storage Size</td>
+                <td class="meta-val" id="insp-size">-</td>
+              </tr>
+              <tr>
+                <td class="meta-label">Color Profile</td>
+                <td class="meta-val">
+                  <span id="insp-color-badge" class="color-profile-badge color-gold-foil">Gold Foil</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="meta-label">Usage Rule</td>
+                <td class="meta-val" id="insp-usage" style="font-size: 0.8rem; color: var(--gold-light);">-</td>
+              </tr>
+              <tr>
+                <td class="meta-label">Asset Registry ID</td>
+                <td class="meta-val" id="insp-id" style="font-family: monospace; font-size: 0.75rem;">-</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Actions -->
+          <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem;">
+            <button id="btn-insp-copy" class="btn btn-primary" style="justify-content: center;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Data URL (Base64)
+            </button>
+            <div style="display: flex; gap: 0.5rem;">
+              <button id="btn-insp-download" class="btn btn-secondary" style="flex: 1; justify-content: center;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download
+              </button>
+              <button id="btn-insp-delete" class="btn btn-secondary" style="color: var(--error); border-color: rgba(239, 68, 68, 0.4); justify-content: center;" title="Remove from Vault">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </main>
+
+  <!-- Upload Modal -->
+  <div class="modal-overlay" id="upload-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-family: var(--font-display); font-size: 1.35rem; color: var(--gold-light); margin: 0;">Register New Maison Asset</h3>
+        <button class="inspector-close-btn" id="modal-close-btn">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Select File (SVG, PNG, JPG, WEBP)</label>
+          <input type="file" id="modal-file-input" class="form-input" accept="image/*,.svg" style="padding: 0.5rem;">
+        </div>
+
+        <div id="modal-preview-zone" style="height: 140px; border-radius: var(--radius-md); background: #0a0c10; border: 1px solid var(--border); display: none; align-items: center; justify-content: center; overflow: hidden; padding: 1rem;">
+          <img id="modal-preview-img" src="" alt="Upload Preview" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+        </div>
+
+        <div class="form-group">
+          <label>Asset Title</label>
+          <input type="text" id="modal-title-input" class="form-input" placeholder="e.g. L'Étoile d'Or Primary Seal">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label>Asset Category</label>
+            <select id="modal-category-select" class="form-select">
+              <option value="Master Logos">Master Logos</option>
+              <option value="Monograms">Monograms</option>
+              <option value="Packaging Dies">Packaging Dies</option>
+              <option value="Campaign Imagery">Campaign Imagery</option>
+              <option value="Typography">Typography</option>
+              <option value="Press Kits">Press Kits</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Color Profile</label>
+            <select id="modal-color-select" class="form-select">
+              <option value="Gold Foil">Monochrome / Gold Foil</option>
+              <option value="Display P3">Display P3 (Wide Gamut)</option>
+              <option value="sRGB">sRGB Standard</option>
+              <option value="CMYK">CMYK / Pantone Spot 871C</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Maison Usage Guidelines</label>
+          <input type="text" id="modal-usage-input" class="form-input" placeholder="e.g. Primary House Seal, Flagship stationery, Leather debossing" value="Flagship House Identity & Digital Master">
+        </div>
+
+        <div class="form-group">
+          <label>Tags (comma separated)</label>
+          <input type="text" id="modal-tags-input" class="form-input" placeholder="e.g. vector, gold, seal, horlogerie">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+        <button class="btn btn-gold" id="modal-save-btn">Add to Brand Vault</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Element -->
+  <div class="dam-toast" id="dam-toast">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--gold-primary)" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-message">Action completed successfully</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Brand Asset Manager",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/brand-asset-manager/",
-    "description": "Organize and manage premium brand files.",
+    "description": "Local browser-based digital asset management (DAM) vault for luxury maison assets.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

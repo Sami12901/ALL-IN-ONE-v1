@@ -3,17 +3,573 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Brand Performance - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Measure brand revenue, customer value, and brand growth.">
-  <meta name="keywords" content="analytics, data, luxury, brand performance, free, online, tool, utility">
+  <title>Brand Performance Diagnostic - Luxury Executive Suite - ALL IN ONE</title>
+  <meta name="description" content="Executive brand equity, market health diagnostic, and strategic recommendations dashboard for luxury brand executives.">
+  <meta name="keywords" content="brand performance, luxury brand equity, desirability index, nps breakdown, price premium, secondary market resale, client retention">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/brand-performance/">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+
+  <style>
+    /* Luxury Brand Performance Dashboard Styling */
+    :root {
+      --gold-primary: #d4af37;
+      --gold-light: #f5e7a9;
+      --gold-dark: #8c6d1f;
+      --gold-gradient: linear-gradient(135deg, #f9ebb2 0%, #d4af37 50%, #996515 100%);
+      --emerald-luxury: #10b981;
+      --sapphire-luxury: #3b82f6;
+      --ruby-luxury: #ef4444;
+      --card-bg: rgba(18, 20, 26, 0.75);
+    }
+
+    .perf-container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .perf-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+      padding-bottom: 1.5rem;
+    }
+
+    .perf-title-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .executive-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.25rem 0.75rem;
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      color: var(--gold-light);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border-radius: var(--radius-full);
+    }
+
+    .perf-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-gold {
+      background: var(--gold-gradient);
+      color: #0d0f12;
+      font-weight: 700;
+      border: none;
+      box-shadow: 0 4px 16px rgba(212, 175, 55, 0.25);
+      transition: var(--transition);
+    }
+
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(212, 175, 55, 0.4);
+      color: #000;
+    }
+
+    /* Archetype Presets Bar */
+    .archetype-presets-bar {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      margin-bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .archetype-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--gold-light);
+      font-weight: 700;
+    }
+
+    .archetype-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .btn-archetype {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+
+    .btn-archetype:hover {
+      border-color: rgba(212, 175, 55, 0.5);
+      color: var(--text-primary);
+    }
+
+    .btn-archetype.active {
+      background: rgba(212, 175, 55, 0.15);
+      border-color: var(--gold-primary);
+      color: var(--gold-light);
+      box-shadow: 0 0 12px rgba(212, 175, 55, 0.2);
+    }
+
+    /* Executive Hero Card (Grade & Summary) */
+    .hero-synthesis-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (min-width: 992px) {
+      .hero-synthesis-grid {
+        grid-template-columns: 360px 1fr;
+      }
+    }
+
+    .grade-card {
+      background: radial-gradient(circle at center, rgba(212, 175, 55, 0.08) 0%, rgba(18, 20, 26, 0.85) 100%);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      border-radius: var(--radius-lg);
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+    }
+
+    .grade-meter-wrapper {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin: 1rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .grade-meter-svg {
+      transform: rotate(-90deg);
+      width: 100%;
+      height: 100%;
+    }
+
+    .meter-bg-circle {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.08);
+      stroke-width: 10;
+    }
+
+    .meter-progress-circle {
+      fill: none;
+      stroke: url(#meterGrad);
+      stroke-width: 10;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.8s ease;
+    }
+
+    .grade-center-display {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .grade-letter {
+      font-family: var(--font-display);
+      font-size: 4.5rem;
+      font-weight: 800;
+      line-height: 1;
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 4px 12px rgba(212, 175, 55, 0.4));
+    }
+
+    .grade-composite-score {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      margin-top: 0.25rem;
+    }
+
+    .health-status-badge {
+      display: inline-block;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 0.5rem;
+    }
+
+    .status-sovereign {
+      background: rgba(212, 175, 55, 0.2);
+      border: 1px solid var(--gold-primary);
+      color: var(--gold-light);
+    }
+
+    .status-bluechip {
+      background: rgba(16, 185, 129, 0.18);
+      border: 1px solid var(--emerald-luxury);
+      color: #6ee7b7;
+    }
+
+    .status-aspirational {
+      background: rgba(59, 130, 246, 0.18);
+      border: 1px solid var(--sapphire-luxury);
+      color: #93c5fd;
+    }
+
+    .status-vulnerable {
+      background: rgba(239, 68, 68, 0.18);
+      border: 1px solid var(--ruby-luxury);
+      color: #fca5a5;
+    }
+
+    /* 5 Pillars Summary Grid */
+    .pillars-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .pillar-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.75rem;
+      transition: var(--transition);
+    }
+
+    .pillar-card:hover {
+      border-color: rgba(212, 175, 55, 0.4);
+      background: rgba(24, 27, 36, 0.85);
+    }
+
+    .pillar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .pillar-name {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+    }
+
+    .pillar-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+    }
+
+    .mini-progress-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .mini-progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--gold-gradient);
+      transition: width 0.5s ease;
+    }
+
+    /* NPS 3-Color Mini Bar */
+    .nps-mini-bar {
+      display: flex;
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .nps-seg-promoter {
+      background: var(--emerald-luxury);
+      transition: width 0.5s ease;
+    }
+
+    .nps-seg-passive {
+      background: var(--gold-primary);
+      transition: width 0.5s ease;
+    }
+
+    .nps-seg-detractor {
+      background: var(--ruby-luxury);
+      transition: width 0.5s ease;
+    }
+
+    /* Calibration Console Grid */
+    .calibration-section-title {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--gold-light);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .calibration-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    @media (min-width: 900px) {
+      .calibration-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .calib-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .calib-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+    }
+
+    .calib-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .calib-readout {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--gold-light);
+      font-family: monospace;
+    }
+
+    /* Strategic Recommendations Panel */
+    .strategy-section-title {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--gold-light);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .strategy-cards-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    @media (min-width: 992px) {
+      .strategy-cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .strat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: relative;
+      border-top: 3px solid var(--gold-primary);
+      transition: var(--transition);
+    }
+
+    .strat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .strat-pillar-tag {
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold-primary);
+    }
+
+    .strat-card-title {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .strat-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      padding: 0;
+      margin: 0;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .strat-list li {
+      position: relative;
+      padding-left: 1.25rem;
+    }
+
+    .strat-list li::before {
+      content: "◆";
+      position: absolute;
+      left: 0;
+      color: var(--gold-primary);
+      font-size: 0.65rem;
+      top: 0.2rem;
+    }
+
+    /* Print Dossier Layout */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #111827 !important;
+      }
+      app-header, app-breadcrumbs, app-footer, .perf-actions, .archetype-presets-bar, .calibration-grid, .calibration-section-title, .strategy-section-title {
+        display: none !important;
+      }
+      .perf-container {
+        max-width: 100% !important;
+        padding: 0 !important;
+      }
+      .perf-header {
+        border-bottom: 2px solid #000 !important;
+        padding-bottom: 1rem !important;
+      }
+      .hero-synthesis-grid {
+        grid-template-columns: 280px 1fr !important;
+        border: 1px solid #ccc !important;
+        background: #f9fafb !important;
+        padding: 1rem !important;
+      }
+      .grade-card {
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+      .grade-letter {
+        color: #000 !important;
+        -webkit-text-fill-color: #000 !important;
+      }
+      .pillar-card {
+        border: 1px solid #ddd !important;
+        background: #ffffff !important;
+        color: #000 !important;
+      }
+      .strategy-cards-grid {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 1rem !important;
+        page-break-inside: avoid;
+      }
+      .strat-card {
+        border: 1px solid #ccc !important;
+        background: #fff !important;
+        color: #000 !important;
+      }
+      .strat-list {
+        color: #374151 !important;
+      }
+    }
+
+    /* Toast Notification */
+    .perf-toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #181b24;
+      border: 1px solid var(--gold-primary);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(212, 175, 55, 0.2);
+      color: var(--text-primary);
+      padding: 0.85rem 1.25rem;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      z-index: 2000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .perf-toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -24,46 +580,370 @@
 
   <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
-      <div class="tool-header">
-        <h1>Brand Performance</h1>
-        <p class="tool-description">Measure brand revenue, customer value, and brand growth.</p>
+    <div class="perf-container">
+      
+      <!-- Top Title Bar -->
+      <div class="perf-header">
+        <div>
+          <div class="perf-title-row">
+            <h1 class="gradient-text" style="font-family: var(--font-display); font-size: 2.75rem; font-weight: 700; margin: 0;">Brand Performance Diagnostic</h1>
+            <span class="executive-badge">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+              Executive Suite
+            </span>
+          </div>
+          <p class="tool-description">
+            Executive brand equity, market health diagnostic, and strategic capital allocation dashboard for luxury brand executives, CEOs, and private equity partners.
+          </p>
+        </div>
+
+        <div class="perf-actions">
+          <button id="btn-copy-brief" class="btn btn-gold" title="Copy executive briefing text">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copy Performance Brief
+          </button>
+          <button id="btn-print-dossier" class="btn btn-secondary" title="Print executive memorandum or save as PDF">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            Print Executive Dossier
+          </button>
+        </div>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Brand Performance</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Measure brand revenue, customer value, and brand growth.</div>
-            <div><strong>Inputs:</strong> analytics, data, luxury, brand performance</div>
-            <div><strong>Category:</strong> luxury</div>
+      <!-- Archetype Presets Bar -->
+      <div class="archetype-presets-bar">
+        <span class="archetype-label">Select Maison Archetype Benchmark:</span>
+        <div class="archetype-buttons" id="archetype-buttons">
+          <button class="btn-archetype active" data-preset="horlogerie">
+            <span>⏱</span> Haute Horlogerie & High Jewelry
+          </button>
+          <button class="btn-archetype" data-preset="leather">
+            <span>👜</span> Heritage Leather Goods & Trunkmaker
+          </button>
+          <button class="btn-archetype" data-preset="couture">
+            <span>👗</span> Contemporary Haute Couture & RTW
+          </button>
+          <button class="btn-archetype" data-preset="perfume">
+            <span>✨</span> Artisanal Haute Parfumerie
+          </button>
+          <button class="btn-archetype" data-preset="turnaround">
+            <span>⚠️</span> Vulnerable / Over-Distributed Turnaround
+          </button>
+        </div>
+      </div>
+
+      <!-- Hero Synthesis Panel (Grade Meter + 5 Pillar Summaries) -->
+      <div class="hero-synthesis-grid">
+        
+        <!-- Left: Composite Grade Visual Meter -->
+        <div class="grade-card">
+          <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--gold-light); font-weight: 700;">
+            Composite Brand Grade
+          </span>
+
+          <div class="grade-meter-wrapper">
+            <svg class="grade-meter-svg" viewBox="0 0 200 200">
+              <defs>
+                <linearGradient id="meterGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#f5e7a9" />
+                  <stop offset="50%" stop-color="#d4af37" />
+                  <stop offset="100%" stop-color="#8c6d1f" />
+                </linearGradient>
+              </defs>
+              <circle class="meter-bg-circle" cx="100" cy="100" r="80"></circle>
+              <circle id="meter-circle-bar" class="meter-progress-circle" cx="100" cy="100" r="80" stroke-dasharray="502.65" stroke-dashoffset="50"></circle>
+            </svg>
+            <div class="grade-center-display">
+              <div class="grade-letter" id="composite-grade-letter">A+</div>
+              <div class="grade-composite-score" id="composite-score-text">92 / 100</div>
+            </div>
+          </div>
+
+          <div id="health-status-badge" class="health-status-badge status-sovereign">
+            Sovereign Market Power
+          </div>
+          <p id="health-status-desc" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.75rem; line-height: 1.4; max-width: 280px;">
+            Unprecedented pricing inelasticity, acute demand backlog, and robust secondary market appreciation.
+          </p>
+        </div>
+
+        <!-- Right: 5 Core Pillar Summary Cards -->
+        <div class="pillars-summary-grid">
+          
+          <!-- Pillar 1 Card -->
+          <div class="pillar-card">
+            <div class="pillar-header">
+              <span class="pillar-name">1. Desirability Index</span>
+              <span class="badge" id="badge-desirability">Heat: 94/100</span>
+            </div>
+            <div>
+              <div class="pillar-value" id="val-summary-bdi">94 <span style="font-size: 1rem; color: var(--text-secondary); font-weight: normal;">/ 100</span></div>
+              <div style="font-size: 0.75rem; color: var(--gold-light); margin-top: 0.2rem;" id="sub-bdi-desc">High waitlist tension</div>
+            </div>
+            <div class="mini-progress-track">
+              <div class="mini-progress-fill" id="track-bdi" style="width: 94%;"></div>
+            </div>
+          </div>
+
+          <!-- Pillar 2 Card -->
+          <div class="pillar-card">
+            <div class="pillar-header">
+              <span class="pillar-name">2. Net Promoter Score</span>
+              <span class="badge" id="badge-nps">Benchmark: High</span>
+            </div>
+            <div>
+              <div class="pillar-value" id="val-summary-nps">+78 <span style="font-size: 1rem; color: var(--text-secondary); font-weight: normal;">NPS</span></div>
+              <div style="font-size: 0.75rem; color: var(--emerald-luxury); margin-top: 0.2rem;" id="sub-nps-desc">84% Promoters / 6% Detractors</div>
+            </div>
+            <div class="nps-mini-bar">
+              <div class="nps-seg-promoter" id="bar-promoters" style="width: 84%;" title="Promoters"></div>
+              <div class="nps-seg-passive" id="bar-passives" style="width: 10%;" title="Passives"></div>
+              <div class="nps-seg-detractor" id="bar-detractors" style="width: 6%;" title="Detractors"></div>
+            </div>
+          </div>
+
+          <!-- Pillar 3 Card -->
+          <div class="pillar-card">
+            <div class="pillar-header">
+              <span class="pillar-name">3. Price Premium Ratio</span>
+              <span class="badge" id="badge-price-tier">Sovereign Tier</span>
+            </div>
+            <div>
+              <div class="pillar-value" id="val-summary-price">4.8× <span style="font-size: 1rem; color: var(--text-secondary); font-weight: normal;">vs Base</span></div>
+              <div style="font-size: 0.75rem; color: var(--gold-light); margin-top: 0.2rem;" id="sub-price-desc">Extreme pricing power</div>
+            </div>
+            <div class="mini-progress-track">
+              <div class="mini-progress-fill" id="track-price" style="width: 80%;"></div>
+            </div>
+          </div>
+
+          <!-- Pillar 4 Card -->
+          <div class="pillar-card">
+            <div class="pillar-header">
+              <span class="pillar-name">4. Secondary Value Retention</span>
+              <span class="badge" id="badge-resale-tier">Appreciating</span>
+            </div>
+            <div>
+              <div class="pillar-value" id="val-summary-secondary">128% <span style="font-size: 1rem; color: var(--emerald-luxury); font-weight: normal;">resale</span></div>
+              <div style="font-size: 0.75rem; color: var(--emerald-luxury); margin-top: 0.2rem;" id="sub-secondary-desc">+28% above original MSRP</div>
+            </div>
+            <div class="mini-progress-track">
+              <div class="mini-progress-fill" id="track-secondary" style="width: 85%;"></div>
+            </div>
+          </div>
+
+          <!-- Pillar 5 Card -->
+          <div class="pillar-card">
+            <div class="pillar-header">
+              <span class="pillar-name">5. VIP Client Retention</span>
+              <span class="badge" id="badge-retention-tier">High Loyalty</span>
+            </div>
+            <div>
+              <div class="pillar-value" id="val-summary-retention">82% <span style="font-size: 1rem; color: var(--text-secondary); font-weight: normal;">annual</span></div>
+              <div style="font-size: 0.75rem; color: var(--gold-light); margin-top: 0.2rem;" id="sub-retention-desc">18% annualized churn</div>
+            </div>
+            <div class="mini-progress-track">
+              <div class="mini-progress-fill" id="track-retention" style="width: 82%;"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Calibration Console: 5 Metrics Sliders -->
+      <h2 class="calibration-section-title">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+        Executive Diagnostic Calibration Console
+      </h2>
+
+      <div class="calibration-grid">
+        
+        <!-- Calibration 1: Brand Desirability Index -->
+        <div class="calib-card">
+          <div class="calib-card-header">
+            <span class="calib-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--gold-primary)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              Brand Desirability Index (BDI)
+            </span>
+            <span class="calib-readout" id="readout-bdi">94 / 100</span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+            Quantifies unprompted cultural heat, editorial search velocity, and allocation waitlist pressure.
+          </p>
+          <div class="range-group">
+            <input type="range" id="input-bdi" class="range-slider" min="10" max="100" value="94" step="1">
+            <span class="range-value" id="val-bdi-slider">94</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.05);">
+            <div>Cultural Resonance: <strong id="sub-bdi-resonance" style="color: var(--text-primary);">96%</strong></div>
+            <div>Waitlist Multiple: <strong id="sub-bdi-waitlist" style="color: var(--gold-light);">6.2×</strong></div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Calibration 2: Net Promoter Score (NPS) -->
+        <div class="calib-card">
+          <div class="calib-card-header">
+            <span class="calib-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--emerald-luxury)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              Net Promoter Score (NPS) Breakdown
+            </span>
+            <span class="calib-readout" id="readout-nps" style="color: var(--emerald-luxury);">+78 NPS</span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+            Luxury client advocacy breakdown: Promoters (9-10) minus Detractors (0-6).
+          </p>
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.35rem;">
+              <span>Promoters Ratio:</span>
+              <strong id="val-promoter-text" style="color: var(--emerald-luxury);">84%</strong>
+            </div>
+            <input type="range" id="input-promoters" class="range-slider" min="20" max="95" value="84" step="1">
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.35rem;">
+              <span>Detractors Ratio:</span>
+              <strong id="val-detractor-text" style="color: var(--ruby-luxury);">6%</strong>
+            </div>
+            <input type="range" id="input-detractors" class="range-slider" min="1" max="40" value="6" step="1">
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text-secondary); display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.5rem;">
+            <span>Passives (Calculated): <strong id="val-passive-text" style="color: var(--gold-light);">10%</strong></span>
+            <span>Ultra-Luxury Standard: <strong style="color: var(--text-primary);">+70 to +85</strong></span>
+          </div>
+        </div>
+
+        <!-- Calibration 3: Luxury Price Premium Ratio -->
+        <div class="calib-card">
+          <div class="calib-card-header">
+            <span class="calib-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--gold-primary)" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              Luxury Price Premium Ratio
+            </span>
+            <span class="calib-readout" id="readout-price">4.80×</span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+            Maison price elasticity multiple compared to mass-market premium category benchmark.
+          </p>
+          <div class="range-group">
+            <input type="range" id="input-price-ratio" class="range-slider" min="1.0" max="8.0" value="4.8" step="0.1">
+            <span class="range-value" id="val-price-slider">4.8×</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.05);">
+            <div>Maison Avg Ticket: <strong id="sub-price-ticket" style="color: var(--text-primary);">$18,400</strong></div>
+            <div>Benchmark Baseline: <strong style="color: var(--text-secondary);">$3,830</strong></div>
+          </div>
+        </div>
+
+        <!-- Calibration 4: Secondary Market Value Retention -->
+        <div class="calib-card">
+          <div class="calib-card-header">
+            <span class="calib-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--emerald-luxury)" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+              Secondary Value Retention %
+            </span>
+            <span class="calib-readout" id="readout-secondary">128%</span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+            Average secondary resale price as percentage of retail MSRP across auction houses & platforms.
+          </p>
+          <div class="range-group">
+            <input type="range" id="input-secondary" class="range-slider" min="40" max="180" value="128" step="1">
+            <span class="range-value" id="val-secondary-slider">128%</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.05);">
+            <div>Grey-Market Risk: <strong id="sub-secondary-risk" style="color: var(--emerald-luxury);">Zero Discounting</strong></div>
+            <div>Parity Threshold: <strong style="color: var(--text-secondary);">100% MSRP</strong></div>
+          </div>
+        </div>
+
+        <!-- Calibration 5: Client Retention Rate -->
+        <div class="calib-card" style="grid-column: 1 / -1;">
+          <div class="calib-card-header">
+            <span class="calib-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--gold-primary)" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+              VIP Client Retention & Patronage Rate
+            </span>
+            <span class="calib-readout" id="readout-retention">82%</span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+            Annual repeat patronage and VIC (Very Important Client) cohort continuity rate.
+          </p>
+          <div class="range-group">
+            <input type="range" id="input-retention" class="range-slider" min="20" max="95" value="82" step="1">
+            <span class="range-value" id="val-retention-slider">82%</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; font-size: 0.8rem; color: var(--text-secondary); padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.05);">
+            <div>Annual VIC Churn: <strong id="sub-retention-churn" style="color: var(--gold-light);">18%</strong></div>
+            <div>Repeat LTV Multiplier: <strong id="sub-retention-ltv" style="color: var(--emerald-luxury);">4.6× First-Year</strong></div>
+            <div>Clientele Health: <strong id="sub-retention-health" style="color: var(--text-primary);">Haute Fidelité</strong></div>
+          </div>
+        </div>
+
       </div>
-    
+
+      <!-- Strategic Recommendations Panel -->
+      <h2 class="strategy-section-title">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="12 8 8 12 12 16 16 12 12 8"></polygon></svg>
+        Strategic Maison Recommendations & Directives
+      </h2>
+
+      <div class="strategy-cards-grid">
+        
+        <!-- Strategy 1: Scarcity Management -->
+        <div class="strat-card">
+          <span class="strat-pillar-tag">Pillar I</span>
+          <h3 class="strat-card-title">Scarcity & Allocation</h3>
+          <ul class="strat-list" id="strat-list-scarcity">
+            <li>Enforce annual production caps on core icons to sustain 18-month waitlists.</li>
+            <li>Implement client quota limits (maximum 1 hero piece per VIC bi-annually).</li>
+            <li>Maintain intentional supply deficit of 15% against global unprompted demand.</li>
+          </ul>
+        </div>
+
+        <!-- Strategy 2: Distribution Channel Hygiene -->
+        <div class="strat-card">
+          <span class="strat-pillar-tag">Pillar II</span>
+          <h3 class="strat-card-title">Distribution Channel Hygiene</h3>
+          <ul class="strat-list" id="strat-list-distribution">
+            <li>Prune multi-brand wholesale footprint; shift 88%+ revenue to direct mono-brand boutiques.</li>
+            <li>Implement RFID micro-threading to eradicate secondary grey-market leakage.</li>
+            <li>Restrict e-boutique sales to invitation-only VIC clienteling capsules.</li>
+          </ul>
+        </div>
+
+        <!-- Strategy 3: Pricing Elasticity & Margin Defense -->
+        <div class="strat-card">
+          <span class="strat-pillar-tag">Pillar III</span>
+          <h3 class="strat-card-title">Pricing Elasticity & Margin</h3>
+          <ul class="strat-list" id="strat-list-pricing">
+            <li>Execute bi-annual +7.5% price indexation across iconic heritage SKUs.</li>
+            <li>Prune entry-level gateway products under $1,200 to protect luxury brand prestige floor.</li>
+            <li>Maintain strict global zero-discounting policy across all channels and concessions.</li>
+          </ul>
+        </div>
+
+      </div>
+
     </div>
   </main>
+
+  <!-- Toast Element -->
+  <div class="perf-toast" id="perf-toast">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--gold-primary)" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-message">Brief copied to clipboard</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Brand Performance",
+    "name": "Brand Performance Diagnostic",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/brand-performance/",
-    "description": "Measure brand revenue, customer value, and brand growth.",
-    "applicationCategory": "UtilityPage",
+    "description": "Executive brand equity and market health diagnostic dashboard for luxury brand executives.",
+    "applicationCategory": "AnalyticsPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

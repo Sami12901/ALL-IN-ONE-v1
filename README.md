@@ -67,43 +67,49 @@ Live URL: **[https://sami12901.github.io/ALL-IN-ONE-v1/](https://sami12901.githu
 44. **Brand Identity Kit Generator**: Create comprehensive luxury brand guidelines.
 45. **Pricing Strategy Calculator**: Formulate premium pricing strategies.
 46. **VIP Client Analyzer**: Analyze purchasing habits of high-net-worth clients.
-47. **Luxury Catalog Builder**: Build high-end product catalogs.
-48. **Instagram Caption Generator**: Create, analyze, and manage your Instagram Caption Generator online.
-49. **Typing Practice**: Enhance your skills with Typing Practice.
-50. **Excel Data Typing Practice**: Enhance your skills with Excel Data Typing Practice.
-51. **Typing Certificate Generator**: Enhance your skills with Typing Certificate Generator.
-52. **PDF Editor Pro**: Edit PDF, Add Text, Images, Shapes, Links, Annotate, Fill Forms, Sign PDF.
-53. **PDF Merge**: Combine Multiple PDFs, PDF + Images, Drag & Drop Reorder.
-54. **PDF Split**: Split by Pages, Split by Range, Extract Pages, Split Every Page.
-55. **PDF Compress**: Reduce PDF Size (Low, Medium, High Compression).
-56. **PDF Organize**: Reorder, Delete, Rotate, and Duplicate PDF Pages.
-57. **Protect PDF**: Add Password, Restrict Printing and Editing.
-58. **JPG to PDF**: Convert Images (JPG/PNG) into a single PDF.
-59. **PNG to PDF**: Convert PNG images to PDF.
-60. **Text to PDF**: Convert TXT files to PDF.
-61. **Delete Pages**: Remove selected pages from a PDF.
-62. **Extract Pages**: Create a new PDF from specific pages.
-63. **Page Numbers**: Add page numbers to your PDF document.
-64. **Header & Footer**: Add headers and footers to PDF pages.
-65. **Edit Metadata**: Edit PDF Author, Title, Subject, and Keywords.
-66. **Metadata Viewer**: View complete PDF information and metadata.
-67. **Remove Metadata**: Privacy cleanup: Remove all metadata from PDF.
-68. **Extract Images**: Extract all embedded images from a PDF.
-69. **Invoice PDF Generator**: Generate Business and Travel Agency Invoices.
-70. **Quotation PDF Generator**: Generate Travel Quotations and Business Proposals.
-71. **Receipt PDF Generator**: Generate Payment and Booking Receipts.
-72. **Visa Application PDF Builder**: Build and fill Visa Forms automatically.
-73. **Travel Voucher Generator**: Generate Hotel and Tour Vouchers as PDF.
-74. **Ticket PDF Generator**: Create custom Travel Ticket layouts in PDF.
-75. **Hajj & Umrah Document Builder**: Generate Pilgrim Forms and Package Documents.
-76. **Professional CV Builder Pro**: Create your CV online with live preview, ATS-friendly templates, and export to PDF/DOCX.
-77. **Resume Generator**: Auto-generate a professional resume from your basic details.
-78. **Resume Optimizer**: Get suggestions to improve and optimize your resume.
-79. **Presentation Builder Pro**: Create, edit, and export professional presentations to PPTX and PDF.
-80. **Product Poster Maker**: Create A4 Posters, Social Media Posters, Flyers, and Discount Banners for your products.
-81. **Product Social Media Post Maker**: Create Instagram, Facebook, LinkedIn, and WhatsApp promo posts for products.
-82. **Product Price Tag Generator**: Generate price tags with MRP, discount prices, Barcodes, and QR Codes.
-83. **Product Image Tools**: Background remover, resizer, watermark stamper, and thumbnail generator for product images.
+47. **Campaign ROI Calculator**: Calculate return on luxury marketing campaigns.
+48. **Luxury Catalog Builder**: Build high-end product catalogs.
+49. **Social Media Brand Kit**: Generate luxury social media assets.
+50. **Brand Asset Manager**: Organize and manage premium brand files.
+51. **Instagram Caption Generator**: Create, analyze, and manage your Instagram Caption Generator online.
+52. **Typing Practice**: Enhance your skills with Typing Practice.
+53. **Excel Data Typing Practice**: Enhance your skills with Excel Data Typing Practice.
+54. **Typing Certificate Generator**: Enhance your skills with Typing Certificate Generator.
+55. **PDF Editor Pro**: Edit PDF, Add Text, Images, Shapes, Links, Annotate, Fill Forms, Sign PDF.
+56. **PDF Merge**: Combine Multiple PDFs, PDF + Images, Drag & Drop Reorder.
+57. **PDF Split**: Split by Pages, Split by Range, Extract Pages, Split Every Page.
+58. **PDF Compress**: Reduce PDF Size (Low, Medium, High Compression).
+59. **PDF Organize**: Reorder, Delete, Rotate, and Duplicate PDF Pages.
+60. **Protect PDF**: Add Password, Restrict Printing and Editing.
+61. **JPG to PDF**: Convert Images (JPG/PNG) into a single PDF.
+62. **PNG to PDF**: Convert PNG images to PDF.
+63. **Text to PDF**: Convert TXT files to PDF.
+64. **Delete Pages**: Remove selected pages from a PDF.
+65. **Extract Pages**: Create a new PDF from specific pages.
+66. **Page Numbers**: Add page numbers to your PDF document.
+67. **Header & Footer**: Add headers and footers to PDF pages.
+68. **Edit Metadata**: Edit PDF Author, Title, Subject, and Keywords.
+69. **Metadata Viewer**: View complete PDF information and metadata.
+70. **Remove Metadata**: Privacy cleanup: Remove all metadata from PDF.
+71. **Extract Images**: Extract all embedded images from a PDF.
+72. **Invoice PDF Generator**: Generate Business and Travel Agency Invoices.
+73. **Quotation PDF Generator**: Generate Travel Quotations and Business Proposals.
+74. **Receipt PDF Generator**: Generate Payment and Booking Receipts.
+75. **Visa Application PDF Builder**: Build and fill Visa Forms automatically.
+76. **Travel Voucher Generator**: Generate Hotel and Tour Vouchers as PDF.
+77. **Ticket PDF Generator**: Create custom Travel Ticket layouts in PDF.
+78. **Hajj & Umrah Document Builder**: Generate Pilgrim Forms and Package Documents.
+79. **Brand Performance**: Measure brand revenue, customer value, and brand growth.
+80. **VIP Client Analytics**: Track top luxury clients and their complete purchase history.
+81. **AI Customer Segmentation**: Automatically group customers using AI clustering.
+82. **Professional CV Builder Pro**: Create your CV online with live preview, ATS-friendly templates, and export to PDF/DOCX.
+83. **Resume Generator**: Auto-generate a professional resume from your basic details.
+84. **Resume Optimizer**: Get suggestions to improve and optimize your resume.
+85. **Presentation Builder Pro**: Create, edit, and export professional presentations to PPTX and PDF.
+86. **Product Poster Maker**: Create A4 Posters, Social Media Posters, Flyers, and Discount Banners for your products.
+87. **Product Social Media Post Maker**: Create Instagram, Facebook, LinkedIn, and WhatsApp promo posts for products.
+88. **Product Price Tag Generator**: Generate price tags with MRP, discount prices, Barcodes, and QR Codes.
+89. **Product Image Tools**: Background remover, resizer, watermark stamper, and thumbnail generator for product images.
 
 ---
 

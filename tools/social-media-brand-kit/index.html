@@ -3,15 +3,666 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Social Media Brand Kit - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Generate luxury social media assets.">
-  <meta name="keywords" content="social, media, assets, free, online, tool, utility">
+  <title>Social Media Brand Kit & Feed Curator - Luxury Brand Suite - ALL IN ONE</title>
+  <meta name="description" content="Generate luxury social media brand guidelines, color harmony tokens, typography pairing rules, live 3x3 Instagram feed curation, and platform safe-zone specifications.">
+  <meta name="keywords" content="luxury brand kit, instagram feed simulator, brand guidelines, social media kit, haute horlogerie, luxury fashion, color tokens, safe zones">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/social-media-brand-kit/">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    /* Custom Luxury Social Media Brand Kit Styles */
+    :root {
+      --gold-primary: #d4af37;
+      --gold-secondary: #f3e5ab;
+      --gold-muted: rgba(212, 175, 55, 0.15);
+      --gold-border: rgba(212, 175, 55, 0.35);
+
+      /* Dynamic Maison Token defaults */
+      --maison-primary: #0d0d0f;
+      --maison-secondary: #1c1a17;
+      --maison-accent: #d4af37;
+      --maison-neutral: #e8e4dc;
+      --maison-headline-font: 'Instrument Serif', serif;
+      --maison-body-font: 'Inter', sans-serif;
+      --maison-tracking: 0.22em;
+    }
+
+    .luxury-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      background: var(--gold-muted);
+      border: 1px solid var(--gold-border);
+      color: var(--gold-secondary);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.85rem;
+    }
+
+    .brand-kit-workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+
+    @media (min-width: 1120px) {
+      .brand-kit-workspace {
+        grid-template-columns: 430px 1fr;
+      }
+    }
+
+    .section-title {
+      font-size: 0.825rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Color Swatch Pickers */
+    .color-swatches-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.85rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .color-token-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.65rem 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      transition: border-color 0.2s;
+    }
+
+    .color-token-box:focus-within {
+      border-color: var(--gold-primary);
+    }
+
+    .color-input-bubble {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(255,255,255,0.2);
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      padding: 0;
+      background: transparent;
+    }
+
+    .color-input-bubble::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    .color-input-bubble::-webkit-color-swatch {
+      border: none;
+      border-radius: var(--radius-sm);
+    }
+
+    .color-info-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .color-role-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+    }
+
+    .color-hex-text {
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-family: monospace;
+      font-size: 0.85rem;
+      font-weight: 600;
+      width: 100%;
+      outline: none;
+    }
+
+    /* Palette Preset Chips */
+    .palette-preset-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .palette-chip {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.6rem 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.2s var(--ease);
+      user-select: none;
+    }
+
+    .palette-chip:hover {
+      border-color: var(--gold-primary);
+      background: rgba(212, 175, 55, 0.06);
+    }
+
+    .palette-chip.active {
+      border-color: var(--gold-primary);
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(20, 20, 20, 0.5) 100%);
+      box-shadow: 0 4px 14px rgba(212, 175, 55, 0.12);
+    }
+
+    .chip-swatches-preview {
+      display: flex;
+      gap: 4px;
+    }
+
+    .chip-mini-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    /* View Switcher Tabs */
+    .studio-tabs-bar {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+    }
+
+    .studio-tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 0.6rem 1.15rem;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .studio-tab-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .studio-tab-btn.active {
+      color: #ffffff;
+      background: var(--bg-secondary);
+      border-color: var(--gold-border);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+
+    /* Instagram Phone Simulator Frame */
+    .instagram-frame {
+      max-width: 580px;
+      margin: 0 auto;
+      background: var(--maison-primary);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 28px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.05);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.3s ease;
+    }
+
+    .ig-status-bar {
+      padding: 0.6rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--maison-neutral);
+      opacity: 0.8;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .ig-profile-header {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.01);
+    }
+
+    .ig-profile-top {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .ig-avatar-ring {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      padding: 3px;
+      background: linear-gradient(135deg, var(--maison-accent) 0%, rgba(255,255,255,0.2) 100%);
+      flex-shrink: 0;
+    }
+
+    .ig-avatar-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--maison-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--maison-accent);
+      font-family: var(--maison-headline-font);
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .ig-profile-stats {
+      flex: 1;
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+    }
+
+    .ig-stat-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ig-stat-num {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--maison-neutral);
+    }
+
+    .ig-stat-label {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .ig-bio-block {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .ig-maison-name {
+      font-family: var(--maison-headline-font);
+      font-size: 1.25rem;
+      color: var(--maison-neutral);
+      font-weight: 600;
+      letter-spacing: var(--maison-tracking);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .ig-verified-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      background: #3b82f6;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 10px;
+    }
+
+    .ig-category-pill {
+      font-size: 0.75rem;
+      color: var(--maison-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+
+    .ig-tagline-text {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.4;
+      font-family: var(--maison-body-font);
+    }
+
+    .ig-website-link {
+      font-size: 0.8rem;
+      color: var(--maison-accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* Story Highlights */
+    .ig-highlights-row {
+      display: flex;
+      gap: 1.15rem;
+      overflow-x: auto;
+      padding: 0.25rem 0;
+      scrollbar-width: none;
+    }
+
+    .ig-highlight-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      cursor: pointer;
+    }
+
+    .ig-highlight-circle {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      padding: 2px;
+      border: 1px solid var(--maison-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--maison-secondary);
+      color: var(--maison-accent);
+      font-size: 1.1rem;
+    }
+
+    .ig-highlight-label {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.05em;
+    }
+
+    /* 3x3 Live Grid */
+    .ig-grid-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      padding: 4px;
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .ig-grid-tile {
+      aspect-ratio: 1 / 1;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      background: var(--maison-secondary);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .ig-grid-tile:hover {
+      transform: scale(0.985);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    }
+
+    .ig-grid-tile.selected {
+      outline: 2px solid var(--gold-primary);
+      outline-offset: -2px;
+    }
+
+    /* Tile Content Archetypes */
+    .tile-archetype-wrap {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 0.75rem;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    /* Quote Tile */
+    .tile-quote {
+      background: linear-gradient(135deg, var(--maison-primary) 0%, var(--maison-secondary) 100%);
+      text-align: center;
+      justify-content: center;
+      gap: 0.4rem;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .tile-quote .quote-mark {
+      font-family: var(--maison-headline-font);
+      font-size: 2.2rem;
+      color: var(--maison-accent);
+      line-height: 0.8;
+    }
+
+    .tile-quote .quote-body {
+      font-family: var(--maison-headline-font);
+      font-size: 0.85rem;
+      color: var(--maison-neutral);
+      line-height: 1.35;
+      font-style: italic;
+      padding: 0 0.5rem;
+    }
+
+    .tile-quote .quote-author {
+      font-family: var(--maison-body-font);
+      font-size: 0.65rem;
+      letter-spacing: var(--maison-tracking);
+      color: var(--maison-accent);
+      text-transform: uppercase;
+      margin-top: 0.35rem;
+    }
+
+    /* Product Showcase Tile */
+    .tile-product {
+      background: radial-gradient(circle at center, var(--maison-secondary) 0%, var(--maison-primary) 100%);
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .product-vector-art {
+      width: 60%;
+      height: 60%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5));
+    }
+
+    .tile-pill-tag {
+      position: absolute;
+      bottom: 8px;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-full);
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--maison-accent);
+      color: var(--maison-neutral);
+    }
+
+    /* Editorial Tile */
+    .tile-editorial {
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    .editorial-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.65) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0.65rem;
+    }
+
+    .editorial-caption {
+      font-family: var(--maison-headline-font);
+      font-size: 0.85rem;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .editorial-sub {
+      font-family: var(--maison-body-font);
+      font-size: 0.6rem;
+      color: var(--maison-accent);
+      letter-spacing: var(--maison-tracking);
+      text-transform: uppercase;
+    }
+
+    /* Story / Carousel Indicator */
+    .carousel-top-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      color: rgba(255,255,255,0.9);
+      font-size: 0.75rem;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+    }
+
+    /* Platform Cheat-Sheet Cards */
+    .platform-specs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .platform-spec-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+
+    .platform-spec-card:hover {
+      border-color: var(--gold-border);
+    }
+
+    .spec-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .spec-ratio-badge {
+      background: var(--gold-muted);
+      border: 1px solid var(--gold-border);
+      color: var(--gold-secondary);
+      font-weight: 700;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-full);
+    }
+
+    .spec-diagram-box {
+      width: 100%;
+      height: 150px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .wireframe-outer {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .wireframe-safe-zone {
+      border: 1px dashed var(--gold-primary);
+      background: rgba(212, 175, 55, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      color: var(--gold-secondary);
+      text-align: center;
+      padding: 2px;
+    }
+
+    /* Modal / Drawer for Editing Selected Tile */
+    .tile-editor-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    /* Print Guidelines Sheet */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      app-header, app-breadcrumbs, app-footer, .studio-tabs-bar, .action-bar, .palette-preset-row, .tile-editor-card {
+        display: none !important;
+      }
+      .brand-kit-workspace {
+        grid-template-columns: 1fr !important;
+      }
+      .instagram-frame {
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+      }
+      .platform-spec-card, .glass-panel {
+        background: #ffffff !important;
+        border: 1px solid #ddd !important;
+        color: #000000 !important;
+      }
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -24,31 +675,497 @@
 
   <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
+    <div class="container tool-container" style="max-width: 1440px;">
+      
       <div class="tool-header">
-        <h1>Social Media Brand Kit</h1>
-        <p class="tool-description">Generate luxury social media assets.</p>
+        <div class="luxury-badge">
+          <span>◆ Haute Curation & Social Brand Architecture</span>
+        </div>
+        <h1 style="font-family: var(--font-display); font-size: 2.75rem; letter-spacing: -0.01em;">Social Media Brand Kit</h1>
+        <p class="tool-description">
+          Luxury social media brand guidelines generator and visual feed curator. Establish haute aesthetic standards, color harmony tokens, typography pairing rules, live 3×3 visual Instagram grid curation, and platform safe-zone specifications.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Social Media Brand Kit</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Generate luxury social media assets.</div>
-            <div><strong>Inputs:</strong> social, media, assets</div>
-            <div><strong>Category:</strong> luxury</div>
+      <!-- Main Workspace -->
+      <div class="brand-kit-workspace">
+        
+        <!-- Left Column: Maison Design Tokens & Rule Controls -->
+        <div class="tool-panel glass-panel" style="padding: 1.85rem;">
+          
+          <!-- Section 1: Maison Identity -->
+          <div class="section-title">
+            <span>Maison Identity</span>
+            <span style="font-size: 0.75rem; color: var(--gold-secondary);">Core Profile</span>
           </div>
+
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label for="inp-maison-name">Maison Name</label>
+            <input type="text" id="inp-maison-name" class="form-input" value="Vauquelin & Cie" placeholder="e.g. Maison d'Orfèvre">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label for="inp-maison-tagline">Motto / Tagline</label>
+            <input type="text" id="inp-maison-tagline" class="form-input" value="Timeless horology forged in Geneva." placeholder="e.g. Pure botanical alchemy">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label for="select-luxury-sector">Luxury Sector</label>
+            <select id="select-luxury-sector" class="form-select">
+              <option value="horlogerie" selected>Haute Horlogerie</option>
+              <option value="fashion">Fashion & Haute Couture</option>
+              <option value="jewelry">Fine & High Jewelry</option>
+              <option value="fragrance">Niche Fragrance & Beauty</option>
+              <option value="hospitality">Ultra-Luxury Hospitality</option>
+            </select>
+          </div>
+
+          <div style="border-top: 1px solid var(--border); margin: 1.25rem 0;"></div>
+
+          <!-- Section 2: Color Tokens & Presets -->
+          <div class="section-title">
+            <span>Luxury Color Harmonies</span>
+            <span style="font-size: 0.75rem; color: var(--text-tertiary);">4 Token System</span>
+          </div>
+
+          <!-- Palette Presets -->
+          <div class="palette-preset-row" id="palette-presets-container">
+            <div class="palette-chip active" data-preset="obsidian-gold">
+              <span style="font-size: 0.825rem; font-weight: 600;">Obsidian & Gold</span>
+              <div class="chip-swatches-preview">
+                <span class="chip-mini-dot" style="background: #0d0d0f;"></span>
+                <span class="chip-mini-dot" style="background: #1c1a17;"></span>
+                <span class="chip-mini-dot" style="background: #d4af37;"></span>
+                <span class="chip-mini-dot" style="background: #e8e4dc;"></span>
+              </div>
+            </div>
+
+            <div class="palette-chip" data-preset="emerald-cream">
+              <span style="font-size: 0.825rem; font-weight: 600;">Emerald & Cream</span>
+              <div class="chip-swatches-preview">
+                <span class="chip-mini-dot" style="background: #06231c;"></span>
+                <span class="chip-mini-dot" style="background: #0d382c;"></span>
+                <span class="chip-mini-dot" style="background: #c9a96e;"></span>
+                <span class="chip-mini-dot" style="background: #f5f2eb;"></span>
+              </div>
+            </div>
+
+            <div class="palette-chip" data-preset="bordeaux-rosegold">
+              <span style="font-size: 0.825rem; font-weight: 600;">Bordeaux & Rose Gold</span>
+              <div class="chip-swatches-preview">
+                <span class="chip-mini-dot" style="background: #240a13;"></span>
+                <span class="chip-mini-dot" style="background: #3d1422;"></span>
+                <span class="chip-mini-dot" style="background: #e0a899;"></span>
+                <span class="chip-mini-dot" style="background: #f8f1ee;"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Color Token Pickers Grid -->
+          <div class="color-swatches-grid">
+            
+            <!-- Primary -->
+            <div class="color-token-box">
+              <input type="color" id="pick-primary" class="color-input-bubble" value="#0d0d0f" title="Primary Color Picker">
+              <div class="color-info-wrap">
+                <span class="color-role-label">Primary (Dark)</span>
+                <input type="text" id="hex-primary" class="color-hex-text" value="#0d0d0f" maxlength="7">
+              </div>
+            </div>
+
+            <!-- Secondary -->
+            <div class="color-token-box">
+              <input type="color" id="pick-secondary" class="color-input-bubble" value="#1c1a17" title="Secondary Color Picker">
+              <div class="color-info-wrap">
+                <span class="color-role-label">Secondary (Base)</span>
+                <input type="text" id="hex-secondary" class="color-hex-text" value="#1c1a17" maxlength="7">
+              </div>
+            </div>
+
+            <!-- Accent -->
+            <div class="color-token-box">
+              <input type="color" id="pick-accent" class="color-input-bubble" value="#d4af37" title="Accent Color Picker">
+              <div class="color-info-wrap">
+                <span class="color-role-label">Accent (Gold)</span>
+                <input type="text" id="hex-accent" class="color-hex-text" value="#d4af37" maxlength="7">
+              </div>
+            </div>
+
+            <!-- Neutral -->
+            <div class="color-token-box">
+              <input type="color" id="pick-neutral" class="color-input-bubble" value="#e8e4dc" title="Neutral Color Picker">
+              <div class="color-info-wrap">
+                <span class="color-role-label">Neutral (Cream)</span>
+                <input type="text" id="hex-neutral" class="color-hex-text" value="#e8e4dc" maxlength="7">
+              </div>
+            </div>
+
+          </div>
+
+          <div style="border-top: 1px solid var(--border); margin: 1.25rem 0;"></div>
+
+          <!-- Section 3: Typography & Micro-Layout Rules -->
+          <div class="section-title">
+            <span>Typography & Layout Rules</span>
+            <span style="font-size: 0.75rem; color: var(--gold-secondary);">Haute Pairing</span>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label for="select-font-serif">Serif Headline Pairing</label>
+            <select id="select-font-serif" class="form-select">
+              <option value="'Instrument Serif', serif" selected>Instrument Serif (Parisian Haute)</option>
+              <option value="'Cinzel', serif">Cinzel (Imperial Roman)</option>
+              <option value="'Playfair Display', serif">Playfair Display (Vogue Editorial)</option>
+              <option value="'Cormorant Garamond', serif">Cormorant Garamond (Classical Renaissance)</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label for="select-font-sans">Sans-Serif Body Pairing</label>
+            <select id="select-font-sans" class="form-select">
+              <option value="'Inter', sans-serif" selected>Inter (Neutral Modernist)</option>
+              <option value="'Montserrat', sans-serif">Montserrat (Architectural)</option>
+            </select>
+          </div>
+
+          <!-- Uppercase Letter Tracking Slider -->
+          <div class="cost-input-row" style="margin-bottom: 1rem;">
+            <div class="cost-input-header">
+              <label for="range-tracking">Uppercase Letter Tracking</label>
+              <span id="disp-tracking-val" style="font-size: 0.85rem; font-weight: 700; color: var(--gold-secondary);">0.22em</span>
+            </div>
+            <input type="range" id="range-tracking" class="cost-slider" min="0.05" max="0.45" step="0.01" value="0.22" aria-label="Uppercase Letter Tracking Slider">
+          </div>
+
+          <!-- Export Utilities Bar -->
+          <div class="action-bar" style="margin-top: 1.5rem; flex-direction: column;">
+            <button id="btn-export-css" class="btn btn-secondary" style="width: 100%; justify-content: center;" type="button">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+              Copy CSS Color Tokens
+            </button>
+            <button id="btn-export-tokens" class="btn btn-secondary" style="width: 100%; justify-content: center;" type="button">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export JSON Theme Tokens
+            </button>
+            <button id="btn-print-brandguide" class="btn btn-primary btn-gold" style="width: 100%; justify-content: center;" type="button">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              Print Brand Guidelines (PDF)
+            </button>
+          </div>
+
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Column: Visual Stage (Tabs for Feed Simulator, Cheat-Sheet, Typography Specimen) -->
+        <div style="display: flex; flex-direction: column;">
+          
+          <!-- Studio Tabs Bar -->
+          <div class="studio-tabs-bar" role="tablist">
+            <button class="studio-tab-btn active" data-tab="feed" type="button" role="tab">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+              3×3 Luxury Feed Simulator
+            </button>
+            <button class="studio-tab-btn" data-tab="cheatsheet" type="button" role="tab">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+              Platform Safe-Zone Cheat-Sheet
+            </button>
+            <button class="studio-tab-btn" data-tab="tokens" type="button" role="tab">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+              Brand Tokens & Guidelines
+            </button>
+          </div>
+
+          <!-- TAB 1: 3x3 Feed Simulator View -->
+          <div id="tab-content-feed" class="tab-content">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <span style="font-size: 0.85rem; color: var(--text-secondary);">
+                Interactive Feed Preview • Click any tile below to customize archetype & copy
+              </span>
+              <button id="btn-shuffle-feed" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.78rem;" type="button">
+                ↻ Rebalance Layout
+              </button>
+            </div>
+
+            <!-- Mobile Phone Mockup Frame -->
+            <div class="instagram-frame" id="sim-frame">
+              
+              <!-- Status Bar -->
+              <div class="ig-status-bar">
+                <span>9:41</span>
+                <span style="letter-spacing: 0.1em;">5G • 100%</span>
+              </div>
+
+              <!-- Profile Header -->
+              <div class="ig-profile-header">
+                <div class="ig-profile-top">
+                  <div class="ig-avatar-ring">
+                    <div class="ig-avatar-inner" id="sim-avatar">VC</div>
+                  </div>
+                  <div class="ig-profile-stats">
+                    <div class="ig-stat-col">
+                      <span class="ig-stat-num">384</span>
+                      <span class="ig-stat-label">Posts</span>
+                    </div>
+                    <div class="ig-stat-col">
+                      <span class="ig-stat-num">186K</span>
+                      <span class="ig-stat-label">Followers</span>
+                    </div>
+                    <div class="ig-stat-col">
+                      <span class="ig-stat-num">42</span>
+                      <span class="ig-stat-label">Following</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="ig-bio-block">
+                  <div class="ig-maison-name" id="sim-maison-title">
+                    <span>Vauquelin & Cie</span>
+                    <span class="ig-verified-badge">✓</span>
+                  </div>
+                  <div class="ig-category-pill" id="sim-sector-label">Haute Horlogerie</div>
+                  <p class="ig-tagline-text" id="sim-tagline-text">Timeless horology forged in Geneva.</p>
+                  <a href="#" class="ig-website-link" id="sim-website-link">geneva-salons.vauquelin.ch</a>
+                </div>
+
+                <!-- Story Highlights Row -->
+                <div class="ig-highlights-row">
+                  <div class="ig-highlight-item">
+                    <div class="ig-highlight-circle">⚙️</div>
+                    <span class="ig-highlight-label">Atelier</span>
+                  </div>
+                  <div class="ig-highlight-item">
+                    <div class="ig-highlight-circle">⏱️</div>
+                    <span class="ig-highlight-label">Watches</span>
+                  </div>
+                  <div class="ig-highlight-item">
+                    <div class="ig-highlight-circle">🏛️</div>
+                    <span class="ig-highlight-label">Archives</span>
+                  </div>
+                  <div class="ig-highlight-item">
+                    <div class="ig-highlight-circle">🍸</div>
+                    <span class="ig-highlight-label">Salons</span>
+                  </div>
+                  <div class="ig-highlight-item">
+                    <div class="ig-highlight-circle">✒️</div>
+                    <span class="ig-highlight-label">Press</span>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- 3x3 Post Grid -->
+              <div class="ig-grid-container" id="ig-grid">
+                <!-- 9 Posts dynamically populated by script.js -->
+              </div>
+
+            </div>
+
+            <!-- Tile Customizer Card (Shows when a tile is selected) -->
+            <div class="tile-editor-card" id="tile-editor-panel">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold-primary); font-weight: 700;">
+                    Post Editor
+                  </span>
+                  <span id="editor-tile-index-badge" class="spec-ratio-badge">Tile #1</span>
+                </div>
+                <span style="font-size: 0.75rem; color: var(--text-tertiary);">Changes sync live to grid</span>
+              </div>
+
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div class="form-group">
+                  <label for="editor-archetype">Card Archetype</label>
+                  <select id="editor-archetype" class="form-select">
+                    <option value="editorial">Editorial Photography</option>
+                    <option value="product">Product Showcase</option>
+                    <option value="quote">Typographic Quote</option>
+                    <option value="story">Carousel / Story Cover</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="editor-headline">Headline / Primary Text</label>
+                  <input type="text" id="editor-headline" class="form-input" value="The Geneva Grand Complication">
+                </div>
+
+                <div class="form-group">
+                  <label for="editor-sub">Badge / Secondary Caption</label>
+                  <input type="text" id="editor-sub" class="form-input" value="Pièce Unique 1/1">
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- TAB 2: Platform Safe-Zone Cheat-Sheet -->
+          <div id="tab-content-cheatsheet" class="tab-content" style="display: none;">
+            <div style="margin-bottom: 1.5rem;">
+              <h2 style="font-size: 1.35rem; font-family: var(--font-display); color: var(--gold-secondary); margin-bottom: 0.35rem;">
+                Luxury Platform Aspect Ratio & Safe-Zone Master Guide
+              </h2>
+              <p style="font-size: 0.85rem; color: var(--text-secondary);">
+                Strict pixel dimensions and mobile overlay safe-zones to prevent Maison logotypes, complication details, and luxury copy from being cropped or obscured by platform controls.
+              </p>
+            </div>
+
+            <div class="platform-specs-grid">
+              
+              <!-- 1:1 Square -->
+              <div class="platform-spec-card">
+                <div class="spec-header">
+                  <strong style="font-size: 1rem;">1:1 Square</strong>
+                  <span class="spec-ratio-badge">Feed Standard</span>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                  <strong>1080 × 1080 px</strong> • Multi-image carousels & timeless feeds
+                </div>
+
+                <div class="spec-diagram-box">
+                  <div class="wireframe-outer" style="width: 100px; height: 100px;">
+                    <div class="wireframe-safe-zone" style="width: 78px; height: 78px;">
+                      800×800 Safe
+                    </div>
+                  </div>
+                </div>
+
+                <div style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5;">
+                  • <strong>Safe Zone:</strong> Center 800×800 px with 40px outer padding.<br>
+                  • <strong>Usage:</strong> Product macro shots, certificates, typographic statements.
+                </div>
+                <button class="btn btn-secondary btn-copy-spec" data-dims="1080x1080" style="width: 100%; justify-content: center; font-size: 0.78rem; padding: 0.4rem;" type="button">
+                  Copy 1080×1080 Specs
+                </button>
+              </div>
+
+              <!-- 4:5 Portrait -->
+              <div class="platform-spec-card">
+                <div class="spec-header">
+                  <strong style="font-size: 1rem;">4:5 Portrait</strong>
+                  <span class="spec-ratio-badge" style="background: rgba(16, 185, 129, 0.15); color: var(--emerald-accent); border-color: rgba(16, 185, 129, 0.3);">Haute Benchmark</span>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                  <strong>1080 × 1350 px</strong> • Maximum mobile feed real-estate (+25%)
+                </div>
+
+                <div class="spec-diagram-box">
+                  <div class="wireframe-outer" style="width: 80px; height: 100px;">
+                    <div class="wireframe-safe-zone" style="width: 80px; height: 80px;">
+                      Grid Crop Safe (1:1)
+                    </div>
+                  </div>
+                </div>
+
+                <div style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5;">
+                  • <strong>Crucial Warning:</strong> Profile grid crops top/bottom 135px.<br>
+                  • <strong>Guideline:</strong> Keep Maison logotype and focal piece inside central 1080×1080 box.
+                </div>
+                <button class="btn btn-secondary btn-copy-spec" data-dims="1080x1350" style="width: 100%; justify-content: center; font-size: 0.78rem; padding: 0.4rem;" type="button">
+                  Copy 1080×1350 Specs
+                </button>
+              </div>
+
+              <!-- 9:16 Vertical -->
+              <div class="platform-spec-card">
+                <div class="spec-header">
+                  <strong style="font-size: 1rem;">9:16 Vertical</strong>
+                  <span class="spec-ratio-badge">Reels & Stories</span>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                  <strong>1080 × 1920 px</strong> • Immersive craftsmanship reels & ephemeral salon stories
+                </div>
+
+                <div class="spec-diagram-box">
+                  <div class="wireframe-outer" style="width: 60px; height: 106px;">
+                    <div style="position: absolute; top: 0; left: 0; right: 0; height: 16px; background: rgba(239, 68, 68, 0.2); font-size: 8px; color: #ff8888; text-align: center;">Top UI</div>
+                    <div class="wireframe-safe-zone" style="width: 52px; height: 60px;">
+                      Center Safe
+                    </div>
+                    <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 22px; background: rgba(239, 68, 68, 0.2); font-size: 8px; color: #ff8888; text-align: center;">Bottom UI</div>
+                  </div>
+                </div>
+
+                <div style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5;">
+                  • <strong>Buffer:</strong> Top 250px (profile bar) & Bottom 340px (captions/audio).<br>
+                  • <strong>Right Margin:</strong> Leave 120px clear of typography for reaction icons.
+                </div>
+                <button class="btn btn-secondary btn-copy-spec" data-dims="1080x1920" style="width: 100%; justify-content: center; font-size: 0.78rem; padding: 0.4rem;" type="button">
+                  Copy 1080×1920 Specs
+                </button>
+              </div>
+
+              <!-- 16:9 Landscape -->
+              <div class="platform-spec-card">
+                <div class="spec-header">
+                  <strong style="font-size: 1rem;">16:9 Cinematic</strong>
+                  <span class="spec-ratio-badge">Maison Film</span>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                  <strong>1920 × 1080 px</strong> • YouTube 4K/FHD, brand hero documentary, LinkedIn
+                </div>
+
+                <div class="spec-diagram-box">
+                  <div class="wireframe-outer" style="width: 120px; height: 67px;">
+                    <div class="wireframe-safe-zone" style="width: 90px; height: 50px;">
+                      1200×675
+                    </div>
+                  </div>
+                </div>
+
+                <div style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5;">
+                  • <strong>Safe Title Area:</strong> 1200×675 px center.<br>
+                  • <strong>Standard:</strong> International cinema widescreen proportion.
+                </div>
+                <button class="btn btn-secondary btn-copy-spec" data-dims="1920x1080" style="width: 100%; justify-content: center; font-size: 0.78rem; padding: 0.4rem;" type="button">
+                  Copy 1920×1080 Specs
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- TAB 3: Tokens & Typography Deck -->
+          <div id="tab-content-tokens" class="tab-content" style="display: none;">
+            <div style="margin-bottom: 1.5rem;">
+              <h2 style="font-family: var(--font-display); font-size: 1.5rem; color: var(--gold-secondary); margin-bottom: 0.35rem;">
+                Maison Design System Tokens & Code Export
+              </h2>
+              <p style="font-size: 0.85rem; color: var(--text-secondary);">
+                Deploy these design tokens into Webflow, Shopify Plus, Figma, or luxury front-end codebases.
+              </p>
+            </div>
+
+            <!-- Typography Specimen -->
+            <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.75rem; margin-bottom: 1.5rem;">
+              <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold-primary); font-weight: 700; display: block; margin-bottom: 1rem;">
+                Live Typography Hierarchy Specimen
+              </span>
+
+              <div id="typo-specimen-h1" style="font-family: var(--maison-headline-font); font-size: 2.25rem; letter-spacing: var(--maison-tracking); color: var(--maison-neutral); margin-bottom: 0.5rem; text-transform: uppercase;">
+                VAUQUELIN & CIE
+              </div>
+              <div id="typo-specimen-h2" style="font-family: var(--maison-headline-font); font-size: 1.4rem; color: var(--maison-accent); font-style: italic; margin-bottom: 1rem;">
+                Excellence in High Complications & Guilloché Metiers d'Art
+              </div>
+              <div id="typo-specimen-body" style="font-family: var(--maison-body-font); font-size: 0.95rem; line-height: 1.7; color: rgba(255,255,255,0.8); max-width: 720px;">
+                Every creation embodies a dialogue between centuries of ancestral hand-engraving and avant-garde chronometric precision. Our master watchmakers dedicate hundreds of hours to each individual escapement.
+              </div>
+            </div>
+
+            <!-- CSS Code Block -->
+            <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem; position: relative;">
+              <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-tertiary); font-weight: 700; display: block; margin-bottom: 0.5rem;">
+                CSS Variables (`tokens.css`)
+              </span>
+              <pre id="code-css-tokens" style="font-family: monospace; font-size: 0.85rem; color: #e5e7eb; overflow-x: auto; line-height: 1.5; margin: 0;"></pre>
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
-    
+
     </div>
   </main>
 
@@ -62,8 +1179,8 @@
     "@type": "WebApplication",
     "name": "Social Media Brand Kit",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/social-media-brand-kit/",
-    "description": "Generate luxury social media assets.",
-    "applicationCategory": "UtilityPage",
+    "description": "Generate luxury social media brand guidelines, color tokens, live 3x3 feed simulator, and platform specs.",
+    "applicationCategory": "DesignApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }
