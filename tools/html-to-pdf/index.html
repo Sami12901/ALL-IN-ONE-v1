@@ -3,66 +3,388 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HTML to PDF - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Convert websites or HTML code to PDF.">
-  <meta name="keywords" content="pdf, document, html to pdf, free, online, tool, utility">
+  <title>HTML to PDF Converter - Visual Sandbox & Studio - ALL IN ONE</title>
+  <meta name="description" content="Live split-view HTML & CSS sandbox to generate professional, print-ready PDF documents with custom paper sizes, margins, page breaks, and luxury templates.">
+  <meta name="keywords" content="html to pdf, convert html to pdf, css to pdf, web to pdf, printable html, invoice generator pdf, resume pdf creator">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/html-to-pdf/">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <!-- Core PDF Libraries -->
+  <script src="../../assets/lib/html2pdf.bundle.min.js"></script>
+  <script src="../../assets/lib/pdf-lib.min.js"></script>
+
+  <style>
+    .sandbox-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      min-height: 720px;
+    }
+
+    @media (max-width: 1080px) {
+      .sandbox-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Editor Container */
+    .editor-card {
+      background: var(--surface);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .editor-tabs-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0, 0, 0, 0.35);
+      border-bottom: 1px solid var(--stroke);
+      padding: 0.5rem 1rem;
+    }
+
+    .tab-btn-group {
+      display: flex;
+      gap: 0.35rem;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--muted);
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: var(--transition);
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .tab-btn.active {
+      color: var(--text);
+      background: var(--surface);
+      border-color: var(--stroke);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .editor-actions {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .editor-mini-btn {
+      background: transparent;
+      border: 1px solid var(--stroke);
+      color: var(--muted);
+      font-size: 0.75rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .editor-mini-btn:hover {
+      color: var(--text);
+      border-color: var(--accent);
+    }
+
+    .code-editor-area {
+      flex: 1;
+      width: 100%;
+      height: 540px;
+      background: #0d1117;
+      color: #e6edf3;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      padding: 1rem;
+      border: none;
+      resize: vertical;
+      outline: none;
+      tab-size: 2;
+    }
+
+    /* Quick helper tags bar */
+    .helper-tag-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-top: 1px solid var(--stroke);
+      font-size: 0.75rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+    }
+
+    .helper-pill {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--stroke);
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--accent);
+      font-family: monospace;
+      transition: var(--transition);
+    }
+
+    .helper-pill:hover {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+    }
+
+    /* Preview Stage */
+    .preview-card {
+      background: var(--surface);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .preview-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0, 0, 0, 0.35);
+      border-bottom: 1px solid var(--stroke);
+      padding: 0.5rem 1rem;
+    }
+
+    .preview-stage-viewport {
+      flex: 1;
+      background: #1e2229;
+      padding: 1.5rem;
+      overflow: auto;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 560px;
+    }
+
+    .paper-frame-container {
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      border-radius: 2px;
+      transform-origin: top center;
+      transition: transform 0.2s ease, width 0.3s ease, min-height 0.3s ease;
+      overflow: hidden;
+    }
+
+    .preview-iframe {
+      width: 100%;
+      height: 100%;
+      min-height: 800px;
+      border: none;
+      display: block;
+      background: #ffffff;
+    }
+
+    .controls-banner {
+      background: var(--surface);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .control-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .control-item label {
+      color: var(--muted);
+      font-weight: 600;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
-      <div class="tool-header">
-        <h1>HTML to PDF</h1>
-        <p class="tool-description">Convert websites or HTML code to PDF.</p>
-      </div>
-
-      <!-- Tool Workspace -->
+    <div class="container tool-container" style="max-width: 1440px;">
       
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>HTML to PDF</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Convert websites or HTML code to PDF.</div>
-            <div><strong>Inputs:</strong> pdf, document, html to pdf</div>
-            <div><strong>Category:</strong> pdf</div>
+      <div class="tool-header">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>HTML to PDF Studio</h1>
+            <p class="tool-description">Craft, test, and render responsive HTML/CSS designs directly into high-fidelity PDF documents with customizable page geometry and instant compilation.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-primary" id="btn-compile-pdf" style="padding: 0.6rem 1.75rem; font-weight: 600;">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Compile &amp; Download PDF
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- Controls Banner -->
+      <section class="controls-banner">
+        
+        <!-- Template Selection -->
+        <div class="control-item">
+          <label for="template-select">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="vertical-align: middle;"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            Template:
+          </label>
+          <select id="template-select" class="form-select" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+            <option value="invoice" selected>Commercial Invoice</option>
+            <option value="certificate">Certificate of Excellence</option>
+            <option value="resume">Executive Resume</option>
+            <option value="report">Quarterly KPI Report</option>
+            <option value="blank">Blank Sandbox</option>
+          </select>
+        </div>
+
+        <!-- Paper Size -->
+        <div class="control-item">
+          <label for="paper-format">Format:</label>
+          <select id="paper-format" class="form-select" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+            <option value="a4" selected>A4 (210 &times; 297 mm)</option>
+            <option value="letter">Letter (8.5 &times; 11 in)</option>
+            <option value="legal">Legal (8.5 &times; 14 in)</option>
+          </select>
+        </div>
+
+        <!-- Orientation -->
+        <div class="control-item">
+          <label for="paper-orientation">Orientation:</label>
+          <select id="paper-orientation" class="form-select" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+            <option value="portrait" selected>Portrait</option>
+            <option value="landscape">Landscape</option>
+          </select>
+        </div>
+
+        <!-- Margins -->
+        <div class="control-item">
+          <label for="paper-margin">Margins:</label>
+          <select id="paper-margin" class="form-select" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+            <option value="none">None (0 mm)</option>
+            <option value="compact">Compact (5 mm)</option>
+            <option value="normal" selected>Normal (10 mm)</option>
+            <option value="wide">Wide (20 mm)</option>
+          </select>
+        </div>
+
+        <!-- Document File Name -->
+        <div class="control-item">
+          <label for="doc-filename">File Name:</label>
+          <input type="text" id="doc-filename" class="form-input" style="width: 170px; padding: 0.35rem 0.6rem; font-size: 0.85rem;" value="document.pdf">
+        </div>
+
+      </section>
+
+      <!-- Split View Editor & Preview -->
+      <div class="sandbox-layout">
+        
+        <!-- Left: Code Editor -->
+        <div class="editor-card">
+          <div class="editor-tabs-bar">
+            <div class="tab-btn-group">
+              <button class="tab-btn active" id="tab-html" data-tab="html">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                HTML Code
+              </button>
+              <button class="tab-btn" id="tab-css" data-tab="css">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><path d="M8 2v4M16 2v4M2 10h20"></path></svg>
+                Custom CSS
+              </button>
+            </div>
+            
+            <div class="editor-actions">
+              <button class="editor-mini-btn" id="btn-copy-code" title="Copy Current Code">Copy</button>
+              <button class="editor-mini-btn" id="btn-reset-template" title="Reset to Template Defaults">Reset</button>
+            </div>
+          </div>
+
+          <!-- Textarea Editors -->
+          <textarea id="editor-html" class="code-editor-area" spellcheck="false" placeholder="Enter HTML body markup..."></textarea>
+          <textarea id="editor-css" class="code-editor-area" spellcheck="false" style="display: none;" placeholder="Enter custom CSS styling..."></textarea>
+
+          <!-- Helper Tag Shortcuts -->
+          <div class="helper-tag-bar">
+            <span>Insert Helpers:</span>
+            <button class="helper-pill" data-insert="pagebreak">&lt;div class=&quot;html2pdf__page-break&quot;&gt;</button>
+            <button class="helper-pill" data-insert="avoidbreak">&lt;div style=&quot;page-break-inside: avoid;&quot;&gt;</button>
+            <button class="helper-pill" data-insert="twocol">&lt;div style=&quot;display:flex; gap:16px;&quot;&gt;</button>
+            <button class="helper-pill" data-insert="badge">&lt;span class=&quot;badge&quot;&gt;</button>
+          </div>
+        </div>
+
+        <!-- Right: Live Preview Panel -->
+        <div class="preview-card">
+          <div class="preview-header-bar">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="font-weight: 700; font-size: 0.9rem;">Live Print Output</span>
+              <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981;" title="Live synced"></span>
+            </div>
+
+            <!-- Zoom and Refresh controls -->
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div style="display: flex; align-items: center; gap: 0.35rem;">
+                <label for="preview-zoom" style="font-size: 0.75rem; color: var(--muted);">Scale:</label>
+                <input type="range" id="preview-zoom" min="40" max="100" value="70" style="width: 80px;">
+                <span id="preview-zoom-val" style="font-size: 0.75rem; color: var(--muted); min-width: 2.2rem; font-family: monospace;">70%</span>
+              </div>
+              <button class="editor-mini-btn" id="btn-refresh-preview" title="Force Refresh">
+                <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                Refresh
+              </button>
+            </div>
+          </div>
+
+          <div class="preview-stage-viewport">
+            <div class="paper-frame-container" id="paper-frame">
+              <iframe id="preview-frame" class="preview-iframe" title="PDF Live Preview Sandbox"></iframe>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </main>
 
-  <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "HTML to PDF",
+    "name": "HTML to PDF Studio",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/html-to-pdf/",
-    "description": "Convert websites or HTML code to PDF.",
+    "description": "Convert HTML & CSS directly to polished PDF files with real-time sandbox preview and templates.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

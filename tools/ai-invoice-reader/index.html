@@ -3,17 +3,162 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Invoice Reader - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Extract data from invoices automatically using AI.">
-  <meta name="keywords" content="pdf, document, ai invoice reader, free, online, tool, utility">
+  <title>AI Invoice Reader - Financial PDF & Image Parser - ALL IN ONE</title>
+  <meta name="description" content="Automatically parse PDF and image invoices, extract line items, vendor details, tax amounts, and verify financial calculations with export to CSV and JSON.">
+  <meta name="keywords" content="invoice reader, ai invoice parser, pdf invoice to csv, extract invoice data, e-invoice verification, invoice scanner online">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-invoice-reader/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <!-- PDF & Export Libraries -->
+  <script src="../../assets/lib/pdf.min.js"></script>
+  <script src="../../assets/lib/pdf-lib.min.js"></script>
+  <script src="../../assets/lib/html2pdf.bundle.min.js"></script>
+  <script>
+    if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = '../../assets/lib/pdf.worker.min.js';
+    }
+  </script>
+  
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+  
+  <style>
+    .invoice-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 992px) {
+      .invoice-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .preview-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .preview-content {
+      flex: 1;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: auto;
+      background: #0d1117;
+    }
+    .preview-content canvas, .preview-content img {
+      max-width: 100%;
+      height: auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      border-radius: var(--radius-sm);
+    }
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.75rem;
+      font-size: 0.875rem;
+    }
+    .items-table th, .items-table td {
+      padding: 0.65rem 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .items-table th {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      text-align: left;
+    }
+    .items-table input {
+      width: 100%;
+      padding: 0.35rem 0.5rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+    }
+    .items-table input:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+    .summary-math-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: flex-end;
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+    }
+    .math-row {
+      display: flex;
+      justify-content: space-between;
+      width: 260px;
+      font-size: 0.9rem;
+    }
+    .math-row.grand-total {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent);
+      border-top: 2px solid var(--border);
+      padding-top: 0.5rem;
+      margin-top: 0.25rem;
+    }
+    .badge-verified {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: var(--radius-full);
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .badge-mismatch {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: var(--radius-full);
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .dropzone-active {
+      border-color: var(--accent) !important;
+      background: var(--accent-glow) !important;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #print-invoice-sheet, #print-invoice-sheet * {
+        visibility: visible;
+      }
+      #print-invoice-sheet {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: #fff;
+        color: #000;
+        padding: 25px;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -26,44 +171,229 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>AI Invoice Reader</h1>
-        <p class="tool-description">Extract data from invoices automatically using AI.</p>
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+          <h1>AI Invoice Reader</h1>
+          <span class="badge">Financial Parser & Verification</span>
+        </div>
+        <p class="tool-description">
+          Drag & drop invoices in PDF or image format. Automatically extracts vendor details, buyer info, dates, and itemized lines with interactive verification, math validation, and CSV/JSON export.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AI Invoice Reader</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Extract data from invoices automatically using AI.</div>
-            <div><strong>Inputs:</strong> pdf, document, ai invoice reader</div>
-            <div><strong>Category:</strong> pdf</div>
+      <!-- Upload Panel -->
+      <div class="tool-panel glass-panel" id="upload-panel">
+        <div class="file-drag-area" id="drop-zone" tabindex="0" role="button" aria-label="Upload invoice PDF or image">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="8" y1="13" x2="16" y2="13"></line>
+            <line x1="8" y1="17" x2="16" y2="17"></line>
+            <line x1="10" y1="9" x2="8" y2="9"></line>
+          </svg>
+          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">Drop Invoice PDF or Image here</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; max-width: 440px; margin: 0 auto 1.25rem;">
+            Supports PDF, PNG, JPG, and WebP invoices. Secure in-browser OCR and structural financial parsing.
+          </p>
+          <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+            <label for="invoice-input" class="btn btn-primary" style="cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              Upload Invoice File
+            </label>
+            <input type="file" id="invoice-input" accept="application/pdf,image/png,image/jpeg,image/webp" style="display: none;">
+            <button type="button" class="btn btn-secondary" id="load-sample-btn">
+              Load Sample Invoice
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Processing State -->
+        <div id="processing-state" class="hidden" style="text-align: center; padding: 2.5rem 1rem;">
+          <div style="display: inline-block; width: 44px; height: 44px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 1rem;"></div>
+          <h4 id="status-title" style="font-size: 1.15rem; font-weight: 700;">Parsing Financial Data...</h4>
+          <p id="status-desc" style="color: var(--text-secondary); font-size: 0.875rem;">Extracting invoice items, tax identifiers, and balances</p>
+        </div>
       </div>
-    
+
+      <!-- Invoice Workspace -->
+      <div id="invoice-workspace" class="hidden" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        
+        <!-- Action Toolbar -->
+        <div class="glass-panel" style="padding: 0.85rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <strong id="invoice-file-label" style="font-size: 0.95rem; color: var(--text-primary);">INV-2026-0891.pdf</strong>
+            <span id="math-status-badge" class="badge-verified">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              Math Verified
+            </span>
+          </div>
+
+          <div class="action-bar" style="margin: 0;">
+            <button class="btn btn-secondary" id="export-csv-btn">Export CSV</button>
+            <button class="btn btn-secondary" id="export-json-btn">Export JSON</button>
+            <button class="btn btn-primary" id="export-pdf-btn">Export PDF Invoice</button>
+            <button class="btn btn-secondary" id="reset-btn">New File</button>
+          </div>
+        </div>
+
+        <!-- Split View: Preview & Verification Form -->
+        <div class="invoice-layout">
+          <!-- Left: Document Preview -->
+          <div class="preview-box">
+            <div style="padding: 0.75rem 1rem; background: var(--bg-secondary); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600;">
+              <span>Document Render</span>
+              <span id="page-count-tag" style="color: var(--text-secondary);">Page 1 of 1</span>
+            </div>
+            <div class="preview-content" id="preview-container">
+              <canvas id="doc-canvas" style="display: none;"></canvas>
+              <img id="doc-img" style="display: none;" alt="Invoice preview">
+              <div id="text-fallback-preview" style="display: none; font-family: monospace; font-size: 0.8rem; color: #a5b4fc; padding: 1rem; white-space: pre-wrap; word-break: break-all; width: 100%; height: 100%;"></div>
+            </div>
+          </div>
+
+          <!-- Right: Interactive Verification Form -->
+          <div class="tool-panel glass-panel" style="padding: 1.5rem; gap: 1rem;">
+            <div class="panel-title" style="margin-bottom: 0;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+              Extracted Invoice Data (Editable)
+            </div>
+
+            <!-- Header Info Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem;">
+              <div class="form-group">
+                <label>Invoice Number</label>
+                <input type="text" id="f-inv-num" class="form-input">
+              </div>
+              <div class="form-group">
+                <label>Currency</label>
+                <input type="text" id="f-currency" class="form-input" value="USD ($)">
+              </div>
+              <div class="form-group">
+                <label>Issue Date</label>
+                <input type="text" id="f-issue-date" class="form-input">
+              </div>
+              <div class="form-group">
+                <label>Due Date</label>
+                <input type="text" id="f-due-date" class="form-input">
+              </div>
+            </div>
+
+            <!-- Vendor & Buyer -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <label>Vendor / Supplier</label>
+                <input type="text" id="f-vendor" class="form-input">
+                <input type="text" id="f-vendor-tax" class="form-input" placeholder="Tax / VAT ID" style="margin-top: 0.35rem; font-size: 0.8rem;">
+              </div>
+              <div class="form-group">
+                <label>Buyer / Bill To</label>
+                <input type="text" id="f-buyer" class="form-input">
+                <input type="text" id="f-buyer-tax" class="form-input" placeholder="Client VAT / PO #" style="margin-top: 0.35rem; font-size: 0.8rem;">
+              </div>
+            </div>
+
+            <!-- Itemized Line Items -->
+            <div style="margin-top: 0.5rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Line Items</label>
+                <button type="button" class="btn btn-secondary" id="add-item-btn" style="padding: 0.25rem 0.65rem; font-size: 0.75rem;">+ Add Line</button>
+              </div>
+              <div style="overflow-x: auto; margin-top: 0.35rem;">
+                <table class="items-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 44%;">Description</th>
+                      <th style="width: 14%;">Qty</th>
+                      <th style="width: 18%;">Unit Rate</th>
+                      <th style="width: 18%;">Amount</th>
+                      <th style="width: 6%;"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="items-table-body">
+                    <!-- Dynamic line item rows -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Financial Calculations -->
+            <div class="summary-math-grid">
+              <div class="math-row">
+                <span style="color: var(--text-secondary);">Subtotal:</span>
+                <span id="math-subtotal" style="font-weight: 600;">$0.00</span>
+              </div>
+              <div class="math-row">
+                <span style="color: var(--text-secondary);">Tax / VAT (10%):</span>
+                <span id="math-tax" style="font-weight: 600;">$0.00</span>
+              </div>
+              <div class="math-row grand-total">
+                <span>Grand Total:</span>
+                <span id="math-total">$0.00</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Hidden container for high-res PDF generation -->
+        <div id="print-invoice-sheet" class="hidden" style="padding: 30px; font-family: sans-serif; background: #fff; color: #111;">
+          <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #2563eb; padding-bottom: 15px; margin-bottom: 20px;">
+            <div>
+              <h2 id="p-vendor" style="margin: 0; color: #1e3a8a; font-size: 22px;">Vendor Name</h2>
+              <p id="p-vendor-tax" style="font-size: 11px; color: #666; margin: 4px 0 0;">Tax ID: -</p>
+            </div>
+            <div style="text-align: right;">
+              <h1 style="margin: 0; font-size: 24px; color: #2563eb;">INVOICE</h1>
+              <p id="p-inv-num" style="font-size: 13px; font-weight: bold; margin: 4px 0 0;">INV-000</p>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 25px; font-size: 12px;">
+            <div>
+              <strong>Billed To:</strong><br>
+              <span id="p-buyer">Customer Name</span><br>
+              <span id="p-buyer-tax">Tax ID: -</span>
+            </div>
+            <div style="text-align: right;">
+              <strong>Date:</strong> <span id="p-issue-date">2026-10-01</span><br>
+              <strong>Due Date:</strong> <span id="p-due-date">2026-10-31</span>
+            </div>
+          </div>
+          <table style="width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 20px;">
+            <thead>
+              <tr style="background: #f1f5f9; border-bottom: 2px solid #cbd5e1;">
+                <th style="padding: 8px; text-align: left;">Description</th>
+                <th style="padding: 8px; text-align: right;">Qty</th>
+                <th style="padding: 8px; text-align: right;">Rate</th>
+                <th style="padding: 8px; text-align: right;">Amount</th>
+              </tr>
+            </thead>
+            <tbody id="p-items-body"></tbody>
+          </table>
+          <div style="display: flex; justify-content: flex-end;">
+            <div style="width: 250px; font-size: 12px; line-height: 1.8;">
+              <div style="display: flex; justify-content: space-between;"><span>Subtotal:</span><strong id="p-subtotal">$0.00</strong></div>
+              <div style="display: flex; justify-content: space-between;"><span>Tax / VAT:</span><strong id="p-tax">$0.00</strong></div>
+              <div style="display: flex; justify-content: space-between; border-top: 1px solid #333; padding-top: 5px; font-size: 14px; font-weight: bold; color: #1e3a8a;"><span>Total:</span><span id="p-total">$0.00</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </main>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "AI Invoice Reader",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-invoice-reader/",
-    "description": "Extract data from invoices automatically using AI.",
-    "applicationCategory": "UtilityPage",
+    "description": "Parse PDF invoices and receipts client-side with automatic line-item extraction, math verification, and CSV export.",
+    "applicationCategory": "FinancialApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

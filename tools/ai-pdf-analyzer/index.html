@@ -3,66 +3,488 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI PDF Analyzer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Analyze PDF content using AI.">
-  <meta name="keywords" content="pdf, document, ai pdf analyzer, free, online, tool, utility">
+  <title>AI PDF Analyzer - Linguistic, Metadata &amp; Structural Intelligence - ALL IN ONE</title>
+  <meta name="description" content="Perform deep client-side NLP and structural inspection on PDF files: reading ease, Flesch score, reading time, keyword n-grams, sentiment tone, metadata audit, and complexity analysis.">
+  <meta name="keywords" content="pdf analyzer, flesch reading ease, pdf metadata audit, pdf sentiment analysis, pdf keyword extraction, nlp pdf analyzer">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-pdf-analyzer/">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <!-- PDF.js Library -->
+  <script src="../../assets/lib/pdf.min.js"></script>
+
+  <style>
+    .analyzer-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+      opacity: 0.8;
+    }
+
+    .stat-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .stat-number {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.1;
+      font-family: var(--font-sans);
+    }
+
+    .stat-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .stat-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      width: fit-content;
+      margin-top: 0.25rem;
+    }
+
+    .badge-green { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-blue { background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .badge-amber { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-purple { background: rgba(168, 85, 247, 0.15); color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.3); }
+
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 1024px) {
+      .analysis-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel-card {
+      background: var(--surface);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .panel-header-custom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--stroke);
+      padding-bottom: 0.75rem;
+    }
+
+    .panel-header-custom h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text);
+    }
+
+    .keyword-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .keyword-pill {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--stroke);
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .keyword-count {
+      background: var(--accent-glow);
+      color: var(--accent);
+      padding: 0.1rem 0.4rem;
+      border-radius: var(--radius-full);
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .metadata-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .metadata-table td {
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid var(--stroke);
+    }
+
+    .metadata-table td:first-child {
+      color: var(--muted);
+      width: 40%;
+      font-weight: 600;
+    }
+
+    .metadata-table td:last-child {
+      color: var(--text);
+      word-break: break-all;
+    }
+
+    .tone-meter-bar {
+      height: 8px;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+      display: flex;
+      margin: 0.5rem 0;
+    }
+
+    .tone-segment-pos { background: #10b981; }
+    .tone-segment-neu { background: #64748b; }
+    .tone-segment-neg { background: #ef4444; }
+
+    .summary-box {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+
+    .summary-box h4 {
+      color: var(--text);
+      margin: 0.75rem 0 0.35rem 0;
+      font-size: 0.95rem;
+    }
+    .summary-box h4:first-child {
+      margin-top: 0;
+    }
+
+    .loading-pulse {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 3rem;
+      text-align: center;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
-      <div class="tool-header">
-        <h1>AI PDF Analyzer</h1>
-        <p class="tool-description">Analyze PDF content using AI.</p>
-      </div>
-
-      <!-- Tool Workspace -->
+    <div class="container tool-container" style="max-width: 1350px;">
       
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AI PDF Analyzer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Analyze PDF content using AI.</div>
-            <div><strong>Inputs:</strong> pdf, document, ai pdf analyzer</div>
-            <div><strong>Category:</strong> pdf</div>
+      <div class="tool-header">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>AI PDF Document Intelligence &amp; NLP Inspector</h1>
+            <p class="tool-description">Deep client-side linguistic, readability, sentiment, metadata, and structural complexity analysis. Zero server uploads.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-secondary" id="btn-demo-doc" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              Load Sample Document
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- Upload Zone -->
+      <div class="file-drag-area" id="drop-zone" style="margin-bottom: 1.5rem;">
+        <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none" style="margin-bottom: 0.75rem; color: var(--accent);">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        <h3 style="margin-bottom: 0.35rem; font-size: 1.1rem;">Drop any PDF file here to inspect</h3>
+        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem;">Parses page text streams, document catalog, font metrics, and sentiment tone instantly</p>
+        <button class="btn btn-primary" id="btn-browse" style="margin: 0 auto; padding: 0.45rem 1.25rem;">Select PDF Document</button>
+        <input type="file" id="file-input" accept="application/pdf" style="display: none;">
+      </div>
+
+      <!-- Processing State -->
+      <div id="loading-state" class="panel-card loading-pulse" style="display: none;">
+        <svg viewBox="0 0 24 24" width="40" height="40" stroke="currentColor" stroke-width="2" fill="none" style="animation: spin 1s linear infinite; color: var(--accent);"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>
+        <div>
+          <h3 id="loading-title">Parsing PDF Text Streams...</h3>
+          <p id="loading-subtitle" style="color: var(--text-secondary); font-size: 0.85rem;">Calculating Flesch readability and n-gram lexical distribution</p>
+        </div>
+      </div>
+
+      <!-- Main Analysis Results -->
+      <div id="results-container" class="analyzer-workspace" style="display: none;">
+        
+        <!-- KPI Cards Row -->
+        <div class="kpi-row">
+          
+          <!-- Complexity Score -->
+          <div class="stat-card">
+            <span class="stat-title">Complexity Index</span>
+            <span class="stat-number" id="stat-complexity">0/100</span>
+            <span class="stat-desc" id="stat-complexity-label">Calculated Score</span>
+            <span class="stat-badge badge-blue" id="badge-complexity">Standard</span>
+          </div>
+
+          <!-- Reading Ease -->
+          <div class="stat-card">
+            <span class="stat-title">Flesch Reading Ease</span>
+            <span class="stat-number" id="stat-flesch">0.0</span>
+            <span class="stat-desc" id="stat-grade-level">Grade Level: -</span>
+            <span class="stat-badge badge-green" id="badge-flesch">Standard</span>
+          </div>
+
+          <!-- Reading Duration -->
+          <div class="stat-card">
+            <span class="stat-title">Est. Reading Time</span>
+            <span class="stat-number" id="stat-read-time">0m</span>
+            <span class="stat-desc" id="stat-speaking-time">Speaking: 0m</span>
+            <span class="stat-badge badge-amber" id="badge-wpm">230 WPM standard</span>
+          </div>
+
+          <!-- Volume & Pages -->
+          <div class="stat-card">
+            <span class="stat-title">Pages &amp; Volume</span>
+            <span class="stat-number" id="stat-pages">0</span>
+            <span class="stat-desc" id="stat-words">0 words &bull; 0 sentences</span>
+            <span class="stat-badge badge-purple" id="badge-chars">0 characters</span>
+          </div>
+
+          <!-- Tone & Sentiment -->
+          <div class="stat-card">
+            <span class="stat-title">Sentiment Tone</span>
+            <span class="stat-number" id="stat-sentiment">Neutral</span>
+            <span class="stat-desc" id="stat-sentiment-score">Polarity: 0.0</span>
+            <span class="stat-badge badge-green" id="badge-tone">Analytical</span>
+          </div>
+
+          <!-- Security Status -->
+          <div class="stat-card">
+            <span class="stat-title">Security &amp; Encryption</span>
+            <span class="stat-number" id="stat-security" style="font-size: 1.4rem;">Standard</span>
+            <span class="stat-desc" id="stat-pdf-version">PDF 1.7</span>
+            <span class="stat-badge badge-green" id="badge-security">Unlocked</span>
+          </div>
+
+        </div>
+
+        <!-- Detailed 2-Column Grid -->
+        <div class="analysis-grid">
+          
+          <!-- Left Column -->
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            
+            <!-- AI Executive Briefing -->
+            <div class="panel-card">
+              <div class="panel-header-custom">
+                <h3>
+                  <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" style="color: var(--accent);"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                  Executive Intelligence Briefing
+                </h3>
+                <div style="display: flex; gap: 0.4rem;">
+                  <button class="btn btn-secondary" id="btn-copy-summary" style="padding: 0.3rem 0.75rem; font-size: 0.75rem;">Copy Summary</button>
+                  <button class="btn btn-secondary" id="btn-download-audit" style="padding: 0.3rem 0.75rem; font-size: 0.75rem;">Export JSON</button>
+                </div>
+              </div>
+
+              <div class="summary-box" id="executive-summary-text">
+                <!-- Dynamically generated AI summary -->
+              </div>
+            </div>
+
+            <!-- Recurring Keywords & N-Grams -->
+            <div class="panel-card">
+              <div class="panel-header-custom">
+                <h3>
+                  <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                  Dominant Recurring Keywords &amp; Phrases (N-Grams)
+                </h3>
+              </div>
+
+              <div>
+                <div style="font-size: 0.8rem; color: var(--muted); margin-bottom: 0.5rem; font-weight: 600;">TOP UNIGRAMS (CORE VOCABULARY):</div>
+                <div class="keyword-cloud" id="unigram-cloud"></div>
+              </div>
+
+              <div style="margin-top: 0.75rem;">
+                <div style="font-size: 0.8rem; color: var(--muted); margin-bottom: 0.5rem; font-weight: 600;">TOP MULTI-WORD PHRASES (KEY CONCEPTS):</div>
+                <div class="keyword-cloud" id="bigram-cloud"></div>
+              </div>
+            </div>
+
+            <!-- Extracted Text Inspector -->
+            <div class="panel-card">
+              <div class="panel-header-custom">
+                <h3>
+                  <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                  Full Extracted Document Text
+                </h3>
+                <button class="btn btn-secondary" id="btn-copy-raw-text" style="padding: 0.3rem 0.75rem; font-size: 0.75rem;">Copy All Text</button>
+              </div>
+              <textarea id="raw-text-viewer" class="form-textarea" readonly style="min-height: 220px; font-size: 0.8rem;"></textarea>
+            </div>
+
+          </div>
+
+          <!-- Right Column -->
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            
+            <!-- Metadata Audit -->
+            <div class="panel-card">
+              <div class="panel-header-custom">
+                <h3>
+                  <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  Document Metadata Audit
+                </h3>
+              </div>
+
+              <table class="metadata-table">
+                <tbody>
+                  <tr><td>File Name</td><td id="meta-filename">-</td></tr>
+                  <tr><td>Document Title</td><td id="meta-title">None</td></tr>
+                  <tr><td>Author / Creator</td><td id="meta-author">None</td></tr>
+                  <tr><td>Subject / Topic</td><td id="meta-subject">None</td></tr>
+                  <tr><td>Keywords Tag</td><td id="meta-keywords">None</td></tr>
+                  <tr><td>Producer / Engine</td><td id="meta-producer">None</td></tr>
+                  <tr><td>Creation Date</td><td id="meta-created">-</td></tr>
+                  <tr><td>Modified Date</td><td id="meta-modified">-</td></tr>
+                  <tr><td>PDF Version</td><td id="meta-version">1.7</td></tr>
+                  <tr><td>Encryption Status</td><td id="meta-encrypted">None (Standard Open)</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Linguistic & Tone Breakdown -->
+            <div class="panel-card">
+              <div class="panel-header-custom">
+                <h3>
+                  <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M2 12h5l3 5 4-10 3 5h5"></path></svg>
+                  Tone &amp; Lexical Metrics
+                </h3>
+              </div>
+
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+                  <span>Sentiment Polarity</span>
+                  <span id="tone-polarity-percent" style="font-weight: 600;">85% Positive / Neutral</span>
+                </div>
+                <div class="tone-meter-bar">
+                  <div class="tone-segment-pos" id="bar-pos" style="width: 45%;"></div>
+                  <div class="tone-segment-neu" id="bar-neu" style="width: 45%;"></div>
+                  <div class="tone-segment-neg" id="bar-neg" style="width: 10%;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted);">
+                  <span>Positive: <b id="lbl-pos">45%</b></span>
+                  <span>Neutral: <b id="lbl-neu">45%</b></span>
+                  <span>Negative: <b id="lbl-neg">10%</b></span>
+                </div>
+              </div>
+
+              <div style="border-top: 1px solid var(--stroke); padding-top: 0.75rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.5rem;">
+                  <span style="color: var(--muted);">Detected Primary Language:</span>
+                  <strong id="stat-lang" style="color: var(--text);">English (EN)</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.5rem;">
+                  <span style="color: var(--muted);">Vocabulary Diversity (TTR):</span>
+                  <strong id="stat-ttr" style="color: var(--text);">0.00</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.5rem;">
+                  <span style="color: var(--muted);">Avg Sentence Length:</span>
+                  <strong id="stat-asl" style="color: var(--text);">0 words</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                  <span style="color: var(--muted);">Avg Syllables / Word:</span>
+                  <strong id="stat-asw" style="color: var(--text);">0.0</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Page-by-Page Density -->
+            <div class="panel-card">
+              <div class="panel-header-custom">
+                <h3>
+                  <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line></svg>
+                  Page-by-Page Distribution
+                </h3>
+              </div>
+              <div id="pages-breakdown-list" style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 200px; overflow-y: auto;">
+                <!-- Page items dynamically inserted -->
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   </main>
 
-  <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "AI PDF Analyzer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-pdf-analyzer/",
-    "description": "Analyze PDF content using AI.",
+    "description": "Comprehensive client-side PDF document intelligence, Flesch reading score, sentiment analysis, and metadata audit.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

@@ -3,15 +3,187 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Watermark PDF - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Add Text, Image, or Logo Watermarks to your PDFs.">
-  <meta name="keywords" content="pdf, document, watermark pdf, free, online, tool, utility">
+  <title>Watermark PDF - Stamp Text & Logo on PDF - ALL IN ONE</title>
+  <meta name="description" content="Add text watermarks or image logos to your PDF pages with real-time preview, custom opacity, rotation, and page range selection. 100% client-side.">
+  <meta name="keywords" content="pdf watermark, add watermark to pdf, stamp pdf, confidential watermark, brand logo pdf, client-side, free online tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/watermark-pdf/">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <script src="../../assets/lib/pdf-lib.min.js"></script>
+
+  <style>
+    .watermark-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .upload-zone {
+      border: 2px dashed var(--stroke);
+      border-radius: var(--radius-lg);
+      padding: 3.5rem 2rem;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.2);
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 900px) {
+      .workspace-grid {
+        grid-template-columns: 1.15fr 0.85fr;
+      }
+    }
+
+    .config-card {
+      background: var(--surface);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .mode-tabs {
+      display: flex;
+      background: var(--bg-tertiary);
+      padding: 0.25rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--stroke);
+      gap: 0.25rem;
+    }
+
+    .mode-tab-btn {
+      flex: 1;
+      padding: 0.65rem 1rem;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+
+    .mode-tab-btn.active {
+      background: var(--accent-gradient);
+      color: #ffffff;
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    .preset-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.35rem;
+    }
+
+    .preset-pill {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--stroke);
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-full);
+      font-size: 0.825rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+    .preset-pill:hover, .preset-pill.active {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      background: rgba(var(--accent-rgb), 0.15);
+    }
+
+    .preview-container {
+      background: var(--surface);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .preview-stage {
+      position: relative;
+      width: 100%;
+      max-width: 320px;
+      aspect-ratio: 1 / 1.414; /* A4 aspect ratio */
+      background: #ffffff;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    .page-wireframe {
+      position: absolute;
+      inset: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      opacity: 0.15;
+      pointer-events: none;
+    }
+    .wireframe-line {
+      height: 8px;
+      background: #000000;
+      border-radius: 4px;
+      width: 100%;
+    }
+
+    .watermark-overlay-element {
+      position: absolute;
+      pointer-events: none;
+      white-space: nowrap;
+      transform-origin: center center;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: opacity 0.1s, transform 0.1s;
+    }
+
+    .page-target-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+    }
+
+    .page-radio-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -25,30 +197,232 @@
   <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
-      <div class="tool-header">
+      <div class="tool-header" style="text-align: center; max-width: 650px; margin: 0 auto 1.5rem;">
         <h1>Watermark PDF</h1>
-        <p class="tool-description">Add Text, Image, or Logo Watermarks to your PDFs.</p>
+        <p class="tool-description" style="margin: 0 auto;">
+          Add professional text stamps or logo watermarks to your PDF documents with customizable rotation, opacity, and page selection.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Watermark PDF</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Add Text, Image, or Logo Watermarks to your PDFs.</div>
-            <div><strong>Inputs:</strong> pdf, document, watermark pdf</div>
-            <div><strong>Category:</strong> pdf</div>
-          </div>
+      <div class="tool-panel glass-panel watermark-layout">
+        
+        <!-- Upload Zone -->
+        <div class="upload-zone" id="upload-zone">
+          <svg viewBox="0 0 24 24" width="56" height="56" stroke="currentColor" stroke-width="1.5" fill="none" style="margin-bottom: 1rem; color: var(--accent);">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <path d="m9 12 2 2 4-4"></path>
+          </svg>
+          <h3 style="margin-bottom: 0.5rem; font-size: 1.35rem;">Drop a PDF to add Watermark</h3>
+          <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1.5rem;">
+            Works securely in your browser with real-time visual preview
+          </p>
+          <button class="btn btn-primary" id="btn-browse" type="button">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            Select PDF File
+          </button>
+          <input type="file" id="file-input" accept="application/pdf" style="display: none;">
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Interactive Workspace -->
+        <div id="workspace" style="display: none; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Top Info Bar -->
+          <div style="background: var(--surface); border: 1px solid var(--stroke); padding: 1rem 1.25rem; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem; min-width: 0;">
+              <div style="color: #ef4444;">
+                <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              </div>
+              <div style="min-width: 0;">
+                <div id="ui-filename" style="font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 350px;">document.pdf</div>
+                <div id="ui-meta" style="font-size: 0.8rem; color: var(--text-secondary);">0 Pages &bull; 0 KB</div>
+              </div>
+            </div>
+            <button class="btn btn-secondary" id="btn-change-file" type="button" style="font-size: 0.85rem; padding: 0.4rem 0.9rem;">
+              Change File
+            </button>
+          </div>
+
+          <div class="workspace-grid">
+            
+            <!-- Controls Column -->
+            <div class="config-card">
+              
+              <!-- Watermark Mode Tabs -->
+              <div class="mode-tabs">
+                <button type="button" class="mode-tab-btn active" id="tab-text-mode">
+                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+                  Text Watermark
+                </button>
+                <button type="button" class="mode-tab-btn" id="tab-image-mode">
+                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                  Image / Logo
+                </button>
+              </div>
+
+              <!-- Text Mode Controls -->
+              <div id="text-controls" style="display: flex; flex-direction: column; gap: 1.15rem;">
+                <div class="form-group">
+                  <label for="wm-text">Watermark Text</label>
+                  <input type="text" id="wm-text" class="form-input" value="CONFIDENTIAL" placeholder="e.g. CONFIDENTIAL, DRAFT, COPY">
+                </div>
+
+                <div class="form-group">
+                  <label>Position Preset</label>
+                  <div class="preset-pills">
+                    <button type="button" class="preset-pill active" data-pos="diagonal-center">Diagonal Center</button>
+                    <button type="button" class="preset-pill" data-pos="center">Center</button>
+                    <button type="button" class="preset-pill" data-pos="top-left">Top-Left</button>
+                    <button type="button" class="preset-pill" data-pos="bottom-right">Bottom-Right</button>
+                    <button type="button" class="preset-pill" data-pos="stamp">Stamp</button>
+                  </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                  <div class="form-group">
+                    <label for="wm-color">Color</label>
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                      <input type="color" id="wm-color" value="#ef4444" style="width: 44px; height: 38px; border: 1px solid var(--stroke); border-radius: var(--radius-sm); cursor: pointer; background: transparent; padding: 2px;">
+                      <span id="wm-color-hex" style="font-family: monospace; font-size: 0.9rem; color: var(--text-secondary);">#ef4444</span>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="wm-font-size">Font Size: <span id="val-font-size" class="range-value" style="display: inline;">44</span>pt</label>
+                    <input type="range" id="wm-font-size" class="range-slider" min="12" max="72" value="44" step="1">
+                  </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                  <div class="form-group">
+                    <label for="wm-opacity">Opacity: <span id="val-opacity" class="range-value" style="display: inline;">0.30</span></label>
+                    <input type="range" id="wm-opacity" class="range-slider" min="0.05" max="1.0" value="0.30" step="0.05">
+                  </div>
+                  <div class="form-group">
+                    <label for="wm-rotation">Rotation: <span id="val-rotation" class="range-value" style="display: inline;">45</span>&deg;</label>
+                    <input type="range" id="wm-rotation" class="range-slider" min="-90" max="90" value="45" step="5">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Image Mode Controls (Hidden Initially) -->
+              <div id="image-controls" style="display: none; flex-direction: column; gap: 1.15rem;">
+                <div class="form-group">
+                  <label>Upload Logo / Stamp (PNG, JPG)</label>
+                  <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <button type="button" class="btn btn-secondary" id="btn-browse-logo" style="font-size: 0.85rem;">
+                      <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                      Select Image
+                    </button>
+                    <span id="ui-logo-name" style="font-size: 0.85rem; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">No image chosen</span>
+                  </div>
+                  <input type="file" id="logo-input" accept="image/png, image/jpeg" style="display: none;">
+                </div>
+
+                <div class="form-group">
+                  <label>Image Position Preset</label>
+                  <div class="preset-pills">
+                    <button type="button" class="preset-pill active" data-img-pos="diagonal-center">Center (Angled)</button>
+                    <button type="button" class="preset-pill" data-img-pos="center">Center</button>
+                    <button type="button" class="preset-pill" data-img-pos="top-left">Top-Left</button>
+                    <button type="button" class="preset-pill" data-img-pos="bottom-right">Bottom-Right</button>
+                    <button type="button" class="preset-pill" data-img-pos="stamp">Stamp</button>
+                  </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                  <div class="form-group">
+                    <label for="wm-img-scale">Image Scale: <span id="val-img-scale" class="range-value" style="display: inline;">40</span>%</label>
+                    <input type="range" id="wm-img-scale" class="range-slider" min="10" max="100" value="40" step="5">
+                  </div>
+                  <div class="form-group">
+                    <label for="wm-img-opacity">Opacity: <span id="val-img-opacity" class="range-value" style="display: inline;">0.35</span></label>
+                    <input type="range" id="wm-img-opacity" class="range-slider" min="0.05" max="1.0" value="0.35" step="0.05">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="wm-img-rotation">Rotation: <span id="val-img-rotation" class="range-value" style="display: inline;">0</span>&deg;</label>
+                  <input type="range" id="wm-img-rotation" class="range-slider" min="-90" max="90" value="0" step="5">
+                </div>
+              </div>
+
+              <!-- Page Selection Section -->
+              <div style="border-top: 1px solid var(--stroke); padding-top: 1rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                <label style="font-weight: 600; font-size: 0.9rem; color: var(--text-primary);">Apply Watermark To</label>
+                
+                <div class="page-target-grid">
+                  <label class="page-radio-item">
+                    <input type="radio" name="page-target" value="all" checked> All Pages
+                  </label>
+                  <label class="page-radio-item">
+                    <input type="radio" name="page-target" value="first"> First Page Only
+                  </label>
+                  <label class="page-radio-item">
+                    <input type="radio" name="page-target" value="odd"> Odd Pages (1, 3, 5...)
+                  </label>
+                  <label class="page-radio-item">
+                    <input type="radio" name="page-target" value="even"> Even Pages (2, 4, 6...)
+                  </label>
+                </div>
+                
+                <label class="page-radio-item" style="margin-top: 0.25rem;">
+                  <input type="radio" name="page-target" value="custom"> Custom Page Range
+                </label>
+                <input type="text" id="custom-range-input" class="form-input" placeholder="e.g. 1-3, 5, 7" style="font-size: 0.85rem; padding: 0.5rem 0.75rem; display: none;">
+              </div>
+
+              <!-- Action Buttons -->
+              <div style="margin-top: 0.5rem;">
+                <button class="btn btn-primary" id="btn-process-wm" type="button" style="width: 100%; justify-content: center; padding: 0.9rem 1.5rem; font-size: 1rem;">
+                  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                  <span id="btn-process-text">Download Watermarked PDF</span>
+                </button>
+              </div>
+
+            </div>
+
+            <!-- Real-time Preview Column -->
+            <div class="preview-container">
+              <div style="font-weight: 600; font-size: 0.95rem; color: var(--text-primary); display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                <span>Live Watermark Preview</span>
+                <span style="font-size: 0.75rem; color: var(--text-secondary); background: var(--bg-tertiary); padding: 0.25rem 0.5rem; border-radius: var(--radius-sm);">Page 1 Preview</span>
+              </div>
+
+              <!-- Preview Document Canvas Mockup -->
+              <div class="preview-stage" id="preview-stage">
+                <!-- Page Wireframe Lines -->
+                <div class="page-wireframe">
+                  <div class="wireframe-line" style="width: 45%; height: 12px; margin-bottom: 8px;"></div>
+                  <div class="wireframe-line"></div>
+                  <div class="wireframe-line" style="width: 85%;"></div>
+                  <div class="wireframe-line" style="width: 90%;"></div>
+                  <div class="wireframe-line"></div>
+                  <div class="wireframe-line" style="width: 60%; margin-bottom: 12px;"></div>
+                  <div class="wireframe-line"></div>
+                  <div class="wireframe-line" style="width: 75%;"></div>
+                  <div class="wireframe-line" style="width: 95%;"></div>
+                  <div class="wireframe-line" style="width: 80%;"></div>
+                  <div class="wireframe-line" style="width: 50%;"></div>
+                </div>
+
+                <!-- Text Watermark Live Element -->
+                <div id="wm-preview-text" class="watermark-overlay-element" style="color: #ef4444; font-size: 24px; opacity: 0.3; transform: rotate(-45deg);">
+                  CONFIDENTIAL
+                </div>
+
+                <!-- Image Watermark Live Element -->
+                <img id="wm-preview-img" class="watermark-overlay-element" src="" alt="Watermark preview" style="display: none; max-width: 60%; max-height: 60%; object-fit: contain;">
+              </div>
+
+              <p style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; margin: 0;">
+                Watermark position, angle, color, and opacity update in real-time.
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
-    
     </div>
   </main>
 
@@ -62,7 +436,7 @@
     "@type": "WebApplication",
     "name": "Watermark PDF",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/watermark-pdf/",
-    "description": "Add Text, Image, or Logo Watermarks to your PDFs.",
+    "description": "Stamp Text and Logo Watermarks on PDF pages.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

@@ -3,17 +3,408 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PDF to Word - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Convert PDF to DOCX format easily.">
-  <meta name="keywords" content="pdf, document, pdf to word, free, online, tool, utility">
+  <title>PDF to Word Converter - Free & Secure - ALL IN ONE</title>
+  <meta name="description" content="Convert PDF documents into editable Microsoft Word (.docx and .doc) files with preserved headings, lists, tables, and formatting entirely in your browser.">
+  <meta name="keywords" content="pdf to word, convert pdf to docx, pdf to doc, pdf converter, extract pdf text, free document converter">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/pdf-to-word/">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <!-- PDF.js library -->
+  <script src="../../assets/lib/pdf.min.js"></script>
+
+  <!-- Web Components -->
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+
+  <style>
+    /* PDF to Word Luxury Workspace Styles */
+    .word-converter-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    .upload-card {
+      border: 2px dashed var(--stroke);
+      border-radius: var(--radius-lg);
+      padding: 3.5rem 2rem;
+      text-align: center;
+      background: var(--surface);
+      backdrop-filter: blur(12px);
+      transition: var(--transition);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .upload-card:hover, .upload-card.dragover {
+      border-color: var(--accent);
+      background: rgba(var(--accent-rgb), 0.06);
+      transform: translateY(-2px);
+    }
+
+    .upload-icon-wrapper {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--accent-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      transition: transform 0.3s var(--ease);
+    }
+
+    .upload-card:hover .upload-icon-wrapper {
+      transform: scale(1.08);
+    }
+
+    .badge-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 0.75rem;
+    }
+
+    .pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    /* Progress UI */
+    .progress-panel {
+      display: none;
+      padding: 2.5rem;
+      text-align: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+
+    .progress-track {
+      width: 100%;
+      max-width: 480px;
+      height: 8px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      margin: 1.5rem auto 1rem;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .progress-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: var(--accent-gradient);
+      border-radius: var(--radius-full);
+      transition: width 0.25s ease;
+    }
+
+    /* Workspace UI */
+    .workspace-area {
+      display: none;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .workspace-top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    .file-meta-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .file-title-tag {
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .meta-counts {
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .meta-counts span {
+      background: var(--bg-tertiary);
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+
+    .actions-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    /* Ribbon Formatting Toolbar */
+    .ribbon-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.6rem 0.8rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      position: sticky;
+      top: 5rem;
+      z-index: 20;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .ribbon-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-primary);
+      border-radius: var(--radius-sm);
+      padding: 0.4rem 0.6rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: var(--transition);
+      min-width: 32px;
+      height: 32px;
+    }
+
+    .ribbon-btn:hover {
+      background: var(--bg-tertiary);
+      border-color: var(--border);
+      color: var(--accent);
+    }
+
+    .ribbon-btn.active {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .ribbon-select {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      border-radius: var(--radius-sm);
+      padding: 0.35rem 0.6rem;
+      font-size: 0.825rem;
+      font-weight: 500;
+      height: 32px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .ribbon-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      margin: 0 0.25rem;
+    }
+
+    /* Document Sheet Stage */
+    .document-stage {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 2.5rem 1.5rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      display: flex;
+      justify-content: center;
+      overflow-x: auto;
+      min-height: 700px;
+    }
+
+    .word-sheet {
+      width: 100%;
+      max-width: 820px;
+      min-height: 1056px; /* A4 aspect ratio representation */
+      background: #ffffff;
+      color: #1a1a1a;
+      padding: 3rem 3.5rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+      border-radius: 4px;
+      font-family: 'Calibri', 'Inter', -apple-system, sans-serif;
+      font-size: 11pt;
+      line-height: 1.6;
+      outline: none;
+      overflow-wrap: break-word;
+      transition: all 0.2s ease;
+    }
+
+    [data-theme="light"] .word-sheet {
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .word-sheet:focus {
+      box-shadow: 0 0 0 2px var(--accent), 0 10px 40px rgba(0, 0, 0, 0.45);
+    }
+
+    /* Document styling inside Word Sheet */
+    .word-sheet h1 {
+      font-size: 22pt;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin: 1.2rem 0 0.6rem;
+      line-height: 1.2;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 0.3rem;
+      font-family: inherit;
+    }
+
+    .word-sheet h2 {
+      font-size: 16pt;
+      font-weight: 700;
+      color: #1d4ed8;
+      margin: 1rem 0 0.5rem;
+      line-height: 1.25;
+      font-family: inherit;
+    }
+
+    .word-sheet h3 {
+      font-size: 13pt;
+      font-weight: 600;
+      color: #334155;
+      margin: 0.8rem 0 0.4rem;
+      font-family: inherit;
+    }
+
+    .word-sheet p {
+      margin: 0 0 0.8rem;
+      color: #1f2937;
+      text-align: justify;
+      line-height: 1.55;
+      font-family: inherit;
+    }
+
+    .word-sheet ul, .word-sheet ol {
+      margin: 0 0 0.8rem 2rem;
+      color: #1f2937;
+    }
+
+    .word-sheet li {
+      margin-bottom: 0.3rem;
+    }
+
+    .word-sheet table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.2rem 0;
+      font-size: 10pt;
+    }
+
+    .word-sheet table, .word-sheet th, .word-sheet td {
+      border: 1px solid #cbd5e1;
+    }
+
+    .word-sheet th, .word-sheet td {
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+
+    .word-sheet th {
+      background-color: #f1f5f9;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .word-sheet tr:nth-child(even) td {
+      background-color: #f8fafc;
+    }
+
+    .word-sheet blockquote {
+      border-left: 4px solid #3b82f6;
+      padding-left: 1rem;
+      margin: 1rem 0;
+      color: #475569;
+      font-style: italic;
+    }
+
+    .doc-page-divider {
+      border: none;
+      border-top: 2px dashed #94a3b8;
+      margin: 3rem 0;
+      position: relative;
+      text-align: center;
+      user-select: none;
+    }
+
+    .doc-page-divider::before {
+      content: attr(data-page-label);
+      position: absolute;
+      top: -0.75rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #f1f5f9;
+      color: #64748b;
+      padding: 0.1rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 9999px;
+      border: 1px solid #cbd5e1;
+    }
+
+    /* Status Bar */
+    .doc-status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .word-sheet {
+        padding: 1.5rem 1.25rem;
+      }
+      .ribbon-toolbar {
+        top: 4.5rem;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -25,44 +416,230 @@
   <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
-      <div class="tool-header">
-        <h1>PDF to Word</h1>
-        <p class="tool-description">Convert PDF to DOCX format easily.</p>
+      <div class="tool-header" style="text-align: center; max-width: 760px; margin: 0 auto 1.5rem;">
+        <span class="badge" style="margin-bottom: 0.75rem;">100% Client-Side Engine</span>
+        <h1>PDF to Word Converter</h1>
+        <p class="tool-description" style="margin: 0 auto;">
+          Convert your PDF documents into fully editable Microsoft Word (.docx &amp; .doc) files. Smart structural detection preserves headings, paragraphs, bullet lists, and tables with zero server uploads.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>PDF to Word</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Convert PDF to DOCX format easily.</div>
-            <div><strong>Inputs:</strong> pdf, document, pdf to word</div>
-            <div><strong>Category:</strong> pdf</div>
+      <div class="word-converter-layout">
+        <!-- Upload Card -->
+        <div class="upload-card glass-panel" id="upload-zone">
+          <div class="upload-icon-wrapper">
+            <svg viewBox="0 0 24 24" width="40" height="40" stroke="currentColor" stroke-width="1.8" fill="none">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="12" y1="18" x2="12" y2="12"></line>
+              <line x1="9" y1="15" x2="15" y2="15"></line>
+            </svg>
+          </div>
+          <div>
+            <h3 style="font-size: 1.35rem; margin-bottom: 0.4rem;">Select or Drop PDF Document</h3>
+            <p style="color: var(--muted); font-size: 0.95rem;">Drag and drop your PDF here, or click to browse</p>
+          </div>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; margin-top: 0.5rem;">
+            <button class="btn btn-primary" id="btn-browse">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              Choose PDF File
+            </button>
+            <button class="btn btn-secondary" id="btn-sample" type="button">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              Load Sample Document
+            </button>
+          </div>
+          <input type="file" id="file-input" accept="application/pdf" style="display: none;">
+
+          <div class="badge-strip">
+            <span class="pill-badge">
+              <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              Private &amp; Offline
+            </span>
+            <span class="pill-badge">
+              <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              DOCX &amp; DOC Output
+            </span>
+            <span class="pill-badge">
+              <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              Instant Extraction
+            </span>
+            <span class="pill-badge">
+              <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+              Table Reconstruction
+            </span>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Progress State Panel -->
+        <div class="progress-panel glass-panel" id="progress-panel">
+          <div class="upload-icon-wrapper" style="margin: 0 auto 1rem; animation: pulse 1.5s infinite;">
+            <svg viewBox="0 0 24 24" width="36" height="36" stroke="currentColor" stroke-width="2" fill="none">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+            </svg>
+          </div>
+          <h3 id="progress-title" style="margin-bottom: 0.5rem; font-size: 1.25rem;">Parsing PDF Document...</h3>
+          <p id="progress-status" style="color: var(--muted); font-size: 0.9rem;">Reading structure and layout geometry</p>
+          <div class="progress-track">
+            <div class="progress-bar-fill" id="progress-bar"></div>
+          </div>
+          <div id="progress-percent" style="font-family: monospace; font-size: 0.85rem; color: var(--accent);">0%</div>
+        </div>
+
+        <!-- Workspace Area -->
+        <div class="workspace-area" id="workspace-area">
+          <!-- Top Metadata Bar -->
+          <div class="workspace-top-bar glass-panel">
+            <div class="file-meta-group">
+              <div class="file-title-tag">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" style="color: #3b82f6;">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+                <span id="doc-filename">document.pdf</span>
+              </div>
+              <div class="meta-counts">
+                <span id="meta-pages">1 Page</span>
+                <span id="meta-words">0 Words</span>
+                <span id="meta-chars">0 Chars</span>
+              </div>
+            </div>
+
+            <div class="actions-group">
+              <button class="btn btn-secondary" id="btn-copy-text" title="Copy text to clipboard">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                Copy Text
+              </button>
+              <button class="btn btn-secondary" id="btn-export-doc" title="Download as Microsoft Word 97-2003 .doc">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                .DOC
+              </button>
+              <button class="btn btn-primary" id="btn-export-docx" title="Download as Microsoft Word .docx">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Download Word (.docx)
+              </button>
+              <button class="btn btn-secondary" id="btn-reset" title="Choose another PDF file" style="padding: 0.6rem 0.8rem;">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                  <polyline points="1 4 1 10 7 10"></polyline>
+                  <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Formatting Ribbon Toolbar -->
+          <div class="ribbon-toolbar glass-panel">
+            <select class="ribbon-select" id="format-block" title="Text Style">
+              <option value="p">Paragraph</option>
+              <option value="h1">Heading 1</option>
+              <option value="h2">Heading 2</option>
+              <option value="h3">Heading 3</option>
+              <option value="blockquote">Quote</option>
+            </select>
+
+            <select class="ribbon-select" id="font-family" title="Font Family">
+              <option value="Calibri, sans-serif">Calibri</option>
+              <option value="Arial, sans-serif">Arial</option>
+              <option value="'Times New Roman', serif">Times New Roman</option>
+              <option value="Georgia, serif">Georgia</option>
+              <option value="'Inter', sans-serif">Inter</option>
+            </select>
+
+            <select class="ribbon-select" id="font-size" title="Font Size">
+              <option value="2">10pt (Small)</option>
+              <option value="3" selected>11pt (Body)</option>
+              <option value="4">14pt (Subheading)</option>
+              <option value="5">18pt (Heading 2)</option>
+              <option value="6">24pt (Heading 1)</option>
+            </select>
+
+            <div class="ribbon-divider"></div>
+
+            <button type="button" class="ribbon-btn" id="cmd-bold" title="Bold (Ctrl+B)"><b>B</b></button>
+            <button type="button" class="ribbon-btn" id="cmd-italic" title="Italic (Ctrl+I)"><i>I</i></button>
+            <button type="button" class="ribbon-btn" id="cmd-underline" title="Underline (Ctrl+U)"><u>U</u></button>
+            <button type="button" class="ribbon-btn" id="cmd-strike" title="Strikethrough"><s>S</s></button>
+
+            <div class="ribbon-divider"></div>
+
+            <button type="button" class="ribbon-btn" id="cmd-align-left" title="Align Left">
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="17" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg>
+            </button>
+            <button type="button" class="ribbon-btn" id="cmd-align-center" title="Align Center">
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="10" x2="6" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="18" y1="18" x2="6" y2="18"></line></svg>
+            </button>
+            <button type="button" class="ribbon-btn" id="cmd-align-right" title="Align Right">
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="21" y1="10" x2="7" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="21" y1="18" x2="7" y2="18"></line></svg>
+            </button>
+
+            <div class="ribbon-divider"></div>
+
+            <button type="button" class="ribbon-btn" id="cmd-ul" title="Bulleted List">
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="9" y1="6" x2="20" y2="6"></line><line x1="9" y1="12" x2="20" y2="12"></line><line x1="9" y1="18" x2="20" y2="18"></line><circle cx="4" cy="6" r="2"></circle><circle cx="4" cy="12" r="2"></circle><circle cx="4" cy="18" r="2"></circle></svg>
+            </button>
+            <button type="button" class="ribbon-btn" id="cmd-ol" title="Numbered List">
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="10" y1="6" x2="21" y2="6"></line><line x1="10" y1="12" x2="21" y2="12"></line><line x1="10" y1="18" x2="21" y2="18"></line><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path></svg>
+            </button>
+
+            <div class="ribbon-divider"></div>
+
+            <button type="button" class="ribbon-btn" id="cmd-clear" title="Clear Formatting">
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          </div>
+
+          <!-- Document Sheet Stage -->
+          <div class="document-stage">
+            <div class="word-sheet" id="document-editor" contenteditable="true" spellcheck="true">
+              <!-- Reconstructed document content injected here -->
+            </div>
+          </div>
+
+          <!-- Status Bar -->
+          <div class="doc-status-bar glass-panel">
+            <div id="status-counts">Pages: 1 | Words: 0 | Characters: 0 | Paragraphs: 0</div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--success);">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Editable Workspace Active</span>
+            </div>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "PDF to Word",
+    "name": "PDF to Word Converter",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/pdf-to-word/",
-    "description": "Convert PDF to DOCX format easily.",
+    "description": "Convert PDF documents to editable Microsoft Word DOCX and DOC files with layout preservation.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

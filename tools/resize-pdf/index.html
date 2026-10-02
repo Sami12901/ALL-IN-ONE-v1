@@ -4,69 +4,132 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Resize PDF - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Resize PDF to A4, A5, Letter, Legal, or Custom Size.">
-  <meta name="keywords" content="pdf, document, resize pdf, free, online, tool, utility">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/resize-pdf/">
+  <meta name="description" content="Resize PDF pages to standard paper formats like A4, Letter, Legal, A3, and A5.">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <script src="../../assets/lib/pdf.min.js"></script>
+  <script src="../../assets/lib/pdf-lib.min.js"></script>
+
+  <style>
+    .resize-layout{display:flex;gap:2rem;max-width:1100px;margin:0 auto;flex-wrap:wrap}
+    .resize-sidebar{flex:0 0 300px;display:flex;flex-direction:column;gap:1.25rem}
+    .resize-stage{flex:1;min-width:340px;display:flex;flex-direction:column;align-items:center;gap:1rem}
+    .upload-zone{border:2px dashed var(--stroke);border-radius:1rem;padding:3rem 2rem;text-align:center;background:rgba(0,0,0,.2);cursor:pointer;transition:all .2s}
+    .upload-zone:hover,.upload-zone.dragover{border-color:var(--accent);background:rgba(var(--accent-rgb),.05)}
+    .card{background:var(--surface);border:1px solid var(--stroke);border-radius:.75rem;padding:1.25rem}
+    .form-group{display:flex;flex-direction:column;gap:.4rem;margin-bottom:.75rem}
+    .form-group label{font-size:.85rem;font-weight:600;color:var(--text)}
+    .form-group select{background:var(--bg-tertiary);border:1px solid var(--stroke);border-radius:.5rem;padding:.5rem .75rem;color:var(--text);font-size:.9rem}
+    .size-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+    .size-card{padding:.6rem;border:1px solid var(--stroke);border-radius:.5rem;text-align:center;cursor:pointer;transition:all .2s;background:transparent}
+    .size-card:hover,.size-card.active{border-color:var(--accent);background:rgba(var(--accent-rgb),.1)}
+    .size-card .sz-name{font-weight:700;font-size:.9rem;color:var(--text)}
+    .size-card .sz-dim{font-size:.7rem;color:var(--muted);margin-top:.15rem}
+    .orient-btns{display:flex;gap:.5rem}
+    .orient-btn{flex:1;padding:.5rem;border:1px solid var(--stroke);border-radius:.5rem;text-align:center;cursor:pointer;background:transparent;color:var(--text);transition:all .2s}
+    .orient-btn:hover,.orient-btn.active{border-color:var(--accent);background:rgba(var(--accent-rgb),.1)}
+    .canvas-wrapper{position:relative;border:1px solid var(--stroke);border-radius:.5rem;overflow:hidden;background:#111;display:inline-block}
+    .canvas-wrapper canvas{display:block}
+    .page-nav{display:flex;align-items:center;gap:1rem}
+    .page-nav button{background:var(--surface);border:1px solid var(--stroke);color:var(--text);padding:.4rem .8rem;border-radius:.5rem;cursor:pointer}
+    .page-nav button:disabled{opacity:.4;cursor:default}
+    .kpi-row{display:flex;gap:.75rem;flex-wrap:wrap}
+    .kpi{flex:1;min-width:100px;background:var(--surface);border:1px solid var(--stroke);border-radius:.5rem;padding:.75rem;text-align:center}
+    .kpi .val{font-size:1.1rem;font-weight:700;color:var(--accent)}
+    .kpi .lbl{font-size:.7rem;color:var(--muted);margin-top:.2rem}
+    .progress-bar{height:6px;background:var(--bg-tertiary);border-radius:3px;overflow:hidden;display:none}
+    .progress-bar .fill{height:100%;background:var(--accent);width:0;transition:width .3s}
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
-      <div class="tool-header">
+      <div class="tool-header" style="text-align:center;max-width:650px;margin:0 auto 2rem">
         <h1>Resize PDF</h1>
-        <p class="tool-description">Resize PDF to A4, A5, Letter, Legal, or Custom Size.</p>
+        <p class="tool-description">Resize PDF pages to standard paper formats. Scale content to fit A4, Letter, Legal, A3, A5, and more — 100% in-browser.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Resize PDF</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Resize PDF to A4, A5, Letter, Legal, or Custom Size.</div>
-            <div><strong>Inputs:</strong> pdf, document, resize pdf</div>
-            <div><strong>Category:</strong> pdf</div>
+      <div class="tool-panel glass-panel">
+        <!-- Upload Zone -->
+        <div id="upload-zone" class="upload-zone">
+          <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1" fill="none" style="margin-bottom:1rem;color:var(--muted)"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          <h3 style="margin-bottom:.5rem">Drop a PDF file here</h3>
+          <p style="color:var(--muted);font-size:.9rem;margin-bottom:1.5rem">or click to browse</p>
+          <button class="btn btn-secondary" id="btn-browse">Select PDF</button>
+          <input type="file" id="file-input" accept="application/pdf" style="display:none">
+        </div>
+
+        <!-- Workspace -->
+        <div id="workspace" style="display:none">
+          <div class="kpi-row" style="margin-bottom:1.5rem">
+            <div class="kpi"><div class="val" id="kpi-pages">-</div><div class="lbl">Pages</div></div>
+            <div class="kpi"><div class="val" id="kpi-orig">-</div><div class="lbl">Original Size</div></div>
+            <div class="kpi"><div class="val" id="kpi-target">-</div><div class="lbl">Target Size</div></div>
+            <div class="kpi"><div class="val" id="kpi-scale">-</div><div class="lbl">Scale Factor</div></div>
+          </div>
+
+          <div class="progress-bar" id="progress-bar"><div class="fill" id="progress-fill"></div></div>
+
+          <div class="resize-layout">
+            <div class="resize-sidebar">
+              <div class="card">
+                <h3 style="margin-bottom:.75rem;font-size:1rem">Target Page Size</h3>
+                <div class="size-grid" id="size-grid">
+                  <div class="size-card active" data-w="595" data-h="842" data-name="A4"><div class="sz-name">A4</div><div class="sz-dim">210 × 297 mm</div></div>
+                  <div class="size-card" data-w="612" data-h="792" data-name="Letter"><div class="sz-name">US Letter</div><div class="sz-dim">8.5 × 11 in</div></div>
+                  <div class="size-card" data-w="612" data-h="1008" data-name="Legal"><div class="sz-name">US Legal</div><div class="sz-dim">8.5 × 14 in</div></div>
+                  <div class="size-card" data-w="842" data-h="1191" data-name="A3"><div class="sz-name">A3</div><div class="sz-dim">297 × 420 mm</div></div>
+                  <div class="size-card" data-w="420" data-h="595" data-name="A5"><div class="sz-name">A5</div><div class="sz-dim">148 × 210 mm</div></div>
+                  <div class="size-card" data-w="792" data-h="1224" data-name="Tabloid"><div class="sz-name">Tabloid</div><div class="sz-dim">11 × 17 in</div></div>
+                </div>
+              </div>
+
+              <div class="card">
+                <h3 style="margin-bottom:.75rem;font-size:1rem">Orientation</h3>
+                <div class="orient-btns">
+                  <button class="orient-btn active" data-orient="portrait">📄 Portrait</button>
+                  <button class="orient-btn" data-orient="landscape">📃 Landscape</button>
+                </div>
+              </div>
+
+              <div class="card">
+                <h3 style="margin-bottom:.75rem;font-size:1rem">Content Scaling</h3>
+                <div class="form-group">
+                  <select id="scale-mode">
+                    <option value="fit" selected>Fit to Page (preserve ratio)</option>
+                    <option value="stretch">Stretch to Fill</option>
+                    <option value="center">Center (original size)</option>
+                  </select>
+                </div>
+              </div>
+
+              <button class="btn btn-primary" id="btn-resize" style="width:100%">📐 Resize PDF</button>
+              <button class="btn btn-secondary" id="btn-download" style="width:100%;display:none">⬇ Download Resized PDF</button>
+              <button class="btn btn-secondary" id="btn-reset" style="width:100%">🔄 Load New PDF</button>
+            </div>
+
+            <div class="resize-stage">
+              <div class="page-nav">
+                <button id="btn-prev" disabled>◀ Prev</button>
+                <span id="page-indicator">Page 1 / 1</span>
+                <button id="btn-next" disabled>Next ▶</button>
+              </div>
+              <div class="canvas-wrapper"><canvas id="pdf-canvas"></canvas></div>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
     </div>
   </main>
 
-  <!-- Footer Web Component -->
   <app-footer></app-footer>
-
-  <!-- Structured schema for search engine rich snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Resize PDF",
-    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/resize-pdf/",
-    "description": "Resize PDF to A4, A5, Letter, Legal, or Custom Size.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
-  }
-  </script>
 </body>
 </html>

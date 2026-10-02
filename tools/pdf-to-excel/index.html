@@ -3,17 +3,429 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PDF to Excel - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Convert PDF to XLSX or CSV formats.">
-  <meta name="keywords" content="pdf, document, pdf to excel, free, online, tool, utility">
+  <title>PDF to Excel Converter - Free & Accurate - ALL IN ONE</title>
+  <meta name="description" content="Extract tables and structured data from PDF files with spatial coordinate recognition and column alignment. Export directly to Excel (.xlsx) and CSV entirely client-side.">
+  <meta name="keywords" content="pdf to excel, pdf to xlsx, pdf to csv, extract tables from pdf, pdf table extractor, spreadsheet converter">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/pdf-to-excel/">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <!-- PDF.js library -->
+  <script src="../../assets/lib/pdf.min.js"></script>
+
+  <!-- Web Components -->
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+
+  <style>
+    /* PDF to Excel Luxury Spreadsheet Workspace */
+    .excel-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    .upload-card {
+      border: 2px dashed var(--stroke);
+      border-radius: var(--radius-lg);
+      padding: 3.5rem 2rem;
+      text-align: center;
+      background: var(--surface);
+      backdrop-filter: blur(12px);
+      transition: var(--transition);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .upload-card:hover, .upload-card.dragover {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.06);
+      transform: translateY(-2px);
+    }
+
+    .upload-icon-wrapper {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #10b981;
+      margin-bottom: 0.5rem;
+      transition: transform 0.3s var(--ease);
+    }
+
+    .upload-card:hover .upload-icon-wrapper {
+      transform: scale(1.08);
+    }
+
+    .badge-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 0.75rem;
+    }
+
+    .pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    /* Progress UI */
+    .progress-panel {
+      display: none;
+      padding: 2.5rem;
+      text-align: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+
+    .progress-track {
+      width: 100%;
+      max-width: 480px;
+      height: 8px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      margin: 1.5rem auto 1rem;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .progress-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+      border-radius: var(--radius-full);
+      transition: width 0.25s ease;
+    }
+
+    /* Workspace UI */
+    .workspace-area {
+      display: none;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .workspace-top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    .file-meta-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .file-title-tag {
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .meta-counts {
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .meta-counts span {
+      background: var(--bg-tertiary);
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+
+    .actions-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    /* Page Tabs & Grid Controls */
+    .spreadsheet-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    .page-tabs-container {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      overflow-x: auto;
+      max-width: 100%;
+    }
+
+    .page-tab {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: var(--transition);
+    }
+
+    .page-tab:hover {
+      color: var(--text-primary);
+      border-color: #10b981;
+    }
+
+    .page-tab.active {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: #10b981;
+      color: #10b981;
+    }
+
+    .grid-edit-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .grid-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      border-radius: var(--radius-sm);
+      padding: 0.35rem 0.65rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .grid-btn:hover {
+      background: var(--border);
+      color: #10b981;
+    }
+
+    .search-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.35rem 0.65rem;
+      color: var(--text-primary);
+      font-size: 0.825rem;
+      outline: none;
+      width: 160px;
+    }
+
+    .search-box:focus {
+      border-color: #10b981;
+    }
+
+    /* Spreadsheet Container */
+    .spreadsheet-stage {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: auto;
+      max-height: 650px;
+      position: relative;
+    }
+
+    .excel-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      text-align: left;
+    }
+
+    .excel-table thead {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--bg-tertiary);
+    }
+
+    .excel-table th {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-weight: 700;
+      padding: 0.6rem 0.8rem;
+      border-bottom: 2px solid var(--border);
+      border-right: 1px solid var(--border);
+      white-space: nowrap;
+      user-select: none;
+      font-size: 0.8rem;
+    }
+
+    .col-letter-header {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 0.2rem;
+      letter-spacing: 0.05em;
+    }
+
+    .col-type-badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      padding: 0.15rem 0.4rem;
+      border-radius: var(--radius-full);
+      background: rgba(16, 185, 129, 0.12);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-top: 0.2rem;
+    }
+
+    .col-type-badge.text {
+      background: rgba(59, 130, 246, 0.12);
+      color: #60a5fa;
+      border-color: rgba(59, 130, 246, 0.25);
+    }
+
+    .col-type-badge.date {
+      background: rgba(245, 158, 11, 0.12);
+      color: #fbbf24;
+      border-color: rgba(245, 158, 11, 0.25);
+    }
+
+    .excel-table td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      color: var(--text-primary);
+      min-width: 90px;
+      outline: none;
+      transition: background 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .excel-table td:focus {
+      background: rgba(16, 185, 129, 0.08);
+      box-shadow: inset 0 0 0 1.5px #10b981;
+    }
+
+    .excel-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .excel-table tr.filtered-out {
+      display: none;
+    }
+
+    .row-index-cell {
+      width: 44px;
+      min-width: 44px;
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-align: center;
+      user-select: none;
+      position: sticky;
+      left: 0;
+      z-index: 5;
+    }
+
+    .row-delete-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 0.2rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      opacity: 0;
+      transition: opacity 0.2s, color 0.2s;
+    }
+
+    .excel-table tr:hover .row-delete-btn {
+      opacity: 1;
+    }
+
+    .row-delete-btn:hover {
+      color: var(--error);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    /* Summary Panel */
+    .summary-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+
+    .summary-stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+
+    .stat-val {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -25,44 +437,204 @@
   <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
-      <div class="tool-header">
-        <h1>PDF to Excel</h1>
-        <p class="tool-description">Convert PDF to XLSX or CSV formats.</p>
+      <div class="tool-header" style="text-align: center; max-width: 760px; margin: 0 auto 1.5rem;">
+        <span class="badge" style="margin-bottom: 0.75rem; color: #10b981; border-color: rgba(16, 185, 129, 0.3); background: rgba(16, 185, 129, 0.1);">Spatial Grid Detection</span>
+        <h1>PDF to Excel Converter</h1>
+        <p class="tool-description" style="margin: 0 auto;">
+          Extract tabular data from PDF files using spatial text coordinate recognition. Automatically detects columns, infers data types, and exports to native Excel (.xlsx) and CSV spreadsheets.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>PDF to Excel</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Convert PDF to XLSX or CSV formats.</div>
-            <div><strong>Inputs:</strong> pdf, document, pdf to excel</div>
-            <div><strong>Category:</strong> pdf</div>
+      <div class="excel-layout">
+        <!-- Upload Card -->
+        <div class="upload-card glass-panel" id="upload-zone">
+          <div class="upload-icon-wrapper">
+            <svg viewBox="0 0 24 24" width="40" height="40" stroke="currentColor" stroke-width="1.8" fill="none">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="3" y1="9" x2="21" y2="9"></line>
+              <line x1="3" y1="15" x2="21" y2="15"></line>
+              <line x1="9" y1="3" x2="9" y2="21"></line>
+              <line x1="15" y1="3" x2="15" y2="21"></line>
+            </svg>
+          </div>
+          <div>
+            <h3 style="font-size: 1.35rem; margin-bottom: 0.4rem;">Select or Drop PDF with Tables</h3>
+            <p style="color: var(--muted); font-size: 0.95rem;">Drag and drop invoices, reports, balances, or financial statements</p>
+          </div>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; margin-top: 0.5rem;">
+            <button class="btn btn-primary" id="btn-browse" style="background: linear-gradient(90deg, #10b981 0%, #059669 100%);">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              Choose PDF File
+            </button>
+            <button class="btn btn-secondary" id="btn-sample" type="button">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="3" y1="9" x2="21" y2="9"></line>
+                <line x1="9" y1="21" x2="9" y2="9"></line>
+              </svg>
+              Load Sample Data
+            </button>
+          </div>
+          <input type="file" id="file-input" accept="application/pdf" style="display: none;">
+
+          <div class="badge-strip">
+            <span class="pill-badge">
+              <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              100% Client-Side Privacy
+            </span>
+            <span class="pill-badge">
+              <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              Excel (.xlsx / XML) &amp; CSV
+            </span>
+            <span class="pill-badge">
+              <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+              Type Detection (Num/Date/Text)
+            </span>
+            <span class="pill-badge">
+              <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              Multi-page PDF Recognition
+            </span>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Progress State Panel -->
+        <div class="progress-panel glass-panel" id="progress-panel">
+          <div class="upload-icon-wrapper" style="margin: 0 auto 1rem; animation: pulse 1.5s infinite;">
+            <svg viewBox="0 0 24 24" width="36" height="36" stroke="currentColor" stroke-width="2" fill="none">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+            </svg>
+          </div>
+          <h3 id="progress-title" style="margin-bottom: 0.5rem; font-size: 1.25rem;">Parsing PDF Geometry...</h3>
+          <p id="progress-status" style="color: var(--muted); font-size: 0.9rem;">Extracting spatial transform coordinates</p>
+          <div class="progress-track">
+            <div class="progress-bar-fill" id="progress-bar"></div>
+          </div>
+          <div id="progress-percent" style="font-family: monospace; font-size: 0.85rem; color: #10b981;">0%</div>
+        </div>
+
+        <!-- Workspace Area -->
+        <div class="workspace-area" id="workspace-area">
+          <!-- Top Metadata Bar -->
+          <div class="workspace-top-bar glass-panel">
+            <div class="file-meta-group">
+              <div class="file-title-tag">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" style="color: #10b981;">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="3" y1="9" x2="21" y2="9"></line>
+                  <line x1="9" y1="21" x2="9" y2="9"></line>
+                </svg>
+                <span id="doc-filename">table_data.pdf</span>
+              </div>
+              <div class="meta-counts">
+                <span id="meta-rows">0 Rows</span>
+                <span id="meta-cols">0 Columns</span>
+                <span id="meta-pages">1 Page</span>
+              </div>
+            </div>
+
+            <div class="actions-group">
+              <button class="btn btn-secondary" id="btn-copy-csv" title="Copy CSV to clipboard">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                Copy CSV
+              </button>
+              <button class="btn btn-secondary" id="btn-export-csv" title="Download standard CSV spreadsheet">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Export CSV
+              </button>
+              <button class="btn btn-primary" id="btn-export-excel" style="background: linear-gradient(90deg, #10b981 0%, #059669 100%);" title="Download Microsoft Excel Workbook (.xlsx)">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Download Excel (.xlsx)
+              </button>
+              <button class="btn btn-secondary" id="btn-reset" title="Choose another PDF file" style="padding: 0.6rem 0.8rem;">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                  <polyline points="1 4 1 10 7 10"></polyline>
+                  <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Spreadsheet Toolbar: Page tabs + Table Actions -->
+          <div class="spreadsheet-toolbar glass-panel">
+            <div class="page-tabs-container" id="page-tabs">
+              <!-- Dynamically populated page tabs -->
+            </div>
+
+            <div class="grid-edit-controls">
+              <input type="text" class="search-box" id="table-search" placeholder="Filter rows...">
+              <button class="grid-btn" id="btn-add-row" title="Add new row at bottom">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Add Row
+              </button>
+              <button class="grid-btn" id="btn-add-col" title="Add new column at right">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Add Column
+              </button>
+            </div>
+          </div>
+
+          <!-- Spreadsheet Stage (Interactive Table) -->
+          <div class="spreadsheet-stage">
+            <table class="excel-table" id="spreadsheet-table">
+              <thead id="spreadsheet-thead">
+                <!-- Header row with column letters and detected types -->
+              </thead>
+              <tbody id="spreadsheet-tbody">
+                <!-- Editable data cells -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Summary Strip -->
+          <div class="summary-strip">
+            <div class="summary-stat-card glass-panel">
+              <span class="stat-label">Total Rows</span>
+              <span class="stat-val" id="stat-total-rows">0</span>
+            </div>
+            <div class="summary-stat-card glass-panel">
+              <span class="stat-label">Total Columns</span>
+              <span class="stat-val" id="stat-total-cols">0</span>
+            </div>
+            <div class="summary-stat-card glass-panel">
+              <span class="stat-label">Numeric Columns</span>
+              <span class="stat-val" id="stat-numeric-cols" style="color: #10b981;">0</span>
+            </div>
+            <div class="summary-stat-card glass-panel">
+              <span class="stat-label">Filled Cells</span>
+              <span class="stat-val" id="stat-filled-cells">0</span>
+            </div>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "PDF to Excel",
+    "name": "PDF to Excel Converter",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/pdf-to-excel/",
-    "description": "Convert PDF to XLSX or CSV formats.",
+    "description": "Extract structured tables from PDF documents to Excel (.xlsx) and CSV files with spatial coordinate recognition.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

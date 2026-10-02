@@ -3,66 +3,355 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI OCR Engine - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="AI-powered Optical Character Recognition for PDFs.">
-  <meta name="keywords" content="pdf, document, ai ocr engine, free, online, tool, utility">
+  <title>AI OCR Engine - Optical Character Recognition &amp; Bounding Box Studio - ALL IN ONE</title>
+  <meta name="description" content="State-of-the-art client-side OCR engine with image preprocessing, adaptive binarization, visual bounding box text detection, and searchable PDF export.">
+  <meta name="keywords" content="ocr engine, client side ocr, image to text, pdf ocr, scanned pdf to text, bounding box text detection, extract text from scan">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-ocr-engine/">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <!-- PDF.js Library -->
+  <script src="../../assets/lib/pdf.min.js"></script>
+
+  <style>
+    .ocr-workspace {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      min-height: 720px;
+    }
+
+    @media (max-width: 1080px) {
+      .ocr-workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel-box {
+      background: var(--surface);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .panel-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.35);
+      border-bottom: 1px solid var(--stroke);
+      padding: 0.6rem 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .filter-controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.6rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-bottom: 1px solid var(--stroke);
+      font-size: 0.8rem;
+    }
+
+    .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .filter-item label {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .canvas-viewport {
+      flex: 1;
+      background: #11141a;
+      overflow: auto;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 520px;
+      position: relative;
+    }
+
+    .canvas-container {
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      border-radius: 4px;
+      transform-origin: top center;
+      transition: transform 0.2s ease;
+      background: #ffffff;
+      display: inline-block;
+    }
+
+    #ocr-canvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Confidence Meter */
+    .confidence-meter-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.25);
+      border-bottom: 1px solid var(--stroke);
+    }
+
+    .confidence-gauge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .gauge-val {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #10b981;
+      font-family: monospace;
+    }
+
+    .text-output-area {
+      flex: 1;
+      width: 100%;
+      height: 480px;
+      background: #0d1117;
+      color: #e6edf3;
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      padding: 1rem;
+      border: none;
+      resize: vertical;
+      outline: none;
+    }
+
+    .ocr-stats-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 1rem;
+      background: rgba(0, 0, 0, 0.35);
+      border-top: 1px solid var(--stroke);
+      font-size: 0.8rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .tab-pills {
+      display: flex;
+      gap: 0.35rem;
+    }
+
+    .tab-pill {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--muted);
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .tab-pill:hover {
+      color: var(--text);
+    }
+
+    .tab-pill.active {
+      color: var(--text);
+      background: var(--surface);
+      border-color: var(--stroke);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
-      <div class="tool-header">
-        <h1>AI OCR Engine</h1>
-        <p class="tool-description">AI-powered Optical Character Recognition for PDFs.</p>
-      </div>
-
-      <!-- Tool Workspace -->
+    <div class="container tool-container" style="max-width: 1440px;">
       
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AI OCR Engine</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> AI-powered Optical Character Recognition for PDFs.</div>
-            <div><strong>Inputs:</strong> pdf, document, ai ocr engine</div>
-            <div><strong>Category:</strong> pdf</div>
+      <div class="tool-header">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>AI OCR Engine &amp; Text Extraction Studio</h1>
+            <p class="tool-description">High-precision client-side optical character recognition. Preprocess scanned documents, detect character bounding boxes, and extract text with confidence scoring.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-secondary" id="btn-sample-scan" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              Load Sample Scanned Invoice
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- Upload Drop Area -->
+      <div class="file-drag-area" id="drop-zone" style="margin-bottom: 1.5rem; padding: 2rem 1.5rem;">
+        <svg viewBox="0 0 24 24" width="44" height="44" stroke="currentColor" stroke-width="1.5" fill="none" style="margin-bottom: 0.5rem; color: var(--accent);">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
+        </svg>
+        <h3 style="margin-bottom: 0.25rem; font-size: 1.05rem;">Upload Scanned PDF or Document Image (PNG, JPG, TIFF, WebP)</h3>
+        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem;">Processed entirely inside your browser sandbox with zero cloud transmission</p>
+        <button class="btn btn-primary" id="btn-browse" style="margin: 0 auto; padding: 0.45rem 1.25rem;">Select Document File</button>
+        <input type="file" id="file-input" accept="application/pdf, image/png, image/jpeg, image/webp, image/tiff" style="display: none;">
+      </div>
+
+      <!-- Main Workspace -->
+      <div class="ocr-workspace" id="ocr-workspace">
+        
+        <!-- Left: Image & Canvas Preprocessing View -->
+        <div class="panel-box">
+          
+          <div class="panel-toolbar">
+            <!-- View Mode Tabs -->
+            <div class="tab-pills">
+              <button class="tab-pill active" data-view="boxes" id="btn-tab-boxes">Bounding Boxes</button>
+              <button class="tab-pill" data-view="binary" id="btn-tab-binary">Binary Mask</button>
+              <button class="tab-pill" data-view="original" id="btn-tab-original">Original Scan</button>
+            </div>
+
+            <!-- Zoom and Page Navigation -->
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div id="page-nav" style="display: none; align-items: center; gap: 0.35rem; font-size: 0.8rem;">
+                <button class="btn-sample" id="btn-prev-page">&larr;</button>
+                <span id="page-indicator">1 / 1</span>
+                <button class="btn-sample" id="btn-next-page">&rarr;</button>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 0.25rem;">
+                <label for="zoom-slider" style="font-size: 0.75rem; color: var(--muted);">Zoom:</label>
+                <input type="range" id="zoom-slider" min="40" max="150" value="85" style="width: 70px;">
+                <span id="zoom-val" style="font-size: 0.75rem; color: var(--muted); min-width: 2rem; font-family: monospace;">85%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preprocessing Filters Toolbar -->
+          <div class="filter-controls-bar">
+            
+            <div class="filter-item">
+              <label for="contrast-range">Contrast:</label>
+              <input type="range" id="contrast-range" min="0" max="100" value="30" style="width: 65px;">
+              <span id="contrast-val" style="color: var(--accent); font-family: monospace;">+30%</span>
+            </div>
+
+            <div class="filter-item">
+              <label for="threshold-range">Binarize Threshold:</label>
+              <input type="range" id="threshold-range" min="50" max="220" value="140" style="width: 65px;">
+              <span id="threshold-val" style="color: var(--accent); font-family: monospace;">140</span>
+            </div>
+
+            <div class="filter-item">
+              <label class="checkbox-label" style="font-size: 0.8rem; margin: 0;">
+                <input type="checkbox" id="check-noise-reduction" checked>
+                <span>Denoise Filter</span>
+              </label>
+            </div>
+
+            <div class="filter-item">
+              <label class="checkbox-label" style="font-size: 0.8rem; margin: 0;">
+                <input type="checkbox" id="check-invert">
+                <span>Invert Dark Text</span>
+              </label>
+            </div>
+
+            <button class="btn-sample" id="btn-reprocess" style="padding: 0.2rem 0.6rem; font-size: 0.75rem;">Re-run Filter</button>
+          </div>
+
+          <!-- Canvas Viewport -->
+          <div class="canvas-viewport" id="canvas-viewport">
+            <div class="canvas-container" id="canvas-container">
+              <canvas id="ocr-canvas"></canvas>
+            </div>
+          </div>
+
+          <div class="ocr-stats-footer">
+            <span id="scan-meta-info">Document Resolution: 0 &times; 0 px</span>
+            <span id="detected-boxes-count">0 Text Blocks Detected</span>
+          </div>
+
+        </div>
+
+        <!-- Right: Extracted Recognized Text -->
+        <div class="panel-box">
+          
+          <div class="confidence-meter-card">
+            <div>
+              <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--muted); font-weight: 700; letter-spacing: 0.05em;">OCR Recognition Quality</div>
+              <div class="confidence-gauge">
+                <span class="gauge-val" id="confidence-percentage">98.2%</span>
+                <span class="status-badge" id="confidence-badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">High Accuracy</span>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.4rem;">
+              <button class="btn btn-secondary" id="btn-copy-text" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy Text
+              </button>
+              <button class="btn btn-secondary" id="btn-download-txt" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download .TXT
+              </button>
+              <button class="btn btn-primary" id="btn-download-searchable-pdf" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+                Searchable PDF
+              </button>
+            </div>
+          </div>
+
+          <!-- Search Filter Bar -->
+          <div style="padding: 0.5rem 1rem; background: rgba(0, 0, 0, 0.2); border-bottom: 1px solid var(--stroke); display: flex; align-items: center; gap: 0.5rem;">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="color: var(--muted);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="ocr-search-input" placeholder="Search within recognized text..." style="background: transparent; border: none; outline: none; color: var(--text); font-size: 0.85rem; width: 100%;">
+            <span id="search-match-count" style="font-size: 0.75rem; color: var(--muted); font-family: monospace;"></span>
+          </div>
+
+          <!-- Recognized Text Output Box -->
+          <textarea id="recognized-text" class="text-output-area" spellcheck="false" placeholder="Recognized text will appear here with full layout preservation..."></textarea>
+
+          <div class="ocr-stats-footer">
+            <span id="text-word-stats">0 words &bull; 0 characters &bull; 0 lines</span>
+            <span id="text-time-stats">OCR Latency: 0 ms</span>
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   </main>
 
-  <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "AI OCR Engine",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-ocr-engine/",
-    "description": "AI-powered Optical Character Recognition for PDFs.",
+    "description": "Client-side OCR optical character recognition engine with image preprocessing and bounding box detection.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

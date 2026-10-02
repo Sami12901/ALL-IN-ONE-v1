@@ -3,66 +3,422 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Form Detection - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Automatically detect and fill forms using AI.">
-  <meta name="keywords" content="pdf, document, ai form detection, free, online, tool, utility">
+  <title>AI Form Detection &amp; Schema Extractor - ALL IN ONE</title>
+  <meta name="description" content="AI-powered client-side PDF form detection. Automatically identify input fields, checkboxes, radio buttons, signature blocks, and tables, and export fillable schemas.">
+  <meta name="keywords" content="pdf form detector, ai form field detection, extract pdf form schema, checkbox detection pdf, signature line detector, fillable pdf generator">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-form-detection/">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <!-- PDF.js and PDF-Lib Libraries -->
+  <script src="../../assets/lib/pdf.min.js"></script>
+  <script src="../../assets/lib/pdf-lib.min.js"></script>
+
+  <style>
+    .form-detector-workspace {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 1.5rem;
+      min-height: 750px;
+      align-items: start;
+    }
+
+    @media (max-width: 1100px) {
+      .form-detector-workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .canvas-panel {
+      background: var(--surface);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .canvas-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.35);
+      border-bottom: 1px solid var(--stroke);
+      padding: 0.6rem 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .canvas-stage-viewport {
+      flex: 1;
+      background: #11141a;
+      overflow: auto;
+      padding: 2rem 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 580px;
+    }
+
+    .canvas-stack {
+      position: relative;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55);
+      border-radius: 2px;
+      transform-origin: top center;
+      transition: transform 0.2s ease;
+      background: #ffffff;
+      display: inline-block;
+    }
+
+    #form-pdf-canvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    #form-overlay-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      cursor: crosshair;
+    }
+
+    /* Filter checkboxes bar */
+    .field-filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.5rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-bottom: 1px solid var(--stroke);
+      font-size: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-badge-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .filter-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .dot-text { background: #3b82f6; }
+    .dot-check { background: #10b981; }
+    .dot-radio { background: #a855f7; }
+    .dot-sign { background: #f59e0b; }
+    .dot-table { background: #06b6d4; }
+
+    /* Schema Inspector Sidebar */
+    .schema-sidebar {
+      background: var(--surface);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      max-height: 780px;
+    }
+
+    .sidebar-header {
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.35);
+      border-bottom: 1px solid var(--stroke);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .schema-stats-summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-bottom: 1px solid var(--stroke);
+      text-align: center;
+    }
+
+    .schema-stat-item {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .schema-stat-item strong {
+      display: block;
+      font-size: 1.1rem;
+      color: var(--text);
+    }
+
+    .fields-list-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.75rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .field-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius-md);
+      padding: 0.65rem 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .field-card:hover, .field-card.selected {
+      border-color: var(--accent);
+      background: rgba(var(--accent-rgb), 0.08);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .field-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .field-label-text {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 220px;
+    }
+
+    .field-tag-type {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .tag-text { background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .tag-check { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .tag-radio { background: rgba(168, 85, 247, 0.15); color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.3); }
+    .tag-sign { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .tag-table { background: rgba(6, 182, 212, 0.15); color: #06b6d4; border: 1px solid rgba(6, 182, 212, 0.3); }
+
+    .field-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-family: monospace;
+    }
+
+    .sidebar-actions-footer {
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.35);
+      border-top: 1px solid var(--stroke);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
-      <div class="tool-header">
-        <h1>AI Form Detection</h1>
-        <p class="tool-description">Automatically detect and fill forms using AI.</p>
-      </div>
-
-      <!-- Tool Workspace -->
+    <div class="container tool-container" style="max-width: 1440px;">
       
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AI Form Detection</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Automatically detect and fill forms using AI.</div>
-            <div><strong>Inputs:</strong> pdf, document, ai form detection</div>
-            <div><strong>Category:</strong> pdf</div>
+      <div class="tool-header">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>AI Form Detection &amp; Schema Extractor</h1>
+            <p class="tool-description">Automatically scan PDF documents for interactive input fields, underlines, checkboxes, radio buttons, signature blocks, and tables with full schema export.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-secondary" id="btn-sample-form" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+              Load Sample Application Form
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- Upload Zone -->
+      <div class="file-drag-area" id="drop-zone" style="margin-bottom: 1.5rem; padding: 2rem 1.5rem;">
+        <svg viewBox="0 0 24 24" width="44" height="44" stroke="currentColor" stroke-width="1.5" fill="none" style="margin-bottom: 0.5rem; color: var(--accent);">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <path d="M9 13h6M9 17h4"></path>
+        </svg>
+        <h3 style="margin-bottom: 0.25rem; font-size: 1.05rem;">Drop any PDF form or application document here</h3>
+        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem;">Detects AcroForms, visual underlines, checkboxes [ ], radio choices, and signatures client-side</p>
+        <button class="btn btn-primary" id="btn-browse" style="margin: 0 auto; padding: 0.45rem 1.25rem;">Select PDF File</button>
+        <input type="file" id="file-input" accept="application/pdf" style="display: none;">
+      </div>
+
+      <!-- Main Workspace -->
+      <div class="form-detector-workspace">
+        
+        <!-- Left: Interactive Canvas Viewport -->
+        <div class="canvas-panel">
+          
+          <div class="canvas-toolbar">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <span style="font-weight: 700; font-size: 0.95rem;">Interactive Form Overlay</span>
+              <span id="canvas-page-info" style="font-size: 0.8rem; color: var(--muted); background: var(--surface); padding: 0.15rem 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--stroke);">Page 1 of 1</span>
+            </div>
+
+            <!-- Page Navigation & Zoom -->
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div id="page-nav-controls" style="display: none; align-items: center; gap: 0.35rem; font-size: 0.8rem;">
+                <button class="btn-sample" id="btn-prev-page">&larr;</button>
+                <span id="page-num-display">1</span>
+                <button class="btn-sample" id="btn-next-page">&rarr;</button>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 0.3rem;">
+                <label for="zoom-slider" style="font-size: 0.75rem; color: var(--muted);">Zoom:</label>
+                <input type="range" id="zoom-slider" min="40" max="130" value="80" style="width: 70px;">
+                <span id="zoom-val" style="font-size: 0.75rem; color: var(--muted); min-width: 2rem; font-family: monospace;">80%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filter checkboxes -->
+          <div class="field-filter-bar">
+            <span>Show:</span>
+            <label class="filter-badge-toggle">
+              <input type="checkbox" id="filter-text" checked>
+              <span class="filter-dot dot-text"></span>
+              <span>Text Inputs (<span id="count-text">0</span>)</span>
+            </label>
+
+            <label class="filter-badge-toggle">
+              <input type="checkbox" id="filter-checkbox" checked>
+              <span class="filter-dot dot-check"></span>
+              <span>Checkboxes (<span id="count-check">0</span>)</span>
+            </label>
+
+            <label class="filter-badge-toggle">
+              <input type="checkbox" id="filter-radio" checked>
+              <span class="filter-dot dot-radio"></span>
+              <span>Radio Buttons (<span id="count-radio">0</span>)</span>
+            </label>
+
+            <label class="filter-badge-toggle">
+              <input type="checkbox" id="filter-signature" checked>
+              <span class="filter-dot dot-sign"></span>
+              <span>Signatures (<span id="count-sign">0</span>)</span>
+            </label>
+
+            <label class="filter-badge-toggle">
+              <input type="checkbox" id="filter-table" checked>
+              <span class="filter-dot dot-table"></span>
+              <span>Tables (<span id="count-table">0</span>)</span>
+            </label>
+          </div>
+
+          <!-- Canvas Stage -->
+          <div class="canvas-stage-viewport" id="canvas-stage-viewport">
+            <div class="canvas-stack" id="canvas-stack">
+              <canvas id="form-pdf-canvas"></canvas>
+              <canvas id="form-overlay-canvas"></canvas>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: Detected Fields Schema Sidebar -->
+        <aside class="schema-sidebar">
+          
+          <div class="sidebar-header">
+            <div>
+              <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 2px;">Detected Form Schema</h3>
+              <div style="font-size: 0.75rem; color: var(--muted);">Click any element to inspect</div>
+            </div>
+            <span class="status-badge" id="total-badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">0 Elements</span>
+          </div>
+
+          <!-- Stats Grid -->
+          <div class="schema-stats-summary">
+            <div class="schema-stat-item">
+              <strong id="stat-text-count">0</strong>
+              Inputs
+            </div>
+            <div class="schema-stat-item">
+              <strong id="stat-check-count">0</strong>
+              Checks
+            </div>
+            <div class="schema-stat-item">
+              <strong id="stat-sign-count">0</strong>
+              Signs
+            </div>
+            <div class="schema-stat-item">
+              <strong id="stat-total-count">0</strong>
+              Total
+            </div>
+          </div>
+
+          <!-- Fields List -->
+          <div class="fields-list-scroll" id="fields-list">
+            <!-- Dynamically populated field cards -->
+          </div>
+
+          <!-- Actions Footer -->
+          <div class="sidebar-actions-footer">
+            <button class="btn btn-secondary" id="btn-export-json" style="width: 100%; font-size: 0.85rem; padding: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+              Export Schema JSON
+            </button>
+
+            <button class="btn btn-secondary" id="btn-export-csv" style="width: 100%; font-size: 0.85rem; padding: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export Schema CSV
+            </button>
+
+            <button class="btn btn-primary" id="btn-export-fillable-pdf" style="width: 100%; font-size: 0.85rem; padding: 0.55rem; font-weight: 600;">
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+              Download Fillable AcroForm PDF
+            </button>
+          </div>
+
+        </aside>
+
+      </div>
+
     </div>
   </main>
 
-  <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "AI Form Detection",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-form-detection/",
-    "description": "Automatically detect and fill forms using AI.",
+    "description": "Client-side PDF form detection engine. Identify input boxes, checkboxes, radio groups, and signature lines, and export fillable schemas.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

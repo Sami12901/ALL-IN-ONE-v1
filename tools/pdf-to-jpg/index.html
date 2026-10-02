@@ -3,15 +3,220 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PDF to JPG - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Convert PDF pages to JPG, PNG, or WEBP images.">
-  <meta name="keywords" content="pdf, document, pdf to jpg, free, online, tool, utility">
+  <title>PDF to JPG - Free Online PDF Image Converter - ALL IN ONE</title>
+  <meta name="description" content="Convert PDF pages to high-resolution JPG or PNG images directly in your browser. Choose page ranges, resolution up to 300 DPI, and download all as a ZIP archive.">
+  <meta name="keywords" content="pdf to jpg, pdf to image, convert pdf to png, pdf to jpeg, high resolution pdf to image, extract images from pdf">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/pdf-to-jpg/">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <!-- Local PDF.js and JSZip Libraries -->
+  <script src="../../assets/lib/pdf.min.js"></script>
+  <script src="../../assets/lib/jszip.min.js"></script>
+
+  <style>
+    .converter-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+
+    .file-drag-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 3.5rem 2rem;
+      text-align: center;
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .file-drag-zone:hover, .file-drag-zone.dragover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+      transform: translateY(-2px);
+    }
+    .file-drag-zone svg {
+      width: 56px;
+      height: 56px;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+      transition: transform 0.3s var(--ease);
+    }
+    .file-drag-zone:hover svg {
+      transform: scale(1.1);
+    }
+
+    /* Settings Grid */
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.25rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+    }
+
+    .range-selector-box {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .range-radio-row {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+    }
+
+    /* Gallery Grid */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+    .gallery-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    .gallery-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px var(--accent-glow);
+    }
+    .card-thumb-wrapper {
+      position: relative;
+      background: #111;
+      width: 100%;
+      aspect-ratio: 1 / 1.414;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .card-thumb-wrapper img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      transition: transform 0.25s ease;
+    }
+    .card-thumb-wrapper:hover img {
+      transform: scale(1.03);
+    }
+    .card-badge-page {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      color: #ffffff;
+      padding: 0.25rem 0.6rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .card-meta-bar {
+      padding: 0.85rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      border-top: 1px solid var(--border);
+      background: var(--bg-tertiary);
+    }
+    .card-dimensions {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Progress Overlay */
+    .progress-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .progress-bar-container {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent-gradient);
+      transition: width 0.2s ease;
+    }
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    /* Modal Image Lightbox */
+    .lightbox-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(12px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .lightbox-content {
+      max-width: 90vw;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+      border: 1px solid var(--border);
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .lightbox-close:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,42 +232,162 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>PDF to JPG</h1>
-        <p class="tool-description">Convert PDF pages to JPG, PNG, or WEBP images.</p>
+        <p class="tool-description">Convert PDF pages into high-resolution JPG or PNG images. Download individual page snapshots or export every page together in a convenient ZIP archive.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>PDF to JPG</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Convert PDF pages to JPG, PNG, or WEBP images.</div>
-            <div><strong>Inputs:</strong> pdf, document, pdf to jpg</div>
-            <div><strong>Category:</strong> pdf</div>
-          </div>
+      <!-- Main Tool Panel -->
+      <div class="tool-panel glass-panel converter-workspace">
+        
+        <!-- Upload Zone -->
+        <div class="file-drag-zone" id="upload-zone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+          <h2 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; font-family: var(--font-sans);">Choose or Drop a PDF File</h2>
+          <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1.5rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+            Upload your document to render each page into crisp JPG or PNG images with custom DPI settings.
+          </p>
+          <button class="btn btn-primary" id="btn-browse" type="button">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            Select PDF Document
+          </button>
+          <input type="file" id="file-input" accept="application/pdf,.pdf" style="display: none;">
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Loading Spinner -->
+        <div id="loading-state" style="display: none; flex-direction: column; align-items: center; justify-content: center; padding: 3rem; gap: 1rem; color: var(--text-secondary);">
+          <div style="width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+          <p id="loading-text" style="font-weight: 600;">Reading PDF document...</p>
+        </div>
+
+        <!-- Main Workspace -->
+        <div id="workspace-content" style="display: none; flex-direction: column; gap: 1.75rem;">
+          
+          <!-- File Banner -->
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem 1.25rem;">
+            <div style="display: flex; align-items: center; gap: 0.85rem;">
+              <div style="width: 40px; height: 40px; border-radius: var(--radius-sm); background: rgba(78, 133, 191, 0.15); color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+              </div>
+              <div>
+                <div style="font-weight: 600; font-size: 1rem; color: var(--text-primary); word-break: break-all;" id="doc-name">document.pdf</div>
+                <div style="font-size: 0.825rem; color: var(--text-secondary);" id="doc-meta">0 KB &bull; 0 pages</div>
+              </div>
+            </div>
+            <button class="btn btn-secondary" id="btn-change-file" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+              Change PDF
+            </button>
+          </div>
+
+          <!-- Conversion Settings -->
+          <div class="settings-grid">
+            <!-- Format Selector -->
+            <div class="form-group">
+              <label for="select-format">Image Format</label>
+              <select id="select-format" class="form-select">
+                <option value="jpeg" selected>JPG (Standard Quality, Small Size)</option>
+                <option value="png">PNG (Lossless Quality, Crisp Lines)</option>
+              </select>
+            </div>
+
+            <!-- Resolution Selector -->
+            <div class="form-group">
+              <label for="select-dpi">Resolution & Quality</label>
+              <select id="select-dpi" class="form-select">
+                <option value="1.0">Standard (72 DPI - Fast & Light)</option>
+                <option value="2.08" selected>Crisp (150 DPI - High Quality)</option>
+                <option value="4.16">Ultra (300 DPI - Print Quality)</option>
+              </select>
+            </div>
+
+            <!-- Page Range Selector -->
+            <div class="form-group">
+              <label>Page Range Selection</label>
+              <div class="range-selector-box">
+                <label class="range-radio-row">
+                  <input type="radio" name="page-range-choice" id="radio-range-all" value="all" checked>
+                  <span>All Pages (<span id="range-all-count">0</span> pages)</span>
+                </label>
+                <label class="range-radio-row">
+                  <input type="radio" name="page-range-choice" id="radio-range-custom" value="custom">
+                  <span>Custom Range</span>
+                </label>
+                <input type="text" id="input-range-custom" class="form-input" placeholder="e.g. 1-3, 5, 8" style="display: none; padding: 0.5rem 0.75rem; font-size: 0.85rem; font-family: var(--font-mono); margin-top: 0.25rem;">
+              </div>
+            </div>
+          </div>
+
+          <!-- Convert Button & Status -->
+          <div style="display: flex; justify-content: flex-end; align-items: center; gap: 1rem;">
+            <button class="btn btn-primary" id="btn-start-convert" style="padding: 0.75rem 2rem;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+              Convert Pages to Images
+            </button>
+          </div>
+
+          <!-- Progress Box -->
+          <div id="progress-box" class="progress-box" style="display: none;">
+            <div class="progress-meta">
+              <span id="progress-status" style="font-weight: 600;">Rendering page images...</span>
+              <span id="progress-percent" style="font-weight: 700; color: var(--accent);">0%</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" id="progress-bar-fill"></div>
+            </div>
+          </div>
+
+          <!-- Gallery Toolbar -->
+          <div id="gallery-toolbar" style="display: none; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+            <div style="font-size: 0.95rem; color: var(--text-primary); font-weight: 600;">
+              Rendered <span id="gallery-count" style="color: var(--accent);">0</span> Images
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <button class="btn btn-primary" id="btn-download-zip" style="padding: 0.65rem 1.5rem; font-size: 0.95rem;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Download All as ZIP
+              </button>
+            </div>
+          </div>
+
+          <!-- Page Gallery Grid -->
+          <div class="gallery-grid" id="gallery-grid">
+            <!-- Cards populated dynamically -->
+          </div>
+
+        </div>
+
       </div>
-    
     </div>
   </main>
+
+  <!-- Lightbox Modal for enlarged preview -->
+  <div class="lightbox-modal" id="lightbox-modal">
+    <button class="lightbox-close" id="lightbox-close" title="Close preview">&times;</button>
+    <img src="" alt="Enlarged Preview" class="lightbox-content" id="lightbox-img">
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "PDF to JPG",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/pdf-to-jpg/",
-    "description": "Convert PDF pages to JPG, PNG, or WEBP images.",
+    "description": "Convert PDF documents to high resolution JPG and PNG images.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

@@ -3,15 +3,265 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Grayscale PDF - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Convert Color PDF to Grayscale/Black & White.">
-  <meta name="keywords" content="pdf, document, grayscale pdf, free, online, tool, utility">
+  <title>Grayscale PDF - Free Online PDF Tool - ALL IN ONE</title>
+  <meta name="description" content="Convert color PDF files to monochrome grayscale online with live before-after preview, luminance optimization, and print ink savings estimation.">
+  <meta name="keywords" content="pdf, grayscale pdf, black and white pdf, convert pdf to bw, monochrome pdf, ink saving pdf">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/grayscale-pdf/">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <!-- Local PDF Libraries -->
+  <script src="../../assets/lib/pdf.min.js"></script>
+  <script src="../../assets/lib/pdf-lib.min.js"></script>
+
+  <style>
+    .grayscale-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+
+    .file-drag-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 3.5rem 2rem;
+      text-align: center;
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .file-drag-zone:hover, .file-drag-zone.dragover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+      transform: translateY(-2px);
+    }
+    .file-drag-zone svg {
+      width: 56px;
+      height: 56px;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+      transition: transform 0.3s var(--ease);
+    }
+    .file-drag-zone:hover svg {
+      transform: scale(1.1);
+    }
+
+    /* Comparison Viewer */
+    .compare-container-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      width: 100%;
+    }
+    .compare-box {
+      position: relative;
+      width: 100%;
+      max-width: 680px;
+      margin: 0 auto;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      background: #111;
+      user-select: none;
+      touch-action: pan-y;
+    }
+    .compare-layer {
+      width: 100%;
+      display: block;
+    }
+    .compare-layer canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .compare-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50%;
+      height: 100%;
+      overflow: hidden;
+      border-right: 2px solid var(--accent);
+      background: #111;
+      pointer-events: none;
+    }
+    .compare-overlay canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      /* Notice: the canvas inside overlay has width matching parent container so pixels align */
+    }
+    .compare-slider-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 3px;
+      background: var(--accent);
+      pointer-events: none;
+      transform: translateX(-50%);
+      box-shadow: 0 0 12px var(--accent);
+    }
+    .compare-handle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+      cursor: ew-resize;
+      pointer-events: auto;
+    }
+    .compare-badge {
+      position: absolute;
+      top: 1rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .compare-badge-left {
+      left: 1rem;
+      background: rgba(0,0,0,0.7);
+      color: #ffffff;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .compare-badge-right {
+      right: 1rem;
+      background: rgba(78, 133, 191, 0.85);
+      color: #ffffff;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    /* Page Navigation Bar */
+    .page-nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .page-nav-btn {
+      padding: 0.4rem 0.9rem;
+      font-size: 0.85rem;
+    }
+    .page-nav-indicator {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+    }
+
+    /* KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+    }
+    .kpi-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+    .kpi-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent-gradient);
+    }
+    .kpi-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+    }
+    .kpi-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      line-height: 1.2;
+    }
+    .kpi-sub {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* Controls Panel */
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+    }
+
+    /* Progress Overlay */
+    .progress-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .progress-bar-container {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent-gradient);
+      transition: width 0.2s ease;
+    }
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,42 +277,188 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Grayscale PDF</h1>
-        <p class="tool-description">Convert Color PDF to Grayscale/Black & White.</p>
+        <p class="tool-description">Convert color PDF files into clean, professional monochrome documents using luminance-preserving filter equations. Reduce printing costs and save printer toner.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Grayscale PDF</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Convert Color PDF to Grayscale/Black & White.</div>
-            <div><strong>Inputs:</strong> pdf, document, grayscale pdf</div>
-            <div><strong>Category:</strong> pdf</div>
-          </div>
+      <!-- Main Tool Panel -->
+      <div class="tool-panel glass-panel grayscale-workspace">
+        
+        <!-- Upload Zone -->
+        <div class="file-drag-zone" id="upload-zone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor" fill-opacity="0.3"></path>
+          </svg>
+          <h2 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; font-family: var(--font-sans);">Select or Drop a Color PDF Document</h2>
+          <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1.5rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+            Upload your PDF to convert all color graphics, illustrations, and photos to monochrome with real-time before/after inspection.
+          </p>
+          <button class="btn btn-primary" id="btn-browse" type="button">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            Select PDF Document
+          </button>
+          <input type="file" id="file-input" accept="application/pdf,.pdf" style="display: none;">
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Loading Spinner -->
+        <div id="loading-state" style="display: none; flex-direction: column; align-items: center; justify-content: center; padding: 3rem; gap: 1rem; color: var(--text-secondary);">
+          <div style="width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+          <p id="loading-text" style="font-weight: 600;">Rendering document preview...</p>
+        </div>
+
+        <!-- Main Workspace Content -->
+        <div id="workspace-content" style="display: none; flex-direction: column; gap: 1.75rem;">
+          
+          <!-- File Banner -->
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem 1.25rem;">
+            <div style="display: flex; align-items: center; gap: 0.85rem;">
+              <div style="width: 40px; height: 40px; border-radius: var(--radius-sm); background: rgba(78, 133, 191, 0.15); color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+              </div>
+              <div>
+                <div style="font-weight: 600; font-size: 1rem; color: var(--text-primary); word-break: break-all;" id="doc-name">document.pdf</div>
+                <div style="font-size: 0.825rem; color: var(--text-secondary);" id="doc-meta">0 KB &bull; 0 pages</div>
+              </div>
+            </div>
+            <button class="btn btn-secondary" id="btn-change-file" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+              Change PDF
+            </button>
+          </div>
+
+          <!-- KPI & Ink Saving Cards -->
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <span class="kpi-title">Color Toner Saved</span>
+              <span class="kpi-value" style="color: var(--success);" id="kpi-color-ink">100%</span>
+              <span class="kpi-sub">Zero C/M/Y color ink required</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-title">Estimated Print Savings</span>
+              <span class="kpi-value" id="kpi-ink-savings">~35%</span>
+              <span class="kpi-sub">Reduced cartridge wear</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-title">Page Luminance</span>
+              <span class="kpi-value" id="kpi-luminance">--</span>
+              <span class="kpi-sub">Average pixel brightness</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-title">Document Pages</span>
+              <span class="kpi-value" id="kpi-total-pages">0</span>
+              <span class="kpi-sub">All pages converted</span>
+            </div>
+          </div>
+
+          <!-- Side-by-Side Comparison Slider -->
+          <div class="compare-container-wrapper">
+            <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; max-width: 680px;">
+              <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">Interactive Preview</span>
+              <span style="font-size: 0.8rem; color: var(--text-secondary);">Drag slider or handle to inspect</span>
+            </div>
+
+            <div class="compare-box" id="compare-box">
+              <!-- Right/Base layer: Original Color Canvas -->
+              <div class="compare-layer" id="original-layer">
+                <canvas id="canvas-original"></canvas>
+              </div>
+              <span class="compare-badge compare-badge-right">Original Color</span>
+
+              <!-- Left/Overlay layer: Grayscale Canvas (clipped by width) -->
+              <div class="compare-overlay" id="compare-overlay">
+                <canvas id="canvas-grayscale"></canvas>
+              </div>
+              <span class="compare-badge compare-badge-left">Monochrome</span>
+
+              <!-- Dividing Line and Center Drag Handle -->
+              <div class="compare-slider-line" id="slider-line">
+                <div class="compare-handle" id="slider-handle" title="Drag to compare">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left: -6px;">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Page Navigation Controls -->
+            <div class="page-nav-bar">
+              <button class="btn btn-secondary page-nav-btn" id="btn-prev-page" title="Previous Page">
+                &larr; Previous Page
+              </button>
+              <span class="page-nav-indicator" id="preview-page-indicator">Page 1 of 1</span>
+              <button class="btn btn-secondary page-nav-btn" id="btn-next-page" title="Next Page">
+                Next Page &rarr;
+              </button>
+            </div>
+          </div>
+
+          <!-- Conversion Controls Panel -->
+          <div class="controls-grid">
+            <div class="form-group">
+              <label for="select-grayscale-mode">Luminance Filter Profile</label>
+              <select id="select-grayscale-mode" class="form-select">
+                <option value="standard">Standard Monochrome (ITU-R BT.601: 0.299R + 0.587G + 0.114B)</option>
+                <option value="high-contrast">High Contrast (Crisp text & diagrams)</option>
+                <option value="draft">Eco Draft (Maximum toner savings)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="select-resolution">Output Render Resolution</label>
+              <select id="select-resolution" class="form-select">
+                <option value="1.5">Balanced Quality (108 DPI - Fast)</option>
+                <option value="2.0" selected>Crisp Document (144-150 DPI - Standard)</option>
+                <option value="2.5">High Fidelity (180-200 DPI - Sharp)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Progress Box (during export) -->
+          <div id="progress-box" class="progress-box" style="display: none;">
+            <div class="progress-meta">
+              <span id="progress-status" style="font-weight: 600;">Processing pages...</span>
+              <span id="progress-percent" style="font-weight: 700; color: var(--accent);">0%</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" id="progress-bar-fill"></div>
+            </div>
+          </div>
+
+          <!-- Action Bar -->
+          <div class="action-bar" style="justify-content: flex-end; padding-top: 0.5rem;">
+            <button class="btn btn-primary" id="btn-download-pdf" style="padding: 0.85rem 2.25rem; font-size: 1.05rem;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Download Grayscale PDF
+            </button>
+          </div>
+
+        </div>
+
       </div>
-    
     </div>
   </main>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Grayscale PDF",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/grayscale-pdf/",
-    "description": "Convert Color PDF to Grayscale/Black & White.",
+    "description": "Convert color PDF to monochrome black and white.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

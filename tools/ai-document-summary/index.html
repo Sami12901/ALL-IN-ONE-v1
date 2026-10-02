@@ -3,17 +3,176 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Document Summary - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Get AI generated summaries of long PDF documents.">
-  <meta name="keywords" content="pdf, document, ai document summary, free, online, tool, utility">
+  <title>AI Document Summary - Free Online PDF Summarizer - ALL IN ONE</title>
+  <meta name="description" content="Generate instant, intelligent AI-powered executive summaries, key findings, and section breakdowns from any PDF document completely in your browser.">
+  <meta name="keywords" content="pdf summary, ai document summarizer, pdf to summary, executive brief, extract key points, nlp document analysis">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-document-summary/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <!-- PDF & Export Libraries -->
+  <script src="../../assets/lib/pdf.min.js"></script>
+  <script src="../../assets/lib/pdf-lib.min.js"></script>
+  <script src="../../assets/lib/html2pdf.bundle.min.js"></script>
+  <script>
+    if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = '../../assets/lib/pdf.worker.min.js';
+    }
+  </script>
+  
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+  
+  <style>
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .metric-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      text-align: center;
+      transition: var(--transition);
+    }
+    .metric-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .metric-val {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      font-family: var(--font-sans);
+    }
+    .metric-lbl {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+    }
+    .findings-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .finding-item {
+      display: flex;
+      gap: 0.85rem;
+      align-items: flex-start;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      line-height: 1.6;
+    }
+    .finding-bullet {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--accent-glow);
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .breakdown-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .breakdown-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .data-table-wrapper {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    .data-table th, .data-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table th {
+      background: var(--bg-tertiary);
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+    .pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.65rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      background: var(--accent-glow);
+      color: var(--accent);
+      border: 1px solid var(--border);
+    }
+    .dropzone-active {
+      border-color: var(--accent) !important;
+      background: var(--accent-glow) !important;
+    }
+    .progress-bar-container {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent-gradient);
+      transition: width 0.3s ease;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #export-dossier, #export-dossier * {
+        visibility: visible;
+      }
+      #export-dossier {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -26,44 +185,182 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>AI Document Summary</h1>
-        <p class="tool-description">Get AI generated summaries of long PDF documents.</p>
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+          <h1>AI Document Summary</h1>
+          <span class="badge">Cognitive NLP Engine</span>
+        </div>
+        <p class="tool-description">
+          Condense lengthy PDF reports, academic papers, and multi-page documents into crisp executive summaries, key findings, and critical numbers—processed 100% locally and privately in your browser.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AI Document Summary</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Get AI generated summaries of long PDF documents.</div>
-            <div><strong>Inputs:</strong> pdf, document, ai document summary</div>
-            <div><strong>Category:</strong> pdf</div>
+      <!-- Upload & Controls Section -->
+      <div class="tool-panel glass-panel" id="upload-panel">
+        <div class="file-drag-area" id="drop-zone" tabindex="0" role="button" aria-label="Upload PDF document">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="12" y1="18" x2="12" y2="12"></line>
+            <line x1="9" y1="15" x2="15" y2="15"></line>
+          </svg>
+          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">Drop your PDF document here</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; max-width: 420px; margin: 0 auto 1.25rem;">
+            Drag & drop any multi-page PDF or click to browse. Files are processed securely in-memory on your device.
+          </p>
+          <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+            <label for="pdf-input" class="btn btn-primary" style="cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              Select PDF File
+            </label>
+            <input type="file" id="pdf-input" accept="application/pdf" style="display: none;">
+            <button type="button" class="btn btn-secondary" id="load-sample-btn" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              Load Sample Document
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Processing Status -->
+        <div id="processing-state" class="hidden" style="text-align: center; padding: 2rem 1rem;">
+          <div style="display: inline-block; width: 44px; height: 44px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 1rem;"></div>
+          <h4 id="status-title" style="font-size: 1.15rem; font-weight: 700;">Extracting document text...</h4>
+          <p id="status-desc" style="color: var(--text-secondary); font-size: 0.875rem;">Reading page contents via PDF.js engine</p>
+          <div class="progress-bar-container" style="max-width: 400px; margin: 1rem auto 0;">
+            <div class="progress-bar-fill" id="progress-bar"></div>
+          </div>
+        </div>
       </div>
-    
+
+      <!-- Results Workspace (Hidden initially) -->
+      <div id="results-workspace" class="hidden" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        
+        <!-- Action Ribbon -->
+        <div class="glass-panel tool-panel" style="padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span class="pill-badge" id="doc-type-badge">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg>
+              <span id="doc-filename">document.pdf</span>
+            </span>
+            <span class="pill-badge" style="background: rgba(16, 185, 129, 0.12); color: var(--success); border-color: rgba(16, 185, 129, 0.25);" id="reduction-badge">
+              65% Condensed
+            </span>
+          </div>
+
+          <div class="action-bar" style="margin-top: 0;">
+            <button class="btn btn-secondary" id="copy-summary-btn" title="Copy text to clipboard">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <span>Copy Summary</span>
+            </button>
+            <button class="btn btn-secondary" id="export-txt-btn" title="Export plain text">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export TXT
+            </button>
+            <button class="btn btn-primary" id="export-pdf-btn" title="Export Executive Brief PDF">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line></svg>
+              Export Executive Brief PDF
+            </button>
+            <button class="btn btn-secondary" id="reset-doc-btn" title="Upload another file">
+              New File
+            </button>
+          </div>
+        </div>
+
+        <!-- Printable / Exportable Container -->
+        <div id="export-dossier" style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Key Metrics Grid -->
+          <div class="summary-grid">
+            <div class="metric-card">
+              <div class="metric-val" id="stat-pages">0</div>
+              <div class="metric-lbl">Total Pages</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val" id="stat-words">0</div>
+              <div class="metric-lbl">Word Count</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val" id="stat-time">0 min</div>
+              <div class="metric-lbl">Est. Reading Time</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val" id="stat-tone">Analytical</div>
+              <div class="metric-lbl">Document Tone</div>
+            </div>
+          </div>
+
+          <!-- Executive Summary Section -->
+          <div class="tool-panel glass-panel">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              Executive Summary
+            </div>
+            <p id="summary-paragraph" style="font-size: 1.05rem; line-height: 1.8; color: var(--text-primary); margin: 0; padding: 0.5rem 0;">
+              Executive summary paragraph will be generated here.
+            </p>
+          </div>
+
+          <!-- Key Findings Bullet List -->
+          <div class="tool-panel glass-panel">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+              Key Findings & Actionable Highlights
+            </div>
+            <ul class="findings-list" id="findings-container">
+              <!-- Dynamically populated -->
+            </ul>
+          </div>
+
+          <!-- Important Numbers & Dates Table -->
+          <div class="tool-panel glass-panel">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              Important Numbers, Metrics & Critical Dates
+            </div>
+            <div class="data-table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th style="width: 22%;">Value / Date</th>
+                    <th style="width: 20%;">Type</th>
+                    <th>Extracted Context & Implication</th>
+                  </tr>
+                </thead>
+                <tbody id="metrics-table-body">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Section-by-Section Breakdown -->
+          <div class="tool-panel glass-panel">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+              Section-by-Section Structural Breakdown
+            </div>
+            <div id="sections-container" style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+      
     </div>
   </main>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "AI Document Summary",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-document-summary/",
-    "description": "Get AI generated summaries of long PDF documents.",
-    "applicationCategory": "UtilityPage",
+    "description": "Condense lengthy PDF reports into executive summaries and actionable key findings using client-side AI NLP.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

@@ -1,7 +1,7 @@
 # ALL IN ONE — High-Performance Client-Side Web Utilities Suite
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Active Tools](https://img.shields.io/badge/Active%20Tools-109%20Functional-10b981.svg)](https://sami12901.github.io/ALL-IN-ONE-v1/)
+[![Active Tools](https://img.shields.io/badge/Active%20Tools-133%20Functional-10b981.svg)](https://sami12901.github.io/ALL-IN-ONE-v1/)
 [![Total Catalog](https://img.shields.io/badge/Total%20Catalog-496%20Utilities-6366f1.svg)](https://sami12901.github.io/ALL-IN-ONE-v1/)
 [![PWA](https://img.shields.io/badge/PWA-Offline%20Ready-f59e0b.svg)](https://sami12901.github.io/ALL-IN-ONE-v1/)
 [![Privacy](https://img.shields.io/badge/Privacy-100%25%20Client--Side-ec4899.svg)](https://sami12901.github.io/ALL-IN-ONE-v1/)
@@ -22,8 +22,9 @@ Every single operation runs **100% client-side** inside the browser sandbox. No 
 
 ## 🚀 Key Highlights & Architectural Strengths
 
-- **109 Active, Production-Ready Utilities**: Structured across 24 distinct categories with 496 total cataloged endpoints.
+- **133 Active, Production-Ready Utilities**: Structured across 24 distinct categories with 496 total cataloged endpoints.
 - **100% Complete Specialized Suites**:
+  - 📄 **PDF Document Suite**: **48 out of 48 tools fully functional** (Editor, Merge, Split, Compress, Protect, Unlock, Watermark, Flatten, Converters, AI Intelligence).
   - 📊 **Excel & Analytics Suite**: **20 out of 20 tools fully functional** (Spreadsheets, Profiling, Cleaning, BI Dashboards, Forecasting, AI Insights).
   - 💎 **Luxury Brand Suite**: **10 out of 10 tools fully functional** (Identity Kit, Pricing Strategy, Catalog Builder, VIP Analytics, AI Segmentation).
 - **Frameworkless & Ultra-Fast**: Built strictly with standard HTML5, modern CSS3 (Custom Properties & Glassmorphism), and Vanilla ES6+ JavaScript. Sub-50ms page transitions with zero compile phases or bundler overhead.
@@ -108,7 +109,7 @@ ALL-IN-ONE-v1/
 ├── seo/
 │   ├── robots.txt         # Search engine crawler directives
 │   └── sitemap.xml        # Comprehensive auto-compiled XML sitemap
-├── tools/                 # 496 tool directories (109 fully functional)
+├── tools/                 # 496 tool directories (133 fully functional)
 │   ├── all-in-one-sheets/
 │   ├── data-analyzer/
 │   ├── invoice-generator/
@@ -124,7 +125,7 @@ ALL-IN-ONE-v1/
 
 ---
 
-## 🛠️ Complete Directory of All 109 Active Functional Tools
+## 🛠️ Complete Directory of All 133 Active Functional Tools
 
 ### 📊 Excel & Core Analytics (20 Tools)
 1. **ALL IN ONE Sheets**: Excel-compatible spreadsheet grid with formulas, cell formatting, and CSV/JSON I/O.
@@ -160,106 +161,130 @@ ALL-IN-ONE-v1/
 29. **VIP Client Analytics**: Portfolio-level private client CRM table with cohort tier breakdown and concentration risk analysis.
 30. **AI Customer Segmentation**: Behavioral clustering simulator classifying luxury shoppers into 4 distinct buying personas.
 
-### 📄 PDF Utilities Suite (24 Tools)
+### 📄 PDF Document Suite (48 Tools — 100% Complete)
 31. **PDF Editor Pro**: Client-side canvas PDF annotations, text adding, and form editing.
 32. **PDF Merge**: Combine multiple PDF files into a single unified document.
 33. **PDF Split**: Split PDF by page ranges, single pages, or page intervals.
 34. **PDF Compress**: Client-side PDF page re-sampling and stream compression.
 35. **PDF Organize**: Reorder, delete, rotate, and duplicate PDF pages visually.
 36. **Protect PDF**: Add AES password encryption and restrict printing/modifications.
-37. **JPG to PDF**: Convert JPG and PNG image collections into multi-page PDF documents.
-38. **PNG to PDF**: Convert transparent and high-resolution PNGs to PDF.
-39. **Text to PDF**: Convert plain text into formatted PDF documents.
-40. **Delete Pages**: Remove selected page indices from existing PDF files.
-41. **Extract Pages**: Extract specific pages into a standalone PDF.
-42. **Page Numbers**: Stamp customized running page numbers across PDF documents.
-43. **Header & Footer**: Stamp running headers and footers across all PDF pages.
-44. **Edit Metadata**: Modify embedded PDF Author, Title, Subject, and Keywords.
-45. **Metadata Viewer**: Inspect embedded PDF metadata and technical specifications.
-46. **Remove Metadata**: Privacy cleanup utility stripping author, device, and tracking metadata.
-47. **Extract Images**: Extract all embedded images inside a PDF into a downloadable ZIP archive.
-48. **Invoice PDF Generator**: Generate clean business and travel invoices formatted as downloadable PDFs.
-49. **Quotation PDF Generator**: Generate custom client quotations and price estimates as PDFs.
-50. **Receipt PDF Generator**: Generate payment and booking receipts in downloadable PDF format.
-51. **Visa Application PDF Builder**: Specialized travel visa form builder with auto-fill capabilities.
-52. **Travel Voucher Generator**: Generate hotel, transfer, and tour vouchers as PDFs.
-53. **Ticket PDF Generator**: Create customized travel tickets with simulated barcodes as PDFs.
-54. **Hajj & Umrah Document Builder**: Generate pilgrim documentation and package sheets as PDFs.
+37. **Unlock PDF**: Remove PDF password protection and permission restrictions.
+38. **Watermark PDF**: Add text or image watermark overlays with opacity, rotation, and position controls.
+39. **Flatten PDF**: Flatten interactive form fields, annotations, and signatures into static immutable pages.
+40. **PDF to Word**: Extract text, headings, tables, and layout into Word DOCX format.
+41. **PDF to Excel**: Detect and extract tabular data from PDFs into CSV and Excel spreadsheets.
+42. **PDF to PowerPoint**: Convert PDF pages into presentation slide deck with speaker notes and reordering.
+43. **PDF to Text**: Full-text extractor with reading flow preservation, word counts, and search highlighting.
+44. **PDF to JPG**: Render PDF pages to high-resolution JPG/PNG images with DPI selector and batch ZIP export.
+45. **Word to PDF**: Import DOCX/rich text with WYSIWYG editor and compile into pristine PDF documents.
+46. **Excel to PDF**: Import CSV/tabular data, customize table styles, and render print-ready PDF tables.
+47. **HTML to PDF**: Live HTML/CSS sandbox to PDF generator with layout presets and margin controls.
+48. **JPG to PDF**: Convert JPG and PNG image collections into multi-page PDF documents.
+49. **PNG to PDF**: Convert transparent and high-resolution PNGs to PDF.
+50. **Text to PDF**: Convert plain text into formatted PDF documents.
+51. **Delete Pages**: Remove selected page indices from existing PDF files.
+52. **Extract Pages**: Extract specific pages into a standalone PDF.
+53. **Page Numbers**: Stamp customized running page numbers across PDF documents.
+54. **Header & Footer**: Stamp running headers and footers across all PDF pages.
+55. **Crop PDF**: Visual margin cropper with presets, unit conversion, and page boundary adjustment.
+56. **Resize PDF**: Resize pages to standard paper formats (A4, Letter, Legal, A3, A5, Tabloid) with content scaling.
+57. **Edit Metadata**: Modify embedded PDF Author, Title, Subject, and Keywords.
+58. **Metadata Viewer**: Inspect embedded PDF metadata and technical specifications.
+59. **Remove Metadata**: Privacy cleanup utility stripping author, device, and tracking metadata.
+60. **Extract Images**: Extract all embedded images inside a PDF into a downloadable ZIP archive.
+61. **Extract Fonts**: Inspect, extract, and download embedded font names, types, and binary font files from PDFs.
+62. **Grayscale PDF**: Convert colored PDF pages to monochrome grayscale for ink-saving printing.
+63. **Invoice PDF Generator**: Generate clean business and travel invoices formatted as downloadable PDFs.
+64. **Quotation PDF Generator**: Generate custom client quotations and price estimates as PDFs.
+65. **Receipt PDF Generator**: Generate payment and booking receipts in downloadable PDF format.
+66. **Visa Application PDF Builder**: Specialized travel visa form builder with auto-fill capabilities.
+67. **Travel Voucher Generator**: Generate hotel, transfer, and tour vouchers as PDFs.
+68. **Ticket PDF Generator**: Create customized travel tickets with simulated barcodes as PDFs.
+69. **Hajj & Umrah Document Builder**: Generate pilgrim documentation and package sheets as PDFs.
+70. **AI PDF Analyzer**: Client-side document analytics with reading complexity, keyword n-grams, and sentiment analysis.
+71. **AI OCR Engine**: Client-side optical character recognition with image preprocessing and bounding box detection.
+72. **AI Form Detection**: Automatic recognition of fillable form fields, checkboxes, and signature blocks with schema export.
+73. **AI Document Summary**: Executive summarizer with TL;DR bullet points, key takeaways, and section breakdown.
+74. **AI PDF Translator**: Multilingual PDF translation workbench with side-by-side bilingual reading view.
+75. **AI Contract Analyzer**: Legal document review extracting clauses, obligations, dates, and risk severity scoring.
+76. **AI Invoice Reader**: Financial document parser extracting invoice fields, line items, VAT, and totals into CSV/JSON.
+77. **AI Receipt Scanner**: Expense receipt scanner parsing merchant, date, total, and expense categorization.
+78. **AI Document Intelligence**: Unified multi-capability document analytics with classification, NER, and integrity scoring.
 
 ### ✍️ Text Utilities Suite (20 Tools)
-55. **Word Counter**: Word, character, sentence, paragraph counts, and reading/speaking times.
-56. **Character Counter**: Glyph counts, whitespace, punctuation, and UTF-8 byte sizes.
-57. **Text Case Converter**: Convert text between UPPERCASE, lowercase, Title Case, Sentence case, and camelCase.
-58. **Lorem Ipsum Generator**: Generate placeholder dummy text with custom paragraph, word, and sentence counts.
-59. **Text Reverser**: Reverse characters, words, and sentences instantly.
-60. **Find and Replace**: String and regular expression find-and-replace workbench with match counters.
-61. **Sentence Counter**: Sentence analysis engine with average sentence length and Flesch Reading Ease scores.
-62. **Alphabetical Sorter**: Sort lines alphabetically (A-Z / Z-A) with case-insensitivity and deduplication.
-63. **Duplicate Lines Remover**: Strip repeated lines and remove empty whitespace rows.
-64. **Binary to Text Converter**: Two-way binary (01000001) to ASCII/UTF-8 text converter.
-65. **Morse Code Translator**: Two-way Morse code translator with visual dots/dashes.
-66. **Slug Generator**: Convert headings and titles into clean URL-safe slugs with custom delimiters.
-67. **Caesar Cipher Tool**: Classical shift cipher encryption and decryption workbench.
-68. **ROT13 Encoder/Decoder**: 13-character rotation transformation tool.
-69. **Word Frequency Analyzer**: Keyword density calculator and token frequency ranking table.
-70. **Text to Handwriting Converter**: Simulates handwritten script rendering on digital ruled paper.
-71. **Markdown to HTML Converter**: Real-time Markdown parser and previewer.
-72. **HTML to Markdown Converter**: Converts raw HTML markup into structured Markdown.
-73. **String Length Calculator**: Precise character count, UTF-8 byte length, and line count meter.
-74. **Character Frequency Analyzer**: Comprehensive character distribution breakdown with percentages.
+79. **Word Counter**: Word, character, sentence, paragraph counts, and reading/speaking times.
+80. **Character Counter**: Glyph counts, whitespace, punctuation, and UTF-8 byte sizes.
+81. **Text Case Converter**: Convert text between UPPERCASE, lowercase, Title Case, Sentence case, and camelCase.
+82. **Lorem Ipsum Generator**: Generate placeholder dummy text with custom paragraph, word, and sentence counts.
+83. **Text Reverser**: Reverse characters, words, and sentences instantly.
+84. **Find and Replace**: String and regular expression find-and-replace workbench with match counters.
+85. **Sentence Counter**: Sentence analysis engine with average sentence length and Flesch Reading Ease scores.
+86. **Alphabetical Sorter**: Sort lines alphabetically (A-Z / Z-A) with case-insensitivity and deduplication.
+87. **Duplicate Lines Remover**: Strip repeated lines and remove empty whitespace rows.
+88. **Binary to Text Converter**: Two-way binary (01000001) to ASCII/UTF-8 text converter.
+89. **Morse Code Translator**: Two-way Morse code translator with visual dots/dashes.
+90. **Slug Generator**: Convert headings and titles into clean URL-safe slugs with custom delimiters.
+91. **Caesar Cipher Tool**: Classical shift cipher encryption and decryption workbench.
+92. **ROT13 Encoder/Decoder**: 13-character rotation transformation tool.
+93. **Word Frequency Analyzer**: Keyword density calculator and token frequency ranking table.
+94. **Text to Handwriting Converter**: Simulates handwritten script rendering on digital ruled paper.
+95. **Markdown to HTML Converter**: Real-time Markdown parser and previewer.
+96. **HTML to Markdown Converter**: Converts raw HTML markup into structured Markdown.
+97. **String Length Calculator**: Precise character count, UTF-8 byte length, and line count meter.
+98. **Character Frequency Analyzer**: Comprehensive character distribution breakdown with percentages.
 
 ### 🔍 SEO Tools Suite (6 Tools)
-75. **Meta Tag Generator**: Interactive HTML meta tag builder for search engine ranking.
-76. **Robots.txt Generator**: Interactive crawler directives builder for Googlebot, Bingbot, etc.
-77. **XML Sitemap Generator**: Sitemap structure generator with lastmod and changefreq tags.
-78. **Schema Markup Generator**: Schema.org JSON-LD structured data generator.
-79. **Redirect Code Generator**: Generates 301/302 redirects for Apache `.htaccess` and Nginx server blocks.
-80. **Open Graph Meta Generator**: Generates Open Graph and Twitter Card tags with live social preview.
+99. **Meta Tag Generator**: Interactive HTML meta tag builder for search engine ranking.
+100. **Robots.txt Generator**: Interactive crawler directives builder for Googlebot, Bingbot, etc.
+101. **XML Sitemap Generator**: Sitemap structure generator with lastmod and changefreq tags.
+102. **Schema Markup Generator**: Schema.org JSON-LD structured data generator.
+103. **Redirect Code Generator**: Generates 301/302 redirects for Apache `.htaccess` and Nginx server blocks.
+104. **Open Graph Meta Generator**: Generates Open Graph and Twitter Card tags with live social preview.
 
 ### 💻 Developer Utilities Suite (4 Tools)
-81. **JSON Formatter**: Format, beautify, validate, and minify JSON with tree visualization.
-82. **Base64 Encoder**: Convert text or binary files into Base64 format.
-83. **Base64 Decoder**: Decode Base64 strings back to text or downloadable binary files.
-84. **QR Code Generator**: Client-side QR code generator with custom size, foreground, and background colors.
+105. **JSON Formatter**: Format, beautify, validate, and minify JSON with tree visualization.
+106. **Base64 Encoder**: Convert text or binary files into Base64 format.
+107. **Base64 Decoder**: Decode Base64 strings back to text or downloadable binary files.
+108. **QR Code Generator**: Client-side QR code generator with custom size, foreground, and background colors.
 
 ### 🚀 Product Marketing Suite (4 Tools)
-85. **Product Poster Maker**: Promotional poster designer for retail and digital storefronts.
-86. **Product Social Media Post Maker**: Graphic card generator for Instagram, Facebook, and LinkedIn.
-87. **Product Price Tag Generator**: Printable retail price tags, promotional badges, and labels.
-88. **Product Image Tools**: E-commerce photo resizing, framing, and watermarking.
+109. **Product Poster Maker**: Promotional poster designer for retail and digital storefronts.
+110. **Product Social Media Post Maker**: Graphic card generator for Instagram, Facebook, and LinkedIn.
+111. **Product Price Tag Generator**: Printable retail price tags, promotional badges, and labels.
+112. **Product Image Tools**: E-commerce photo resizing, framing, and watermarking.
 
 ### 💼 CV & Resume Builder Suite (3 Tools)
-89. **Professional CV Builder Pro**: Interactive curriculum vitae builder with real-time preview and export.
-90. **Resume Generator**: Form-driven modern resume compiler.
-91. **Resume Optimizer**: Keyword density and ATS formatting suggestions for job applications.
+113. **Professional CV Builder Pro**: Interactive curriculum vitae builder with real-time preview and export.
+114. **Resume Generator**: Form-driven modern resume compiler.
+115. **Resume Optimizer**: Keyword density and ATS formatting suggestions for job applications.
 
 ### 🎨 Image & Color Tools (3 Tools)
-92. **Color Picker**: Visual canvas palette picker with format conversion (HEX, RGB, HSL).
-93. **Image Resizer & Compressor**: Client-side image resizing, compression, and WebP/PNG/JPG conversion.
-94. **List Visualizer & Bullets**: Interactive list formatter with custom bullets, numbering, and prefixes.
+116. **Color Picker**: Visual canvas palette picker with format conversion (HEX, RGB, HSL).
+117. **Image Resizer & Compressor**: Client-side image resizing, compression, and WebP/PNG/JPG conversion.
+118. **List Visualizer & Bullets**: Interactive list formatter with custom bullets, numbering, and prefixes.
 
 ### ⌨️ Typing & Productivity Suite (3 Tools)
-95. **Typing Practice**: Real-time typing speed test with WPM, accuracy %, timer modes, and audio feedback.
-96. **Excel Data Typing Practice**: Spreadsheet data-entry simulator with numerical keypad KPM tracking.
-97. **Typing Certificate Generator**: High-resolution HTML5 canvas certificate generator with PNG download.
+119. **Typing Practice**: Real-time typing speed test with WPM, accuracy %, timer modes, and audio feedback.
+120. **Excel Data Typing Practice**: Spreadsheet data-entry simulator with numerical keypad KPM tracking.
+121. **Typing Certificate Generator**: High-resolution HTML5 canvas certificate generator with PNG download.
 
 ### ✈️ Travel Operations Suite (3 Tools)
-98. **Visa Fee Calculator**: Consular fee calculator with multi-currency conversion (USD, EUR, GBP, BDT, SAR).
-99. **Passport Expiry Checker**: Validity calculator with 6-month & Schengen 3-month rules and country database.
-100. **Travel Quotation Generator**: Agency quotation builder with flights, accommodation, tour items, and A4 print layout.
+122. **Visa Fee Calculator**: Consular fee calculator with multi-currency conversion (USD, EUR, GBP, BDT, SAR).
+123. **Passport Expiry Checker**: Validity calculator with 6-month & Schengen 3-month rules and country database.
+124. **Travel Quotation Generator**: Agency quotation builder with flights, accommodation, tour items, and A4 print layout.
 
 ### 🛒 E-commerce Operations Suite (3 Tools)
-101. **Invoice Generator**: Billing invoice creator with dynamic line items, taxes, discounts, and print/PDF export.
-102. **Product Profit Calculator**: Unit economics simulator with Amazon/Shopify presets, margins, and cost breakdown bar.
-103. **Receipt Generator**: Thermal POS receipt generator with barcode simulation and printable layout.
+125. **Invoice Generator**: Billing invoice creator with dynamic line items, taxes, discounts, and print/PDF export.
+126. **Product Profit Calculator**: Unit economics simulator with Amazon/Shopify presets, margins, and cost breakdown bar.
+127. **Receipt Generator**: Thermal POS receipt generator with barcode simulation and printable layout.
 
-### 🧮 Math & Utility Suite (2 Tools)
-104. **BMI Calculator**: Metric & imperial Body Mass Index calculator with health category classifications.
-105. **Scientific Calculator**: Full scientific expression evaluator (trig, log, powers, sqrt, memory registers).
-106. **Password Generator**: Secure cryptographic password generator with character sets and strength meter.
-107. **HTML Output Viewer**: Live split-view HTML/CSS/JS sandbox runner with isolated `<iframe>` preview.
-108. **Extract Pages (PDF)**: Specialized single and multi-page extractor from PDF documents.
-109. **Brand Identity Kit**: Luxury brand guideline and aesthetic kit creator.
+### 🧮 Math & Utility Suite (6 Tools)
+128. **BMI Calculator**: Metric & imperial Body Mass Index calculator with health category classifications.
+129. **Scientific Calculator**: Full scientific expression evaluator (trig, log, powers, sqrt, memory registers).
+130. **Password Generator**: Secure cryptographic password generator with character sets and strength meter.
+131. **HTML Output Viewer**: Live split-view HTML/CSS/JS sandbox runner with isolated `<iframe>` preview.
+132. **Extract Pages (PDF)**: Specialized single and multi-page extractor from PDF documents.
+133. **Brand Identity Kit**: Luxury brand guideline and aesthetic kit creator.
 
 ---
 

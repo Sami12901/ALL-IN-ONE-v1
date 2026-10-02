@@ -3,17 +3,171 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Contract Analyzer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Analyze legal contracts and highlight key terms using AI.">
-  <meta name="keywords" content="pdf, document, ai contract analyzer, free, online, tool, utility">
+  <title>AI Contract Analyzer - Legal Clause Extractor & Risk Auditor - ALL IN ONE</title>
+  <meta name="description" content="Extract critical legal clauses, audit unfavorable terms, detect missing clauses, and generate a Legal Risk Audit Dossier from any contract or agreement in your browser.">
+  <meta name="keywords" content="contract analyzer, ai contract review, legal clause extractor, contract risk score, indemnification clause, termination terms, legal risk audit">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-contract-analyzer/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <!-- PDF & Export Libraries -->
+  <script src="../../assets/lib/pdf.min.js"></script>
+  <script src="../../assets/lib/pdf-lib.min.js"></script>
+  <script src="../../assets/lib/html2pdf.bundle.min.js"></script>
+  <script>
+    if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = '../../assets/lib/pdf.worker.min.js';
+    }
+  </script>
+  
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+  
+  <style>
+    .risk-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .score-circle {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      border: 4px solid var(--accent);
+      background: var(--bg-secondary);
+      flex-shrink: 0;
+    }
+    .score-circle .val {
+      font-size: 1.75rem;
+      line-height: 1;
+    }
+    .score-circle .label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+    .clause-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      transition: var(--transition);
+    }
+    .clause-card:hover {
+      border-color: var(--accent);
+    }
+    .clause-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .risk-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .risk-tag.low {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .risk-tag.medium {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .risk-tag.high {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--error);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    .clause-text {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      margin-bottom: 0.5rem;
+    }
+    .clause-advice {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .missing-clauses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 0.85rem;
+    }
+    .missing-item {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+    }
+    .missing-item.found {
+      color: var(--success);
+    }
+    .missing-item.absent {
+      color: var(--warning);
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+    .dropzone-active {
+      border-color: var(--accent) !important;
+      background: var(--accent-glow) !important;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printable-dossier, #printable-dossier * {
+        visibility: visible;
+      }
+      #printable-dossier {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: #fff;
+        color: #000;
+        padding: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -26,44 +180,156 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>AI Contract Analyzer</h1>
-        <p class="tool-description">Analyze legal contracts and highlight key terms using AI.</p>
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+          <h1>AI Contract Analyzer</h1>
+          <span class="badge">Legal Risk Auditor</span>
+        </div>
+        <p class="tool-description">
+          Review legal contracts and agreements automatically. Extracts essential clauses, quantifies risk severity scores, detects missing protective language, and compiles a comprehensive Legal Risk Audit Dossier.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AI Contract Analyzer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Analyze legal contracts and highlight key terms using AI.</div>
-            <div><strong>Inputs:</strong> pdf, document, ai contract analyzer</div>
-            <div><strong>Category:</strong> pdf</div>
+      <!-- Upload Panel -->
+      <div class="tool-panel glass-panel" id="upload-panel">
+        <div class="file-drag-area" id="drop-zone" tabindex="0" role="button" aria-label="Upload contract PDF">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">Drop your Contract PDF here</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; max-width: 440px; margin: 0 auto 1.25rem;">
+            Upload Master Services Agreements, NDAs, SaaS Terms, or Employment Contracts. 100% confidential and processed entirely in browser memory.
+          </p>
+          <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+            <label for="pdf-input" class="btn btn-primary" style="cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              Select Contract PDF
+            </label>
+            <input type="file" id="pdf-input" accept="application/pdf" style="display: none;">
+            <button type="button" class="btn btn-secondary" id="load-sample-saas-btn">
+              Sample SaaS Agreement
+            </button>
+            <button type="button" class="btn btn-secondary" id="load-sample-employment-btn">
+              Sample Employment Contract
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Processing State -->
+        <div id="processing-state" class="hidden" style="text-align: center; padding: 2.5rem 1rem;">
+          <div style="display: inline-block; width: 44px; height: 44px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 1rem;"></div>
+          <h4 id="status-title" style="font-size: 1.15rem; font-weight: 700;">Auditing legal clauses...</h4>
+          <p id="status-desc" style="color: var(--text-secondary); font-size: 0.875rem;">Evaluating indemnities, liabilities, and termination conditions</p>
+        </div>
       </div>
-    
+
+      <!-- Analysis Results Workspace -->
+      <div id="contract-workspace" class="hidden" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        
+        <!-- Action Toolbar -->
+        <div class="glass-panel" style="padding: 0.85rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <strong id="contract-filename" style="font-size: 0.95rem; color: var(--text-primary);">contract.pdf</strong>
+            <span class="badge" id="contract-type-badge">SaaS Master Services Agreement</span>
+          </div>
+
+          <div class="action-bar" style="margin: 0;">
+            <button class="btn btn-secondary" id="export-json-btn">Export Audit JSON</button>
+            <button class="btn btn-secondary" id="print-dossier-btn">Print Audit</button>
+            <button class="btn btn-primary" id="export-pdf-dossier-btn">Export Audit Dossier PDF</button>
+            <button class="btn btn-secondary" id="reset-btn">New Audit</button>
+          </div>
+        </div>
+
+        <!-- Printable Container -->
+        <div id="printable-dossier" style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Executive Risk Banner -->
+          <div class="risk-banner glass-panel">
+            <div style="display: flex; align-items: center; gap: 1.25rem;">
+              <div class="score-circle" id="risk-score-circle">
+                <span class="val" id="risk-score-val">28</span>
+                <span class="label">Risk Index</span>
+              </div>
+              <div>
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem;" id="risk-rating-text">
+                  Moderate Commercial Risk
+                </h3>
+                <p style="color: var(--text-secondary); font-size: 0.875rem; margin: 0; max-width: 520px;" id="risk-summary-text">
+                  Contract contains standard business clauses with 2 clauses flagged for negotiation or clarification.
+                </p>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+              <div style="text-align: center; background: var(--bg-secondary); padding: 0.75rem 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <div style="font-size: 1.25rem; font-weight: 700; color: var(--error);" id="stat-high-risk">0</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">High Risk</div>
+              </div>
+              <div style="text-align: center; background: var(--bg-secondary); padding: 0.75rem 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <div style="font-size: 1.25rem; font-weight: 700; color: var(--warning);" id="stat-med-risk">0</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">Medium Risk</div>
+              </div>
+              <div style="text-align: center; background: var(--bg-secondary); padding: 0.75rem 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <div style="font-size: 1.25rem; font-weight: 700; color: var(--success);" id="stat-low-risk">0</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">Low Risk</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Key Agreement Parameters (Parties, Dates, Law) -->
+          <div class="tool-panel glass-panel">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>
+              Core Agreement Parameters
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;" id="core-params-grid">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Legal Clauses & Risk Breakdown -->
+          <div class="tool-panel glass-panel">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              Extracted Legal Clauses & Risk Analysis
+            </div>
+            <div id="clauses-container">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Protective Clauses Checklist -->
+          <div class="tool-panel glass-panel">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+              Standard Protective Clauses Checklist
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+              Audits presence of standard institutional boilerplate terms required for dispute mitigation.
+            </p>
+            <div class="missing-clauses-grid" id="checklist-grid">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
     </div>
   </main>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "AI Contract Analyzer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-contract-analyzer/",
-    "description": "Analyze legal contracts and highlight key terms using AI.",
-    "applicationCategory": "UtilityPage",
+    "description": "Analyze contract clauses, assess legal risks, and audit missing clauses client-side.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

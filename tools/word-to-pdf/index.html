@@ -3,17 +3,360 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Word to PDF - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Convert DOCX files to PDF.">
-  <meta name="keywords" content="pdf, document, word to pdf, free, online, tool, utility">
+  <title>Word to PDF Converter - Free & High Fidelity - ALL IN ONE</title>
+  <meta name="description" content="Convert Microsoft Word (.docx), text files, or rich formatted documents to crisp PDF files with instant preview, customizable page sizes, orientations, and margins entirely in your browser.">
+  <meta name="keywords" content="word to pdf, convert docx to pdf, doc to pdf, text to pdf, rich text editor to pdf, create pdf, pdf compiler">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/word-to-pdf/">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <!-- Libraries for Word parsing, HTML to PDF, and PDF-Lib manipulation -->
+  <script src="../../assets/lib/jszip.min.js"></script>
+  <script src="../../assets/lib/html2pdf.bundle.min.js"></script>
+  <script src="../../assets/lib/pdf-lib.min.js"></script>
+
+  <!-- Web Components -->
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+
+  <style>
+    /* Word to PDF Studio Workspace Styles */
+    .word-to-pdf-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    /* Top Presets & Controls Bar */
+    .top-controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    .preset-selector-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .action-controls-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    /* Page Configuration Ribbon */
+    .page-config-ribbon {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.25rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+    }
+
+    .config-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .config-select {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      border-radius: var(--radius-sm);
+      padding: 0.3rem 0.6rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* WYSIWYG Editing Toolbar */
+    .wysiwyg-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.6rem 0.8rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      position: sticky;
+      top: 5rem;
+      z-index: 20;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .tool-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-primary);
+      border-radius: var(--radius-sm);
+      padding: 0.35rem 0.55rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: var(--transition);
+      min-width: 30px;
+      height: 30px;
+    }
+
+    .tool-btn:hover {
+      background: var(--bg-tertiary);
+      border-color: var(--border);
+      color: var(--accent);
+    }
+
+    .tool-btn.active {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .tool-select {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      border-radius: var(--radius-sm);
+      padding: 0.25rem 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      height: 30px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .tool-color-input {
+      width: 28px;
+      height: 28px;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      background: transparent;
+      padding: 0;
+    }
+
+    .tool-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      margin: 0 0.25rem;
+    }
+
+    /* Document Sheet Stage */
+    .document-stage-wrapper {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 2.5rem 1rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: auto;
+      min-height: 750px;
+    }
+
+    /* Print Document Page Preview */
+    .paper-sheet {
+      width: 100%;
+      max-width: 800px;
+      min-height: 1050px; /* A4 Ratio */
+      background: #ffffff;
+      color: #1a1a1a;
+      padding: 3.5rem 4rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+      border-radius: 2px;
+      font-family: 'Calibri', 'Inter', -apple-system, sans-serif;
+      font-size: 11pt;
+      line-height: 1.6;
+      outline: none;
+      overflow-wrap: break-word;
+      transition: width 0.3s, padding 0.3s;
+      position: relative;
+    }
+
+    /* Page orientation classes */
+    .paper-sheet.landscape {
+      max-width: 1050px;
+      min-height: 800px;
+    }
+
+    /* Margin adjustments */
+    .paper-sheet.margin-narrow {
+      padding: 2rem 2.5rem;
+    }
+
+    .paper-sheet.margin-wide {
+      padding: 4.5rem 5rem;
+    }
+
+    /* Internal Document Styling */
+    .paper-sheet h1 {
+      font-size: 22pt;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin: 1.2rem 0 0.6rem;
+      line-height: 1.2;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 0.3rem;
+      font-family: inherit;
+    }
+
+    .paper-sheet h2 {
+      font-size: 16pt;
+      font-weight: 700;
+      color: #1d4ed8;
+      margin: 1rem 0 0.5rem;
+      line-height: 1.25;
+      font-family: inherit;
+    }
+
+    .paper-sheet h3 {
+      font-size: 13pt;
+      font-weight: 600;
+      color: #334155;
+      margin: 0.8rem 0 0.4rem;
+      font-family: inherit;
+    }
+
+    .paper-sheet p {
+      margin: 0 0 0.8rem;
+      color: #1f2937;
+      text-align: justify;
+      line-height: 1.55;
+      font-family: inherit;
+    }
+
+    .paper-sheet ul, .paper-sheet ol {
+      margin: 0 0 0.8rem 2rem;
+      color: #1f2937;
+    }
+
+    .paper-sheet li {
+      margin-bottom: 0.3rem;
+    }
+
+    .paper-sheet table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.2rem 0;
+      font-size: 10pt;
+    }
+
+    .paper-sheet table, .paper-sheet th, .paper-sheet td {
+      border: 1px solid #cbd5e1;
+    }
+
+    .paper-sheet th, .paper-sheet td {
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+
+    .paper-sheet th {
+      background-color: #f1f5f9;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .paper-sheet tr:nth-child(even) td {
+      background-color: #f8fafc;
+    }
+
+    .paper-sheet blockquote {
+      border-left: 4px solid #3b82f6;
+      padding-left: 1rem;
+      margin: 1rem 0;
+      color: #475569;
+      font-style: italic;
+    }
+
+    .paper-sheet hr {
+      border: none;
+      border-top: 1px solid #cbd5e1;
+      margin: 1.5rem 0;
+    }
+
+    .html2pdf__page-break {
+      height: 0;
+      page-break-before: always;
+      margin: 2rem 0;
+      border-top: 2px dashed #94a3b8;
+      position: relative;
+    }
+
+    .html2pdf__page-break::after {
+      content: "Page Break";
+      position: absolute;
+      top: -0.7rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #f1f5f9;
+      color: #64748b;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0 0.5rem;
+      border-radius: 4px;
+      border: 1px solid #cbd5e1;
+    }
+
+    /* Status Bar */
+    .status-bar-panel {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1.25rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    /* Modal / File drop highlight overlay */
+    .drop-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 1rem;
+      color: #ffffff;
+    }
+
+    .drop-overlay.active {
+      display: flex;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -25,44 +368,210 @@
   <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
-      <div class="tool-header">
-        <h1>Word to PDF</h1>
-        <p class="tool-description">Convert DOCX files to PDF.</p>
+      <div class="tool-header" style="text-align: center; max-width: 760px; margin: 0 auto 1.5rem;">
+        <span class="badge" style="margin-bottom: 0.75rem;">Client-Side PDF Publishing Engine</span>
+        <h1>Word to PDF Converter</h1>
+        <p class="tool-description" style="margin: 0 auto;">
+          Convert Microsoft Word documents (.docx), text files, or create rich publications and compile them into pristine, publication-grade PDF documents with live preview and custom page margins.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Word to PDF</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Convert DOCX files to PDF.</div>
-            <div><strong>Inputs:</strong> pdf, document, word to pdf</div>
-            <div><strong>Category:</strong> pdf</div>
+      <div class="word-to-pdf-layout">
+        <!-- Top Toolbar & Preset Selectors -->
+        <div class="top-controls-bar glass-panel">
+          <div class="preset-selector-group">
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary);">Open / Template:</span>
+            <button class="btn btn-secondary" id="btn-upload-file" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              Open .DOCX / .TXT
+            </button>
+            <input type="file" id="doc-file-input" accept=".docx,.txt,.html,.htm" style="display: none;">
+
+            <select class="config-select" id="template-select" title="Load sample document template">
+              <option value="report">Executive Report</option>
+              <option value="letter">Business Letter</option>
+              <option value="invoice">Invoice Summary</option>
+              <option value="blank">Blank Canvas</option>
+            </select>
+          </div>
+
+          <div class="action-controls-group">
+            <button class="btn btn-secondary" id="btn-clear-doc" title="Clear document">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              Clear
+            </button>
+            <button class="btn btn-primary" id="btn-compile-pdf" style="padding: 0.55rem 1.5rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="12" y1="18" x2="12" y2="12"></line>
+                <line x1="9" y1="15" x2="15" y2="15"></line>
+              </svg>
+              Convert to PDF
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Page Configuration Settings -->
+        <div class="page-config-ribbon glass-panel">
+          <div class="config-item">
+            <span>Page Size:</span>
+            <select class="config-select" id="page-size-select">
+              <option value="a4" selected>A4 (210 &times; 297 mm)</option>
+              <option value="letter">US Letter (8.5 &times; 11 in)</option>
+              <option value="legal">Legal (8.5 &times; 14 in)</option>
+            </select>
+          </div>
+
+          <div class="config-item">
+            <span>Orientation:</span>
+            <select class="config-select" id="page-orient-select">
+              <option value="portrait" selected>Portrait</option>
+              <option value="landscape">Landscape</option>
+            </select>
+          </div>
+
+          <div class="config-item">
+            <span>Margins:</span>
+            <select class="config-select" id="page-margin-select">
+              <option value="normal" selected>Normal (1.0 in)</option>
+              <option value="narrow">Narrow (0.5 in)</option>
+              <option value="wide">Wide (1.5 in)</option>
+            </select>
+          </div>
+
+          <div class="config-item" style="margin-left: auto;">
+            <label style="display: flex; align-items: center; gap: 0.35rem; cursor: pointer;">
+              <input type="checkbox" id="chk-page-numbers" checked>
+              <span>Add Page Numbers</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- WYSIWYG Editing Toolbar -->
+        <div class="wysiwyg-toolbar glass-panel">
+          <select class="tool-select" id="tool-format-block" title="Text Style">
+            <option value="p">Paragraph</option>
+            <option value="h1">Heading 1</option>
+            <option value="h2">Heading 2</option>
+            <option value="h3">Heading 3</option>
+            <option value="blockquote">Quote</option>
+          </select>
+
+          <select class="tool-select" id="tool-font-family" title="Font Family">
+            <option value="Calibri, sans-serif">Calibri</option>
+            <option value="Arial, sans-serif">Arial</option>
+            <option value="'Times New Roman', serif">Times New Roman</option>
+            <option value="Georgia, serif">Georgia</option>
+            <option value="'Inter', sans-serif">Inter</option>
+            <option value="'Courier New', monospace">Courier New</option>
+          </select>
+
+          <select class="tool-select" id="tool-font-size" title="Font Size">
+            <option value="2">10pt</option>
+            <option value="3" selected>11pt</option>
+            <option value="4">14pt</option>
+            <option value="5">18pt</option>
+            <option value="6">24pt</option>
+          </select>
+
+          <div class="tool-divider"></div>
+
+          <button type="button" class="tool-btn" id="tool-bold" title="Bold (Ctrl+B)"><b>B</b></button>
+          <button type="button" class="tool-btn" id="tool-italic" title="Italic (Ctrl+I)"><i>I</i></button>
+          <button type="button" class="tool-btn" id="tool-underline" title="Underline (Ctrl+U)"><u>U</u></button>
+          <button type="button" class="tool-btn" id="tool-strike" title="Strikethrough"><s>S</s></button>
+
+          <div class="tool-divider"></div>
+
+          <input type="color" class="tool-color-input" id="tool-color" value="#111827" title="Text Color">
+          <input type="color" class="tool-color-input" id="tool-hilite" value="#ffffff" title="Highlight Color">
+
+          <div class="tool-divider"></div>
+
+          <button type="button" class="tool-btn" id="tool-align-left" title="Align Left">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="17" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg>
+          </button>
+          <button type="button" class="tool-btn" id="tool-align-center" title="Align Center">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="10" x2="6" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="18" y1="18" x2="6" y2="18"></line></svg>
+          </button>
+          <button type="button" class="tool-btn" id="tool-align-right" title="Align Right">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="21" y1="10" x2="7" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="21" y1="18" x2="7" y2="18"></line></svg>
+          </button>
+          <button type="button" class="tool-btn" id="tool-align-justify" title="Justify">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="21" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="21" y1="18" x2="3" y2="18"></line></svg>
+          </button>
+
+          <div class="tool-divider"></div>
+
+          <button type="button" class="tool-btn" id="tool-ul" title="Bulleted List">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="9" y1="6" x2="20" y2="6"></line><line x1="9" y1="12" x2="20" y2="12"></line><line x1="9" y1="18" x2="20" y2="18"></line><circle cx="4" cy="6" r="2"></circle><circle cx="4" cy="12" r="2"></circle><circle cx="4" cy="18" r="2"></circle></svg>
+          </button>
+          <button type="button" class="tool-btn" id="tool-ol" title="Numbered List">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="10" y1="6" x2="21" y2="6"></line><line x1="10" y1="12" x2="21" y2="12"></line><line x1="10" y1="18" x2="21" y2="18"></line><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path></svg>
+          </button>
+
+          <div class="tool-divider"></div>
+
+          <button type="button" class="tool-btn" id="tool-insert-table" title="Insert Table">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+          </button>
+          <button type="button" class="tool-btn" id="tool-insert-hr" title="Insert Horizontal Rule">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          </button>
+          <button type="button" class="tool-btn" id="tool-page-break" title="Insert Page Break">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><line x1="2" y1="13" x2="22" y2="13"></line></svg>
+          </button>
+          <button type="button" class="tool-btn" id="tool-clear" title="Clear Formatting">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+
+        <!-- Document Sheet Stage -->
+        <div class="document-stage-wrapper" id="drop-target-area">
+          <div class="paper-sheet" id="word-editor" contenteditable="true" spellcheck="true">
+            <!-- Initial editable document content injected via JS -->
+          </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar-panel glass-panel">
+          <div id="word-stats">Words: 0 | Characters: 0 | Estimated Pages: 1</div>
+          <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--accent);">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Ready for PDF Compilation</span>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
+
+  <!-- Fullscreen drag drop overlay -->
+  <div class="drop-overlay" id="drop-overlay">
+    <svg viewBox="0 0 24 24" width="64" height="64" stroke="currentColor" stroke-width="1.8" fill="none">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+      <polyline points="14 2 14 8 20 8"></polyline>
+      <line x1="12" y1="18" x2="12" y2="12"></line>
+      <line x1="9" y1="15" x2="15" y2="15"></line>
+    </svg>
+    <h2 style="font-size: 1.5rem;">Drop .DOCX or text file to import</h2>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Word to PDF",
+    "name": "Word to PDF Converter",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/word-to-pdf/",
-    "description": "Convert DOCX files to PDF.",
+    "description": "Convert Word documents, text files, and rich publications to high-fidelity PDF documents.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

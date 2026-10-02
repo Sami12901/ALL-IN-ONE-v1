@@ -4,69 +4,130 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Crop PDF - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Trim margins and resize PDF pages.">
-  <meta name="keywords" content="pdf, document, crop pdf, free, online, tool, utility">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/crop-pdf/">
+  <meta name="description" content="Visually crop and trim PDF page margins instantly in the browser.">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <script src="../../assets/lib/pdf.min.js"></script>
+  <script src="../../assets/lib/pdf-lib.min.js"></script>
+
+  <style>
+    .crop-layout{display:flex;gap:2rem;max-width:1100px;margin:0 auto;flex-wrap:wrap}
+    .crop-sidebar{flex:0 0 300px;display:flex;flex-direction:column;gap:1.25rem}
+    .crop-stage{flex:1;min-width:340px;display:flex;flex-direction:column;align-items:center;gap:1rem}
+    .upload-zone{border:2px dashed var(--stroke);border-radius:1rem;padding:3rem 2rem;text-align:center;background:rgba(0,0,0,.2);cursor:pointer;transition:all .2s}
+    .upload-zone:hover,.upload-zone.dragover{border-color:var(--accent);background:rgba(var(--accent-rgb),.05)}
+    .card{background:var(--surface);border:1px solid var(--stroke);border-radius:.75rem;padding:1.25rem}
+    .form-group{display:flex;flex-direction:column;gap:.4rem;margin-bottom:.75rem}
+    .form-group label{font-size:.85rem;font-weight:600;color:var(--text)}
+    .form-group input,.form-group select{background:var(--bg-tertiary);border:1px solid var(--stroke);border-radius:.5rem;padding:.5rem .75rem;color:var(--text);font-size:.9rem}
+    .preset-chips{display:flex;flex-wrap:wrap;gap:.5rem}
+    .preset-chip{padding:.4rem .8rem;border-radius:2rem;border:1px solid var(--stroke);background:transparent;color:var(--text);cursor:pointer;font-size:.8rem;transition:all .2s}
+    .preset-chip:hover,.preset-chip.active{background:var(--accent);color:#000;border-color:var(--accent)}
+    .canvas-wrapper{position:relative;border:1px solid var(--stroke);border-radius:.5rem;overflow:hidden;background:#111;display:inline-block}
+    .canvas-wrapper canvas{display:block}
+    .crop-overlay{position:absolute;border:2px dashed var(--accent);pointer-events:none;box-shadow:0 0 0 9999px rgba(0,0,0,.55)}
+    .page-nav{display:flex;align-items:center;gap:1rem}
+    .page-nav button{background:var(--surface);border:1px solid var(--stroke);color:var(--text);padding:.4rem .8rem;border-radius:.5rem;cursor:pointer}
+    .page-nav button:disabled{opacity:.4;cursor:default}
+    .kpi-row{display:flex;gap:.75rem;flex-wrap:wrap}
+    .kpi{flex:1;min-width:100px;background:var(--surface);border:1px solid var(--stroke);border-radius:.5rem;padding:.75rem;text-align:center}
+    .kpi .val{font-size:1.2rem;font-weight:700;color:var(--accent)}
+    .kpi .lbl{font-size:.7rem;color:var(--muted);margin-top:.2rem}
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
-      <div class="tool-header">
+      <div class="tool-header" style="text-align:center;max-width:650px;margin:0 auto 2rem">
         <h1>Crop PDF</h1>
-        <p class="tool-description">Trim margins and resize PDF pages.</p>
+        <p class="tool-description">Visually trim margins and adjust page boundaries of your PDF. 100% client-side — your files never leave the browser.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Crop PDF</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Trim margins and resize PDF pages.</div>
-            <div><strong>Inputs:</strong> pdf, document, crop pdf</div>
-            <div><strong>Category:</strong> pdf</div>
+      <div class="tool-panel glass-panel">
+        <!-- Upload Zone -->
+        <div id="upload-zone" class="upload-zone">
+          <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1" fill="none" style="margin-bottom:1rem;color:var(--muted)"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <h3 style="margin-bottom:.5rem">Drop a PDF file here</h3>
+          <p style="color:var(--muted);font-size:.9rem;margin-bottom:1.5rem">or click to browse</p>
+          <button class="btn btn-secondary" id="btn-browse">Select PDF</button>
+          <input type="file" id="file-input" accept="application/pdf" style="display:none">
+        </div>
+
+        <!-- Workspace (hidden until file loaded) -->
+        <div id="workspace" style="display:none">
+          <div class="kpi-row" style="margin-bottom:1.5rem">
+            <div class="kpi"><div class="val" id="kpi-pages">-</div><div class="lbl">Pages</div></div>
+            <div class="kpi"><div class="val" id="kpi-orig">-</div><div class="lbl">Original Size</div></div>
+            <div class="kpi"><div class="val" id="kpi-crop">-</div><div class="lbl">Cropped Size</div></div>
+            <div class="kpi"><div class="val" id="kpi-unit">pt</div><div class="lbl">Unit</div></div>
+          </div>
+
+          <div class="crop-layout">
+            <div class="crop-sidebar">
+              <div class="card">
+                <h3 style="margin-bottom:.75rem;font-size:1rem">Crop Presets</h3>
+                <div class="preset-chips">
+                  <button class="preset-chip" data-preset="trim">Trim Margins</button>
+                  <button class="preset-chip" data-preset="header">Remove Header</button>
+                  <button class="preset-chip" data-preset="footer">Remove Footer</button>
+                  <button class="preset-chip" data-preset="half">Half Page</button>
+                  <button class="preset-chip active" data-preset="custom">Custom</button>
+                </div>
+              </div>
+
+              <div class="card">
+                <h3 style="margin-bottom:.75rem;font-size:1rem">Crop Margins</h3>
+                <div class="form-group">
+                  <label>Unit</label>
+                  <select id="unit-select"><option value="pt">Points (pt)</option><option value="mm" selected>Millimeters (mm)</option><option value="in">Inches (in)</option></select>
+                </div>
+                <div class="form-group"><label>Top</label><input type="number" id="crop-top" value="0" min="0" step="1"></div>
+                <div class="form-group"><label>Right</label><input type="number" id="crop-right" value="0" min="0" step="1"></div>
+                <div class="form-group"><label>Bottom</label><input type="number" id="crop-bottom" value="0" min="0" step="1"></div>
+                <div class="form-group"><label>Left</label><input type="number" id="crop-left" value="0" min="0" step="1"></div>
+              </div>
+
+              <div class="card">
+                <h3 style="margin-bottom:.75rem;font-size:1rem">Apply To</h3>
+                <div class="form-group">
+                  <select id="apply-to"><option value="all">All Pages</option><option value="current">Current Page Only</option><option value="odd">Odd Pages</option><option value="even">Even Pages</option><option value="range">Custom Range</option></select>
+                </div>
+                <div class="form-group" id="range-group" style="display:none">
+                  <label>Pages (e.g. 1-3, 5)</label>
+                  <input type="text" id="page-range" placeholder="1-3, 5, 8">
+                </div>
+              </div>
+
+              <button class="btn btn-primary" id="btn-crop" style="width:100%">✂️ Crop PDF</button>
+              <button class="btn btn-secondary" id="btn-download" style="width:100%;display:none">⬇ Download Cropped PDF</button>
+              <button class="btn btn-secondary" id="btn-reset" style="width:100%">🔄 Load New PDF</button>
+            </div>
+
+            <div class="crop-stage">
+              <div class="page-nav">
+                <button id="btn-prev" disabled>◀ Prev</button>
+                <span id="page-indicator">Page 1 / 1</span>
+                <button id="btn-next" disabled>Next ▶</button>
+              </div>
+              <div class="canvas-wrapper" id="canvas-wrapper">
+                <canvas id="pdf-canvas"></canvas>
+                <div class="crop-overlay" id="crop-overlay"></div>
+              </div>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
     </div>
   </main>
 
-  <!-- Footer Web Component -->
   <app-footer></app-footer>
-
-  <!-- Structured schema for search engine rich snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Crop PDF",
-    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/crop-pdf/",
-    "description": "Trim margins and resize PDF pages.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
-  }
-  </script>
 </body>
 </html>

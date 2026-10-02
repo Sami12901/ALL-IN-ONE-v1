@@ -3,17 +3,169 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Document Intelligence - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Advanced AI intelligence for all your documents.">
-  <meta name="keywords" content="pdf, document, ai document intelligence, free, online, tool, utility">
+  <title>AI Document Intelligence - Cognitive Document Classifier & NER Dossier - ALL IN ONE</title>
+  <meta name="description" content="Unified client-side cognitive document intelligence. Automatically classifies document types, extracts named entities, computes integrity & risk scores, and generates master dossiers.">
+  <meta name="keywords" content="document intelligence, ai document classifier, named entity recognition, pdf ner, document integrity score, cognitive document analysis">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-document-intelligence/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <!-- PDF & Export Libraries -->
+  <script src="../../assets/lib/pdf.min.js"></script>
+  <script src="../../assets/lib/pdf-lib.min.js"></script>
+  <script src="../../assets/lib/html2pdf.bundle.min.js"></script>
+  <script>
+    if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = '../../assets/lib/pdf.worker.min.js';
+    }
+  </script>
+  
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+  
+  <style>
+    .intelligence-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 992px) {
+      .intelligence-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .score-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .intel-circle {
+      width: 95px;
+      height: 95px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      border: 4px solid var(--accent);
+      background: var(--bg-secondary);
+      flex-shrink: 0;
+    }
+    .intel-circle .val {
+      font-size: 1.85rem;
+      line-height: 1;
+      color: var(--accent);
+    }
+    .intel-circle .lbl {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      margin-top: 3px;
+    }
+    .entity-tag-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .entity-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.65rem;
+      font-size: 0.8rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+    }
+    .entity-tag.people {
+      border-color: rgba(59, 130, 246, 0.4);
+      background: rgba(59, 130, 246, 0.1);
+      color: #93c5fd;
+    }
+    .entity-tag.org {
+      border-color: rgba(168, 85, 247, 0.4);
+      background: rgba(168, 85, 247, 0.1);
+      color: #d8b4fe;
+    }
+    .entity-tag.loc {
+      border-color: rgba(16, 185, 129, 0.4);
+      background: rgba(16, 185, 129, 0.1);
+      color: #6ee7b7;
+    }
+    .entity-tag.money {
+      border-color: rgba(245, 158, 11, 0.4);
+      background: rgba(245, 158, 11, 0.1);
+      color: #fcd34d;
+    }
+    .entity-tag.date {
+      border-color: rgba(236, 72, 153, 0.4);
+      background: rgba(236, 72, 153, 0.1);
+      color: #f472b6;
+    }
+    .metric-bar-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .bar-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .bar-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    .bar-bg {
+      width: 100%;
+      height: 8px;
+      border-radius: var(--radius-full);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      background: var(--accent-gradient);
+      transition: width 0.4s ease;
+    }
+    .dropzone-active {
+      border-color: var(--accent) !important;
+      background: var(--accent-glow) !important;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #print-master-dossier, #print-master-dossier * {
+        visibility: visible;
+      }
+      #print-master-dossier {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: #fff;
+        color: #000;
+        padding: 25px;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -26,44 +178,200 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>AI Document Intelligence</h1>
-        <p class="tool-description">Advanced AI intelligence for all your documents.</p>
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+          <h1>AI Document Intelligence</h1>
+          <span class="badge">Cognitive Classifier & NER Engine</span>
+        </div>
+        <p class="tool-description">
+          Unified cognitive orchestrator for any document. Automatically identifies document types, performs deep named entity recognition (people, organizations, places, finances, dates), computes an institutional integrity score, and compiles a Master Intelligence Dossier.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AI Document Intelligence</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Advanced AI intelligence for all your documents.</div>
-            <div><strong>Inputs:</strong> pdf, document, ai document intelligence</div>
-            <div><strong>Category:</strong> pdf</div>
+      <!-- Upload Panel -->
+      <div class="tool-panel glass-panel" id="upload-panel">
+        <div class="file-drag-area" id="drop-zone" tabindex="0" role="button" aria-label="Upload PDF for cognitive analysis">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">Drop any PDF document here</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; max-width: 460px; margin: 0 auto 1.25rem;">
+            Invoices, contracts, academic research, resumes, or financial filings. 100% private client-side neural classification.
+          </p>
+          <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+            <label for="pdf-input" class="btn btn-primary" style="cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              Upload PDF File
+            </label>
+            <input type="file" id="pdf-input" accept="application/pdf" style="display: none;">
+            
+            <button type="button" class="btn btn-secondary" id="sample-contract-btn">Sample Contract</button>
+            <button type="button" class="btn btn-secondary" id="sample-paper-btn">Sample Research Paper</button>
+            <button type="button" class="btn btn-secondary" id="sample-financial-btn">Sample Financial Filing</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Processing State -->
+        <div id="processing-state" class="hidden" style="text-align: center; padding: 2.5rem 1rem;">
+          <div style="display: inline-block; width: 44px; height: 44px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 1rem;"></div>
+          <h4 id="status-title" style="font-size: 1.15rem; font-weight: 700;">Running Cognitive Orchestration...</h4>
+          <p id="status-desc" style="color: var(--text-secondary); font-size: 0.875rem;">Detecting entity clusters, document taxonomy, and risk indicators</p>
+        </div>
       </div>
-    
+
+      <!-- Cognitive Intelligence Results Workspace -->
+      <div id="intelligence-workspace" class="hidden" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        
+        <!-- Action Toolbar -->
+        <div class="glass-panel" style="padding: 0.85rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <strong id="intel-filename" style="font-size: 0.95rem; color: var(--text-primary);">document.pdf</strong>
+            <span class="badge" id="classification-badge">Legal Contract (94% confidence)</span>
+          </div>
+
+          <div class="action-bar" style="margin: 0;">
+            <button class="btn btn-secondary" id="export-json-btn">Export Dossier JSON</button>
+            <button class="btn btn-secondary" id="print-dossier-btn">Print Dossier</button>
+            <button class="btn btn-primary" id="export-pdf-dossier-btn">Generate Master Dossier PDF</button>
+            <button class="btn btn-secondary" id="reset-btn">New Analysis</button>
+          </div>
+        </div>
+
+        <!-- Printable Container -->
+        <div id="print-master-dossier" style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Integrity & Classification Banner -->
+          <div class="score-banner glass-panel">
+            <div style="display: flex; align-items: center; gap: 1.25rem;">
+              <div class="intel-circle" id="integrity-circle">
+                <span class="val" id="integrity-score-val">92</span>
+                <span class="lbl">Integrity</span>
+              </div>
+              <div>
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem;" id="integrity-title">
+                  High Document Integrity & Low Risk
+                </h3>
+                <p style="color: var(--text-secondary); font-size: 0.875rem; margin: 0; max-width: 500px;" id="integrity-summary">
+                  Verified structural cohesion, valid entity references, consistent typography, and minimal tamper risk.
+                </p>
+              </div>
+            </div>
+
+            <!-- Taxonomy classification breakdown -->
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+              <div style="background: var(--bg-secondary); border: 1px solid var(--border); padding: 0.65rem 1rem; border-radius: var(--radius-sm); text-align: center;">
+                <div style="font-size: 1.1rem; font-weight: 700; color: var(--accent);" id="tax-primary-type">Contract</div>
+                <div style="font-size: 0.7rem; color: var(--text-secondary);">Primary Genre</div>
+              </div>
+              <div style="background: var(--bg-secondary); border: 1px solid var(--border); padding: 0.65rem 1rem; border-radius: var(--radius-sm); text-align: center;">
+                <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary);" id="tax-words">0</div>
+                <div style="font-size: 0.7rem; color: var(--text-secondary);">Word Count</div>
+              </div>
+              <div style="background: var(--bg-secondary); border: 1px solid var(--border); padding: 0.65rem 1rem; border-radius: var(--radius-sm); text-align: center;">
+                <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary);" id="tax-entities-count">0</div>
+                <div style="font-size: 0.7rem; color: var(--text-secondary);">Entities Found</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Split Grid: Radar / Breakdown vs NER Entity Extractor -->
+          <div class="intelligence-grid">
+            
+            <!-- Left: Document Integrity Breakdown Radar/Bars -->
+            <div class="tool-panel glass-panel">
+              <div class="panel-title">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                Document Reliability & Forensic Scorecard
+              </div>
+              <div class="metric-bar-group" id="bars-container">
+                <!-- Dynamically generated bars -->
+              </div>
+            </div>
+
+            <!-- Right: Document Taxonomy Confidence -->
+            <div class="tool-panel glass-panel">
+              <div class="panel-title">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                Taxonomy Classification Confidence
+              </div>
+              <div class="metric-bar-group" id="taxonomy-bars">
+                <!-- Dynamically populated classification scores -->
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Named Entity Recognition (NER) Clusters -->
+          <div class="tool-panel glass-panel">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              Named Entity Recognition (NER) Knowledge Graph
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+              <!-- People / Signatories -->
+              <div>
+                <strong style="font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase;">👤 People & Signatories</strong>
+                <div class="entity-tag-group" id="entities-people"></div>
+              </div>
+
+              <!-- Organizations -->
+              <div>
+                <strong style="font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase;">🏢 Organizations & Corporations</strong>
+                <div class="entity-tag-group" id="entities-orgs"></div>
+              </div>
+
+              <!-- Locations -->
+              <div>
+                <strong style="font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase;">📍 Locations & Jurisdictions</strong>
+                <div class="entity-tag-group" id="entities-locs"></div>
+              </div>
+
+              <!-- Monetary -->
+              <div>
+                <strong style="font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase;">💰 Monetary Values & Capital Allocations</strong>
+                <div class="entity-tag-group" id="entities-money"></div>
+              </div>
+
+              <!-- Dates & Deadlines -->
+              <div>
+                <strong style="font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase;">📅 Dates, Deadlines & Periods</strong>
+                <div class="entity-tag-group" id="entities-dates"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Document Cognitive Summary & Anomaly Observations -->
+          <div class="tool-panel glass-panel">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              Cognitive Summary & Forensic Observations
+            </div>
+            <div id="cognitive-observations" style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <!-- Dynamically populated observation cards -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   </main>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "AI Document Intelligence",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-document-intelligence/",
-    "description": "Advanced AI intelligence for all your documents.",
-    "applicationCategory": "UtilityPage",
+    "description": "Unified cognitive document intelligence, classification, named entity recognition, and forensic risk audit client-side.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

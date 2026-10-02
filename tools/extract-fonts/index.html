@@ -3,15 +3,270 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Extract Fonts - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Extract embedded fonts from a PDF file.">
-  <meta name="keywords" content="pdf, document, extract fonts, free, online, tool, utility">
+  <title>Extract Fonts - Free Online PDF Tool - ALL IN ONE</title>
+  <meta name="description" content="Inspect, analyze, and extract embedded and referenced fonts from PDF documents instantly and securely in your browser.">
+  <meta name="keywords" content="pdf, extract fonts, embedded fonts, true type, opentype, pdf font analyzer, font inspector">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/extract-fonts/">
+  
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <!-- Local PDF Libraries -->
+  <script src="../../assets/lib/pdf.min.js"></script>
+  <script src="../../assets/lib/pdf-lib.min.js"></script>
+
+  <style>
+    .font-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+
+    .file-drag-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 3.5rem 2rem;
+      text-align: center;
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .file-drag-zone:hover, .file-drag-zone.dragover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+      transform: translateY(-2px);
+    }
+    .file-drag-zone svg {
+      width: 56px;
+      height: 56px;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+      transition: transform 0.3s var(--ease);
+    }
+    .file-drag-zone:hover svg {
+      transform: scale(1.1);
+    }
+
+    /* KPI Summary Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+    }
+    .kpi-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+    .kpi-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent-gradient);
+    }
+    .kpi-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+    }
+    .kpi-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      line-height: 1.2;
+    }
+    .kpi-sub {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* File Banner */
+    .file-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+    }
+    .file-info-group {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+    .file-badge-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .file-title-text {
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text-primary);
+      word-break: break-all;
+    }
+    .file-meta-text {
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+    }
+
+    /* Filter & Search Bar */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .search-box-wrapper {
+      position: relative;
+      flex: 1;
+      min-width: 240px;
+    }
+    .search-box-wrapper svg {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      color: var(--text-secondary);
+      pointer-events: none;
+    }
+    .search-input {
+      padding-left: 2.75rem !important;
+    }
+    .filter-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    /* Font Table */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+    .font-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    .font-table th {
+      background: var(--bg-tertiary);
+      padding: 0.85rem 1rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .font-table td {
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+      color: var(--text-primary);
+    }
+    .font-table tr:last-child td {
+      border-bottom: none;
+    }
+    .font-table tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .badge-success {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .badge-warning {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .badge-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .badge-sub {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.45rem;
+      background: rgba(78, 133, 191, 0.15);
+      color: var(--accent);
+      border-radius: var(--radius-sm);
+      margin-left: 0.5rem;
+      font-family: monospace;
+    }
+
+    /* Loading Overlay */
+    .loading-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      gap: 1rem;
+      color: var(--text-secondary);
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,42 +282,154 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Extract Fonts</h1>
-        <p class="tool-description">Extract embedded fonts from a PDF file.</p>
+        <p class="tool-description">Inspect, analyze, and extract embedded and referenced fonts from any PDF document. Discover font formats, encodings, subset details, and export full reports.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Extract Fonts</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Extract embedded fonts from a PDF file.</div>
-            <div><strong>Inputs:</strong> pdf, document, extract fonts</div>
-            <div><strong>Category:</strong> pdf</div>
-          </div>
+      <!-- Main Tool Panel -->
+      <div class="tool-panel glass-panel font-workspace">
+        
+        <!-- Upload Zone -->
+        <div class="file-drag-zone" id="upload-zone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="4 7 4 4 20 4 20 7"></polyline>
+            <line x1="9" y1="20" x2="15" y2="20"></line>
+            <line x1="12" y1="4" x2="12" y2="20"></line>
+          </svg>
+          <h2 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; font-family: var(--font-sans);">Choose or Drop a PDF File</h2>
+          <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1.5rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+            Upload your PDF to inspect all embedded font families, PostScript names, encodings, and download embedded font assets.
+          </p>
+          <button class="btn btn-primary" id="btn-browse" type="button">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            Select PDF Document
+          </button>
+          <input type="file" id="file-input" accept="application/pdf,.pdf" style="display: none;">
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Processing Indicator -->
+        <div id="loading-state" class="loading-state" style="display: none;">
+          <div class="spinner"></div>
+          <p id="loading-text" style="font-weight: 600;">Analyzing PDF document structure and fonts...</p>
+        </div>
+
+        <!-- Workspace Panel (Shown after PDF is loaded) -->
+        <div id="workspace-content" style="display: none; display: flex; flex-direction: column; gap: 1.75rem;">
+          
+          <!-- File Banner -->
+          <div class="file-banner">
+            <div class="file-info-group">
+              <div class="file-badge-icon">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+              </div>
+              <div>
+                <div class="file-title-text" id="doc-name">document.pdf</div>
+                <div class="file-meta-text" id="doc-meta">0 KB &bull; 0 pages</div>
+              </div>
+            </div>
+            <button class="btn btn-secondary" id="btn-change-file" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+              Change PDF
+            </button>
+          </div>
+
+          <!-- KPI Cards -->
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <span class="kpi-title">Total Fonts</span>
+              <span class="kpi-value" id="kpi-total-fonts">0</span>
+              <span class="kpi-sub">Total font descriptors</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-title">Embedded Ratio</span>
+              <span class="kpi-value" id="kpi-embedded-ratio">0%</span>
+              <span class="kpi-sub" id="kpi-embedded-sub">0 of 0 fonts embedded</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-title">Unique Families</span>
+              <span class="kpi-value" id="kpi-unique-families">0</span>
+              <span class="kpi-sub" id="kpi-families-sub">Distinct font families</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-title">System / Standard 14</span>
+              <span class="kpi-value" id="kpi-system-fonts">0</span>
+              <span class="kpi-sub">Referenced system standard</span>
+            </div>
+          </div>
+
+          <!-- Filter & Search Toolbar -->
+          <div class="filter-bar">
+            <div class="search-box-wrapper">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="font-search" class="form-input search-input" placeholder="Search by font name, subtype, encoding...">
+            </div>
+
+            <div class="filter-actions">
+              <select id="font-filter-type" class="form-select" style="min-width: 160px; padding: 0.65rem 1rem;">
+                <option value="all">All Fonts</option>
+                <option value="embedded">Embedded Only</option>
+                <option value="system">System / Standard Only</option>
+                <option value="subset">Subsetted Only</option>
+              </select>
+
+              <button class="btn btn-secondary" id="btn-export-json" title="Export Font List as JSON">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Export JSON
+              </button>
+
+              <button class="btn btn-secondary" id="btn-export-txt" title="Export Font List as Plain Text">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                Export TXT
+              </button>
+            </div>
+          </div>
+
+          <!-- Font Table -->
+          <div class="table-container">
+            <table class="font-table">
+              <thead>
+                <tr>
+                  <th>Font Name</th>
+                  <th>Subtype</th>
+                  <th>Encoding</th>
+                  <th>Status</th>
+                  <th>Glyphs / Subset</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="font-table-body">
+                <!-- Dynamically populated rows -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Empty search result note -->
+          <div id="no-fonts-match" style="display: none; text-align: center; padding: 2.5rem; color: var(--text-secondary);">
+            <p>No fonts match your current search or filter criteria.</p>
+          </div>
+
+        </div>
+
       </div>
-    
     </div>
   </main>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Extract Fonts",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/extract-fonts/",
-    "description": "Extract embedded fonts from a PDF file.",
+    "description": "Inspect and extract embedded fonts from a PDF file.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
