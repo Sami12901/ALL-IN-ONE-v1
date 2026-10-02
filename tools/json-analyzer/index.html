@@ -4,14 +4,343 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JSON Analyzer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Visualize and analyze complex JSON data structures.">
-  <meta name="keywords" content="analytics, data, excel, json analyzer, free, online, tool, utility">
+  <meta name="description" content="Interactive tree-view inspector, array flattener to tabular records, key frequency analyzer, JSONPath search, and CSV export.">
+  <meta name="keywords" content="json, analyzer, tree view, json to csv, flatten json, json path, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/json-analyzer/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* JSON Analyzer Custom Styles */
+    .json-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+
+    .kpi-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .kpi-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .kpi-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+    }
+
+    .kpi-sub {
+      font-size: 0.775rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Tab Switcher */
+    .analyzer-tabs {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: -1px;
+    }
+
+    .tab-btn {
+      padding: 0.65rem 1.25rem;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      background: var(--accent-glow);
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* JSON Editor & Textarea */
+    .editor-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .json-textarea {
+      width: 100%;
+      min-height: 240px;
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    .json-textarea:focus {
+      border-color: var(--accent);
+    }
+
+    /* Tree View Styling */
+    .tree-viewport {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      min-height: 400px;
+      max-height: 600px;
+      overflow: auto;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+
+    .tree-node {
+      margin-left: 1.25rem;
+      position: relative;
+    }
+
+    .tree-node-header {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      cursor: pointer;
+      user-select: none;
+      padding: 0.1rem 0.25rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .tree-node-header:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .tree-toggle-arrow {
+      display: inline-block;
+      width: 14px;
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      transition: transform 0.2s ease;
+    }
+
+    .tree-toggle-arrow.collapsed {
+      transform: rotate(-90deg);
+    }
+
+    .tree-key {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .tree-type-tag {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      font-family: var(--font-sans);
+    }
+
+    .tree-val-string { color: #10b981; }
+    .tree-val-number { color: #f59e0b; }
+    .tree-val-boolean { color: #8b5cf6; }
+    .tree-val-null { color: #6b7280; font-style: italic; }
+
+    .tree-copy-path-btn {
+      opacity: 0;
+      font-size: 0.7rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-tertiary);
+      border-radius: 4px;
+      padding: 0.1rem 0.4rem;
+      cursor: pointer;
+      margin-left: 0.5rem;
+      font-family: var(--font-sans);
+      transition: opacity 0.15s ease;
+    }
+
+    .tree-node-header:hover .tree-copy-path-btn {
+      opacity: 1;
+    }
+
+    .tree-children {
+      display: block;
+    }
+
+    .tree-children.hidden {
+      display: none;
+    }
+
+    /* Tabular Flat View */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.1);
+      max-height: 480px;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .data-table th {
+      position: sticky;
+      top: 0;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-weight: 700;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      z-index: 5;
+    }
+
+    .data-table td {
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+      max-width: 300px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .data-table tr:hover td {
+      background: var(--accent-glow);
+      color: var(--text-primary);
+    }
+
+    /* Key Frequency Cards */
+    .key-freq-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .key-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .key-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+    }
+
+    .freq-pct-bar {
+      height: 6px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-top: 0.25rem;
+    }
+
+    .freq-pct-fill {
+      height: 100%;
+      background: var(--accent-gradient);
+      border-radius: var(--radius-full);
+    }
+
+    /* Search Results Box */
+    .search-results-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-height: 450px;
+      overflow-y: auto;
+    }
+
+    .search-match-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      font-family: monospace;
+      font-size: 0.85rem;
+    }
+
+    .search-match-path {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .search-match-val {
+      color: var(--text-primary);
+      max-width: 400px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -24,31 +353,158 @@
 
   <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
-      <div class="tool-header">
-        <h1>JSON Analyzer</h1>
-        <p class="tool-description">Visualize and analyze complex JSON data structures.</p>
+    <div class="container tool-container" style="max-width: 1400px;">
+      <div class="tool-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h1 class="gradient-text">JSON Analyzer</h1>
+          <p class="tool-description">Visualize complex JSON hierarchies, tree inspector, array flattener to CSV tables, key frequency profiling, and JSONPath search.</p>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <span class="badge" id="json-status-badge">JSON: Valid</span>
+        </div>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>JSON Analyzer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Visualize and analyze complex JSON data structures.</div>
-            <div><strong>Inputs:</strong> analytics, data, excel, json analyzer</div>
-            <div><strong>Category:</strong> excel</div>
+      <div class="json-workspace">
+        
+        <!-- Input & Configuration Card -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+              <label class="btn btn-primary btn-sm" style="cursor: pointer; margin: 0;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                Upload JSON
+                <input type="file" id="json-file-input" accept=".json,.txt" style="display: none;">
+              </label>
+
+              <button id="btn-sample-catalog" class="btn btn-secondary btn-sm">Load E-Commerce Catalog</button>
+              <button id="btn-sample-users" class="btn btn-secondary btn-sm">Load Users Graph API</button>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+              <button id="btn-beautify" class="btn btn-secondary btn-sm">Beautify</button>
+              <button id="btn-minify" class="btn btn-secondary btn-sm">Minify</button>
+              <button id="btn-copy-json" class="btn btn-secondary btn-sm">Copy JSON</button>
+              <button id="btn-export-csv" class="btn btn-primary btn-sm">Export Table (CSV)</button>
+            </div>
+          </div>
+
+          <!-- JSON Textarea Editor -->
+          <div class="editor-container" style="margin-top: 0.75rem;">
+            <textarea id="json-input" class="json-textarea" placeholder="Paste or type raw JSON data here..." spellcheck="false"></textarea>
+            <div id="json-error-banner" style="display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid var(--error); color: var(--error); padding: 0.6rem 1rem; border-radius: var(--radius-sm); font-size: 0.85rem;"></div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- KPI Metrics -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <span class="kpi-label">Total Elements / Keys</span>
+            <span class="kpi-value" id="kpi-total-keys">0</span>
+            <span class="kpi-sub" id="kpi-keys-sub">0 distinct schema keys</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Array Records</span>
+            <span class="kpi-value" id="kpi-array-records">0</span>
+            <span class="kpi-sub" id="kpi-records-sub">Detected primary collection</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Max Nesting Depth</span>
+            <span class="kpi-value" id="kpi-max-depth">0</span>
+            <span class="kpi-sub" id="kpi-depth-sub">Object hierarchy level</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Payload Size</span>
+            <span class="kpi-value" id="kpi-payload-size">0 KB</span>
+            <span class="kpi-sub" id="kpi-size-sub">UTF-8 character buffer</span>
+          </div>
+        </div>
+
+        <!-- Analyzer Views -->
+        <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+          <div class="analyzer-tabs">
+            <button class="tab-btn active" data-tab="tab-tree">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              Interactive Tree View
+            </button>
+            <button class="tab-btn" data-tab="tab-flattener">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+              Array Flattener & Tabular View
+            </button>
+            <button class="tab-btn" data-tab="tab-freq">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+              Key Frequency & Schema Drift
+            </button>
+            <button class="tab-btn" data-tab="tab-search">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              JSONPath & Key Search
+            </button>
+          </div>
+
+          <!-- TAB 1: TREE VIEW -->
+          <div class="tab-panel active" id="tab-tree" style="margin-top: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <button id="btn-expand-all" class="btn btn-secondary btn-sm">Expand All</button>
+                <button id="btn-collapse-all" class="btn btn-secondary btn-sm">Collapse All</button>
+              </div>
+              <span style="font-size: 0.8rem; color: var(--text-secondary);">Click any node to expand/collapse &bull; Hover to Copy Path</span>
+            </div>
+
+            <div class="tree-viewport" id="tree-container">
+              <!-- Dynamically populated tree -->
+            </div>
+          </div>
+
+          <!-- TAB 2: ARRAY FLATTENER & TABLE -->
+          <div class="tab-panel" id="tab-flattener" style="margin-top: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <label for="array-selector" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Select Target Array:</label>
+                <select id="array-selector" class="form-select" style="width: auto; min-width: 200px; font-size: 0.85rem; padding: 0.4rem 0.75rem;"></select>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <input type="text" id="flat-table-search" class="form-input" placeholder="Search flattened records..." style="padding: 0.4rem 0.8rem; font-size: 0.85rem; max-width: 260px;">
+                <span id="flat-records-count" style="font-size: 0.825rem; color: var(--text-secondary);">0 records</span>
+              </div>
+            </div>
+
+            <div class="table-container">
+              <table class="data-table" id="flat-data-table">
+                <thead id="flat-thead"></thead>
+                <tbody id="flat-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 3: KEY FREQUENCY & DRIFT -->
+          <div class="tab-panel" id="tab-freq" style="margin-top: 1rem;">
+            <div style="font-size: 0.875rem; color: var(--text-secondary);">
+              Analyzes key coverage across objects. Highlights missing fields and schema drift (optional fields present in &lt;100% of records).
+            </div>
+            <div class="key-freq-grid" id="key-freq-container">
+              <!-- Dynamically populated key frequency cards -->
+            </div>
+          </div>
+
+          <!-- TAB 4: JSONPATH & KEY SEARCH -->
+          <div class="tab-panel" id="tab-search" style="margin-top: 1rem;">
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <input type="text" id="jsonpath-input" class="form-input" placeholder="Search keys or dot path (e.g. products.*.price, address.city, tags)..." style="font-family: monospace;">
+              <button id="btn-run-search" class="btn btn-primary btn-sm" style="white-space: nowrap;">Search</button>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span id="search-matches-label" style="font-size: 0.85rem; color: var(--text-secondary);">Enter a key or path to query</span>
+            </div>
+
+            <div class="search-results-list" id="search-results-box">
+              <!-- Dynamically populated search result nodes -->
+            </div>
+          </div>
+
+        </div>
+
       </div>
-    
     </div>
   </main>
 

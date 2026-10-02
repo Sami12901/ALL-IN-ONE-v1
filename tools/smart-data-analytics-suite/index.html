@@ -4,14 +4,235 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart Data Analytics Suite - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="All-in-one suite to upload, clean, analyze, chart, and export data.">
-  <meta name="keywords" content="analytics, data, excel, smart data analytics suite, free, online, tool, utility">
+  <meta name="description" content="Unified all-in-one analytical workbench combining upload (CSV/TSV/JSON), data preview, instant cleaning pass, automated descriptive statistics, trend chart generation, and one-click executive report export.">
+  <meta name="keywords" content="analytics, data, excel, smart data analytics suite, data cleaning, descriptive statistics, chart generator, executive report, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/smart-data-analytics-suite/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Scoped styles for Smart Data Analytics Suite */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .metric-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1rem;
+      text-align: center;
+      transition: var(--transition);
+      position: relative;
+    }
+    .metric-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .metric-card .val {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.2;
+      font-family: var(--font-sans);
+    }
+    .metric-card .lbl {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+      margin-top: 0.25rem;
+      font-weight: 600;
+    }
+    .metric-card .sub {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.2rem;
+    }
+
+    .main-tab-nav {
+      display: flex;
+      gap: 0.25rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+    .main-tab-btn {
+      padding: 0.75rem 1.25rem;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: var(--transition);
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .main-tab-btn:hover {
+      color: var(--text-primary);
+    }
+    .main-tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .chip-btn {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .chip-btn:hover, .chip-btn.active {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .data-table-wrap {
+      max-height: 480px;
+      overflow-y: auto;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+    }
+    .styled-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+    .styled-table th {
+      position: sticky;
+      top: 0;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      z-index: 2;
+      white-space: nowrap;
+    }
+    .styled-table td {
+      padding: 0.55rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    .styled-table tr:hover td {
+      background: var(--accent-glow);
+      color: var(--text-primary);
+    }
+
+    .col-badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      padding: 0.15rem 0.4rem;
+      border-radius: var(--radius-sm);
+      margin-left: 0.4rem;
+      font-weight: 600;
+    }
+    .badge-num { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
+    .badge-text { background: rgba(168, 85, 247, 0.2); color: #c084fc; }
+    .badge-date { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+
+    .chart-container {
+      position: relative;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      width: 100%;
+      overflow: hidden;
+    }
+    .chart-svg {
+      width: 100%;
+      height: auto;
+      max-height: 420px;
+      display: block;
+    }
+
+    .chart-tooltip {
+      position: absolute;
+      pointer-events: none;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.6rem 0.8rem;
+      font-size: 0.75rem;
+      color: #f8fafc;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      z-index: 20;
+      transform: translate(-50%, -110%);
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .clean-audit-log {
+      max-height: 160px;
+      overflow-y: auto;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem;
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .report-paper {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 2rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+    .report-paper h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+    .report-paper h3 {
+      font-size: 1.15rem;
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.25rem;
+    }
+    .report-paper p {
+      font-size: 0.925rem;
+      margin-bottom: 0.75rem;
+    }
+
+    @media (max-width: 900px) {
+      .metric-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 600px) {
+      .metric-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,29 +247,330 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Smart Data Analytics Suite</h1>
-        <p class="tool-description">All-in-one suite to upload, clean, analyze, chart, and export data.</p>
-      </div>
-
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Smart Data Analytics Suite</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> All-in-one suite to upload, clean, analyze, chart, and export data.</div>
-            <div><strong>Inputs:</strong> analytics, data, excel, smart data analytics suite</div>
-            <div><strong>Category:</strong> excel</div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>Smart Data Analytics Suite</h1>
+            <p class="tool-description">Unified client-side analytical workbench: Ingest CSV/TSV/JSON, execute automated cleaning passes, profile descriptive statistics, generate dynamic trend charts, and export executive reports.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+            <button id="btn-export-clean-csv" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download Clean CSV
+            </button>
+            <button id="btn-export-report-md" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              Export Report (MD)
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- KPI Metric Cards -->
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="val" id="kpi-row-count">0</div>
+          <div class="lbl">Total Active Rows</div>
+          <div class="sub" id="kpi-clean-status">100% Valid Entries</div>
+        </div>
+        <div class="metric-card">
+          <div class="val" id="kpi-col-count">0</div>
+          <div class="lbl">Dataset Attributes</div>
+          <div class="sub" id="kpi-col-types">0 Num, 0 Text</div>
+        </div>
+        <div class="metric-card">
+          <div class="val" id="kpi-data-health">100%</div>
+          <div class="lbl">Data Integrity Score</div>
+          <div class="sub" id="kpi-null-count">0 missing cells</div>
+        </div>
+        <div class="metric-card">
+          <div class="val" id="kpi-primary-sum">$0.00</div>
+          <div class="lbl">Primary Metric Sum</div>
+          <div class="sub" id="kpi-primary-col">Total Volume</div>
+        </div>
+        <div class="metric-card">
+          <div class="val" id="kpi-primary-avg">$0.00</div>
+          <div class="lbl">Primary Metric Mean</div>
+          <div class="sub" id="kpi-primary-median">Median: $0.00</div>
+        </div>
+      </div>
+
+      <!-- Multi-Tab Navigation -->
+      <nav class="main-tab-nav">
+        <button class="main-tab-btn active" data-tab="tab-ingest">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          1. Ingest & Clean
+        </button>
+        <button class="main-tab-btn" data-tab="tab-preview">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          2. Data Explorer
+        </button>
+        <button class="main-tab-btn" data-tab="tab-stats">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          3. Descriptive Statistics
+        </button>
+        <button class="main-tab-btn" data-tab="tab-charts">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          4. Chart Studio
+        </button>
+        <button class="main-tab-btn" data-tab="tab-report">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          5. Executive Report
+        </button>
+      </nav>
+
+      <!-- TAB 1: INGEST & CLEAN -->
+      <div id="tab-ingest" class="tab-pane">
+        <div class="tool-workarea split-view">
+          
+          <!-- Ingest Options -->
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h2 class="panel-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">Upload or Select Dataset</h2>
+              <div style="display: flex; gap: 0.35rem;">
+                <button id="preset-sales" class="chip-btn active" title="E-Commerce Sales">E-Commerce</button>
+                <button id="preset-hr" class="chip-btn" title="Team & Salary Analytics">Team & Salary</button>
+                <button id="preset-marketing" class="chip-btn" title="Marketing Funnel">Marketing</button>
+              </div>
+            </div>
+
+            <!-- Drag and drop container -->
+            <div class="file-drag-area" id="drop-zone" style="margin-top: 0.5rem;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <div style="font-weight: 700; margin-bottom: 0.25rem;">Drop your CSV, TSV, or JSON file here</div>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">Supports structured spreadsheets up to 100,000 cells</p>
+              <input type="file" id="file-input" accept=".csv,.tsv,.json,.txt" style="display: none;" />
+              <button id="btn-browse-file" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.85rem;">Browse Local File</button>
+            </div>
+
+            <!-- Paste Raw Text Option -->
+            <div style="margin-top: 1rem;">
+              <label for="raw-paste-box" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.4rem;">Or Paste Raw Table Data (CSV / TSV / JSON)</label>
+              <textarea id="raw-paste-box" class="form-textarea" style="min-height: 120px; font-size: 0.8rem;" placeholder="Paste comma or tab-separated data..."></textarea>
+              <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem;">
+                <button id="btn-parse-paste" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">Parse Raw Input</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Instant Cleaning Actions -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">Instant Data Cleaning Pass</h2>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">Select the automated cleaning filters to sanitize your raw spreadsheet before profiling:</p>
+
+            <div class="checkbox-group" style="margin-top: 0.5rem;">
+              <label class="checkbox-label">
+                <input type="checkbox" id="clean-trim-whitespace" checked />
+                <span>Trim leading and trailing whitespace from text</span>
+              </label>
+
+              <label class="checkbox-label">
+                <input type="checkbox" id="clean-deduplicate" checked />
+                <span>Remove exact duplicate rows across all columns</span>
+              </label>
+
+              <label class="checkbox-label">
+                <input type="checkbox" id="clean-remove-empty-rows" checked />
+                <span>Drop completely blank or empty rows</span>
+              </label>
+
+              <label class="checkbox-label">
+                <input type="checkbox" id="clean-impute-missing" checked />
+                <span>Impute missing numeric cells (Auto-fill with Column Mean)</span>
+              </label>
+
+              <label class="checkbox-label">
+                <input type="checkbox" id="clean-standardize-case" />
+                <span>Title-case string / categorical columns</span>
+              </label>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+              <button id="btn-run-clean" class="btn btn-primary" style="flex: 1; padding: 0.65rem 1rem;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Apply Cleaning Rules
+              </button>
+              <button id="btn-restore-raw" class="btn btn-secondary" style="padding: 0.65rem 1rem;">Restore Raw</button>
+            </div>
+
+            <div style="margin-top: 1rem;">
+              <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-tertiary); font-weight: 700;">Cleaning Audit Log:</span>
+              <div class="clean-audit-log" id="clean-audit-log" style="margin-top: 0.4rem;">
+                [Log] Ready. Upload data or apply preset to initiate automated pipeline.
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TAB 2: DATA EXPLORER & PREVIEW -->
+      <div id="tab-preview" class="tab-pane hidden">
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.75rem;">
+            <div>
+              <h2 class="panel-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">Data Explorer</h2>
+              <span style="font-size: 0.8rem; color: var(--text-tertiary);">Showing cleaned records in table preview</span>
+            </div>
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+              <div class="form-group" style="flex-direction: row; align-items: center; gap: 0.5rem;">
+                <label for="table-search" style="font-size: 0.8rem;">Search:</label>
+                <input type="text" id="table-search" class="form-input" style="padding: 0.35rem 0.65rem; font-size: 0.85rem; width: 180px;" placeholder="Filter rows..." />
+              </div>
+              <div class="form-group" style="flex-direction: row; align-items: center; gap: 0.5rem;">
+                <label for="rows-per-page" style="font-size: 0.8rem;">Rows:</label>
+                <select id="rows-per-page" class="form-select" style="padding: 0.35rem 0.65rem; font-size: 0.85rem; width: 80px;">
+                  <option value="10">10</option>
+                  <option value="25" selected>25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="data-table-wrap">
+            <table class="styled-table" id="preview-table">
+              <thead id="preview-thead">
+                <!-- Populated by JS -->
+              </thead>
+              <tbody id="preview-tbody">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination Bar -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-secondary); flex-wrap: wrap; gap: 0.5rem;">
+            <div id="pagination-info">Showing 1 to 25 of 0 records</div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button id="btn-page-prev" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">&larr; Previous</button>
+              <button id="btn-page-next" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">Next &rarr;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: DESCRIPTIVE STATISTICS -->
+      <div id="tab-stats" class="tab-pane hidden">
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.75rem;">
+            <div>
+              <h2 class="panel-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">Automated Descriptive Statistical Profiling</h2>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.2rem;">Complete parametric summary: central tendency, dispersion, quartiles, and modality for every attribute.</p>
+            </div>
+          </div>
+
+          <div class="data-table-wrap">
+            <table class="styled-table" id="stats-table">
+              <thead>
+                <tr>
+                  <th>Column Name</th>
+                  <th>Type</th>
+                  <th>Count</th>
+                  <th>Missing</th>
+                  <th>Mean / Mode</th>
+                  <th>Median</th>
+                  <th>Std Dev</th>
+                  <th>Min</th>
+                  <th>Q1 (25%)</th>
+                  <th>Q3 (75%)</th>
+                  <th>Max</th>
+                  <th>Sum</th>
+                </tr>
+              </thead>
+              <tbody id="stats-tbody">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: CHART STUDIO -->
+      <div id="tab-charts" class="tab-pane hidden">
+        <div class="tool-workarea split-view">
+          
+          <!-- Chart Config Panel -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">Visualization Studio Setup</h2>
+
+            <div class="form-group" style="margin-top: 0.5rem;">
+              <label for="chart-type">Chart Presentation Type</label>
+              <select id="chart-type" class="form-select">
+                <option value="line" selected>Trend Line Chart (Continuous Time/Values)</option>
+                <option value="bar">Bar Chart (Aggregated Categories)</option>
+                <option value="histogram">Histogram (Frequency Distribution Bins)</option>
+                <option value="scatter">Scatter Plot (X vs Y Correlation)</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-top: 0.75rem;">
+              <label for="chart-x-col">X-Axis Dimension / Category</label>
+              <select id="chart-x-col" class="form-select"></select>
+            </div>
+
+            <div class="form-group" style="margin-top: 0.75rem;" id="group-y-col">
+              <label for="chart-y-col">Y-Axis Metric (Numeric)</label>
+              <select id="chart-y-col" class="form-select"></select>
+            </div>
+
+            <div class="form-group" style="margin-top: 0.75rem;" id="group-agg-method">
+              <label for="chart-agg">Category Aggregation Method</label>
+              <select id="chart-agg" class="form-select">
+                <option value="sum" selected>Sum of Values</option>
+                <option value="avg">Average / Mean</option>
+                <option value="count">Count of Records</option>
+              </select>
+            </div>
+
+            <div style="margin-top: 1.25rem;">
+              <button id="btn-render-chart" class="btn btn-primary" style="width: 100%;">Generate Chart</button>
+            </div>
+          </div>
+
+          <!-- Chart Render Panel -->
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h2 class="panel-title" id="rendered-chart-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">Dynamic SVG Chart</h2>
+              <span class="badge" id="chart-badge">Live View</span>
+            </div>
+
+            <div class="chart-container" id="analytics-chart-wrap" style="margin-top: 0.75rem;">
+              <div id="analytics-tooltip" class="chart-tooltip"></div>
+              <svg id="analytics-svg" class="chart-svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet"></svg>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TAB 5: EXECUTIVE REPORT -->
+      <div id="tab-report" class="tab-pane hidden">
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+            <div>
+              <h2 class="panel-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">Automated Executive Summary & Insights</h2>
+              <span style="font-size: 0.8rem; color: var(--text-tertiary);">Generated in real-time based on statistical attributes</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button id="btn-copy-report" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy Markdown
+              </button>
+              <button id="btn-print-report" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                Print / PDF
+              </button>
+            </div>
+          </div>
+
+          <div class="report-paper" id="report-content">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
 
@@ -62,7 +584,7 @@
     "@type": "WebApplication",
     "name": "Smart Data Analytics Suite",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/smart-data-analytics-suite/",
-    "description": "All-in-one suite to upload, clean, analyze, chart, and export data.",
+    "description": "Unified all-in-one analytical workbench combining upload (CSV/TSV/JSON), data preview, instant cleaning pass, automated descriptive statistics, trend chart generation, and one-click executive report export.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

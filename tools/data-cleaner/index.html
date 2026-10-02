@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Data Cleaner - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Remove duplicates, empty rows, fix formatting, and normalize data.">
-  <meta name="keywords" content="analytics, data, excel, data cleaner, free, online, tool, utility">
+  <meta name="description" content="Interactive multi-step data cleaning pipeline: remove duplicates, trim and normalize whitespace, fill or drop nulls, standardize text casing, and remove special characters with live before/after diff preview.">
+  <meta name="keywords" content="analytics, data, excel, data cleaner, remove duplicates, trim spaces, fill nulls, text normalization, clean csv">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/data-cleaner/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,266 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+  <style>
+    .cleaner-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .preset-btn {
+      padding: 0.35rem 0.85rem;
+      font-size: 0.8rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .preset-btn:hover {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .pipeline-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .step-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: var(--transition);
+    }
+
+    .step-card.active-step {
+      border-color: var(--accent);
+      box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.1);
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.65rem;
+    }
+
+    .step-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent-glow);
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--accent);
+    }
+
+    .clean-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .clean-stat-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 0.75rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .clean-stat-val {
+      font-size: 1.6rem;
+      font-weight: 800;
+      font-family: var(--font-display), monospace;
+      color: var(--accent);
+      line-height: 1.1;
+    }
+
+    .clean-stat-lbl {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+      font-weight: 600;
+    }
+
+    .tabs-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .tab-btn {
+      padding: 0.5rem 1rem;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      background: var(--accent-glow);
+      border-color: var(--accent);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .table-container {
+      max-height: 480px;
+      overflow: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-secondary);
+    }
+
+    .clean-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    .clean-table th {
+      position: sticky;
+      top: 0;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-weight: 600;
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      white-space: nowrap;
+      z-index: 2;
+    }
+
+    .clean-table td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      white-space: nowrap;
+      color: var(--text-secondary);
+    }
+
+    .clean-table tr:hover td {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .cell-modified {
+      background: rgba(16, 185, 129, 0.15) !important;
+      color: #10b981 !important;
+      font-weight: 600;
+      border-left: 2px solid #10b981;
+    }
+
+    .cell-filled {
+      background: rgba(59, 130, 246, 0.15) !important;
+      color: #3b82f6 !important;
+      font-style: italic;
+    }
+
+    .row-duplicate {
+      background: rgba(239, 68, 68, 0.1) !important;
+    }
+
+    .badge-diff {
+      padding: 0.15rem 0.45rem;
+      font-size: 0.7rem;
+      border-radius: 4px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .badge-removed { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+    .badge-clean { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+
+    .pagination-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0.25rem;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .pagination-btns {
+      display: flex;
+      gap: 0.35rem;
+    }
+
+    .page-btn {
+      padding: 0.25rem 0.6rem;
+      font-size: 0.8rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .page-btn:hover:not(:disabled) {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .page-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,26 +287,379 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Data Cleaner</h1>
-        <p class="tool-description">Remove duplicates, empty rows, fix formatting, and normalize data.</p>
+        <p class="tool-description">Interactive multi-step data cleaning pipeline: remove duplicates, trim and normalize whitespace, fill or drop nulls, standardize text casing, and remove special characters with live before/after diff preview.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Data Cleaner</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Remove duplicates, empty rows, fix formatting, and normalize data.</div>
-            <div><strong>Inputs:</strong> analytics, data, excel, data cleaner</div>
-            <div><strong>Category:</strong> excel</div>
+      <!-- Main Tool Workspace -->
+      <div class="cleaner-workspace">
+
+        <!-- Presets and Input Panel -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+              <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-right: 0.5rem;">Sample Dirty Datasets:</span>
+              <div class="preset-chips" style="display: inline-flex;">
+                <button type="button" class="preset-btn" data-preset="crm">Messy CRM Contacts</button>
+                <button type="button" class="preset-btn" data-preset="inventory">Product Inventory Discrepancies</button>
+                <button type="button" class="preset-btn" data-preset="survey">Customer Survey with Nulls</button>
+              </div>
+            </div>
+            <button type="button" id="btn-clear-cleaner" class="btn btn-secondary" style="padding: 0.4rem 0.85rem; font-size: 0.8rem;">Clear All</button>
+          </div>
+
+          <div class="tool-workarea split-view" style="margin-top: 0.75rem;">
+            <!-- Left: File Drop -->
+            <div class="form-group">
+              <label>Upload Dataset (CSV, TSV, JSON, TXT):</label>
+              <div id="cleaner-drop-zone" class="file-drag-area">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <div style="font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem;">Drop raw dataset or click to browse</div>
+                <div style="font-size: 0.8rem; color: var(--text-tertiary);">Supports .csv, .tsv, .txt, .json formats</div>
+                <input type="file" id="cleaner-file-input" accept=".csv,.tsv,.txt,.json" style="display: none;">
+              </div>
+            </div>
+
+            <!-- Right: Paste Text & Settings -->
+            <div class="form-group" style="display: flex; flex-direction: column; justify-content: space-between;">
+              <label for="cleaner-raw-input">Or Paste Tabular Text / CSV / TSV / JSON:</label>
+              <textarea id="cleaner-raw-input" class="form-textarea" style="min-height: 120px; font-size: 0.82rem;" placeholder="Paste raw dirty dataset here..."></textarea>
+              
+              <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-top: 0.75rem;">
+                <label class="checkbox-label" style="font-size: 0.82rem;">
+                  <input type="checkbox" id="chk-cleaner-headers" checked>
+                  <span>First row contains column headers</span>
+                </label>
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--text-secondary);">
+                  <span>Delimiter:</span>
+                  <select id="select-cleaner-delimiter" class="form-select" style="width: auto; padding: 0.35rem 0.6rem; font-size: 0.82rem;">
+                    <option value="auto">Auto-Detect</option>
+                    <option value=",">Comma (,)</option>
+                    <option value="&#9;">Tab (\t)</option>
+                    <option value=";">Semicolon (;)</option>
+                    <option value="|">Pipe (|)</option>
+                  </select>
+                </div>
+                <button type="button" id="btn-load-cleaner" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.85rem; margin-left: auto;">
+                  Load into Pipeline
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Cleaning Pipeline Configuration -->
+        <div id="pipeline-section" style="display: none; flex-direction: column; gap: 1.5rem;">
+          
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.5rem;">
+              <div>
+                <h3 style="font-size: 1.25rem; font-weight: 700;">Data Cleaning Pipeline</h3>
+                <p style="font-size: 0.85rem; color: var(--text-secondary);">Toggle and configure steps. The pipeline executes in order and delivers instant comparison.</p>
+              </div>
+              <button type="button" id="btn-execute-pipeline" class="btn btn-primary" style="padding: 0.6rem 1.5rem; font-size: 0.95rem;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.35rem;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                Run Cleaning Pipeline
+              </button>
+            </div>
+
+            <!-- Pipeline Steps Grid -->
+            <div class="pipeline-grid">
+              
+              <!-- Step 1: Remove Duplicates -->
+              <div class="step-card active-step" id="card-step-dup">
+                <div class="step-header">
+                  <div class="step-title">
+                    <span class="step-num">1</span>
+                    <span>Remove Duplicates</span>
+                  </div>
+                  <label class="checkbox-label" style="margin: 0;">
+                    <input type="checkbox" id="chk-enable-dup" checked>
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label for="select-dup-cols" style="font-size: 0.78rem;">Match On Columns:</label>
+                  <select id="select-dup-cols" class="form-select" style="font-size: 0.82rem; padding: 0.4rem;">
+                    <option value="all">All Columns (Entire Row)</option>
+                    <!-- Injected dynamically -->
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="select-dup-strategy" style="font-size: 0.78rem;">Duplicate Retention Strategy:</label>
+                  <select id="select-dup-strategy" class="form-select" style="font-size: 0.82rem; padding: 0.4rem;">
+                    <option value="first">Keep First Occurrence (Drop Others)</option>
+                    <option value="last">Keep Last Occurrence</option>
+                    <option value="all">Drop All Duplicate Occurrences</option>
+                  </select>
+                </div>
+                <label class="checkbox-label" style="font-size: 0.78rem;">
+                  <input type="checkbox" id="chk-dup-case-insensitive" checked>
+                  <span>Case-insensitive matching</span>
+                </label>
+              </div>
+
+              <!-- Step 2: Trim & Normalize Whitespace -->
+              <div class="step-card active-step" id="card-step-trim">
+                <div class="step-header">
+                  <div class="step-title">
+                    <span class="step-num">2</span>
+                    <span>Whitespace & Spaces</span>
+                  </div>
+                  <label class="checkbox-label" style="margin: 0;">
+                    <input type="checkbox" id="chk-enable-trim" checked>
+                  </label>
+                </div>
+                <div class="checkbox-group" style="gap: 0.5rem;">
+                  <label class="checkbox-label" style="font-size: 0.78rem;">
+                    <input type="checkbox" id="chk-trim-edges" checked>
+                    <span>Trim leading & trailing spaces</span>
+                  </label>
+                  <label class="checkbox-label" style="font-size: 0.78rem;">
+                    <input type="checkbox" id="chk-normalize-inner-spaces" checked>
+                    <span>Normalize inner spaces (collapse multi-spaces)</span>
+                  </label>
+                  <label class="checkbox-label" style="font-size: 0.78rem;">
+                    <input type="checkbox" id="chk-strip-invisible" checked>
+                    <span>Strip invisible chars (BOM, zero-width, non-breaking)</span>
+                  </label>
+                  <label class="checkbox-label" style="font-size: 0.78rem;">
+                    <input type="checkbox" id="chk-remove-linebreaks" checked>
+                    <span>Remove linebreaks / tabs inside cells</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Step 3: Handle Null / Empty Cells -->
+              <div class="step-card active-step" id="card-step-null">
+                <div class="step-header">
+                  <div class="step-title">
+                    <span class="step-num">3</span>
+                    <span>Null & Empty Cells</span>
+                  </div>
+                  <label class="checkbox-label" style="margin: 0;">
+                    <input type="checkbox" id="chk-enable-null" checked>
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label for="select-null-action" style="font-size: 0.78rem;">Null Handling Mode:</label>
+                  <select id="select-null-action" class="form-select" style="font-size: 0.82rem; padding: 0.4rem;">
+                    <option value="fill_custom">Fill with Custom Text</option>
+                    <option value="fill_mean">Fill Numeric with Mean</option>
+                    <option value="fill_median">Fill Numeric with Median</option>
+                    <option value="fill_zero">Fill Numeric with 0</option>
+                    <option value="fill_mode">Fill with Most Frequent (Mode)</option>
+                    <option value="drop_any">Drop Rows with Any Empty Cell</option>
+                    <option value="drop_all">Drop Rows if Entire Row is Empty</option>
+                  </select>
+                </div>
+                <div class="form-group" id="group-custom-null-val">
+                  <label for="input-custom-null-val" style="font-size: 0.78rem;">Replacement String:</label>
+                  <input type="text" id="input-custom-null-val" class="form-input" style="font-size: 0.82rem; padding: 0.4rem 0.65rem;" value="N/A">
+                </div>
+                <div class="form-group">
+                  <label for="select-null-target-col" style="font-size: 0.78rem;">Target Scope:</label>
+                  <select id="select-null-target-col" class="form-select" style="font-size: 0.82rem; padding: 0.4rem;">
+                    <option value="all">All Columns</option>
+                    <!-- Injected dynamically -->
+                  </select>
+                </div>
+              </div>
+
+              <!-- Step 4: Text Casing Normalization -->
+              <div class="step-card active-step" id="card-step-case">
+                <div class="step-header">
+                  <div class="step-title">
+                    <span class="step-num">4</span>
+                    <span>Text Case Standardizer</span>
+                  </div>
+                  <label class="checkbox-label" style="margin: 0;">
+                    <input type="checkbox" id="chk-enable-case" checked>
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label for="select-case-transform" style="font-size: 0.78rem;">Case Transformation:</label>
+                  <select id="select-case-transform" class="form-select" style="font-size: 0.82rem; padding: 0.4rem;">
+                    <option value="title">Title Case (Proper Name Formatting)</option>
+                    <option value="upper">UPPERCASE</option>
+                    <option value="lower">lowercase</option>
+                    <option value="sentence">Sentence case</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="select-case-target-col" style="font-size: 0.78rem;">Apply To Columns:</label>
+                  <select id="select-case-target-col" class="form-select" style="font-size: 0.82rem; padding: 0.4rem;">
+                    <option value="all_text">All Text Columns</option>
+                    <!-- Injected dynamically -->
+                  </select>
+                </div>
+              </div>
+
+              <!-- Step 5: Special Characters & Sanitization -->
+              <div class="step-card active-step" id="card-step-special">
+                <div class="step-header">
+                  <div class="step-title">
+                    <span class="step-num">5</span>
+                    <span>Remove Special Chars</span>
+                  </div>
+                  <label class="checkbox-label" style="margin: 0;">
+                    <input type="checkbox" id="chk-enable-special">
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label for="select-special-action" style="font-size: 0.78rem;">Sanitization Rule:</label>
+                  <select id="select-special-action" class="form-select" style="font-size: 0.82rem; padding: 0.4rem;">
+                    <option value="strip_punct">Remove Punctuation & Symbols (!@#$%...)</option>
+                    <option value="alphanumeric">Keep Alphanumeric & Spaces Only</option>
+                    <option value="strip_digits">Remove Digits / Numbers</option>
+                    <option value="ascii_only">Strip Emojis & Non-ASCII Characters</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="select-special-target-col" style="font-size: 0.78rem;">Apply To Columns:</label>
+                  <select id="select-special-target-col" class="form-select" style="font-size: 0.82rem; padding: 0.4rem;">
+                    <option value="all">All Columns</option>
+                    <!-- Injected dynamically -->
+                  </select>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Clean Stats Overview Bar -->
+          <div class="clean-stats-grid">
+            <div class="clean-stat-card">
+              <span class="clean-stat-val" id="stat-orig-rows">0</span>
+              <span class="clean-stat-lbl">Original Rows</span>
+            </div>
+            <div class="clean-stat-card">
+              <span class="clean-stat-val" id="stat-clean-rows" style="color: #10b981;">0</span>
+              <span class="clean-stat-lbl">Cleaned Rows</span>
+            </div>
+            <div class="clean-stat-card">
+              <span class="clean-stat-val" id="stat-dups-removed" style="color: #ef4444;">0</span>
+              <span class="clean-stat-lbl">Duplicates Removed</span>
+            </div>
+            <div class="clean-stat-card">
+              <span class="clean-stat-val" id="stat-spaces-trimmed">0</span>
+              <span class="clean-stat-lbl">Spaces Trimmed</span>
+            </div>
+            <div class="clean-stat-card">
+              <span class="clean-stat-val" id="stat-nulls-handled">0</span>
+              <span class="clean-stat-lbl">Nulls Handled</span>
+            </div>
+            <div class="clean-stat-card">
+              <span class="clean-stat-val" id="stat-cases-converted">0</span>
+              <span class="clean-stat-lbl">Cases Normalized</span>
+            </div>
+            <div class="clean-stat-card">
+              <span class="clean-stat-val" id="stat-cells-modified" style="color: #3b82f6;">0</span>
+              <span class="clean-stat-lbl">Total Cells Modified</span>
+            </div>
+          </div>
+
+          <!-- Real-Time Comparison and Download Workspace -->
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.75rem;">
+              <div class="tabs-nav" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">
+                <button type="button" class="tab-btn active" data-tab="tab-cleaned-preview">Cleaned Data View</button>
+                <button type="button" class="tab-btn" data-tab="tab-diff-view">Before vs After Comparison</button>
+                <button type="button" class="tab-btn" data-tab="tab-duplicates-view">Duplicates Match Audit</button>
+              </div>
+
+              <!-- Export Controls -->
+              <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.8rem; color: var(--text-secondary);">
+                  <span>Delimiter:</span>
+                  <select id="select-export-delimiter" class="form-select" style="width: auto; padding: 0.25rem 0.5rem; font-size: 0.78rem;">
+                    <option value=",">Comma (,)</option>
+                    <option value="&#9;">Tab (\t)</option>
+                    <option value=";">Semicolon (;)</option>
+                  </select>
+                </div>
+                <button type="button" id="btn-download-csv" class="btn btn-primary" style="padding: 0.4rem 0.85rem; font-size: 0.82rem;">
+                  Download CSV
+                </button>
+                <button type="button" id="btn-download-json" class="btn btn-secondary" style="padding: 0.4rem 0.85rem; font-size: 0.82rem;">
+                  Download JSON
+                </button>
+                <button type="button" id="btn-copy-clean" class="btn btn-secondary" style="padding: 0.4rem 0.85rem; font-size: 0.82rem;">
+                  Copy Clean Data
+                </button>
+              </div>
+            </div>
+
+            <!-- Tab 1: Cleaned Data Preview Table -->
+            <div id="tab-cleaned-preview" class="tab-content active">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; gap: 0.75rem;">
+                <input type="text" id="clean-search" class="form-input" style="max-width: 250px; padding: 0.35rem 0.75rem; font-size: 0.82rem;" placeholder="Search cleaned rows...">
+                <label class="checkbox-label" style="font-size: 0.8rem;">
+                  <input type="checkbox" id="chk-highlight-changes" checked>
+                  <span>Highlight modified cells</span>
+                </label>
+              </div>
+
+              <div class="table-container">
+                <table class="clean-table" id="table-cleaned">
+                  <thead id="thead-cleaned"></thead>
+                  <tbody id="tbody-cleaned"></tbody>
+                </table>
+              </div>
+
+              <div class="pagination-bar">
+                <span id="clean-pagination-info">Showing 1 to 25 of 100 rows</span>
+                <div class="pagination-btns">
+                  <button type="button" id="btn-clean-prev" class="page-btn">&larr; Prev</button>
+                  <span id="clean-page-num" style="padding: 0.25rem 0.5rem; font-weight: 600;">1</span>
+                  <button type="button" id="btn-clean-next" class="page-btn">Next &rarr;</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 2: Before vs After Side-by-Side Comparison -->
+            <div id="tab-diff-view" class="tab-content">
+              <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+                Side-by-side comparison for the first 25 records. Modified cells are highlighted in emerald green.
+              </p>
+              <div class="table-container">
+                <table class="clean-table" id="table-diff">
+                  <thead>
+                    <tr>
+                      <th>Row</th>
+                      <th>Column</th>
+                      <th>Original (Before)</th>
+                      <th>Cleaned (After)</th>
+                      <th>Modification</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbody-diff">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Tab 3: Duplicates Match Audit -->
+            <div id="tab-duplicates-view" class="tab-content">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <h4 style="font-size: 0.95rem;">Detected Duplicate Rows</h4>
+                <span id="dup-badge-count" class="badge">0 Duplicates</span>
+              </div>
+              <div class="table-container">
+                <table class="clean-table" id="table-duplicates">
+                  <thead id="thead-dups"></thead>
+                  <tbody id="tbody-dups"></tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
     
     </div>
@@ -62,7 +675,7 @@
     "@type": "WebApplication",
     "name": "Data Cleaner",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/data-cleaner/",
-    "description": "Remove duplicates, empty rows, fix formatting, and normalize data.",
+    "description": "Interactive multi-step data cleaning pipeline: remove duplicates, trim and normalize whitespace, fill or drop nulls, standardize text casing, and remove special characters.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

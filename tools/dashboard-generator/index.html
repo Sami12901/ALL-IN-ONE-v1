@@ -3,15 +3,476 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Auto-generate dashboards, KPIs, and charts (Bar, Pie, Line, Area).">
-  <meta name="keywords" content="analytics, data, excel, dashboard generator, free, online, tool, utility">
+  <title>Dashboard Generator - Business Intelligence & Analytics - ALL IN ONE</title>
+  <meta name="description" content="Instant BI dashboard synthesizer: auto-generate executive KPI cards, interactive SVG Bar, Line Trend, and Donut Distribution charts from any tabular or Excel data.">
+  <meta name="keywords" content="analytics, data, excel, dashboard generator, bi dashboard, svg charts, kpi cards, data visualization, business intelligence">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/dashboard-generator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    :root {
+      --gold-primary: #d4af37;
+      --gold-secondary: #f3e5ab;
+      --gold-glow: rgba(212, 175, 55, 0.25);
+      --gold-border: rgba(212, 175, 55, 0.35);
+      --gold-muted: rgba(212, 175, 55, 0.12);
+      --emerald-accent: #10b981;
+      --sapphire-accent: #38bdf8;
+      --purple-accent: #a855f7;
+      --rose-accent: #f43f5e;
+      --amber-accent: #f59e0b;
+    }
+
+    .dashboard-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Executive Luxury Badge */
+    .executive-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: var(--radius-full);
+      background: var(--gold-muted);
+      border: 1px solid var(--gold-border);
+      color: var(--gold-secondary);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Control Toolbar */
+    .dashboard-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.25rem 1.5rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+    }
+
+    .toolbar-left, .toolbar-right {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .preset-select-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .preset-select-wrapper label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(212, 175, 55, 0.1) 100%);
+      border: 1px solid var(--gold-primary);
+      color: var(--gold-secondary);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .btn-gold:hover {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.4) 0%, rgba(212, 175, 55, 0.2) 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 15px var(--gold-glow);
+      transform: translateY(-1px);
+    }
+
+    /* Data Drawer */
+    .data-drawer {
+      transition: max-height 0.4s ease, opacity 0.3s ease;
+      overflow: hidden;
+    }
+
+    .data-drawer.collapsed {
+      display: none;
+    }
+
+    .config-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* KPI Cards Grid */
+    .kpi-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.35rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.75rem;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--gold-border);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent);
+    }
+
+    .kpi-card.gold::before { background: var(--gold-primary); }
+    .kpi-card.emerald::before { background: var(--emerald-accent); }
+    .kpi-card.sapphire::before { background: var(--sapphire-accent); }
+    .kpi-card.purple::before { background: var(--purple-accent); }
+    .kpi-card.amber::before { background: var(--amber-accent); }
+
+    .kpi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .kpi-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+    }
+
+    .kpi-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+    }
+
+    .kpi-value {
+      font-family: var(--font-display);
+      font-size: 2.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .kpi-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .kpi-subtext {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Charts Section */
+    .charts-grid-main {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 1080px) {
+      .charts-grid-main {
+        grid-template-columns: 1.25fr 1fr;
+      }
+    }
+
+    .charts-grid-secondary {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 900px) {
+      .charts-grid-secondary {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .chart-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      position: relative;
+    }
+
+    .chart-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.85rem;
+    }
+
+    .chart-title-group h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .chart-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 0.2rem;
+    }
+
+    .chart-svg-container {
+      width: 100%;
+      height: 320px;
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .chart-svg-container svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* SVG Tooltips */
+    .chart-tooltip {
+      position: fixed;
+      pointer-events: none;
+      background: rgba(15, 17, 23, 0.94);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-sm);
+      padding: 0.6rem 0.9rem;
+      font-size: 0.8rem;
+      color: #ffffff;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      z-index: 10000;
+      opacity: 0;
+      transform: translate(-50%, -120%);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+
+    .chart-tooltip.visible {
+      opacity: 1;
+    }
+
+    .chart-tooltip-title {
+      font-weight: 700;
+      color: var(--gold-secondary);
+      margin-bottom: 0.25rem;
+    }
+
+    .chart-tooltip-metric {
+      font-family: monospace;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .chart-tooltip-sub {
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      margin-top: 0.2rem;
+    }
+
+    /* Donut Legend */
+    .donut-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem 1rem;
+      justify-content: center;
+      margin-top: 0.5rem;
+      max-height: 90px;
+      overflow-y: auto;
+      padding: 0.25rem;
+    }
+
+    .donut-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: color 0.15s ease;
+    }
+
+    .donut-legend-item:hover {
+      color: var(--text-primary);
+    }
+
+    .donut-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Data Table Section */
+    .table-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      overflow: hidden;
+    }
+
+    .table-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .table-responsive {
+      max-height: 380px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+
+    .data-table th {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .data-table th:hover {
+      color: var(--gold-secondary);
+    }
+
+    .data-table td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    .data-table tbody tr:hover {
+      background: rgba(212, 175, 55, 0.04);
+    }
+
+    .data-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+
+      app-header, app-breadcrumbs, app-footer,
+      .dashboard-toolbar, .data-drawer, .table-controls,
+      .btn, input, select, textarea, .hide-print {
+        display: none !important;
+      }
+
+      .dashboard-container {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      .kpi-card, .chart-card, .table-container {
+        background: #ffffff !important;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .kpi-value, .chart-title-group h3, .data-table td {
+        color: #000000 !important;
+      }
+
+      .chart-svg-container {
+        height: 280px !important;
+      }
+
+      .print-header {
+        display: block !important;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #333333;
+      }
+    }
+
+    .print-header {
+      display: none;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -24,33 +485,214 @@
 
   <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
-      <div class="tool-header">
-        <h1>Dashboard Generator</h1>
-        <p class="tool-description">Auto-generate dashboards, KPIs, and charts (Bar, Pie, Line, Area).</p>
+    <div class="container dashboard-container">
+      
+      <!-- Print-Only Letterhead -->
+      <div class="print-header">
+        <h1 style="font-size: 1.75rem; margin: 0; color: #000;">Executive Business Intelligence Dashboard</h1>
+        <p style="margin: 0.25rem 0 0 0; color: #555; font-size: 0.9rem;">Automated Strategic Performance Dossier & Synthesizer</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Dashboard Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
+      <!-- Page Header -->
+      <div class="tool-header">
+        <div class="executive-badge">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          BI Synthesizer & Analytics Suite
+        </div>
+        <h1>Dashboard Generator</h1>
+        <p class="tool-description">Instant BI dashboard synthesizer from any tabular data: auto-renders top KPI metric cards, interactive SVG Bar Chart, Line Trend Chart, and Donut Distribution Chart with tooltips, dark/gold luxury theme styling, and print/export utilities.</p>
+      </div>
+
+      <!-- Control Toolbar -->
+      <div class="dashboard-toolbar">
+        <div class="toolbar-left">
+          <div class="preset-select-wrapper">
+            <label for="dataset-preset-select">Preset Scenario:</label>
+            <select id="dataset-preset-select" class="form-select" style="min-width: 210px; padding: 0.55rem 0.85rem;">
+              <option value="sales">Quarterly Sales & Revenue</option>
+              <option value="saas">SaaS MRR & Churn Analytics</option>
+              <option value="retail">Omnichannel E-Commerce</option>
+              <option value="luxury">Luxury Salon & Client Spend</option>
+            </select>
+          </div>
+          <button id="btn-load-preset" class="btn btn-secondary" title="Reload selected preset data">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            Load Preset
+          </button>
+          <label class="btn btn-secondary" style="cursor: pointer; margin: 0;" title="Upload CSV or TSV file">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+            Upload CSV / TSV
+            <input type="file" id="file-uploader" accept=".csv, .tsv, .txt, .json" style="display: none;">
+          </label>
+          <button id="btn-toggle-editor" class="btn btn-secondary" title="Open or close data editor">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            <span id="editor-toggle-label">Edit Raw Data</span>
+          </button>
+        </div>
+
+        <div class="toolbar-right">
+          <button id="btn-export-csv" class="btn btn-secondary" title="Export clean tabular CSV">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            Export CSV
+          </button>
+          <button id="btn-export-json" class="btn btn-secondary" title="Export as JSON structure">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            Export JSON
+          </button>
+          <button id="btn-print-dashboard" class="btn btn-gold" title="Print dashboard or save as PDF">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            Print / Export Dashboard
+          </button>
+        </div>
+      </div>
+
+      <!-- Collapsible Data & Mapping Panel -->
+      <div id="data-drawer" class="data-drawer tool-panel glass-panel collapsed">
+        <div class="panel-title" style="margin-bottom: 0.75rem;">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Tabular Data Source & Column Schema Mapper
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+          Paste raw CSV, TSV (tab-delimited), or copied Excel rows. Ensure the first line contains your column headers.
         </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Auto-generate dashboards, KPIs, and charts (Bar, Pie, Line, Area).</div>
-            <div><strong>Inputs:</strong> analytics, data, excel, dashboard generator</div>
-            <div><strong>Category:</strong> excel</div>
+        <textarea id="raw-data-input" class="form-textarea" style="min-height: 160px; font-size: 0.85rem;" placeholder="Category,Period,Revenue,Units,Margin..."></textarea>
+
+        <!-- Column Mappers -->
+        <div class="config-grid">
+          <div class="form-group">
+            <label for="select-category-col">Dimension / Category (X-Axis):</label>
+            <select id="select-category-col" class="form-select"></select>
+          </div>
+          <div class="form-group">
+            <label for="select-metric-col">Primary Metric (Y-Axis):</label>
+            <select id="select-metric-col" class="form-select"></select>
+          </div>
+          <div class="form-group">
+            <label for="select-trend-col">Timeline / Trend Dimension:</label>
+            <select id="select-trend-col" class="form-select"></select>
+          </div>
+          <div class="form-group">
+            <label for="select-unit-prefix">Currency / Prefix:</label>
+            <select id="select-unit-prefix" class="form-select">
+              <option value="$">$ (USD / AUD)</option>
+              <option value="€">€ (EUR)</option>
+              <option value="£">£ (GBP)</option>
+              <option value="¥">¥ (JPY / CNY)</option>
+              <option value="">None</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="select-palette">Color Theme Palette:</label>
+            <select id="select-palette" class="form-select">
+              <option value="gold">Gold Luxury Suite (Default)</option>
+              <option value="emerald">Emerald Prestige</option>
+              <option value="sapphire">Royal Sapphire</option>
+              <option value="cyber">Cyber Neon</option>
+            </select>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1rem;">
+          <button id="btn-parse-apply" class="btn btn-gold">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Apply Data & Synthesize Dashboard
+          </button>
+        </div>
       </div>
-    
+
+      <!-- Top KPI Metric Cards -->
+      <div id="kpi-cards-grid" class="kpi-cards-grid">
+        <!-- Rendered dynamically by script.js -->
+      </div>
+
+      <!-- Primary Charts Section: Bar Chart & Donut Chart -->
+      <div class="charts-grid-main">
+        <!-- SVG Bar Chart -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div class="chart-title-group">
+              <h3>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gold-primary);"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                <span id="bar-chart-title">Metric by Category</span>
+              </h3>
+              <div class="chart-subtitle">Cross-category comparative performance breakdown</div>
+            </div>
+            <span id="bar-chart-stat" class="kpi-badge">Top Contributor</span>
+          </div>
+          <div id="bar-chart-container" class="chart-svg-container">
+            <!-- SVG rendered here -->
+          </div>
+        </div>
+
+        <!-- SVG Donut Chart -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div class="chart-title-group">
+              <h3>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gold-primary);"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10h-10z"></path></svg>
+                <span>Share Distribution</span>
+              </h3>
+              <div class="chart-subtitle">Relative proportion of aggregate metric</div>
+            </div>
+            <span id="donut-total-badge" class="kpi-badge">100% Allocation</span>
+          </div>
+          <div id="donut-chart-container" class="chart-svg-container" style="height: 260px;">
+            <!-- SVG rendered here -->
+          </div>
+          <div id="donut-legend" class="donut-legend">
+            <!-- Legend rendered here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Secondary Chart: Line Trend Chart -->
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div class="chart-title-group">
+            <h3>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gold-primary);"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+              <span id="line-chart-title">Timeline Performance & Trajectory</span>
+            </h3>
+            <div class="chart-subtitle">Chronological progression and sequential velocity curve</div>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <span id="line-chart-growth" class="kpi-badge" style="color: var(--emerald-accent); border-color: rgba(16, 185, 129, 0.4);">Trend Active</span>
+          </div>
+        </div>
+        <div id="line-chart-container" class="chart-svg-container" style="height: 300px;">
+          <!-- SVG rendered here -->
+        </div>
+      </div>
+
+      <!-- Data Explorer Tabular Preview -->
+      <div class="table-container">
+        <div class="table-controls">
+          <div class="panel-title" style="margin: 0; border: none; padding: 0;">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+            Underlying Tabular Records
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <input type="text" id="table-search" class="form-input" placeholder="Search records..." style="width: 220px; padding: 0.45rem 0.75rem; font-size: 0.85rem;">
+            <span id="table-row-count" style="font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap;">0 rows</span>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table id="dashboard-data-table" class="data-table">
+            <thead id="data-table-head"></thead>
+            <tbody id="data-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- Global SVG Tooltip Target -->
+  <div id="dashboard-tooltip" class="chart-tooltip">
+    <div id="tooltip-title" class="chart-tooltip-title">Category</div>
+    <div id="tooltip-metric" class="chart-tooltip-metric">$0.00</div>
+    <div id="tooltip-sub" class="chart-tooltip-sub">Share: 0%</div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,8 +704,8 @@
     "@type": "WebApplication",
     "name": "Dashboard Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/dashboard-generator/",
-    "description": "Auto-generate dashboards, KPIs, and charts (Bar, Pie, Line, Area).",
-    "applicationCategory": "UtilityPage",
+    "description": "Instant BI dashboard synthesizer from any tabular data: auto-renders top KPI metric cards, interactive SVG Bar Chart, Line Trend Chart, and Donut Distribution Chart with tooltips, dark/gold luxury theme styling, and print/export utilities.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

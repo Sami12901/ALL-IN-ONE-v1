@@ -3,15 +3,560 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KPI Dashboard Builder - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Build custom KPI dashboards and business metrics trackers.">
-  <meta name="keywords" content="analytics, data, excel, kpi dashboard builder, free, online, tool, utility">
+  <title>KPI Dashboard Builder - Executive Metrics & Targets - ALL IN ONE</title>
+  <meta name="description" content="Customizable business KPI builder: add, edit, or configure KPI tiles with metric name, actual value, target value, unit/currency, change percentage, trend indicators, status badges, and progress gauge bars.">
+  <meta name="keywords" content="analytics, data, excel, kpi dashboard builder, business metrics, kpi tracker, executive dashboard, okr tracker, target attainment">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/kpi-dashboard-builder/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    :root {
+      --gold-primary: #d4af37;
+      --gold-secondary: #f3e5ab;
+      --gold-glow: rgba(212, 175, 55, 0.25);
+      --gold-border: rgba(212, 175, 55, 0.35);
+      --gold-muted: rgba(212, 175, 55, 0.12);
+      --emerald-accent: #10b981;
+      --emerald-border: rgba(16, 185, 129, 0.35);
+      --emerald-bg: rgba(16, 185, 129, 0.12);
+      --rose-accent: #f43f5e;
+      --rose-border: rgba(244, 63, 94, 0.35);
+      --rose-bg: rgba(244, 63, 94, 0.12);
+      --amber-accent: #f59e0b;
+      --amber-border: rgba(245, 158, 11, 0.35);
+      --amber-bg: rgba(245, 158, 11, 0.12);
+      --sapphire-accent: #38bdf8;
+    }
+
+    .kpi-builder-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .executive-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: var(--radius-full);
+      background: var(--gold-muted);
+      border: 1px solid var(--gold-border);
+      color: var(--gold-secondary);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Executive Toolbar */
+    .kpi-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.25rem 1.5rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+    }
+
+    .toolbar-left, .toolbar-right {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(212, 175, 55, 0.1) 100%);
+      border: 1px solid var(--gold-primary);
+      color: var(--gold-secondary);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .btn-gold:hover {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.4) 0%, rgba(212, 175, 55, 0.2) 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 15px var(--gold-glow);
+      transform: translateY(-1px);
+    }
+
+    /* Executive Health Summary Header */
+    .health-summary-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem 1.75rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .health-score-group {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .health-score-circle {
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, rgba(20, 20, 20, 0.6) 100%);
+      border: 2px solid var(--gold-primary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px var(--gold-glow);
+    }
+
+    .health-score-number {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--gold-secondary);
+      line-height: 1;
+    }
+
+    .health-score-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      margin-top: 0.2rem;
+    }
+
+    .health-stats-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.9rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+    }
+
+    .stat-pill.exceeded {
+      border-color: var(--gold-border);
+      color: var(--gold-secondary);
+      background: var(--gold-muted);
+    }
+
+    .stat-pill.ontrack {
+      border-color: var(--emerald-border);
+      color: var(--emerald-accent);
+      background: var(--emerald-bg);
+    }
+
+    .stat-pill.warning {
+      border-color: var(--amber-border);
+      color: var(--amber-accent);
+      background: var(--amber-bg);
+    }
+
+    .stat-pill.critical {
+      border-color: var(--rose-border);
+      color: var(--rose-accent);
+      background: var(--rose-bg);
+    }
+
+    /* Filters Bar */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.75rem 1.25rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .filter-chip {
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .filter-chip:hover {
+      color: var(--text-primary);
+      border-color: var(--gold-primary);
+    }
+
+    .filter-chip.active {
+      background: var(--gold-muted);
+      border-color: var(--gold-primary);
+      color: var(--gold-secondary);
+      box-shadow: 0 2px 8px var(--gold-glow);
+    }
+
+    /* KPI Cards Grid */
+    .kpi-builder-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .kpi-tile {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1.25rem;
+      position: relative;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-tile:hover {
+      transform: translateY(-3px);
+      border-color: var(--gold-border);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .kpi-tile::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+
+    .kpi-tile.exceeded::before { background: linear-gradient(90deg, var(--gold-primary), #f3e5ab); }
+    .kpi-tile.ontrack::before { background: var(--emerald-accent); }
+    .kpi-tile.warning::before { background: var(--amber-accent); }
+    .kpi-tile.critical::before { background: var(--rose-accent); }
+
+    .tile-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .tile-category-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    .tile-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-top: 0.2rem;
+      line-height: 1.25;
+    }
+
+    .tile-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .tile-status-badge.exceeded {
+      background: var(--gold-muted);
+      color: var(--gold-secondary);
+      border: 1px solid var(--gold-border);
+    }
+
+    .tile-status-badge.ontrack {
+      background: var(--emerald-bg);
+      color: var(--emerald-accent);
+      border: 1px solid var(--emerald-border);
+    }
+
+    .tile-status-badge.warning {
+      background: var(--amber-bg);
+      color: var(--amber-accent);
+      border: 1px solid var(--amber-border);
+    }
+
+    .tile-status-badge.critical {
+      background: var(--rose-bg);
+      color: var(--rose-accent);
+      border: 1px solid var(--rose-border);
+    }
+
+    .tile-value-block {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin: 0.25rem 0;
+    }
+
+    .tile-actual-value {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .tile-target-value {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      text-align: right;
+    }
+
+    /* Progress Gauge Bar */
+    .gauge-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .gauge-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .gauge-track {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-full);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .gauge-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .kpi-tile.exceeded .gauge-fill { background: linear-gradient(90deg, #b38714, var(--gold-primary)); }
+    .kpi-tile.ontrack .gauge-fill { background: linear-gradient(90deg, #059669, var(--emerald-accent)); }
+    .kpi-tile.warning .gauge-fill { background: linear-gradient(90deg, #d97706, var(--amber-accent)); }
+    .kpi-tile.critical .gauge-fill { background: linear-gradient(90deg, #e11d48, var(--rose-accent)); }
+
+    .tile-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.82rem;
+    }
+
+    .tile-trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-weight: 700;
+    }
+
+    .tile-trend.up { color: var(--emerald-accent); }
+    .tile-trend.down { color: var(--rose-accent); }
+    .tile-trend.neutral { color: var(--text-secondary); }
+
+    .tile-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .tile-btn-icon {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-secondary);
+      padding: 0.3rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .tile-btn-icon:hover {
+      color: var(--text-primary);
+      border-color: var(--border);
+      background: var(--bg-tertiary);
+    }
+
+    .tile-btn-icon.delete:hover {
+      color: var(--rose-accent);
+      border-color: var(--rose-border);
+      background: var(--rose-bg);
+    }
+
+    /* Modal Form */
+    .kpi-modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .kpi-modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .kpi-modal-content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 620px;
+      padding: 2rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: translateY(20px);
+      transition: transform 0.25s ease;
+    }
+
+    .kpi-modal-backdrop.open .kpi-modal-content {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1rem;
+    }
+
+    .modal-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1.5rem;
+      line-height: 1;
+      padding: 0.25rem;
+    }
+
+    .modal-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    /* Print media */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+
+      app-header, app-breadcrumbs, app-footer,
+      .kpi-toolbar, .filter-bar, .tile-actions,
+      .btn, .kpi-modal-backdrop, .hide-print {
+        display: none !important;
+      }
+
+      .kpi-builder-container {
+        max-width: 100% !important;
+      }
+
+      .kpi-tile, .health-summary-panel {
+        background: #ffffff !important;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .tile-actual-value, .tile-title, .health-score-number {
+        color: #000000 !important;
+      }
+
+      .print-header {
+        display: block !important;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #333333;
+      }
+    }
+
+    .print-header {
+      display: none;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -24,33 +569,226 @@
 
   <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
-      <div class="tool-header">
-        <h1>KPI Dashboard Builder</h1>
-        <p class="tool-description">Build custom KPI dashboards and business metrics trackers.</p>
+    <div class="container kpi-builder-container">
+      
+      <!-- Print Letterhead -->
+      <div class="print-header">
+        <h1 style="font-size: 1.75rem; margin: 0; color: #000;">Corporate Strategic KPI Performance Dossier</h1>
+        <p style="margin: 0.25rem 0 0 0; color: #555; font-size: 0.9rem;">Executive Attainment & Target Variance Monitor</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>KPI Dashboard Builder</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Build custom KPI dashboards and business metrics trackers.</div>
-            <div><strong>Inputs:</strong> analytics, data, excel, kpi dashboard builder</div>
-            <div><strong>Category:</strong> excel</div>
+      <!-- Page Header -->
+      <div class="tool-header">
+        <div class="executive-badge">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          Executive Performance Monitor
+        </div>
+        <h1>KPI Dashboard Builder</h1>
+        <p class="tool-description">Customizable business KPI builder: add, edit, or configure KPI tiles with metric name, actual value, target value, unit/currency, change percentage, trend indicators, status badges, and progress gauge bars with pre-loaded executive templates.</p>
+      </div>
+
+      <!-- Control Toolbar -->
+      <div class="kpi-toolbar">
+        <div class="toolbar-left">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <label for="template-select" style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">Executive Template:</label>
+            <select id="template-select" class="form-select" style="min-width: 210px; padding: 0.55rem 0.85rem;">
+              <option value="csuite">Executive C-Suite Portfolio</option>
+              <option value="ecommerce">E-Commerce & Digital Retail</option>
+              <option value="saas">SaaS Growth & Retention</option>
+              <option value="financial">Corporate Financial Health</option>
+            </select>
+          </div>
+          <button id="btn-load-template" class="btn btn-secondary" title="Reset to chosen template">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            Reset Template
+          </button>
+          <button id="btn-add-kpi" class="btn btn-gold" title="Create a new KPI tile">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Add New KPI Tile
+          </button>
+        </div>
+
+        <div class="toolbar-right">
+          <label class="btn btn-secondary" style="cursor: pointer; margin: 0;" title="Import KPI configuration JSON">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+            Import JSON
+            <input type="file" id="json-importer" accept=".json" style="display: none;">
+          </label>
+          <button id="btn-export-kpi-json" class="btn btn-secondary" title="Export KPI configuration JSON">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            Export JSON
+          </button>
+          <button id="btn-print-kpi" class="btn btn-gold" title="Print dashboard or export to PDF">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            Print Dashboard
+          </button>
+        </div>
+      </div>
+
+      <!-- Executive Health Summary Banner -->
+      <div class="health-summary-panel">
+        <div class="health-score-group">
+          <div class="health-score-circle">
+            <span id="health-score-percent" class="health-score-number">92%</span>
+            <span class="health-score-label">Health</span>
+          </div>
+          <div>
+            <div style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary);" id="health-status-title">Portfolio In Strong Standing</div>
+            <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.2rem;" id="health-status-sub">Tracking composite attainment against strategic quarterly benchmarks.</div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="health-stats-pills">
+          <div class="stat-pill exceeded">
+            <span id="count-exceeded" style="font-weight: 800;">0</span> Exceeded
+          </div>
+          <div class="stat-pill ontrack">
+            <span id="count-ontrack" style="font-weight: 800;">0</span> On Track
+          </div>
+          <div class="stat-pill warning">
+            <span id="count-warning" style="font-weight: 800;">0</span> Warning
+          </div>
+          <div class="stat-pill critical">
+            <span id="count-critical" style="font-weight: 800;">0</span> Critical
+          </div>
+        </div>
       </div>
-    
+
+      <!-- Interactive Filter Bar -->
+      <div class="filter-bar">
+        <div class="filter-group">
+          <span style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600; margin-right: 0.35rem;">Category:</span>
+          <div class="filter-chip active" data-cat="all">All Categories</div>
+          <div class="filter-chip" data-cat="financial">Financial</div>
+          <div class="filter-chip" data-cat="growth">Growth</div>
+          <div class="filter-chip" data-cat="customer">Customer</div>
+          <div class="filter-chip" data-cat="operations">Operations</div>
+        </div>
+
+        <div class="filter-group">
+          <span style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600; margin-right: 0.35rem;">Status:</span>
+          <div class="filter-chip active" data-status="all">All Statuses</div>
+          <div class="filter-chip" data-status="ontrack">On Track / Exceeded</div>
+          <div class="filter-chip" data-status="warning">Warning</div>
+          <div class="filter-chip" data-status="critical">Critical</div>
+        </div>
+      </div>
+
+      <!-- KPI Cards Grid -->
+      <div id="kpi-grid" class="kpi-builder-grid">
+        <!-- Rendered by script.js -->
+      </div>
+
     </div>
   </main>
+
+  <!-- Add / Edit KPI Modal -->
+  <div id="kpi-modal" class="kpi-modal-backdrop">
+    <div class="kpi-modal-content">
+      <div class="modal-header">
+        <h2 id="modal-heading" class="modal-title">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gold-primary);"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="9"></line><line x1="9" y1="13" x2="15" y2="13"></line><line x1="9" y1="17" x2="13" y2="17"></line></svg>
+          Configure KPI Tile
+        </h2>
+        <button id="modal-close-x" class="modal-close-btn">&times;</button>
+      </div>
+
+      <form id="kpi-form" style="display: flex; flex-direction: column; gap: 1rem;">
+        <input type="hidden" id="form-kpi-id">
+
+        <div class="form-group">
+          <label for="form-name">Metric Name:</label>
+          <input type="text" id="form-name" class="form-input" required placeholder="e.g. Annual Recurring Revenue">
+        </div>
+
+        <div class="modal-form-grid">
+          <div class="form-group">
+            <label for="form-category">Department / Category:</label>
+            <select id="form-category" class="form-select">
+              <option value="financial">Financial</option>
+              <option value="growth">Growth</option>
+              <option value="customer">Customer</option>
+              <option value="operations">Operations</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="form-period">Period Label:</label>
+            <input type="text" id="form-period" class="form-input" placeholder="e.g. Q3 2026 or MoM" value="Q3 2026">
+          </div>
+        </div>
+
+        <div class="modal-form-grid">
+          <div class="form-group">
+            <label for="form-actual">Actual / Current Value:</label>
+            <input type="number" step="any" id="form-actual" class="form-input" required placeholder="e.g. 24800000">
+          </div>
+          <div class="form-group">
+            <label for="form-target">Target Goal Value:</label>
+            <input type="number" step="any" id="form-target" class="form-input" required placeholder="e.g. 24000000">
+          </div>
+        </div>
+
+        <div class="modal-form-grid">
+          <div class="form-group">
+            <label for="form-prefix">Unit / Currency Prefix:</label>
+            <select id="form-prefix" class="form-select">
+              <option value="$">$ (USD)</option>
+              <option value="€">€ (EUR)</option>
+              <option value="£">£ (GBP)</option>
+              <option value="¥">¥ (JPY)</option>
+              <option value="">None</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="form-suffix">Unit / Magnitude Suffix:</label>
+            <select id="form-suffix" class="form-select">
+              <option value="">None (Auto-format)</option>
+              <option value="%">% (Percentage)</option>
+              <option value="M">M (Millions)</option>
+              <option value="k">k (Thousands)</option>
+              <option value="x">x (Multiple)</option>
+              <option value="pts">pts (Points)</option>
+              <option value="days">days</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-form-grid">
+          <div class="form-group">
+            <label for="form-change">Change (% or delta):</label>
+            <input type="text" id="form-change" class="form-input" placeholder="e.g. +14.2% MoM" value="+12.4% MoM">
+          </div>
+          <div class="form-group">
+            <label for="form-trend">Trend Direction:</label>
+            <select id="form-trend" class="form-select">
+              <option value="up">Up (&uarr; Positive / Expansion)</option>
+              <option value="down">Down (&darr; Contraction)</option>
+              <option value="neutral">Neutral (&rarr; Flat / In-line)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="form-direction">Target Direction Logic:</label>
+          <select id="form-direction" class="form-select">
+            <option value="higher">Higher is better (e.g., Revenue, Margin, NPS)</option>
+            <option value="lower">Lower is better (e.g., Churn, CAC, Burn Rate, DSO)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="form-note">Strategic Note / Context:</label>
+          <input type="text" id="form-note" class="form-input" placeholder="e.g. Exceeded expectation due to enterprise upsell">
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+          <button type="button" id="modal-cancel-btn" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-gold">Save KPI Tile</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,8 +800,8 @@
     "@type": "WebApplication",
     "name": "KPI Dashboard Builder",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/kpi-dashboard-builder/",
-    "description": "Build custom KPI dashboards and business metrics trackers.",
-    "applicationCategory": "UtilityPage",
+    "description": "Customizable business KPI builder: add, edit, or configure KPI tiles with metric name, actual value, target value, unit/currency, change percentage, trend indicators, status badges, and progress gauge bars.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

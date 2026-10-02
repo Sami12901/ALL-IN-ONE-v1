@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Data Analyzer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Analyze rows, columns, missing data, and calculate Data Quality Score.">
-  <meta name="keywords" content="analytics, data, excel, data analyzer, free, online, tool, utility">
+  <meta name="description" content="Analyze tabular datasets, compute complete descriptive statistics (Mean, Median, Mode, StdDev, IQR), evaluate Data Quality Score, and flag outliers.">
+  <meta name="keywords" content="analytics, data, excel, data analyzer, statistics, IQR outliers, data quality, free, online, tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/data-analyzer/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,346 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+  <style>
+    .analyzer-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .preset-btn {
+      padding: 0.35rem 0.85rem;
+      font-size: 0.8rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .preset-btn:hover {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .kpi-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .kpi-value {
+      font-size: 1.85rem;
+      font-weight: 800;
+      font-family: var(--font-display), monospace;
+      color: var(--accent);
+      line-height: 1.1;
+    }
+
+    .kpi-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+      font-weight: 600;
+    }
+
+    .quality-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.6rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: var(--radius-full);
+      margin-top: 0.25rem;
+      align-self: center;
+    }
+
+    .quality-excellent { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .quality-good { background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .quality-fair { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .quality-poor { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+    .tabs-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .tab-btn {
+      padding: 0.5rem 1rem;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      background: var(--accent-glow);
+      border-color: var(--accent);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .stats-table-wrapper {
+      overflow-x: auto;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+
+    .stats-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: right;
+    }
+
+    .stats-table th, .stats-table td {
+      padding: 0.65rem 0.85rem;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .stats-table th {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .stats-table th:first-child, .stats-table td:first-child {
+      text-align: left;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .stats-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .chart-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .chart-svg {
+      width: 100%;
+      height: 200px;
+      overflow: visible;
+    }
+
+    .bar-rect {
+      fill: var(--accent);
+      opacity: 0.85;
+      transition: opacity 0.2s;
+    }
+
+    .bar-rect:hover {
+      opacity: 1;
+    }
+
+    .axis-line {
+      stroke: var(--border);
+      stroke-width: 1;
+    }
+
+    .axis-text {
+      fill: var(--text-tertiary);
+      font-size: 10px;
+      font-family: var(--font-sans);
+    }
+
+    .chart-mean-line {
+      stroke: #f59e0b;
+      stroke-width: 2;
+      stroke-dasharray: 4 2;
+    }
+
+    .chart-median-line {
+      stroke: #10b981;
+      stroke-width: 2;
+    }
+
+    .box-plot-svg {
+      width: 100%;
+      height: 90px;
+    }
+
+    .quality-bar {
+      height: 8px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-top: 0.35rem;
+    }
+
+    .quality-bar-fill {
+      height: 100%;
+      transition: width 0.5s ease;
+    }
+
+    .outlier-tag {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .null-tag {
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .data-table-container {
+      max-height: 480px;
+      overflow: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-secondary);
+    }
+
+    .data-preview-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    .data-preview-table th {
+      position: sticky;
+      top: 0;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-weight: 600;
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      white-space: nowrap;
+      z-index: 2;
+    }
+
+    .data-preview-table td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      white-space: nowrap;
+      color: var(--text-secondary);
+    }
+
+    .data-preview-table tr:hover td {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .data-preview-table td.cell-outlier {
+      background: rgba(239, 68, 68, 0.12);
+      color: #ef4444;
+      font-weight: 600;
+    }
+
+    .data-preview-table td.cell-null {
+      background: rgba(245, 158, 11, 0.12);
+      color: #f59e0b;
+      font-style: italic;
+    }
+
+    .pagination-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0.25rem;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .pagination-btns {
+      display: flex;
+      gap: 0.35rem;
+    }
+
+    .page-btn {
+      padding: 0.25rem 0.6rem;
+      font-size: 0.8rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .page-btn:hover:not(:disabled) {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .page-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,26 +367,298 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Data Analyzer</h1>
-        <p class="tool-description">Analyze rows, columns, missing data, and calculate Data Quality Score.</p>
+        <p class="tool-description">Analyze tabular datasets, compute complete descriptive statistics (Mean, Median, Mode, StdDev, IQR), evaluate Data Quality Score, and flag outliers.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Data Analyzer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Analyze rows, columns, missing data, and calculate Data Quality Score.</div>
-            <div><strong>Inputs:</strong> analytics, data, excel, data analyzer</div>
-            <div><strong>Category:</strong> excel</div>
+      <!-- Main Tool Workspace -->
+      <div class="analyzer-workspace">
+        
+        <!-- Top Control & Preset Bar -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+              <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-right: 0.5rem;">Sample Data Presets:</span>
+              <div class="preset-chips" style="display: inline-flex;">
+                <button type="button" class="preset-btn" data-preset="ecommerce">E-Commerce Orders</button>
+                <button type="button" class="preset-btn" data-preset="hr">HR & Payroll</button>
+                <button type="button" class="preset-btn" data-preset="sensors">IoT Fleet Telemetry</button>
+                <button type="button" class="preset-btn" data-preset="clinical">Hospital Clinical Metrics</button>
+              </div>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="button" id="btn-clear-data" class="btn btn-secondary" style="padding: 0.4rem 0.85rem; font-size: 0.8rem;">Clear All</button>
+            </div>
+          </div>
+
+          <!-- Upload / Input Toggle -->
+          <div class="tool-workarea split-view" style="margin-top: 0.75rem;">
+            <!-- Left: File Drop Zone -->
+            <div class="form-group">
+              <label>Upload Dataset (CSV, TSV, JSON, TXT):</label>
+              <div id="file-drop-zone" class="file-drag-area">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <div style="font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem;">Drop your file here or click to browse</div>
+                <div style="font-size: 0.8rem; color: var(--text-tertiary);">Supports .csv, .tsv, .txt, .json formats</div>
+                <input type="file" id="file-input" accept=".csv,.tsv,.txt,.json" style="display: none;">
+              </div>
+            </div>
+
+            <!-- Right: Paste Text & Settings -->
+            <div class="form-group" style="display: flex; flex-direction: column; justify-content: space-between;">
+              <label for="raw-input">Or Paste Tabular Text / CSV / TSV / JSON:</label>
+              <textarea id="raw-input" class="form-textarea" style="min-height: 120px; font-size: 0.82rem;" placeholder="Paste CSV, TSV, or JSON data here..."></textarea>
+              
+              <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-top: 0.75rem;">
+                <label class="checkbox-label" style="font-size: 0.82rem;">
+                  <input type="checkbox" id="chk-has-headers" checked>
+                  <span>First row contains column headers</span>
+                </label>
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--text-secondary);">
+                  <span>Delimiter:</span>
+                  <select id="select-delimiter" class="form-select" style="width: auto; padding: 0.35rem 0.6rem; font-size: 0.82rem;">
+                    <option value="auto">Auto-Detect</option>
+                    <option value=",">Comma (,)</option>
+                    <option value="&#9;">Tab (\t)</option>
+                    <option value=";">Semicolon (;)</option>
+                    <option value="|">Pipe (|)</option>
+                  </select>
+                </div>
+                <button type="button" id="btn-parse-data" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.85rem; margin-left: auto;">
+                  Analyze Dataset
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- KPI Summary Cards -->
+        <div id="results-section" style="display: none; flex-direction: column; gap: 1.5rem;">
+          
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <span class="kpi-value" id="kpi-rows">0</span>
+              <span class="kpi-label">Total Rows</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-value" id="kpi-cols">0</span>
+              <span class="kpi-label">Columns (<span id="kpi-num-cols">0</span> Numeric)</span>
+            </div>
+            <div class="kpi-card">
+              <div style="display: flex; align-items: baseline; justify-content: center; gap: 0.25rem;">
+                <span class="kpi-value" id="kpi-quality-score">0%</span>
+              </div>
+              <span class="kpi-label">Data Quality Score</span>
+              <div id="kpi-quality-badge" class="quality-badge quality-excellent">Excellent</div>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-value" id="kpi-missing-cells">0</span>
+              <span class="kpi-label">Missing Cells (<span id="kpi-missing-pct">0%</span>)</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-value" id="kpi-outliers-count">0</span>
+              <span class="kpi-label">Flagged Outliers (IQR)</span>
+            </div>
+          </div>
+
+          <!-- Detailed Analysis Tabs -->
+          <div class="tool-panel glass-panel">
+            <div class="tabs-nav">
+              <button type="button" class="tab-btn active" data-tab="tab-stats">Descriptive Statistics</button>
+              <button type="button" class="tab-btn" data-tab="tab-deep-dive">Column Visualizer & Distribution</button>
+              <button type="button" class="tab-btn" data-tab="tab-quality">Quality & Outlier Audit</button>
+              <button type="button" class="tab-btn" data-tab="tab-data">Data Table Explorer</button>
+            </div>
+
+            <!-- Tab 1: Comprehensive Descriptive Statistics Matrix -->
+            <div id="tab-stats" class="tab-content active">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                <h3 style="font-size: 1.1rem; font-weight: 700;">Descriptive Statistics Matrix (All Numeric Columns)</h3>
+                <div style="display: flex; gap: 0.5rem;">
+                  <button type="button" id="btn-export-stats-csv" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">Export Stats CSV</button>
+                  <button type="button" id="btn-copy-stats" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">Copy Summary</button>
+                </div>
+              </div>
+              
+              <div class="stats-table-wrapper">
+                <table class="stats-table" id="matrix-table">
+                  <thead>
+                    <tr>
+                      <th>Metric</th>
+                      <!-- Injected dynamically -->
+                    </tr>
+                  </thead>
+                  <tbody id="matrix-tbody">
+                    <!-- Injected dynamically -->
+                  </tbody>
+                </table>
+              </div>
+              <p style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.5rem;">
+                * Outliers are determined via Tukey's IQR rule: values outside [Q1 - 1.5 &times; IQR, Q3 + 1.5 &times; IQR]. Standard deviation is reported as sample std dev (s).
+              </p>
+            </div>
+
+            <!-- Tab 2: Column Visualizer & Deep Dive -->
+            <div id="tab-deep-dive" class="tab-content">
+              <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap;">
+                <label for="select-inspect-col" style="font-size: 0.875rem; font-weight: 600;">Select Column to Inspect:</label>
+                <select id="select-inspect-col" class="form-select" style="max-width: 280px;"></select>
+                <div id="inspect-col-meta" style="font-size: 0.825rem; color: var(--text-secondary);"></div>
+              </div>
+
+              <!-- Metrics cards for selected column -->
+              <div class="kpi-grid" id="inspect-kpi-grid" style="margin-bottom: 1.25rem;">
+                <!-- Populated dynamically -->
+              </div>
+
+              <!-- Visual Charts -->
+              <div class="tool-workarea split-view">
+                <!-- Histogram -->
+                <div class="chart-container">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h4 style="font-size: 0.95rem;">Frequency Histogram & Density</h4>
+                    <div style="display: flex; gap: 0.75rem; font-size: 0.75rem;">
+                      <span style="color: #f59e0b; display: flex; align-items: center; gap: 0.25rem;">
+                        <span style="display: inline-block; width: 12px; height: 2px; background: #f59e0b;"></span> Mean
+                      </span>
+                      <span style="color: #10b981; display: flex; align-items: center; gap: 0.25rem;">
+                        <span style="display: inline-block; width: 12px; height: 2px; background: #10b981;"></span> Median
+                      </span>
+                    </div>
+                  </div>
+                  <div id="histogram-wrapper">
+                    <!-- SVG generated by script -->
+                  </div>
+                </div>
+
+                <!-- Box Plot & Percentiles -->
+                <div class="chart-container">
+                  <h4 style="font-size: 0.95rem;">Box & Whisker Plot (IQR & Outlier Range)</h4>
+                  <div id="boxplot-wrapper">
+                    <!-- SVG generated by script -->
+                  </div>
+                  <div id="percentiles-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 0.5rem; text-align: center; font-size: 0.8rem; background: var(--bg-tertiary); padding: 0.75rem; border-radius: var(--radius-sm);">
+                    <!-- Injected dynamically -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 3: Data Quality Score & Outlier Audit -->
+            <div id="tab-quality" class="tab-content">
+              <div class="tool-workarea split-view">
+                <!-- Quality Breakdown -->
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                  <h3 style="font-size: 1.1rem; font-weight: 700;">Data Quality Breakdown</h3>
+                  
+                  <div class="tool-panel" style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.25rem; gap: 1rem;">
+                    <div>
+                      <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600;">
+                        <span>Completeness (Missing Cells Penalty)</span>
+                        <span id="score-completeness">100%</span>
+                      </div>
+                      <div class="quality-bar"><div id="bar-completeness" class="quality-bar-fill" style="width: 100%; background: #10b981;"></div></div>
+                    </div>
+
+                    <div>
+                      <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600;">
+                        <span>Uniqueness (Duplicate Rows Check)</span>
+                        <span id="score-uniqueness">100%</span>
+                      </div>
+                      <div class="quality-bar"><div id="bar-uniqueness" class="quality-bar-fill" style="width: 100%; background: #10b981;"></div></div>
+                    </div>
+
+                    <div>
+                      <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600;">
+                        <span>Outlier Health (IQR Deviation Ratio)</span>
+                        <span id="score-outliers">100%</span>
+                      </div>
+                      <div class="quality-bar"><div id="bar-outliers" class="quality-bar-fill" style="width: 100%; background: #10b981;"></div></div>
+                    </div>
+
+                    <div>
+                      <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600;">
+                        <span>Type Uniformity (Consistent Data Typing)</span>
+                        <span id="score-uniformity">100%</span>
+                      </div>
+                      <div class="quality-bar"><div id="bar-uniformity" class="quality-bar-fill" style="width: 100%; background: #10b981;"></div></div>
+                    </div>
+                  </div>
+
+                  <div id="quality-advisories" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <!-- Recommendation notes injected here -->
+                  </div>
+                </div>
+
+                <!-- Flagged Outliers List -->
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700;">Flagged IQR Outliers</h3>
+                    <span id="outlier-badge-count" class="badge">0 Detected</span>
+                  </div>
+
+                  <div class="stats-table-wrapper" style="max-height: 360px; overflow-y: auto;">
+                    <table class="stats-table" style="text-align: left; width: 100%;">
+                      <thead>
+                        <tr>
+                          <th>Row #</th>
+                          <th>Column</th>
+                          <th>Value</th>
+                          <th>Normal Range [Q1-1.5IQR, Q3+1.5IQR]</th>
+                          <th>Severity</th>
+                        </tr>
+                      </thead>
+                      <tbody id="outliers-tbody">
+                        <!-- Outlier rows populated dynamically -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 4: Interactive Data Table -->
+            <div id="tab-data" class="tab-content">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.75rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <input type="text" id="table-search" class="form-input" style="max-width: 250px; padding: 0.4rem 0.75rem; font-size: 0.82rem;" placeholder="Search rows...">
+                  <label class="checkbox-label" style="font-size: 0.8rem;">
+                    <input type="checkbox" id="chk-highlight-outliers" checked>
+                    <span>Highlight Outliers</span>
+                  </label>
+                  <label class="checkbox-label" style="font-size: 0.8rem;">
+                    <input type="checkbox" id="chk-filter-outliers-only">
+                    <span>Show Outlier Rows Only</span>
+                  </label>
+                </div>
+                <button type="button" id="btn-export-csv" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+                  Download Raw CSV
+                </button>
+              </div>
+
+              <div class="data-table-container">
+                <table class="data-preview-table" id="data-preview-table">
+                  <thead id="data-table-head"></thead>
+                  <tbody id="data-table-body"></tbody>
+                </table>
+              </div>
+
+              <div class="pagination-bar">
+                <span id="pagination-info">Showing 1 to 25 of 100 rows</span>
+                <div class="pagination-btns">
+                  <button type="button" id="btn-prev-page" class="page-btn">&larr; Prev</button>
+                  <span id="current-page-num" style="padding: 0.25rem 0.5rem; font-weight: 600;">1</span>
+                  <button type="button" id="btn-next-page" class="page-btn">Next &rarr;</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
     
     </div>
@@ -62,7 +674,7 @@
     "@type": "WebApplication",
     "name": "Data Analyzer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/data-analyzer/",
-    "description": "Analyze rows, columns, missing data, and calculate Data Quality Score.",
+    "description": "Analyze tabular datasets, compute complete descriptive statistics (Mean, Median, Mode, StdDev, IQR), evaluate Data Quality Score, and flag outliers.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

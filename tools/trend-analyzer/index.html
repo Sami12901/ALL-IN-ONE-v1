@@ -4,14 +4,229 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trend Analyzer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Analyze growth trends and seasonal patterns in your data.">
-  <meta name="keywords" content="analytics, data, excel, trend analyzer, free, online, tool, utility">
+  <meta name="description" content="Period-over-period growth calculator: MoM, YoY, Compound Annual Growth Rate (CAGR), peak seasonality detection, and volatility index.">
+  <meta name="keywords" content="analytics, data, excel, trend analyzer, mom growth, yoy growth, cagr calculator, seasonality, volatility index, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/trend-analyzer/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Scoped styles for Trend Analyzer */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .metric-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1rem;
+      text-align: center;
+      transition: var(--transition);
+      position: relative;
+    }
+    .metric-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .metric-card .val {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.2;
+      font-family: var(--font-sans);
+    }
+    .metric-card .lbl {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+      margin-top: 0.25rem;
+      font-weight: 600;
+    }
+    .metric-card .sub {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.2rem;
+    }
+
+    .chart-container {
+      position: relative;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      width: 100%;
+      overflow: hidden;
+    }
+    .chart-svg {
+      width: 100%;
+      height: auto;
+      max-height: 400px;
+      display: block;
+    }
+
+    .chart-tooltip {
+      position: absolute;
+      pointer-events: none;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.6rem 0.8rem;
+      font-size: 0.75rem;
+      color: #f8fafc;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      z-index: 20;
+      transform: translate(-50%, -110%);
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .tab-nav {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+    .tab-btn {
+      padding: 0.6rem 1.2rem;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+    .tab-btn:hover {
+      color: var(--text-primary);
+    }
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .chip-btn {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .chip-btn:hover, .chip-btn.active {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .data-table-wrap {
+      max-height: 380px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+    }
+    .styled-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      text-align: left;
+    }
+    .styled-table th {
+      position: sticky;
+      top: 0;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      z-index: 2;
+    }
+    .styled-table td {
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .styled-table tr:hover td {
+      background: var(--accent-glow);
+      color: var(--text-primary);
+    }
+
+    .table-input {
+      background: transparent;
+      border: 1px solid transparent;
+      color: inherit;
+      font-family: inherit;
+      font-size: 0.875rem;
+      width: 100%;
+      padding: 0.25rem 0.4rem;
+      border-radius: var(--radius-sm);
+      transition: border-color 0.2s;
+    }
+    .table-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+    }
+
+    .season-bar-container {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-secondary);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .season-bar {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    .growth-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .growth-up {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+    }
+    .growth-down {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--error);
+    }
+    .growth-flat {
+      background: rgba(148, 163, 184, 0.15);
+      color: var(--text-tertiary);
+    }
+
+    @media (max-width: 900px) {
+      .metric-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 600px) {
+      .metric-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,29 +241,254 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Trend Analyzer</h1>
-        <p class="tool-description">Analyze growth trends and seasonal patterns in your data.</p>
-      </div>
-
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Trend Analyzer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Analyze growth trends and seasonal patterns in your data.</div>
-            <div><strong>Inputs:</strong> analytics, data, excel, trend analyzer</div>
-            <div><strong>Category:</strong> excel</div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>Trend Analyzer</h1>
+            <p class="tool-description">Comprehensive growth analytics: Period-over-Period (MoM/QoQ), Year-over-Year (YoY), Compound Annual Growth Rate (CAGR), peak seasonality detection, and volatility index with interactive SVG visualization.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <button id="btn-export-csv" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export Breakdown (CSV)
+            </button>
+            <button id="btn-copy-summary" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Report
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- KPI Summary Cards -->
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="val" id="kpi-cagr">0.0%</div>
+          <div class="lbl">CAGR (Annualized)</div>
+          <div class="sub" id="kpi-cagr-span">Across 3.0 Years</div>
+        </div>
+        <div class="metric-card">
+          <div class="val" id="kpi-avg-mom">+0.0%</div>
+          <div class="lbl">Avg Period Growth (MoM)</div>
+          <div class="sub" id="kpi-mom-winrate">82% Positive Periods</div>
+        </div>
+        <div class="metric-card">
+          <div class="val" id="kpi-volatility">0.0%</div>
+          <div class="lbl">Volatility Index (CV)</div>
+          <div class="sub" id="kpi-volatility-rating">Stable Profile</div>
+        </div>
+        <div class="metric-card">
+          <div class="val" id="kpi-peak-season">Nov</div>
+          <div class="lbl">Peak Seasonality Index</div>
+          <div class="sub" id="kpi-peak-index">+24% above baseline</div>
+        </div>
+        <div class="metric-card">
+          <div class="val" id="kpi-max-drawdown">-0.0%</div>
+          <div class="lbl">Peak-to-Trough Drawdown</div>
+          <div class="sub" id="kpi-drawdown-period">Max pull-back</div>
+        </div>
+      </div>
+
+      <!-- Main Workarea -->
+      <div class="tool-workarea split-view">
+
+        <!-- Left: Dataset Input & Controls -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+            <h2 class="panel-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">Historical Series Input</h2>
+            <div style="display: flex; gap: 0.35rem;">
+              <button id="preset-saas" class="chip-btn active" title="3-Year Monthly SaaS Revenue">SaaS (36m)</button>
+              <button id="preset-retail" class="chip-btn" title="2-Year Seasonal Retail">Retail (24m)</button>
+              <button id="preset-quarterly" class="chip-btn" title="Quarterly Financials">Quarterly (16q)</button>
+            </div>
+          </div>
+
+          <!-- Configuration Row -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; background: var(--bg-tertiary); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <div class="form-group">
+              <label for="series-frequency">Data Frequency</label>
+              <select id="series-frequency" class="form-select" style="padding: 0.5rem 0.75rem; font-size: 0.85rem;">
+                <option value="12" selected>Monthly (12 periods/yr)</option>
+                <option value="4">Quarterly (4 periods/yr)</option>
+                <option value="1">Annual (1 period/yr)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="chart-mode">Chart Metric Mode</label>
+              <select id="chart-mode" class="form-select" style="padding: 0.5rem 0.75rem; font-size: 0.85rem;">
+                <option value="both" selected>Value Line + MoM % Bars</option>
+                <option value="values">Values & Trendline Only</option>
+                <option value="growth">Growth Rates Only</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Data Input Tabs -->
+          <div>
+            <div class="tab-nav">
+              <button id="tab-table-btn" class="tab-btn active">Table Editor (<span id="data-point-count">36</span>)</button>
+              <button id="tab-paste-btn" class="tab-btn">Batch Paste / CSV</button>
+            </div>
+
+            <!-- Table View -->
+            <div id="view-table-editor">
+              <div class="data-table-wrap">
+                <table class="styled-table" id="series-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 15%;">#</th>
+                      <th style="width: 40%;">Period Label</th>
+                      <th style="width: 35%;">Metric Value</th>
+                      <th style="width: 10%; text-align: center;">✕</th>
+                    </tr>
+                  </thead>
+                  <tbody id="series-tbody">
+                    <!-- Populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                <div style="display: flex; gap: 0.5rem;">
+                  <button id="btn-add-row" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">+ Add Row</button>
+                  <button id="btn-clear-data" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">Clear All</button>
+                </div>
+                <button id="btn-reset-preset" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">Reset Preset</button>
+              </div>
+            </div>
+
+            <!-- Batch Paste View -->
+            <div id="view-paste-editor" class="hidden">
+              <textarea id="raw-paste-input" class="form-textarea" style="min-height: 240px; font-size: 0.85rem;" placeholder="Paste Period and Value lines. Format: Label, Value&#10;Example:&#10;2024-01, 15000&#10;2024-02, 16200&#10;2024-03, 17800"></textarea>
+              <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.75rem;">
+                <button id="btn-apply-paste" class="btn btn-primary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">Apply Data</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Interactive SVG Visualization & Breakdown -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <h2 class="panel-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">Interactive Trend & Growth Visualizer</h2>
+            <span class="badge" id="trend-summary-badge">Bullish Expansion</span>
+          </div>
+
+          <!-- SVG Visualizer -->
+          <div class="chart-container" id="chart-wrap">
+            <div id="chart-tooltip" class="chart-tooltip"></div>
+            <svg id="trend-svg" class="chart-svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet"></svg>
+
+            <!-- Chart Legend -->
+            <div style="display: flex; flex-wrap: wrap; gap: 1.25rem; justify-content: center; align-items: center; padding-top: 0.75rem; font-size: 0.8rem;">
+              <div style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                <span style="display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: #38bdf8;"></span>
+                <span>Time Series Value</span>
+              </div>
+              <div style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                <span style="display: inline-block; width: 12px; height: 3px; background: #818cf8;"></span>
+                <span>Linear Trend</span>
+              </div>
+              <div style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: #10b981;"></span>
+                <span>Positive MoM %</span>
+              </div>
+              <div style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: #ef4444;"></span>
+                <span>Negative MoM %</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sub-Analytics Tabs: Growth Breakdown vs Seasonality vs Volatility -->
+          <div style="margin-top: 0.5rem;">
+            <div class="tab-nav">
+              <button id="subtab-growth-btn" class="tab-btn active">Growth Breakdown</button>
+              <button id="subtab-season-btn" class="tab-btn">Seasonality Profile</button>
+              <button id="subtab-volatility-btn" class="tab-btn">Volatility & Risk</button>
+            </div>
+
+            <!-- Tab 1: Growth Breakdown Table -->
+            <div id="subview-growth">
+              <div class="data-table-wrap" style="max-height: 240px;">
+                <table class="styled-table" id="growth-table">
+                  <thead>
+                    <tr>
+                      <th>Period</th>
+                      <th>Value</th>
+                      <th>MoM Change ($)</th>
+                      <th>MoM Growth (%)</th>
+                      <th>YoY Growth (%)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="growth-tbody">
+                    <!-- Populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Tab 2: Seasonality Analysis -->
+            <div id="subview-season" class="hidden">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 0.75rem;">
+                <div style="background: var(--bg-tertiary); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+                  <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-tertiary); font-weight: 600;">Peak Season Period</div>
+                  <div id="season-peak-val" style="font-size: 1.25rem; font-weight: 800; color: var(--success); margin-top: 0.25rem;">November</div>
+                  <div id="season-peak-desc" style="font-size: 0.75rem; color: var(--text-secondary);">Highest recurring volume</div>
+                </div>
+                <div style="background: var(--bg-tertiary); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+                  <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-tertiary); font-weight: 600;">Trough Season Period</div>
+                  <div id="season-trough-val" style="font-size: 1.25rem; font-weight: 800; color: var(--error); margin-top: 0.25rem;">February</div>
+                  <div id="season-trough-desc" style="font-size: 0.75rem; color: var(--text-secondary);">Lowest recurring volume</div>
+                </div>
+              </div>
+              <div class="data-table-wrap" style="max-height: 200px;">
+                <table class="styled-table" id="season-table">
+                  <thead>
+                    <tr>
+                      <th>Cycle Interval</th>
+                      <th>Seasonal Index</th>
+                      <th>Relative Pattern</th>
+                      <th>Variance vs Baseline</th>
+                    </tr>
+                  </thead>
+                  <tbody id="season-tbody">
+                    <!-- Populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Tab 3: Volatility & Risk -->
+            <div id="subview-volatility" class="hidden">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem;">
+                <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border); text-align: center;">
+                  <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-tertiary);">Mean Series Value</div>
+                  <div id="vol-mean" style="font-size: 1.4rem; font-weight: 800; color: var(--text-primary); margin-top: 0.25rem;">$0.00</div>
+                </div>
+                <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border); text-align: center;">
+                  <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-tertiary);">Standard Deviation (σ)</div>
+                  <div id="vol-std" style="font-size: 1.4rem; font-weight: 800; color: var(--text-primary); margin-top: 0.25rem;">$0.00</div>
+                </div>
+                <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border); text-align: center;">
+                  <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-tertiary);">Coefficient of Variation</div>
+                  <div id="vol-cv" style="font-size: 1.4rem; font-weight: 800; color: var(--accent); margin-top: 0.25rem;">0.0%</div>
+                </div>
+                <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border); text-align: center;">
+                  <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-tertiary);">Peak-to-Trough Drawdown</div>
+                  <div id="vol-drawdown" style="font-size: 1.4rem; font-weight: 800; color: var(--error); margin-top: 0.25rem;">-0.0%</div>
+                </div>
+              </div>
+              <div id="volatility-analysis-text" style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border); margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">
+                <!-- Filled by JS -->
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   </main>
 
@@ -62,7 +502,7 @@
     "@type": "WebApplication",
     "name": "Trend Analyzer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/trend-analyzer/",
-    "description": "Analyze growth trends and seasonal patterns in your data.",
+    "description": "Period-over-period growth calculator: MoM, YoY, Compound Annual Growth Rate (CAGR), peak seasonality detection, and volatility index.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

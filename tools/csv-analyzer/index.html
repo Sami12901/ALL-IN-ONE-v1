@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CSV Analyzer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Deep dive into CSV files and extract business insights instantly.">
+  <meta name="description" content="Deep dive into CSV files and extract business insights instantly. Auto-detect delimiters, column profiling, anomaly detection, and instant re-export.">
   <meta name="keywords" content="analytics, data, excel, csv analyzer, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/csv-analyzer/">
@@ -12,6 +12,300 @@
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* CSV Analyzer Custom Styles */
+    .csv-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+
+    .kpi-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .kpi-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .kpi-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+    }
+
+    .kpi-sub {
+      font-size: 0.775rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Tab navigation */
+    .analyzer-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      gap: 0.5rem;
+      padding-bottom: -1px;
+    }
+
+    .tab-btn {
+      padding: 0.65rem 1.25rem;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      background: var(--accent-glow);
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Table styling */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.1);
+      max-height: 520px;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .data-table th {
+      position: sticky;
+      top: 0;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-weight: 700;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      user-select: none;
+      z-index: 5;
+    }
+
+    .data-table th:hover {
+      background: var(--border);
+      color: var(--accent);
+    }
+
+    .data-table td {
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+      max-width: 300px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .data-table tr:hover td {
+      background: var(--accent-glow);
+      color: var(--text-primary);
+    }
+
+    .data-table tr.highlight-anomaly td {
+      background: rgba(239, 68, 68, 0.12);
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    /* Column Stats Grid */
+    .stats-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .col-stat-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .col-stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+
+    .col-stat-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+    }
+
+    .stat-row strong {
+      color: var(--text-primary);
+      font-family: monospace;
+    }
+
+    .freq-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.25rem;
+      font-size: 0.775rem;
+    }
+
+    .freq-bar-bg {
+      flex: 1;
+      height: 6px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+
+    .freq-bar-fill {
+      height: 100%;
+      background: var(--accent-gradient);
+      border-radius: var(--radius-full);
+    }
+
+    /* Anomaly List */
+    .anomaly-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .anomaly-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--warning);
+      border-radius: var(--radius-sm);
+      padding: 1rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .anomaly-card.severe {
+      border-left-color: var(--error);
+    }
+
+    .anomaly-card.info {
+      border-left-color: var(--accent);
+    }
+
+    /* Pagination controls */
+    .pagination-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.85rem;
+    }
+
+    .page-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .page-btn {
+      min-width: 32px;
+      height: 32px;
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      transition: var(--transition);
+    }
+
+    .page-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .page-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    .page-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -24,31 +318,179 @@
 
   <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
-      <div class="tool-header">
-        <h1>CSV Analyzer</h1>
-        <p class="tool-description">Deep dive into CSV files and extract business insights instantly.</p>
+    <div class="container tool-container" style="max-width: 1400px;">
+      <div class="tool-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h1 class="gradient-text">CSV Analyzer</h1>
+          <p class="tool-description">Deep dive into CSV files and extract business insights instantly. Auto-detect delimiters, column statistics, anomaly detection, and re-export.</p>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <span class="badge" id="detected-delimiter-badge">Delimiter: Auto</span>
+        </div>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>CSV Analyzer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Deep dive into CSV files and extract business insights instantly.</div>
-            <div><strong>Inputs:</strong> analytics, data, excel, csv analyzer</div>
-            <div><strong>Category:</strong> excel</div>
+      <div class="csv-workspace">
+        
+        <!-- Input & Configuration Card -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <!-- File Drag and Drop Zone -->
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; flex: 1;">
+              <label class="btn btn-primary" style="cursor: pointer; margin: 0;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                Upload CSV File
+                <input type="file" id="csv-file-input" accept=".csv,.txt,.tsv" style="display: none;">
+              </label>
+
+              <button id="btn-load-sample-orders" class="btn btn-secondary">
+                Load E-Commerce Sample
+              </button>
+              <button id="btn-load-sample-hr" class="btn btn-secondary">
+                Load HR & Payroll Sample
+              </button>
+              <button id="btn-paste-toggle" class="btn btn-secondary">
+                Paste Raw CSV
+              </button>
+            </div>
+
+            <!-- Delimiter & Parser Settings -->
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 0.35rem;">
+                <label for="delimiter-select" style="font-size: 0.825rem; font-weight: 600; color: var(--text-secondary);">Delimiter:</label>
+                <select id="delimiter-select" class="form-select" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+                  <option value="auto">Auto-Detect</option>
+                  <option value=",">Comma (,)</option>
+                  <option value=";">Semicolon (;)</option>
+                  <option value="&#9;">Tab (\t)</option>
+                  <option value="|">Pipe (|)</option>
+                </select>
+              </div>
+
+              <label class="checkbox-label" style="font-size: 0.85rem; margin: 0;">
+                <input type="checkbox" id="has-header-check" checked>
+                First row is header
+              </label>
+            </div>
+          </div>
+
+          <!-- Collapsible Raw CSV Paste Box -->
+          <div id="paste-box-wrapper" style="display: none; margin-top: 1rem;">
+            <textarea id="raw-csv-textarea" class="form-textarea" placeholder="Paste your CSV text here..." style="min-height: 120px; font-size: 0.85rem;"></textarea>
+            <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem;">
+              <button id="btn-parse-pasted" class="btn btn-primary btn-sm">Parse CSV Data</button>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- KPI Metric Overview Cards -->
+        <div class="kpi-grid" id="kpi-overview">
+          <div class="kpi-card">
+            <span class="kpi-label">Total Rows</span>
+            <span class="kpi-value" id="kpi-rows">0</span>
+            <span class="kpi-sub" id="kpi-rows-sub">0 loaded</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Total Columns</span>
+            <span class="kpi-value" id="kpi-cols">0</span>
+            <span class="kpi-sub" id="kpi-cols-sub">Schema fields</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Data Completeness</span>
+            <span class="kpi-value" id="kpi-completeness">100%</span>
+            <span class="kpi-sub" id="kpi-blanks">0 blank cells</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Anomalies Detected</span>
+            <span class="kpi-value" id="kpi-anomalies" style="color: var(--accent);">0</span>
+            <span class="kpi-sub" id="kpi-anomalies-sub">Data quality score: 100/100</span>
+          </div>
+        </div>
+
+        <!-- Analyzer Main Tabs & Views -->
+        <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+          <div class="analyzer-tabs">
+            <button class="tab-btn active" data-tab="tab-table">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+              Data Table View
+            </button>
+            <button class="tab-btn" data-tab="tab-stats">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+              Column Statistics
+            </button>
+            <button class="tab-btn" data-tab="tab-anomalies">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Data Quality & Anomalies (<span id="tab-anomalies-badge">0</span>)
+            </button>
+          </div>
+
+          <!-- TAB 1: DATA TABLE -->
+          <div class="tab-content active" id="tab-table" style="margin-top: 1rem;">
+            <!-- Filter & Export Toolbar -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1; max-width: 400px;">
+                <input type="text" id="table-search-input" class="form-input" placeholder="Search across all columns..." style="padding: 0.45rem 0.85rem; font-size: 0.85rem;">
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                <span id="filtered-count-label" style="font-size: 0.825rem; color: var(--text-secondary);">Showing all records</span>
+                
+                <button id="btn-export-csv" class="btn btn-primary btn-sm">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                  Export CSV
+                </button>
+                <button id="btn-export-stats" class="btn btn-secondary btn-sm">
+                  Export Stats (JSON)
+                </button>
+              </div>
+            </div>
+
+            <!-- Scrollable Table -->
+            <div class="table-container" id="csv-table-wrapper">
+              <table class="data-table" id="csv-table">
+                <thead id="csv-thead"></thead>
+                <tbody id="csv-tbody"></tbody>
+              </table>
+            </div>
+
+            <!-- Pagination Bar -->
+            <div class="pagination-bar">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="color: var(--text-secondary);">Rows per page:</span>
+                <select id="page-size-select" class="form-select" style="width: auto; padding: 0.25rem 0.5rem; font-size: 0.8rem;">
+                  <option value="15">15</option>
+                  <option value="25" selected>25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+
+              <div class="page-controls" id="page-controls">
+                <!-- Dynamically rendered pagination buttons -->
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: COLUMN STATISTICS -->
+          <div class="tab-content" id="tab-stats" style="margin-top: 1rem;">
+            <div class="stats-card-grid" id="stats-grid">
+              <!-- Dynamically populated column statistics cards -->
+            </div>
+          </div>
+
+          <!-- TAB 3: ANOMALIES & DATA QUALITY -->
+          <div class="tab-content" id="tab-anomalies" style="margin-top: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <h3 style="font-size: 1.1rem; font-weight: 700;">Data Health & Anomalies</h3>
+              <span id="anomaly-summary-pill" class="badge">0 Issues</span>
+            </div>
+            <div class="anomaly-list" id="anomaly-list">
+              <!-- Dynamically populated anomaly cards -->
+            </div>
+          </div>
+
+        </div>
+
       </div>
-    
     </div>
   </main>
 

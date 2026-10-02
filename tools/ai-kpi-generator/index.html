@@ -3,15 +3,275 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI KPI Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Automatically suggest and track the most relevant KPIs.">
-  <meta name="keywords" content="analytics, data, excel, ai kpi generator, free, online, tool, utility">
+  <title>AI KPI Generator - Automated Business Metric Intelligence - ALL IN ONE</title>
+  <meta name="description" content="Heuristic KPI discovery engine: evaluates uploaded columns and data types to recommend and automatically calculate the top 6-8 most critical business KPIs with formula explanations.">
+  <meta name="keywords" content="ai kpi generator, business kpi discovery, conversion rate, gross margin, average order value, customer churn, inventory turnover, excel analytics">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-kpi-generator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* AI KPI Generator Custom Styles */
+    :root {
+      --kpi-cyan: #06b6d4;
+      --kpi-emerald: #10b981;
+      --kpi-indigo: #6366f1;
+      --kpi-amber: #f59e0b;
+      --kpi-rose: #f43f5e;
+      --kpi-purple: #a855f7;
+    }
+
+    .kpi-layout-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 1040px) {
+      .kpi-layout-grid {
+        grid-template-columns: 340px 1fr;
+      }
+    }
+
+    /* Tabs Bar */
+    .view-tabs-bar {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .view-tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.55rem 1.15rem;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+
+    .view-tab-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+
+    .view-tab-btn.active {
+      color: var(--accent);
+      background: rgba(78, 133, 191, 0.12);
+      border-color: rgba(78, 133, 191, 0.3);
+    }
+
+    /* KPI Cards Grid */
+    .kpi-cards-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    @media (min-width: 640px) {
+      .kpi-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .kpi-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .kpi-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.35rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card:hover {
+      border-color: rgba(78, 133, 191, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .kpi-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .kpi-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .kpi-category-tag {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .kpi-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .kpi-status-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .status-healthy {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--kpi-emerald);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status-warning {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--kpi-amber);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .status-attention {
+      background: rgba(244, 63, 94, 0.15);
+      color: var(--kpi-rose);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+    }
+
+    .status-neutral {
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--kpi-indigo);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .kpi-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+    }
+
+    .kpi-big-value {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      letter-spacing: -0.02em;
+    }
+
+    .kpi-delta {
+      font-size: 0.825rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .kpi-formula-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .formula-badge {
+      font-family: monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      background: rgba(78, 133, 191, 0.12);
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      display: inline-block;
+      width: fit-content;
+    }
+
+    .formula-step {
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .kpi-interpretation {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Domain Discovery Banner */
+    .domain-banner {
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.12), rgba(99, 102, 241, 0.1));
+      border: 1px solid rgba(78, 133, 191, 0.25);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    /* Print Styles */
+    @media print {
+      app-header, app-breadcrumbs, app-footer,
+      .view-tabs-bar, .btn, .sidebar-panel, #dataset-select,
+      #btn-edit-mappings {
+        display: none !important;
+      }
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      .kpi-layout-grid {
+        display: block !important;
+      }
+      .kpi-card, .domain-banner {
+        background: #ffffff !important;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+        break-inside: avoid;
+        margin-bottom: 1rem !important;
+      }
+      .kpi-big-value {
+        color: #000000 !important;
+      }
+      .kpi-formula-box {
+        background: #f8fafc !important;
+        border-color: #e2e8f0 !important;
+      }
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -25,30 +285,184 @@
   <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
-      <div class="tool-header">
-        <h1>AI KPI Generator</h1>
-        <p class="tool-description">Automatically suggest and track the most relevant KPIs.</p>
-      </div>
-
-      <!-- Tool Workspace -->
       
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AI KPI Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Automatically suggest and track the most relevant KPIs.</div>
-            <div><strong>Inputs:</strong> analytics, data, excel, ai kpi generator</div>
-            <div><strong>Category:</strong> excel</div>
+      <!-- Tool Header -->
+      <div class="tool-header">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>AI KPI Generator</h1>
+            <p class="tool-description">
+              Heuristic KPI discovery engine: evaluates uploaded columns and data types to recommend and automatically calculate the top 6-8 critical business KPIs with formula explanations.
+            </p>
+          </div>
+          <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+            <button id="btn-print-kpis" class="btn btn-secondary" title="Print Executive KPI Scorecard">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              Print KPI Scorecard
+            </button>
+            <button id="btn-export-kpis" class="btn btn-primary" title="Export KPI Scorecard (JSON)">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export JSON
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- Main Layout Grid -->
+      <div class="kpi-layout-grid">
+        
+        <!-- Left Sidebar: Dataset & Heuristic Discovery Controls -->
+        <aside class="sidebar-panel" style="display: flex; flex-direction: column; gap: 1.25rem;">
+          
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <h3 class="panel-title" style="font-size: 1.05rem; margin-bottom: 0.75rem;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+              Dataset Source
+            </h3>
+            
+            <div class="form-group" style="margin-bottom: 0.75rem;">
+              <label for="dataset-select">Select Business Model Preset</label>
+              <select id="dataset-select" class="form-select">
+                <option value="ecommerce-retail">E-Commerce &amp; Retail Store (Visitors, Orders, COGS, Stock)</option>
+                <option value="saas-subscriptions">SaaS &amp; Subscription Engine (MRR, Churn, CAC, LTV)</option>
+                <option value="omnichannel-fulfillment">Omnichannel Sales &amp; Inventory (Returns, Margin, Stock)</option>
+                <option value="digital-growth-funnel">Digital Marketing &amp; Leads (Clicks, Leads, CVR, Spend)</option>
+                <option value="custom">Custom CSV (Paste or Upload)</option>
+              </select>
+            </div>
+
+            <!-- Upload / Paste Area (Shown when custom) -->
+            <div id="custom-data-box" style="display: none; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
+              <label for="custom-csv-input" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">Paste CSV or drop file</label>
+              <textarea id="custom-csv-input" class="form-textarea" style="min-height: 100px; font-size: 0.8rem;" placeholder="Visitors,Orders,Revenue,COGS,Inventory,Refunds&#10;50000,1850,240000,95000,42000,45&#10;..."></textarea>
+              <div style="display: flex; gap: 0.5rem;">
+                <input type="file" id="csv-file-input" accept=".csv,.txt" style="display: none;">
+                <button id="btn-browse-csv" class="btn btn-secondary" style="flex: 1; font-size: 0.8rem; padding: 0.4rem;">Upload File</button>
+                <button id="btn-parse-custom" class="btn btn-primary" style="flex: 1; font-size: 0.8rem; padding: 0.4rem;">Analyze</button>
+              </div>
+            </div>
+
+            <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
+              <div style="display: flex; justify-content: space-between;">
+                <span>Total Records:</span>
+                <strong id="stat-row-count" style="color: var(--text-primary);">-</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span>Detected Attributes:</span>
+                <strong id="stat-col-count" style="color: var(--text-primary);">-</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span>Evaluated Rules:</span>
+                <strong style="color: var(--accent);">14 Heuristic Rules</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span>Synthesized KPIs:</span>
+                <strong id="stat-kpi-count" style="color: var(--kpi-emerald);">8 Generated</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column Discovery Map Panel -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <h3 class="panel-title" style="font-size: 1.05rem; margin-bottom: 0; border: none; padding: 0;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--kpi-cyan);"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                Discovered Roles
+              </h3>
+              <span id="role-count-pill" class="kpi-status-badge status-healthy">6 Mapped</span>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4; margin-bottom: 0.75rem;">
+              Automatic synonym &amp; datatype discovery engine mapped your dataset attributes to standard business accounting roles.
+            </p>
+            <div id="heuristic-roles-list" style="display: flex; flex-direction: column; gap: 0.45rem; max-height: 240px; overflow-y: auto;">
+              <!-- Dynamic heuristic role rows -->
+            </div>
+          </div>
+
+        </aside>
+
+        <!-- Right / Main Area: KPI Scorecard & Audit -->
+        <section class="main-content-panel" style="display: flex; flex-direction: column; gap: 1rem;">
+          
+          <!-- View Navigation Tabs -->
+          <div class="view-tabs-bar">
+            <button class="view-tab-btn active" data-tab="scorecard">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+              Executive KPI Scorecard
+            </button>
+            <button class="view-tab-btn" data-tab="formulas">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              Formulas &amp; Explanations Audit
+            </button>
+            <button class="view-tab-btn" data-tab="data-preview">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+              Dataset Preview
+            </button>
+          </div>
+
+          <!-- Domain Discovery Banner -->
+          <div class="domain-banner">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--accent-glow); display: flex; align-items: center; justify-content: center; color: var(--accent);">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+              </div>
+              <div>
+                <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); font-weight: 700;">
+                  Heuristic Classification Engine
+                </div>
+                <div id="domain-classification-title" style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary);">
+                  Detected Domain: E-Commerce &amp; Digital Direct-to-Consumer
+                </div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span id="domain-confidence-badge" class="kpi-status-badge status-healthy">98% Model Confidence</span>
+            </div>
+          </div>
+
+          <!-- TAB 1: Executive KPI Scorecard Grid -->
+          <div id="tab-pane-scorecard" class="tab-pane">
+            <div id="kpi-cards-container" class="kpi-cards-grid">
+              <!-- Top 6-8 KPI cards rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- TAB 2: Formulas & Explanations Audit -->
+          <div id="tab-pane-formulas" class="tab-pane" style="display: none;">
+            <div class="tool-panel glass-panel" style="padding: 1.5rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;">
+                <div>
+                  <h3 class="panel-title" style="margin-bottom: 0.25rem; border: none; padding: 0;">Heuristic Discovery &amp; Formula Lineage</h3>
+                  <p style="font-size: 0.85rem; color: var(--text-secondary);">Complete mathematical breakdown, data inputs, and rationale for every generated metric.</p>
+                </div>
+              </div>
+
+              <div id="formulas-audit-container" style="display: flex; flex-direction: column; gap: 1rem;">
+                <!-- Full formula cards -->
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: Dataset Preview -->
+          <div id="tab-pane-data-preview" class="tab-pane" style="display: none;">
+            <div class="tool-panel glass-panel" style="padding: 1.5rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 class="panel-title" style="margin-bottom: 0; border: none; padding: 0;">Source Data Records</h3>
+                <span id="preview-row-info" style="font-size: 0.825rem; color: var(--text-secondary);">-</span>
+              </div>
+              <div style="overflow-x: auto; max-height: 480px; border: 1px solid var(--border); border-radius: var(--radius-md);">
+                <table class="analyst-mini-table" style="margin-top: 0;">
+                  <thead id="preview-table-head"></thead>
+                  <tbody id="preview-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+      </div>
+
     </div>
   </main>
 
@@ -62,8 +476,8 @@
     "@type": "WebApplication",
     "name": "AI KPI Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-kpi-generator/",
-    "description": "Automatically suggest and track the most relevant KPIs.",
-    "applicationCategory": "UtilityPage",
+    "description": "Heuristic KPI discovery engine to recommend and calculate top business KPIs with formula explanations.",
+    "applicationCategory": "AnalyticsPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

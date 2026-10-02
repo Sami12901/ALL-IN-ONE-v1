@@ -4,14 +4,259 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Trend Detection - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Spot emerging market trends automatically.">
-  <meta name="keywords" content="analytics, data, excel, ai trend detection, free, online, tool, utility">
+  <meta name="description" content="Algorithmic trend inflection point detection: spot anomalies, acceleration spikes, deceleration dips, plateau states, and evaluate Trend Health & Momentum scores (0-100).">
+  <meta name="keywords" content="analytics, data, excel, ai trend detection, inflection points, anomaly detection, acceleration spike, plateau detection, momentum score, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-trend-detection/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Scoped styles for AI Trend Detection */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .metric-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1rem;
+      text-align: center;
+      transition: var(--transition);
+      position: relative;
+    }
+    .metric-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .metric-card .val {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.2;
+      font-family: var(--font-sans);
+    }
+    .metric-card .lbl {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+      margin-top: 0.25rem;
+      font-weight: 600;
+    }
+    .metric-card .sub {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.2rem;
+    }
+
+    /* Momentum Health Gauge */
+    .gauge-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .gauge-circle {
+      position: relative;
+      width: 90px;
+      height: 90px;
+      flex-shrink: 0;
+    }
+    .gauge-circle svg {
+      transform: rotate(-90deg);
+      width: 100%;
+      height: 100%;
+    }
+    .gauge-circle .circle-bg {
+      fill: none;
+      stroke: var(--bg-secondary);
+      stroke-width: 8;
+    }
+    .gauge-circle .circle-progress {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 251.2;
+      stroke-dashoffset: 50;
+      transition: stroke-dashoffset 0.6s ease, stroke 0.6s ease;
+    }
+    .gauge-center-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .chart-container {
+      position: relative;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      width: 100%;
+      overflow: hidden;
+    }
+    .chart-svg {
+      width: 100%;
+      height: auto;
+      max-height: 420px;
+      display: block;
+    }
+
+    .chart-tooltip {
+      position: absolute;
+      pointer-events: none;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.6rem 0.8rem;
+      font-size: 0.75rem;
+      color: #f8fafc;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      z-index: 20;
+      transform: translate(-50%, -110%);
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .chip-btn {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .chip-btn:hover, .chip-btn.active {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .tab-nav {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+    .tab-btn {
+      padding: 0.6rem 1.2rem;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+    .tab-btn:hover {
+      color: var(--text-primary);
+    }
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .data-table-wrap {
+      max-height: 340px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+    }
+    .styled-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      text-align: left;
+    }
+    .styled-table th {
+      position: sticky;
+      top: 0;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      z-index: 2;
+    }
+    .styled-table td {
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .styled-table tr:hover td {
+      background: var(--accent-glow);
+      color: var(--text-primary);
+    }
+
+    .table-input {
+      background: transparent;
+      border: 1px solid transparent;
+      color: inherit;
+      font-family: inherit;
+      font-size: 0.875rem;
+      width: 100%;
+      padding: 0.25rem 0.4rem;
+      border-radius: var(--radius-sm);
+      transition: border-color 0.2s;
+    }
+    .table-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+    }
+
+    .event-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .badge-spike { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .badge-dip { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+    .badge-anomaly { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+    .badge-plateau { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
+    .badge-inflection { background: rgba(168, 85, 247, 0.2); color: #c084fc; }
+
+    @media (max-width: 900px) {
+      .metric-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 600px) {
+      .metric-grid {
+        grid-template-columns: 1fr;
+      }
+      .gauge-wrapper {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,29 +271,242 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>AI Trend Detection</h1>
-        <p class="tool-description">Spot emerging market trends automatically.</p>
-      </div>
-
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AI Trend Detection</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Spot emerging market trends automatically.</div>
-            <div><strong>Inputs:</strong> analytics, data, excel, ai trend detection</div>
-            <div><strong>Category:</strong> excel</div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>AI Trend Detection</h1>
+            <p class="tool-description">Algorithmic trend inflection point detection: spot anomalies, acceleration spikes, deceleration dips, plateau states, and evaluate Trend Health & Momentum scores (0-100).</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <button id="btn-export-events" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export Events (CSV)
+            </button>
+            <button id="btn-copy-diagnostics" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Diagnostics
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- Trend Health & Momentum Gauge Banner -->
+      <div class="gauge-wrapper">
+        <div class="gauge-circle">
+          <svg viewBox="0 0 100 100">
+            <circle class="circle-bg" cx="50" cy="50" r="40"></circle>
+            <circle class="circle-progress" id="gauge-circle-bar" cx="50" cy="50" r="40"></circle>
+          </svg>
+          <div class="gauge-center-text" id="gauge-score-text">84</div>
+        </div>
+        <div style="flex: 1;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <div style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary);" id="gauge-status-title">Strong Bullish Expansion</div>
+            <span class="badge" id="gauge-status-badge">Phase: Acceleration</span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.35rem;" id="gauge-description">
+            Statistical momentum exhibits persistent upward velocity with minimal anomalous noise. Acceleration derivative confirms stable positive trajectory.
+          </p>
+        </div>
+      </div>
+
+      <!-- KPI Summary Cards -->
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="val" id="kpi-anomalies-count">0</div>
+          <div class="lbl">Detected Anomalies</div>
+          <div class="sub">Deviation &gt; 2.2σ</div>
+        </div>
+        <div class="metric-card">
+          <div class="val" id="kpi-spikes-count">0</div>
+          <div class="lbl">Acceleration Spikes</div>
+          <div class="sub">Positive 2nd derivative</div>
+        </div>
+        <div class="metric-card">
+          <div class="val" id="kpi-dips-count">0</div>
+          <div class="lbl">Deceleration Dips</div>
+          <div class="sub">Sharp negative pullbacks</div>
+        </div>
+        <div class="metric-card">
+          <div class="val" id="kpi-plateau-count">0</div>
+          <div class="lbl">Plateau Intervals</div>
+          <div class="sub">Zero-growth consolidation</div>
+        </div>
+        <div class="metric-card">
+          <div class="val" id="kpi-inflections-count">0</div>
+          <div class="lbl">Trend Inflections</div>
+          <div class="sub">Curvature / Regime shifts</div>
+        </div>
+      </div>
+
+      <!-- Main Workarea -->
+      <div class="tool-workarea split-view">
+
+        <!-- Left: Dataset Input & Sensitivity Controls -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+            <h2 class="panel-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">Time Series & Detection Tuner</h2>
+            <div style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
+              <button id="preset-adoption" class="chip-btn active" title="Viral S-Curve Product Adoption">S-Curve</button>
+              <button id="preset-churn" class="chip-btn" title="SaaS with Sudden Churn Dip">Churn Dip</button>
+              <button id="preset-cycle" class="chip-btn" title="Bull-Bear-Plateau Cycle">Cycle</button>
+              <button id="preset-outage" class="chip-btn" title="Server Traffic Spike & Outage">Outage</button>
+            </div>
+          </div>
+
+          <!-- Sensitivity & Algorithms Controls -->
+          <div style="background: var(--bg-tertiary); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.75rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label for="sensitivity-slider" style="font-weight: 600; font-size: 0.85rem;">Detection Sensitivity:</label>
+              <span id="sensitivity-lbl" class="range-value" style="font-size: 0.85rem;">Normal (2.0σ)</span>
+            </div>
+            <div class="range-group">
+              <span style="font-size: 0.75rem; color: var(--text-tertiary);">Conservative</span>
+              <input type="range" id="sensitivity-slider" min="1.2" max="3.0" step="0.2" value="2.0" class="range-slider">
+              <span style="font-size: 0.75rem; color: var(--text-tertiary);">Aggressive</span>
+            </div>
+
+            <!-- Algorithm Filters Checkboxes -->
+            <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.35rem; font-size: 0.8rem;">
+              <label class="checkbox-label" style="font-size: 0.8rem;">
+                <input type="checkbox" id="filter-anomalies" checked />
+                <span>Anomalies (⚠️)</span>
+              </label>
+              <label class="checkbox-label" style="font-size: 0.8rem;">
+                <input type="checkbox" id="filter-spikes" checked />
+                <span>Spikes (⚡)</span>
+              </label>
+              <label class="checkbox-label" style="font-size: 0.8rem;">
+                <input type="checkbox" id="filter-dips" checked />
+                <span>Dips (🔻)</span>
+              </label>
+              <label class="checkbox-label" style="font-size: 0.8rem;">
+                <input type="checkbox" id="filter-plateaus" checked />
+                <span>Plateaus (⏸️)</span>
+              </label>
+              <label class="checkbox-label" style="font-size: 0.8rem;">
+                <input type="checkbox" id="filter-inflections" checked />
+                <span>Inflections (🔄)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Input Mode Tabs -->
+          <div>
+            <div class="tab-nav">
+              <button id="tab-table-btn" class="tab-btn active">Table Editor (<span id="data-point-count">24</span>)</button>
+              <button id="tab-paste-btn" class="tab-btn">Batch Paste</button>
+            </div>
+
+            <!-- Table View -->
+            <div id="view-table-editor">
+              <div class="data-table-wrap">
+                <table class="styled-table" id="series-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 15%;">#</th>
+                      <th style="width: 40%;">Period / Date</th>
+                      <th style="width: 35%;">Metric Value</th>
+                      <th style="width: 10%; text-align: center;">✕</th>
+                    </tr>
+                  </thead>
+                  <tbody id="series-tbody">
+                    <!-- Populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                <div style="display: flex; gap: 0.5rem;">
+                  <button id="btn-add-row" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">+ Add Row</button>
+                  <button id="btn-clear-data" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">Clear All</button>
+                </div>
+                <button id="btn-reset-preset" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">Reset Preset</button>
+              </div>
+            </div>
+
+            <!-- Batch Paste View -->
+            <div id="view-paste-editor" class="hidden">
+              <textarea id="raw-paste-input" class="form-textarea" style="min-height: 220px; font-size: 0.85rem;" placeholder="Paste Period and Value lines. Format: Label, Value&#10;Example:&#10;T01, 100&#10;T02, 115&#10;T03, 140"></textarea>
+              <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.75rem;">
+                <button id="btn-apply-paste" class="btn btn-primary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">Apply Data</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Interactive SVG Visualization & Diagnostics -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <h2 class="panel-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">Inflection & Velocity Visualizer</h2>
+            <span class="badge" id="regime-badge">Expansion Regime</span>
+          </div>
+
+          <!-- SVG Visualizer -->
+          <div class="chart-container" id="chart-wrap">
+            <div id="chart-tooltip" class="chart-tooltip"></div>
+            <svg id="detection-svg" class="chart-svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet"></svg>
+
+            <!-- Chart Legend -->
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; padding-top: 0.75rem; font-size: 0.8rem;">
+              <div style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                <span style="display: inline-block; width: 12px; height: 3px; background: #38bdf8;"></span>
+                <span>Trend Curve</span>
+              </div>
+              <div style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                <span style="display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #34d399;"></span>
+                <span>Spike</span>
+              </div>
+              <div style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                <span style="display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #f87171;"></span>
+                <span>Dip</span>
+              </div>
+              <div style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                <span style="display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #fbbf24;"></span>
+                <span>Anomaly</span>
+              </div>
+              <div style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                <span style="display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #c084fc;"></span>
+                <span>Inflection</span>
+              </div>
+              <div style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                <span style="display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #38bdf8;"></span>
+                <span>Plateau</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Detected Inflection Events Table -->
+          <div>
+            <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem;">Detected Significant Events & Inflections</h3>
+            <div class="data-table-wrap" style="max-height: 220px;">
+              <table class="styled-table" id="events-table">
+                <thead>
+                  <tr>
+                    <th>Period</th>
+                    <th>Observed Value</th>
+                    <th>Classification</th>
+                    <th>Velocity (Δy)</th>
+                    <th>Diagnosis Description</th>
+                  </tr>
+                </thead>
+                <tbody id="events-tbody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- AI Strategy & Prescriptive Recommendations Card -->
+      <div class="tool-panel glass-panel" style="margin-top: 1rem;">
+        <h3 class="panel-title" style="margin-bottom: 0.75rem;">AI Analytical Diagnosis & Prescriptive Strategy</h3>
+        <div id="ai-diagnosis-content" style="line-height: 1.7; font-size: 0.9rem; color: var(--text-secondary);">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
     </div>
   </main>
 
@@ -62,7 +520,7 @@
     "@type": "WebApplication",
     "name": "AI Trend Detection",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-trend-detection/",
-    "description": "Spot emerging market trends automatically.",
+    "description": "Algorithmic trend inflection point detection: spot anomalies, acceleration spikes, deceleration dips, plateau states, and evaluate Trend Health & Momentum scores (0-100).",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

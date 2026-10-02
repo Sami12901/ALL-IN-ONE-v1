@@ -3,15 +3,317 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Dashboard Builder - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Generate entire BI dashboards from a text prompt.">
-  <meta name="keywords" content="analytics, data, excel, ai dashboard builder, free, online, tool, utility">
+  <title>AI Dashboard Builder - Automated Executive Visualizer - ALL IN ONE</title>
+  <meta name="description" content="Prompt-based or dataset-driven dashboard synthesizer: automatically selects optimal chart archetypes (Categorical -> Bar, Time-series -> Line, Part-to-whole -> Donut) with instant print export.">
+  <meta name="keywords" content="ai dashboard builder, prompt to dashboard, automatic chart selection, time series line chart, categorical bar chart, donut chart, executive dashboard, print export">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-dashboard-builder/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* AI Dashboard Builder Custom Styles */
+    :root {
+      --dash-accent: #38bdf8;
+      --dash-gradient: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+      --dash-chart-1: #38bdf8;
+      --dash-chart-2: #818cf8;
+      --dash-chart-3: #10b981;
+      --dash-chart-4: #f59e0b;
+      --dash-chart-5: #ec4899;
+      --dash-chart-6: #a855f7;
+    }
+
+    .builder-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Prompt Synthesizer Box */
+    .synthesizer-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .scenario-chips-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .scenario-chip {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-full);
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .scenario-chip:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      background: rgba(78, 133, 191, 0.12);
+    }
+
+    .prompt-input-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.5rem 0.75rem;
+      transition: var(--transition);
+    }
+
+    .prompt-input-row:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .prompt-input-row input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      font-family: var(--font-sans);
+    }
+
+    /* Dashboard Executive Canvas */
+    .dashboard-canvas {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+      position: relative;
+    }
+
+    .dashboard-header-block {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.25rem;
+    }
+
+    .dashboard-title-editable {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+      outline: none;
+      cursor: text;
+    }
+
+    .dashboard-subtitle-editable {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+      outline: none;
+      cursor: text;
+    }
+
+    /* KPI Summary Row */
+    .kpi-row-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1rem;
+    }
+
+    .dash-kpi-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dash-kpi-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+    }
+
+    .dash-kpi-value {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+    }
+
+    .dash-kpi-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.78rem;
+    }
+
+    /* Charts Grid */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 900px) {
+      .charts-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .chart-panel-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.35rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      min-height: 340px;
+      position: relative;
+    }
+
+    .chart-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .chart-card-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .chart-archetype-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .chart-card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .chart-canvas-wrapper {
+      flex: 1;
+      width: 100%;
+      min-height: 240px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* SVG Chart Helpers */
+    .chart-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .chart-axis-text {
+      font-size: 11px;
+      fill: var(--text-tertiary);
+      font-family: var(--font-sans);
+    }
+
+    .chart-grid-line {
+      stroke: var(--border);
+      stroke-dasharray: 3 3;
+    }
+
+    /* Donut Legend */
+    .donut-legend-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* Print Styles */
+    @media print {
+      app-header, app-breadcrumbs, app-footer,
+      .synthesizer-card, .btn, .dashboard-actions-row,
+      .mode-toggle-bar {
+        display: none !important;
+      }
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      .dashboard-canvas {
+        background: #ffffff !important;
+        border: none !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+      }
+      .dash-kpi-card, .chart-panel-card {
+        background: #ffffff !important;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+        break-inside: avoid;
+      }
+      .dashboard-title-editable, .dash-kpi-value, .chart-card-title {
+        color: #000000 !important;
+      }
+      .chart-axis-text {
+        fill: #333333 !important;
+      }
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -25,30 +327,227 @@
   <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
-      <div class="tool-header">
-        <h1>AI Dashboard Builder</h1>
-        <p class="tool-description">Generate entire BI dashboards from a text prompt.</p>
-      </div>
-
-      <!-- Tool Workspace -->
       
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AI Dashboard Builder</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Generate entire BI dashboards from a text prompt.</div>
-            <div><strong>Inputs:</strong> analytics, data, excel, ai dashboard builder</div>
-            <div><strong>Category:</strong> excel</div>
+      <!-- Tool Header -->
+      <div class="tool-header">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>AI Dashboard Builder</h1>
+            <p class="tool-description">
+              Prompt-based or dataset-driven dashboard synthesizer: automatically selects optimal chart archetypes (Categorical &rarr; Bar, Time-series &rarr; Line, Part-to-whole &rarr; Donut) and renders an executive presentation with instant print export.
+            </p>
+          </div>
+          <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+            <button id="btn-print-dashboard" class="btn btn-secondary" title="Instant Print / PDF Export">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              Print Dashboard
+            </button>
+            <button id="btn-export-json" class="btn btn-primary" title="Export Dashboard Config (JSON)">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export JSON
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- Main Layout -->
+      <div class="builder-layout">
+        
+        <!-- Synthesizer Controls Panel -->
+        <section class="synthesizer-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <strong style="font-size: 0.95rem; color: var(--text-primary);">Dashboard Synthesizer Prompt</strong>
+            </div>
+            
+            <!-- Mode Switcher -->
+            <div style="display: flex; gap: 0.4rem; background: var(--bg-tertiary); padding: 0.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+              <button id="mode-prompt-btn" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.3rem 0.7rem; background: var(--accent); color: #fff; border-color: transparent;">
+                Prompt Synthesizer
+              </button>
+              <button id="mode-dataset-btn" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.3rem 0.7rem;">
+                Dataset Upload (CSV)
+              </button>
+            </div>
+          </div>
+
+          <!-- Prompt Scenario Chips -->
+          <div id="prompt-scenarios-box">
+            <span style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); font-weight: 700; display: block; margin-bottom: 0.45rem;">
+              Select Pre-Built Executive Scenario:
+            </span>
+            <div class="scenario-chips-wrapper">
+              <button class="scenario-chip" data-scenario="ecommerce">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                Q3 E-Commerce Executive Review
+              </button>
+              <button class="scenario-chip" data-scenario="saas">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                SaaS ARR &amp; Churn Trajectory
+              </button>
+              <button class="scenario-chip" data-scenario="retail">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                Omnichannel Supply Chain &amp; Margin
+              </button>
+              <button class="scenario-chip" data-scenario="luxury-travel">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"></path></svg>
+                Luxury VIP Travel &amp; Bookings
+              </button>
+            </div>
+          </div>
+
+          <!-- Input Bar -->
+          <div class="prompt-input-row" id="prompt-row">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="scenario-prompt-input" value="Q3 E-Commerce Executive Review: monthly revenue curve, product category performance, regional revenue share, and operational order volume" placeholder="Describe business scenario or metrics to visualize...">
+            <button id="btn-synthesize" class="btn btn-primary" style="padding: 0.45rem 1.15rem; font-size: 0.85rem;">
+              Synthesize Dashboard
+            </button>
+          </div>
+
+          <!-- Dataset Upload Box (Hidden by default) -->
+          <div id="dataset-upload-box" style="display: none; flex-direction: column; gap: 0.75rem;">
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <input type="file" id="dash-file-input" accept=".csv" style="display: none;">
+              <button id="btn-browse-dash-csv" class="btn btn-secondary" style="font-size: 0.85rem;">Upload CSV File</button>
+              <span id="file-name-label" style="font-size: 0.85rem; color: var(--text-secondary);">No file chosen</span>
+              <button id="btn-process-dash-csv" class="btn btn-primary" style="font-size: 0.85rem; margin-left: auto;">Map to Archetypes</button>
+            </div>
+          </div>
+
+          <!-- Heuristic Mapping Archetype Info -->
+          <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; border-top: 1px solid var(--border); padding-top: 0.75rem; font-size: 0.8rem; color: var(--text-secondary);">
+            <div style="display: flex; align-items: center; gap: 0.35rem;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--dash-chart-1);"></span>
+              <span><strong>Time-series</strong> &rarr; Line / Area Curve</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.35rem;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--dash-chart-2);"></span>
+              <span><strong>Categorical</strong> &rarr; Bar Breakdown</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.35rem;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--dash-chart-3);"></span>
+              <span><strong>Part-to-Whole</strong> &rarr; Donut Share</span>
+            </div>
+            <div style="margin-left: auto; color: var(--text-tertiary);">
+              Pure SVG client-side rendering &bull; Zero external chart bloat
+            </div>
+          </div>
+        </section>
+
+        <!-- Executive Dashboard Canvas (Print Ready) -->
+        <section class="dashboard-canvas" id="dashboard-render-canvas">
+          
+          <!-- Dashboard Header -->
+          <div class="dashboard-header-block">
+            <div>
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                <span class="anomaly-badge anomaly-high" style="background: rgba(56, 189, 248, 0.15); color: var(--dash-accent); border-color: rgba(56, 189, 248, 0.3);">
+                  Executive Briefing Deck
+                </span>
+                <span id="canvas-date-badge" style="font-size: 0.78rem; color: var(--text-tertiary);">Fiscal Period 2026</span>
+              </div>
+              <h2 id="dash-canvas-title" class="dashboard-title-editable" contenteditable="true" spellcheck="false">
+                Q3 E-Commerce Executive Review
+              </h2>
+              <p id="dash-canvas-subtitle" class="dashboard-subtitle-editable" contenteditable="true" spellcheck="false">
+                Synthesized multi-archetype visualization summarizing revenue trajectories, categorical drivers, and market share distribution.
+              </p>
+            </div>
+
+            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.25rem;">
+              <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-tertiary); font-weight: 700;">Governance</div>
+              <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-primary);">Audit Verified &bull; Strictly Confidential</div>
+            </div>
+          </div>
+
+          <!-- Top Executive KPI Counters -->
+          <div class="kpi-row-grid" id="dash-kpi-row">
+            <!-- 4 Dynamic KPI Cards -->
+          </div>
+
+          <!-- Core Charts Grid (2x2) -->
+          <div class="charts-grid">
+            
+            <!-- Chart 1: Time-series Line / Area Chart -->
+            <div class="chart-panel-card">
+              <div class="chart-card-header">
+                <div class="chart-card-title-wrap">
+                  <span class="chart-archetype-tag">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                    Time-Series Archetype &bull; Line Chart
+                  </span>
+                  <span class="chart-card-title" id="chart-1-title">Monthly Revenue Expansion Trend</span>
+                </div>
+              </div>
+              <div class="chart-canvas-wrapper" id="chart-1-canvas">
+                <!-- SVG Line Chart Injected Here -->
+              </div>
+            </div>
+
+            <!-- Chart 2: Categorical Bar Chart -->
+            <div class="chart-panel-card">
+              <div class="chart-card-header">
+                <div class="chart-card-title-wrap">
+                  <span class="chart-archetype-tag">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="18"></rect><rect x="14" y="9" width="7" height="12"></rect></svg>
+                    Categorical Archetype &bull; Bar Chart
+                  </span>
+                  <span class="chart-card-title" id="chart-2-title">Volume Breakdown by Product Segment</span>
+                </div>
+              </div>
+              <div class="chart-canvas-wrapper" id="chart-2-canvas">
+                <!-- SVG Bar Chart Injected Here -->
+              </div>
+            </div>
+
+            <!-- Chart 3: Part-to-Whole Donut Chart -->
+            <div class="chart-panel-card">
+              <div class="chart-card-header">
+                <div class="chart-card-title-wrap">
+                  <span class="chart-archetype-tag">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10h-10z"></path></svg>
+                    Part-to-Whole Archetype &bull; Donut Chart
+                  </span>
+                  <span class="chart-card-title" id="chart-3-title">Market Share &amp; Regional Contribution</span>
+                </div>
+              </div>
+              <div class="chart-canvas-wrapper" id="chart-3-canvas" style="display: flex; gap: 1.5rem; align-items: center; justify-content: center; flex-wrap: wrap;">
+                <!-- SVG Donut Chart + Legend Injected Here -->
+              </div>
+            </div>
+
+            <!-- Chart 4: Executive Performance Matrix -->
+            <div class="chart-panel-card">
+              <div class="chart-card-header">
+                <div class="chart-card-title-wrap">
+                  <span class="chart-archetype-tag">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                    Performance Matrix &bull; Dimension Table
+                  </span>
+                  <span class="chart-card-title" id="chart-4-title">Operating Unit Variance &amp; Margin</span>
+                </div>
+              </div>
+              <div class="chart-canvas-wrapper" id="chart-4-canvas" style="align-items: flex-start; justify-content: flex-start;">
+                <!-- Performance Table Injected Here -->
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Executive Footnote / Key Takeaway -->
+          <div style="background: var(--bg-tertiary); border-left: 3px solid var(--accent); padding: 0.85rem 1.15rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+            <strong style="color: var(--text-primary);">Executive Strategic Observation:</strong>
+            <span id="dash-executive-footnote">
+              Top-line growth trajectory remains positive with 68% of momentum concentrated in leading digital product tiers. Operational margin resilience supports planned Q4 capacity investments.
+            </span>
+          </div>
+
+        </section>
+
+      </div>
+
     </div>
   </main>
 
@@ -62,8 +561,8 @@
     "@type": "WebApplication",
     "name": "AI Dashboard Builder",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-dashboard-builder/",
-    "description": "Generate entire BI dashboards from a text prompt.",
-    "applicationCategory": "UtilityPage",
+    "description": "Prompt-based or dataset-driven dashboard synthesizer with automatic chart archetype selection and instant print export.",
+    "applicationCategory": "AnalyticsPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

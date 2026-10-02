@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TXT Analyzer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Extract and analyze text data from raw TXT files.">
-  <meta name="keywords" content="analytics, data, excel, txt analyzer, free, online, tool, utility">
+  <meta name="description" content="Parse raw, unstructured, or log-based text files: regex pattern extractor (emails, phones, IPs, URLs, dates, currency), token frequency dictionary, line character metrics, and structured tabular extraction.">
+  <meta name="keywords" content="analytics, data, excel, txt analyzer, regex extractor, log parser, word frequency, line metrics, text analysis">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/txt-analyzer/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,307 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+  <style>
+    .txt-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .preset-btn {
+      padding: 0.35rem 0.85rem;
+      font-size: 0.8rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .preset-btn:hover {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+
+    .kpi-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .kpi-value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      font-family: var(--font-display), monospace;
+      color: var(--accent);
+      line-height: 1.1;
+    }
+
+    .kpi-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+      font-weight: 600;
+    }
+
+    .tabs-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .tab-btn {
+      padding: 0.5rem 1rem;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      background: var(--accent-glow);
+      border-color: var(--accent);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Pattern Extraction Cards Grid */
+    .pattern-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .pattern-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .pattern-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+
+    .pattern-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .pattern-list {
+      max-height: 180px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      font-family: monospace;
+      font-size: 0.8rem;
+    }
+
+    .pattern-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-tertiary);
+      padding: 0.35rem 0.6rem;
+      border-radius: 4px;
+      word-break: break-all;
+    }
+
+    .pattern-item-count {
+      background: var(--accent-glow);
+      color: var(--accent);
+      font-weight: 700;
+      padding: 0.1rem 0.4rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      margin-left: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    /* Line inspector view */
+    .line-inspector {
+      max-height: 440px;
+      overflow: auto;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-family: monospace;
+      font-size: 0.82rem;
+    }
+
+    .line-row {
+      display: flex;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      min-width: 100%;
+    }
+
+    .line-num {
+      width: 55px;
+      padding: 0.35rem 0.6rem;
+      color: var(--text-tertiary);
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border);
+      text-align: right;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .line-len {
+      width: 55px;
+      padding: 0.35rem 0.5rem;
+      color: var(--text-tertiary);
+      font-size: 0.75rem;
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+      text-align: right;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .line-content {
+      padding: 0.35rem 0.75rem;
+      white-space: pre;
+      color: var(--text-primary);
+      flex: 1;
+    }
+
+    .line-row.line-long .line-len {
+      color: #f59e0b;
+      font-weight: 700;
+    }
+
+    .table-container {
+      max-height: 480px;
+      overflow: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-secondary);
+    }
+
+    .clean-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    .clean-table th {
+      position: sticky;
+      top: 0;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-weight: 600;
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      white-space: nowrap;
+      z-index: 2;
+    }
+
+    .clean-table td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      white-space: nowrap;
+      color: var(--text-secondary);
+    }
+
+    .clean-table tr:hover td {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .pagination-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0.25rem;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .pagination-btns {
+      display: flex;
+      gap: 0.35rem;
+    }
+
+    .page-btn {
+      padding: 0.25rem 0.6rem;
+      font-size: 0.8rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .page-btn:hover:not(:disabled) {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .page-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,26 +328,325 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>TXT Analyzer</h1>
-        <p class="tool-description">Extract and analyze text data from raw TXT files.</p>
+        <p class="tool-description">Parse raw, unstructured, or log-based text files: regex pattern extractor (emails, phones, IPs, URLs, dates, currency), token frequency dictionary, line character metrics, and structured tabular extraction.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>TXT Analyzer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Extract and analyze text data from raw TXT files.</div>
-            <div><strong>Inputs:</strong> analytics, data, excel, txt analyzer</div>
-            <div><strong>Category:</strong> excel</div>
+      <!-- Main Tool Workspace -->
+      <div class="txt-workspace">
+
+        <!-- Top Presets and Input Panel -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+              <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-right: 0.5rem;">Sample Unstructured Text Presets:</span>
+              <div class="preset-chips" style="display: inline-flex;">
+                <button type="button" class="preset-btn" data-preset="weblog">Server Access Logs</button>
+                <button type="button" class="preset-btn" data-preset="applog">App Error & Trace Log</button>
+                <button type="button" class="preset-btn" data-preset="support">Support Chat Transcript</button>
+                <button type="button" class="preset-btn" data-preset="ledger">Invoices & Payment Notes</button>
+              </div>
+            </div>
+            <button type="button" id="btn-clear-txt" class="btn btn-secondary" style="padding: 0.4rem 0.85rem; font-size: 0.8rem;">Clear All</button>
+          </div>
+
+          <div class="tool-workarea split-view" style="margin-top: 0.75rem;">
+            <!-- Left: File Drop -->
+            <div class="form-group">
+              <label>Upload File (.txt, .log, .csv, .json, .md):</label>
+              <div id="txt-drop-zone" class="file-drag-area">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                <div style="font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem;">Drop raw text or log file here</div>
+                <div style="font-size: 0.8rem; color: var(--text-tertiary);">Supports .txt, .log, .csv, .tsv, .json, .md files</div>
+                <input type="file" id="txt-file-input" accept=".txt,.log,.csv,.tsv,.json,.md" style="display: none;">
+              </div>
+            </div>
+
+            <!-- Right: Paste Text & Actions -->
+            <div class="form-group" style="display: flex; flex-direction: column; justify-content: space-between;">
+              <label for="txt-raw-input">Or Paste Raw Unstructured Text / Logs:</label>
+              <textarea id="txt-raw-input" class="form-textarea" style="min-height: 140px; font-size: 0.82rem;" placeholder="Paste raw text, server logs, communication transcripts, or invoices here..."></textarea>
+              
+              <div style="display: flex; justify-content: flex-end; margin-top: 0.75rem;">
+                <button type="button" id="btn-analyze-txt" class="btn btn-primary" style="padding: 0.5rem 1.5rem; font-size: 0.9rem;">
+                  Analyze Text & Extract
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Analysis Results Section -->
+        <div id="txt-results-section" style="display: none; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Key Metrics Grid -->
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <span class="kpi-value" id="kpi-txt-lines">0</span>
+              <span class="kpi-label">Lines (<span id="kpi-non-empty-lines">0</span> non-empty)</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-value" id="kpi-txt-words">0</span>
+              <span class="kpi-label">Total Words</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-value" id="kpi-txt-chars">0</span>
+              <span class="kpi-label">Chars (<span id="kpi-chars-no-space">0</span> no spaces)</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-value" id="kpi-reading-time">0 min</span>
+              <span class="kpi-label">Est. Reading Time (~200 wpm)</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-value" id="kpi-entities-count" style="color: #10b981;">0</span>
+              <span class="kpi-label">Extracted Entities</span>
+            </div>
+          </div>
+
+          <!-- Analysis Workspaces Tabs -->
+          <div class="tool-panel glass-panel">
+            <div class="tabs-nav">
+              <button type="button" class="tab-btn active" data-tab="tab-regex-extractor">Regex Pattern Extractor</button>
+              <button type="button" class="tab-btn" data-tab="tab-token-freq">Token Frequency Dictionary</button>
+              <button type="button" class="tab-btn" data-tab="tab-line-metrics">Line Character Metrics</button>
+              <button type="button" class="tab-btn" data-tab="tab-structured-table">Structured Tabular Extraction</button>
+            </div>
+
+            <!-- Tab 1: Regex Pattern Extractor -->
+            <div id="tab-regex-extractor" class="tab-content active">
+              <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                
+                <!-- Custom Regex Tester Bar -->
+                <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                  <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">Custom Regular Expression Matcher:</span>
+                  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <input type="text" id="custom-regex-pattern" class="form-input" style="flex: 1; min-width: 240px; font-family: monospace; font-size: 0.85rem;" placeholder="e.g. \b[A-Z]{3}-\d{4}\b or (?:ERROR|CRITICAL)">
+                    <input type="text" id="custom-regex-flags" class="form-input" style="max-width: 70px; font-family: monospace; font-size: 0.85rem;" value="gmi" title="Regex flags">
+                    <button type="button" id="btn-exec-custom-regex" class="btn btn-primary" style="padding: 0.4rem 1rem; font-size: 0.82rem;">
+                      Extract Custom Pattern
+                    </button>
+                  </div>
+                  <div id="custom-regex-result" style="font-size: 0.8rem; color: var(--text-secondary); display: none;"></div>
+                </div>
+
+                <!-- Entity Extraction Grid -->
+                <div class="pattern-grid">
+                  
+                  <!-- Emails -->
+                  <div class="pattern-card">
+                    <div class="pattern-card-header">
+                      <div class="pattern-title">
+                        <span>✉️ Email Addresses</span>
+                      </div>
+                      <span id="badge-emails" class="badge">0</span>
+                    </div>
+                    <div id="list-emails" class="pattern-list"></div>
+                    <button type="button" class="btn btn-secondary btn-copy-pattern" data-target="emails" style="padding: 0.3rem 0.6rem; font-size: 0.75rem; margin-top: auto;">Copy Emails</button>
+                  </div>
+
+                  <!-- IP Addresses -->
+                  <div class="pattern-card">
+                    <div class="pattern-card-header">
+                      <div class="pattern-title">
+                        <span>🌐 IP Addresses (IPv4/v6)</span>
+                      </div>
+                      <span id="badge-ips" class="badge">0</span>
+                    </div>
+                    <div id="list-ips" class="pattern-list"></div>
+                    <button type="button" class="btn btn-secondary btn-copy-pattern" data-target="ips" style="padding: 0.3rem 0.6rem; font-size: 0.75rem; margin-top: auto;">Copy IPs</button>
+                  </div>
+
+                  <!-- Phone Numbers -->
+                  <div class="pattern-card">
+                    <div class="pattern-card-header">
+                      <div class="pattern-title">
+                        <span>📞 Phone Numbers</span>
+                      </div>
+                      <span id="badge-phones" class="badge">0</span>
+                    </div>
+                    <div id="list-phones" class="pattern-list"></div>
+                    <button type="button" class="btn btn-secondary btn-copy-pattern" data-target="phones" style="padding: 0.3rem 0.6rem; font-size: 0.75rem; margin-top: auto;">Copy Phones</button>
+                  </div>
+
+                  <!-- URLs -->
+                  <div class="pattern-card">
+                    <div class="pattern-card-header">
+                      <div class="pattern-title">
+                        <span>🔗 URLs & Hyperlinks</span>
+                      </div>
+                      <span id="badge-urls" class="badge">0</span>
+                    </div>
+                    <div id="list-urls" class="pattern-list"></div>
+                    <button type="button" class="btn btn-secondary btn-copy-pattern" data-target="urls" style="padding: 0.3rem 0.6rem; font-size: 0.75rem; margin-top: auto;">Copy URLs</button>
+                  </div>
+
+                  <!-- Dates -->
+                  <div class="pattern-card">
+                    <div class="pattern-card-header">
+                      <div class="pattern-title">
+                        <span>📅 Calendar Dates</span>
+                      </div>
+                      <span id="badge-dates" class="badge">0</span>
+                    </div>
+                    <div id="list-dates" class="pattern-list"></div>
+                    <button type="button" class="btn btn-secondary btn-copy-pattern" data-target="dates" style="padding: 0.3rem 0.6rem; font-size: 0.75rem; margin-top: auto;">Copy Dates</button>
+                  </div>
+
+                  <!-- Monetary Currency -->
+                  <div class="pattern-card">
+                    <div class="pattern-card-header">
+                      <div class="pattern-title">
+                        <span>💰 Monetary Amounts</span>
+                      </div>
+                      <span id="badge-money" class="badge">0</span>
+                    </div>
+                    <div id="list-money" class="pattern-list"></div>
+                    <button type="button" class="btn btn-secondary btn-copy-pattern" data-target="money" style="padding: 0.3rem 0.6rem; font-size: 0.75rem; margin-top: auto;">Copy Amounts</button>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Tab 2: Token Frequency Dictionary -->
+            <div id="tab-token-freq" class="tab-content">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                  <label class="checkbox-label" style="font-size: 0.82rem;">
+                    <input type="checkbox" id="chk-freq-stop-words" checked>
+                    <span>Filter Common Stop Words (the, is, at, ...)</span>
+                  </label>
+                  <label class="checkbox-label" style="font-size: 0.82rem;">
+                    <input type="checkbox" id="chk-freq-case-insensitive" checked>
+                    <span>Case-Insensitive</span>
+                  </label>
+                  <div style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.82rem; color: var(--text-secondary);">
+                    <span>Min Len:</span>
+                    <input type="number" id="num-min-word-len" class="form-input" style="width: 55px; padding: 0.25rem 0.5rem; font-size: 0.8rem;" value="3" min="1" max="15">
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.82rem; color: var(--text-secondary);">
+                    <span>Mode:</span>
+                    <select id="select-ngram-mode" class="form-select" style="width: auto; padding: 0.25rem 0.5rem; font-size: 0.8rem;">
+                      <option value="1">Single Words (Unigrams)</option>
+                      <option value="2">Two-Word Phrases (Bigrams)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style="display: flex; gap: 0.5rem;">
+                  <button type="button" id="btn-export-tokens-csv" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">Export CSV</button>
+                  <button type="button" id="btn-copy-tokens" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">Copy Words</button>
+                </div>
+              </div>
+
+              <div class="table-container" style="max-height: 400px;">
+                <table class="clean-table" id="table-token-freq">
+                  <thead>
+                    <tr>
+                      <th style="width: 60px;">Rank</th>
+                      <th>Token / Phrase</th>
+                      <th style="width: 100px;">Occurrences</th>
+                      <th style="width: 100px;">Frequency %</th>
+                      <th style="width: 250px;">Distribution Meter</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbody-token-freq">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Tab 3: Line-by-Line Character Metrics -->
+            <div id="tab-line-metrics" class="tab-content">
+              <!-- Line Stats Summary -->
+              <div class="kpi-grid" style="margin-bottom: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));">
+                <div class="kpi-card" style="padding: 0.75rem;">
+                  <span class="kpi-value" id="kpi-avg-line-len" style="font-size: 1.4rem;">0</span>
+                  <span class="kpi-label">Avg Line Length</span>
+                </div>
+                <div class="kpi-card" style="padding: 0.75rem;">
+                  <span class="kpi-value" id="kpi-max-line-len" style="font-size: 1.4rem;">0</span>
+                  <span class="kpi-label">Max Line (Line #<span id="kpi-max-line-num">1</span>)</span>
+                </div>
+                <div class="kpi-card" style="padding: 0.75rem;">
+                  <span class="kpi-value" id="kpi-min-line-len" style="font-size: 1.4rem;">0</span>
+                  <span class="kpi-label">Min Line Length</span>
+                </div>
+                <div class="kpi-card" style="padding: 0.75rem;">
+                  <span class="kpi-value" id="kpi-sentences-count" style="font-size: 1.4rem;">0</span>
+                  <span class="kpi-label">Sentences</span>
+                </div>
+                <div class="kpi-card" style="padding: 0.75rem;">
+                  <span class="kpi-value" id="kpi-paragraphs-count" style="font-size: 1.4rem;">0</span>
+                  <span class="kpi-label">Paragraphs</span>
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; gap: 0.75rem;">
+                <input type="text" id="line-search" class="form-input" style="max-width: 260px; padding: 0.35rem 0.65rem; font-size: 0.8rem;" placeholder="Search line content...">
+                <label class="checkbox-label" style="font-size: 0.8rem;">
+                  <input type="checkbox" id="chk-highlight-long-lines" checked>
+                  <span>Highlight lines &gt; 80 chars</span>
+                </label>
+              </div>
+
+              <!-- Line Inspector Box -->
+              <div class="line-inspector" id="line-inspector-box">
+                <!-- Lines injected dynamically -->
+              </div>
+            </div>
+
+            <!-- Tab 4: Structured Tabular Extraction -->
+            <div id="tab-structured-table" class="tab-content">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.75rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <span style="font-size: 0.825rem; font-weight: 600;">Extraction Format:</span>
+                  <select id="select-extraction-format" class="form-select" style="width: auto; padding: 0.35rem 0.6rem; font-size: 0.82rem;">
+                    <option value="auto">Auto-Detect Structure</option>
+                    <option value="log_apache">Web Access Log (Combined)</option>
+                    <option value="log_app">Application Log [Time] [Level] Msg</option>
+                    <option value="delimited">Delimited (CSV / TSV / Pipe)</option>
+                    <option value="key_value">Key-Value Pairs (key: val / key=val)</option>
+                  </select>
+                  <button type="button" id="btn-reextract-table" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+                    Re-extract
+                  </button>
+                </div>
+
+                <div style="display: flex; gap: 0.5rem;">
+                  <button type="button" id="btn-export-structured-csv" class="btn btn-primary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">Export CSV</button>
+                  <button type="button" id="btn-export-structured-json" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">Export JSON</button>
+                </div>
+              </div>
+
+              <div class="table-container">
+                <table class="clean-table" id="structured-table">
+                  <thead id="structured-thead"></thead>
+                  <tbody id="structured-tbody"></tbody>
+                </table>
+              </div>
+
+              <div class="pagination-bar">
+                <span id="struct-pagination-info">Showing 1 to 25 of 100 rows</span>
+                <div class="pagination-btns">
+                  <button type="button" id="btn-struct-prev" class="page-btn">&larr; Prev</button>
+                  <span id="struct-page-num" style="padding: 0.25rem 0.5rem; font-weight: 600;">1</span>
+                  <button type="button" id="btn-struct-next" class="page-btn">Next &rarr;</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
     
     </div>

@@ -3,15 +3,388 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Product Sell Analyzer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Analyze 100k+ rows of Excel sales data to find best/worst products">
-  <meta name="keywords" content="excel, sales, product, analyzer, revenue, profit, best seller, worst seller, free, online, tool, utility">
+  <title>Product Sell Analyzer - Sales Velocity & Portfolio Pareto - ALL IN ONE</title>
+  <meta name="description" content="Specialized sales velocity and product portfolio performance analyzer: input SKU, unit cost, sales volume, selling price, and channel. Computes gross sales, net margins, top performers, slow-moving items, and Pareto (80/20) sales revenue concentration.">
+  <meta name="keywords" content="excel, sales, product, analyzer, revenue, profit, best seller, worst seller, sales velocity, pareto analysis, 80 20 rule, margin analysis">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/product-sell-analyzer/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    :root {
+      --gold-primary: #d4af37;
+      --gold-secondary: #f3e5ab;
+      --gold-glow: rgba(212, 175, 55, 0.25);
+      --gold-border: rgba(212, 175, 55, 0.35);
+      --gold-muted: rgba(212, 175, 55, 0.12);
+      --emerald-accent: #10b981;
+      --emerald-bg: rgba(16, 185, 129, 0.12);
+      --emerald-border: rgba(16, 185, 129, 0.35);
+      --sapphire-accent: #38bdf8;
+      --purple-accent: #a855f7;
+      --rose-accent: #f43f5e;
+      --rose-bg: rgba(244, 63, 94, 0.12);
+      --rose-border: rgba(244, 63, 94, 0.35);
+      --amber-accent: #f59e0b;
+      --amber-bg: rgba(245, 158, 11, 0.12);
+      --amber-border: rgba(245, 158, 11, 0.35);
+    }
+
+    .analyzer-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .executive-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: var(--radius-full);
+      background: var(--gold-muted);
+      border: 1px solid var(--gold-border);
+      color: var(--gold-secondary);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Toolbar */
+    .analyzer-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.25rem 1.5rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+    }
+
+    .toolbar-left, .toolbar-right {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(212, 175, 55, 0.1) 100%);
+      border: 1px solid var(--gold-primary);
+      color: var(--gold-secondary);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .btn-gold:hover {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.4) 0%, rgba(212, 175, 55, 0.2) 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 15px var(--gold-glow);
+      transform: translateY(-1px);
+    }
+
+    /* Top KPI Cards */
+    .kpi-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.35rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.75rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--gold-border);
+    }
+
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+    }
+
+    .kpi-card.gold::before { background: var(--gold-primary); }
+    .kpi-card.emerald::before { background: var(--emerald-accent); }
+    .kpi-card.sapphire::before { background: var(--sapphire-accent); }
+    .kpi-card.purple::before { background: var(--purple-accent); }
+    .kpi-card.rose::before { background: var(--rose-accent); }
+
+    .kpi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+    }
+
+    .kpi-val {
+      font-family: var(--font-display);
+      font-size: 2.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.1;
+    }
+
+    .kpi-sub {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Pareto Badges */
+    .pareto-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .pareto-badge.tier-a {
+      background: var(--gold-muted);
+      color: var(--gold-secondary);
+      border: 1px solid var(--gold-border);
+    }
+
+    .pareto-badge.tier-b {
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--sapphire-accent);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+    }
+
+    .pareto-badge.tier-c {
+      background: rgba(244, 63, 94, 0.12);
+      color: var(--rose-accent);
+      border: 1px solid rgba(244, 63, 94, 0.35);
+    }
+
+    /* Charts Grid */
+    .charts-grid-main {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 1080px) {
+      .charts-grid-main {
+        grid-template-columns: 1.35fr 1fr;
+      }
+    }
+
+    .chart-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      position: relative;
+    }
+
+    .chart-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.85rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .chart-title-group h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .chart-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 0.2rem;
+    }
+
+    .chart-svg-box {
+      width: 100%;
+      height: 300px;
+      position: relative;
+    }
+
+    .chart-svg-box svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Slow Moving Alerts Section */
+    .alert-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .alert-table-row {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr 1fr 1.4fr;
+      gap: 1rem;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 800px) {
+      .alert-table-row {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+    }
+
+    /* Modal Form */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 620px;
+      padding: 2rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: translateY(20px);
+      transition: transform 0.25s ease;
+    }
+
+    .modal-backdrop.open .modal-box {
+      transform: translateY(0);
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+
+      app-header, app-breadcrumbs, app-footer,
+      .analyzer-toolbar, .btn, input, select, textarea,
+      .modal-backdrop, .hide-print {
+        display: none !important;
+      }
+
+      .analyzer-container {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      .kpi-card, .chart-panel, .alert-panel, .table-container {
+        background: #ffffff !important;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+        break-inside: avoid;
+      }
+
+      .kpi-val, .chart-title-group h3, td, strong {
+        color: #000000 !important;
+      }
+
+      .print-header {
+        display: block !important;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #333333;
+      }
+    }
+
+    .print-header {
+      display: none;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -24,33 +397,262 @@
 
   <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
-      <div class="tool-header">
-        <h1>Product Sell Analyzer</h1>
-        <p class="tool-description">Analyze 100k+ rows of Excel sales data to find best/worst products</p>
+    <div class="container analyzer-container">
+
+      <!-- Print Letterhead -->
+      <div class="print-header">
+        <h1 style="font-size: 1.75rem; margin: 0; color: #000;">Product Portfolio & Sales Velocity Diagnostic</h1>
+        <p style="margin: 0.25rem 0 0 0; color: #555; font-size: 0.9rem;">Pareto (80/20) Revenue Concentration & Unit Economics Audit</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Product Sell Analyzer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Analyze 100k+ rows of Excel sales data to find best/worst products</div>
-            <div><strong>Inputs:</strong> excel, sales, product, analyzer, revenue, profit, best seller, worst seller</div>
-            <div><strong>Category:</strong> excel</div>
+      <!-- Page Header -->
+      <div class="tool-header">
+        <div class="executive-badge">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+          Portfolio & Velocity Intelligence
+        </div>
+        <h1>Product Sell Analyzer</h1>
+        <p class="tool-description">Specialized sales velocity and product portfolio performance analyzer: input product SKU, unit cost, sales volume, selling price, and channel. Computes gross sales, net margins, top performers, slow-moving items, and Pareto (80/20) sales revenue concentration.</p>
+      </div>
+
+      <!-- Control Toolbar -->
+      <div class="analyzer-toolbar">
+        <div class="toolbar-left">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <label for="catalog-preset-select" style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">Scenario Dataset:</label>
+            <select id="catalog-preset-select" class="form-select" style="min-width: 210px; padding: 0.55rem 0.85rem;">
+              <option value="electronics">Omnichannel Consumer Tech</option>
+              <option value="luxury">Haute Fashion & Luxury Goods</option>
+              <option value="skincare">Cosmetics & Clinical Skincare</option>
+            </select>
+          </div>
+          <button id="btn-load-preset" class="btn btn-secondary" title="Reload selected dataset">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            Reset Dataset
+          </button>
+          <button id="btn-add-sku" class="btn btn-gold" title="Add a single product SKU">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Add Single SKU
+          </button>
+          <button id="btn-open-bulk" class="btn btn-secondary" title="Bulk import or paste CSV">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+            Bulk Import CSV
+          </button>
+        </div>
+
+        <div class="toolbar-right">
+          <button id="btn-export-csv" class="btn btn-secondary" title="Export full analysis to CSV">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Export CSV
+          </button>
+          <button id="btn-export-json" class="btn btn-secondary" title="Export analysis JSON">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            Export JSON
+          </button>
+          <button id="btn-print-analysis" class="btn btn-gold" title="Print sales analysis report">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            Print Dossier
+          </button>
+        </div>
+      </div>
+
+      <!-- Top Metric KPI Cards -->
+      <div id="analyzer-kpi-cards" class="kpi-cards-grid">
+        <!-- Rendered by script.js -->
+      </div>
+
+      <!-- Primary Charts: Pareto (80/20) Concentration & Channel Breakdown -->
+      <div class="charts-grid-main">
+        <!-- Pareto SVG Chart -->
+        <div class="chart-panel">
+          <div class="chart-panel-header">
+            <div class="chart-title-group">
+              <h3>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gold-primary);"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                <span>Pareto (80/20) Sales Revenue Concentration</span>
+              </h3>
+              <div class="chart-subtitle">Individual product revenue contribution vs cumulative 80% threshold line</div>
+            </div>
+            <span id="pareto-summary-badge" class="pareto-badge tier-a">Class A: Top 80%</span>
+          </div>
+          <div id="pareto-chart-container" class="chart-svg-box">
+            <!-- Rendered by script.js -->
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Channel Distribution Donut -->
+        <div class="chart-panel">
+          <div class="chart-panel-header">
+            <div class="chart-title-group">
+              <h3>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gold-primary);"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10h-10z"></path></svg>
+                <span>Revenue Share by Sales Channel</span>
+              </h3>
+              <div class="chart-subtitle">Omnichannel distribution and sales volume spread</div>
+            </div>
+            <span id="channel-count-badge" class="pareto-badge tier-b">Omnichannel</span>
+          </div>
+          <div id="channel-chart-container" class="chart-svg-box" style="height: 230px;">
+            <!-- Rendered by script.js -->
+          </div>
+          <div id="channel-legend" style="display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; justify-content: center; font-size: 0.8rem;"></div>
+        </div>
       </div>
-    
+
+      <!-- Slow-Moving & Dead Stock Action Center -->
+      <div class="alert-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;">
+          <div>
+            <h3 style="margin: 0; font-size: 1.15rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--amber-accent);"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              Slow-Moving Items & Inventory Risk Alerts
+            </h3>
+            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.2rem;">SKUs exhibiting low velocity (&lt; 1.0 unit/day) or sub-standard gross margin requiring operational intervention</div>
+          </div>
+          <span id="slow-moving-count-badge" class="pareto-badge tier-c">0 Items Flagged</span>
+        </div>
+
+        <div id="slow-moving-list" style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <!-- Rendered by script.js -->
+        </div>
+      </div>
+
+      <!-- Master Product Performance Catalog Table -->
+      <div class="table-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem;">
+          <div>
+            <h3 style="margin: 0; font-size: 1.2rem; color: var(--text-primary);">Product Portfolio Unit Economics & Velocity</h3>
+            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.2rem;">Complete unit economics, gross margins, markups, and Pareto tiers</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <input type="text" id="sku-search" class="form-input" placeholder="Search SKU, name, channel..." style="width: 240px; padding: 0.45rem 0.75rem; font-size: 0.85rem;">
+            <span id="catalog-row-count" style="font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap;">0 items</span>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>SKU</th>
+                <th>Product Name</th>
+                <th>Channel</th>
+                <th>Unit Cost</th>
+                <th>Selling Price</th>
+                <th>Volume</th>
+                <th>Gross Sales</th>
+                <th>Gross Margin ($)</th>
+                <th>Margin %</th>
+                <th>Velocity</th>
+                <th>Pareto Tier</th>
+                <th style="width: 70px;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="catalog-tbody">
+              <!-- Rendered by script.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- Add / Edit Single SKU Modal -->
+  <div id="sku-modal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h2 id="sku-modal-title" style="font-size: 1.3rem; margin: 0; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gold-primary);"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon></svg>
+          Configure Product SKU
+        </h2>
+        <button id="sku-modal-close" class="modal-close-btn">&times;</button>
+      </div>
+
+      <form id="sku-form" style="display: flex; flex-direction: column; gap: 1rem;">
+        <input type="hidden" id="form-sku-id">
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label for="form-sku-code">Product SKU:</label>
+            <input type="text" id="form-sku-code" class="form-input" required placeholder="e.g. SKU-1084">
+          </div>
+          <div class="form-group">
+            <label for="form-sku-channel">Sales Channel:</label>
+            <select id="form-sku-channel" class="form-select">
+              <option value="Shopify Direct">Shopify Direct</option>
+              <option value="Amazon Storefront">Amazon Storefront</option>
+              <option value="Wholesale B2B">Wholesale B2B</option>
+              <option value="Flagship Store">Flagship Store</option>
+              <option value="Private Salon">Private Salon</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="form-sku-name">Product Name:</label>
+          <input type="text" id="form-sku-name" class="form-input" required placeholder="e.g. Wireless Noise-Cancelling Headphones Pro">
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label for="form-sku-category">Product Category:</label>
+            <input type="text" id="form-sku-category" class="form-input" placeholder="e.g. Audio & Sound" value="Consumer Tech">
+          </div>
+          <div class="form-group">
+            <label for="form-sku-volume">Sales Volume (Units Sold):</label>
+            <input type="number" step="1" min="0" id="form-sku-volume" class="form-input" required placeholder="e.g. 450">
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label for="form-sku-cost">Unit Cost ($):</label>
+            <input type="number" step="0.01" min="0" id="form-sku-cost" class="form-input" required placeholder="e.g. 45.00">
+          </div>
+          <div class="form-group">
+            <label for="form-sku-price">Selling Price ($):</label>
+            <input type="number" step="0.01" min="0" id="form-sku-price" class="form-input" required placeholder="e.g. 149.00">
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+          <button type="button" id="sku-modal-cancel" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-gold">Save Product SKU</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Bulk CSV / TSV Import Modal -->
+  <div id="bulk-modal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h2 style="font-size: 1.3rem; margin: 0; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gold-primary);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+          Bulk CSV Import
+        </h2>
+        <button id="bulk-modal-close" class="modal-close-btn">&times;</button>
+      </div>
+
+      <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+        Paste CSV rows with headers: <code>SKU,Name,Category,Channel,Cost,Price,Volume</code>
+      </p>
+
+      <textarea id="bulk-data-input" class="form-textarea" style="min-height: 180px; font-size: 0.85rem;" placeholder="SKU,Name,Category,Channel,Cost,Price,Volume"></textarea>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+        <label class="btn btn-secondary" style="cursor: pointer; margin: 0;">
+          Upload .CSV File
+          <input type="file" id="bulk-file-input" accept=".csv, .tsv, .txt" style="display: none;">
+        </label>
+        <div style="display: flex; gap: 0.75rem;">
+          <button type="button" id="bulk-modal-cancel" class="btn btn-secondary">Cancel</button>
+          <button type="button" id="btn-apply-bulk" class="btn btn-gold">Import & Calculate</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,8 +664,8 @@
     "@type": "WebApplication",
     "name": "Product Sell Analyzer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/product-sell-analyzer/",
-    "description": "Analyze 100k+ rows of Excel sales data to find best/worst products",
-    "applicationCategory": "UtilityPage",
+    "description": "Specialized sales velocity and product portfolio performance analyzer: input product SKU, unit cost, sales volume, selling price, and channel. Computes gross sales, net margins, top performers, slow-moving items, and Pareto (80/20) sales revenue concentration.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

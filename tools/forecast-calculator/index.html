@@ -4,14 +4,228 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Forecast Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Calculate Revenue, Sales, and Expense forecasts.">
-  <meta name="keywords" content="analytics, data, excel, forecast calculator, free, online, tool, utility">
+  <meta name="description" content="Calculate Revenue, Sales, and Expense forecasts with Linear Regression, Moving Averages, and Exponential Smoothing.">
+  <meta name="keywords" content="analytics, data, excel, forecast calculator, linear regression, moving average, exponential smoothing, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/forecast-calculator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Scoped styles for Forecast Calculator */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .metric-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1rem;
+      text-align: center;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .metric-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .metric-card .val {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.2;
+      font-family: var(--font-sans);
+    }
+    .metric-card .lbl {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+      margin-top: 0.25rem;
+      font-weight: 600;
+    }
+    .metric-card .sub {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.2rem;
+    }
+
+    .chart-container {
+      position: relative;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      width: 100%;
+      overflow: hidden;
+    }
+    .chart-svg {
+      width: 100%;
+      height: auto;
+      max-height: 420px;
+      display: block;
+    }
+
+    .chart-tooltip {
+      position: absolute;
+      pointer-events: none;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 0.75rem;
+      font-size: 0.75rem;
+      color: #f8fafc;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      z-index: 20;
+      transform: translate(-50%, -110%);
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .legend-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 0 0.25rem;
+      font-size: 0.8rem;
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      user-select: none;
+      transition: opacity 0.2s;
+    }
+    .legend-item.dimmed {
+      opacity: 0.4;
+      text-decoration: line-through;
+    }
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    .data-table-wrap {
+      max-height: 320px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+    }
+    .styled-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      text-align: left;
+    }
+    .styled-table th {
+      position: sticky;
+      top: 0;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      z-index: 2;
+    }
+    .styled-table td {
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .styled-table tr:hover td {
+      background: var(--accent-glow);
+      color: var(--text-primary);
+    }
+    .styled-table tr.forecast-row td {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .table-input {
+      background: transparent;
+      border: 1px solid transparent;
+      color: inherit;
+      font-family: inherit;
+      font-size: 0.875rem;
+      width: 100%;
+      padding: 0.25rem 0.4rem;
+      border-radius: var(--radius-sm);
+      transition: border-color 0.2s;
+    }
+    .table-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+    }
+
+    .chip-btn {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .chip-btn:hover, .chip-btn.active {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .tab-nav {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+    .tab-btn {
+      padding: 0.6rem 1.2rem;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+    .tab-btn:hover {
+      color: var(--text-primary);
+    }
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    @media (max-width: 900px) {
+      .metric-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 600px) {
+      .metric-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,27 +240,245 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Forecast Calculator</h1>
-        <p class="tool-description">Calculate Revenue, Sales, and Expense forecasts.</p>
-      </div>
-
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Forecast Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Calculate Revenue, Sales, and Expense forecasts.</div>
-            <div><strong>Inputs:</strong> analytics, data, excel, forecast calculator</div>
-            <div><strong>Category:</strong> excel</div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>Forecast Calculator</h1>
+            <p class="tool-description">High-precision mathematical time-series projection models: Linear Regression, Moving Averages (SMA-3 & SMA-5), and Exponential Smoothing with dynamic confidence intervals.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <button id="btn-export-csv" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export Forecast (CSV)
+            </button>
+            <button id="btn-copy-summary" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Summary
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+      </div>
+
+      <!-- KPI Summary Cards -->
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="val" id="kpi-next-forecast">$0.00</div>
+          <div class="lbl">Next Period Forecast</div>
+          <div class="sub" id="kpi-next-delta">+0.0% expected</div>
+        </div>
+        <div class="metric-card">
+          <div class="val" id="kpi-total-forecast">$0.00</div>
+          <div class="lbl">Total Projected Period Sum</div>
+          <div class="sub" id="kpi-horizon-lbl">Next 6 periods</div>
+        </div>
+        <div class="metric-card">
+          <div class="val" id="kpi-r2">0.000</div>
+          <div class="lbl">Regression Fit (R²)</div>
+          <div class="sub" id="kpi-fit-quality">Goodness of fit</div>
+        </div>
+        <div class="metric-card">
+          <div class="val" id="kpi-growth-rate">+0.0%</div>
+          <div class="lbl">Average Growth Rate</div>
+          <div class="sub" id="kpi-slope-lbl">Slope: $0.00 / period</div>
+        </div>
+        <div class="metric-card">
+          <div class="val" id="kpi-mae">$0.00</div>
+          <div class="lbl">Mean Abs Error (MAE)</div>
+          <div class="sub">Model residual variance</div>
+        </div>
+      </div>
+
+      <!-- Main Tool Workarea -->
+      <div class="tool-workarea split-view">
+        
+        <!-- Left Panel: Data Input & Model Configuration -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+            <h2 class="panel-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">Historical Data & Config</h2>
+            <div style="display: flex; gap: 0.35rem;">
+              <button id="preset-saas" class="chip-btn active" title="Load SaaS MRR Dataset">SaaS MRR</button>
+              <button id="preset-retail" class="chip-btn" title="Load Retail E-Comm Dataset">Retail</button>
+              <button id="preset-tech" class="chip-btn" title="Load Hardware Sales">Quarterly</button>
+            </div>
+          </div>
+
+          <!-- Configuration Controls -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem; background: var(--bg-tertiary); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <div class="form-group">
+              <label for="primary-model">Primary Model</label>
+              <select id="primary-model" class="form-select" style="padding: 0.5rem 0.75rem; font-size: 0.85rem;">
+                <option value="linear" selected>Linear Regression (y = mx + b)</option>
+                <option value="sma3">3-Period Moving Avg (SMA-3)</option>
+                <option value="sma5">5-Period Moving Avg (SMA-5)</option>
+                <option value="exp">Exponential Smoothing (SES)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="forecast-periods">Horizon (Periods)</label>
+              <select id="forecast-periods" class="form-select" style="padding: 0.5rem 0.75rem; font-size: 0.85rem;">
+                <option value="3">3 Periods ahead</option>
+                <option value="6" selected>6 Periods ahead</option>
+                <option value="9">9 Periods ahead</option>
+                <option value="12">12 Periods ahead</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="confidence-level">Confidence Band</label>
+              <select id="confidence-level" class="form-select" style="padding: 0.5rem 0.75rem; font-size: 0.85rem;">
+                <option value="0.80">80% Interval (1.28σ)</option>
+                <option value="0.90">90% Interval (1.64σ)</option>
+                <option value="0.95" selected>95% Interval (1.96σ)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Alpha Slider for Exponential Smoothing -->
+          <div class="form-group" style="background: var(--bg-tertiary); padding: 0.75rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label for="alpha-slider" style="font-weight: 600;">Smoothing Factor (Alpha α):</label>
+              <span id="alpha-val" class="range-value" style="font-size: 0.95rem;">0.30</span>
+            </div>
+            <div class="range-group" style="margin-top: 0.35rem;">
+              <span style="font-size: 0.75rem; color: var(--text-tertiary);">0.1 (Smoother)</span>
+              <input type="range" id="alpha-slider" min="0.1" max="0.9" step="0.05" value="0.3" class="range-slider">
+              <span style="font-size: 0.75rem; color: var(--text-tertiary);">0.9 (Responsive)</span>
+            </div>
+          </div>
+
+          <!-- Input Mode Tabs: Table Editor vs Raw Paste -->
+          <div>
+            <div class="tab-nav">
+              <button id="tab-table-btn" class="tab-btn active">Table Editor (<span id="data-point-count">12</span>)</button>
+              <button id="tab-paste-btn" class="tab-btn">Batch Paste / CSV</button>
+            </div>
+
+            <!-- Table Editor View -->
+            <div id="view-table-editor">
+              <div class="data-table-wrap">
+                <table class="styled-table" id="historical-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 25%;">#</th>
+                      <th style="width: 35%;">Period / Label</th>
+                      <th style="width: 30%;">Revenue / Value</th>
+                      <th style="width: 10%; text-align: center;">✕</th>
+                    </tr>
+                  </thead>
+                  <tbody id="historical-tbody">
+                    <!-- Populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                <div style="display: flex; gap: 0.5rem;">
+                  <button id="btn-add-row" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">+ Add Row</button>
+                  <button id="btn-clear-data" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">Clear All</button>
+                </div>
+                <button id="btn-reset-preset" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">Reset Default</button>
+              </div>
+            </div>
+
+            <!-- Batch Paste View -->
+            <div id="view-paste-editor" class="hidden">
+              <textarea id="raw-paste-input" class="form-textarea" style="min-height: 220px; font-size: 0.85rem;" placeholder="Paste values separated by commas, newlines, or tabs. Format: Period, Value&#10;Example:&#10;Month 1, 10500&#10;Month 2, 11200&#10;Month 3, 12400&#10;Month 4, 13100"></textarea>
+              <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.75rem;">
+                <button id="btn-apply-paste" class="btn btn-primary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">Parse & Update Models</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Panel: Interactive SVG Chart & Projection Table -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <h2 class="panel-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">Time-Series Forecast Visualizer</h2>
+            <span class="badge" id="model-active-badge">Linear Regression Active</span>
+          </div>
+
+          <!-- SVG Chart Area -->
+          <div class="chart-container" id="chart-wrap">
+            <div id="chart-tooltip" class="chart-tooltip"></div>
+            <svg id="forecast-svg" class="chart-svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet"></svg>
+            
+            <!-- Interactive Legend -->
+            <div class="legend-row">
+              <div class="legend-item" data-series="actual">
+                <span class="legend-color" style="background: #38bdf8;"></span>
+                <span>Historical Actual</span>
+              </div>
+              <div class="legend-item" data-series="linear">
+                <span class="legend-color" style="background: #818cf8;"></span>
+                <span>Linear Regression</span>
+              </div>
+              <div class="legend-item" data-series="sma3">
+                <span class="legend-color" style="background: #34d399;"></span>
+                <span>3-Period MA</span>
+              </div>
+              <div class="legend-item" data-series="sma5">
+                <span class="legend-color" style="background: #fbbf24;"></span>
+                <span>5-Period MA</span>
+              </div>
+              <div class="legend-item" data-series="exp">
+                <span class="legend-color" style="background: #f472b6;"></span>
+                <span>Exp Smoothing (α)</span>
+              </div>
+              <div class="legend-item" data-series="ci">
+                <span class="legend-color" style="background: rgba(129, 140, 248, 0.25); border: 1px dashed #818cf8;"></span>
+                <span>Confidence Band</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Projected Periods Table -->
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <h3 style="font-size: 1.05rem; font-weight: 700; margin: 0;">Upcoming Period Projections</h3>
+              <span style="font-size: 0.8rem; color: var(--text-tertiary);" id="ci-note">With 95% Confidence Bounds</span>
+            </div>
+            
+            <div class="data-table-wrap" style="max-height: 240px;">
+              <table class="styled-table" id="projection-table">
+                <thead>
+                  <tr>
+                    <th>Future Period</th>
+                    <th>Selected Model</th>
+                    <th>Lower Bound</th>
+                    <th>Upper Bound</th>
+                    <th>Est. MoM Δ</th>
+                  </tr>
+                </thead>
+                <tbody id="projection-tbody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Model Mathematical Comparison Card -->
+      <div class="tool-panel glass-panel" style="margin-top: 1rem;">
+        <h3 class="panel-title" style="margin-bottom: 0.75rem;">Model Comparison & Accuracy Benchmark</h3>
+        <div style="overflow-x: auto;">
+          <table class="styled-table" style="width: 100%;">
+            <thead>
+              <tr>
+                <th>Projection Model</th>
+                <th>Formula / Specification</th>
+                <th>Residual MAE</th>
+                <th>Fit Quality (R² / MAPE)</th>
+                <th>Next Value (t+1)</th>
+                <th>Horizon Total</th>
+              </tr>
+            </thead>
+            <tbody id="comparison-tbody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
       </div>
     
     </div>
@@ -62,7 +494,7 @@
     "@type": "WebApplication",
     "name": "Forecast Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/forecast-calculator/",
-    "description": "Calculate Revenue, Sales, and Expense forecasts.",
+    "description": "Calculate Revenue, Sales, and Expense forecasts with Linear Regression, Moving Averages, and Exponential Smoothing.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

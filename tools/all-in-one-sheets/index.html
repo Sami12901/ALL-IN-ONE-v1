@@ -12,6 +12,330 @@
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Spreadsheet Specific Styles */
+    .sheet-app-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      width: 100%;
+    }
+
+    .sheet-toolbar-panel {
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      border-radius: var(--radius-md);
+    }
+
+    .sheet-toolbar-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .sheet-tool-group {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      background: var(--bg-tertiary);
+      padding: 0.25rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+
+    .tool-sep {
+      width: 1px;
+      height: 24px;
+      background: var(--border);
+      margin: 0 0.25rem;
+    }
+
+    .sheet-btn-icon {
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .sheet-btn-icon:hover {
+      background: var(--border);
+      color: var(--accent);
+    }
+
+    .sheet-btn-icon.active {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .btn-sm {
+      padding: 0.4rem 0.85rem;
+      font-size: 0.825rem;
+    }
+
+    /* Formula Bar */
+    .formula-bar-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.35rem 0.6rem;
+    }
+
+    .name-box {
+      width: 68px;
+      text-align: center;
+      font-family: monospace;
+      font-weight: 700;
+      font-size: 0.9rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      border-radius: var(--radius-sm);
+      padding: 0.35rem;
+    }
+
+    .fx-symbol {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-weight: 700;
+      color: var(--text-secondary);
+      font-size: 1.15rem;
+      padding: 0 0.35rem;
+      user-select: none;
+    }
+
+    .formula-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: var(--text-primary);
+      font-family: monospace;
+      font-size: 0.9rem;
+      padding: 0.25rem 0.5rem;
+      outline: none;
+    }
+
+    /* Spreadsheet Viewport */
+    .sheet-viewport {
+      position: relative;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: auto;
+      max-height: 620px;
+      min-height: 480px;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .sheet-table {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: max-content;
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      user-select: none;
+    }
+
+    /* Table Headers */
+    .sheet-corner-header {
+      position: sticky;
+      top: 0;
+      left: 0;
+      z-index: 30;
+      background: var(--bg-tertiary);
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      width: 48px;
+      min-width: 48px;
+      height: 28px;
+      cursor: pointer;
+    }
+
+    .sheet-col-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--bg-tertiary);
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      min-width: 100px;
+      height: 28px;
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      padding: 0 0.5rem;
+    }
+
+    .sheet-col-header.highlight {
+      background: var(--accent-glow);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .sheet-row-header {
+      position: sticky;
+      left: 0;
+      z-index: 10;
+      background: var(--bg-tertiary);
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      width: 48px;
+      min-width: 48px;
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .sheet-row-header.highlight {
+      background: var(--accent-glow);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* Cells */
+    .sheet-cell {
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      min-width: 100px;
+      max-width: 260px;
+      height: 26px;
+      padding: 0 0.45rem;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: cell;
+      position: relative;
+      background: var(--bg-secondary);
+      line-height: 26px;
+    }
+
+    .sheet-cell.selected {
+      outline: 2px solid var(--accent);
+      outline-offset: -2px;
+      z-index: 5;
+    }
+
+    .sheet-cell.in-range {
+      background: var(--accent-glow);
+    }
+
+    .sheet-cell.bold {
+      font-weight: 700;
+    }
+
+    .sheet-cell.italic {
+      font-style: italic;
+    }
+
+    .sheet-cell.align-left {
+      text-align: left;
+    }
+
+    .sheet-cell.align-center {
+      text-align: center;
+    }
+
+    .sheet-cell.align-right {
+      text-align: right;
+    }
+
+    .sheet-cell.formula-error {
+      color: var(--error);
+      font-weight: 600;
+    }
+
+    /* In-place Cell Editor */
+    .cell-inline-editor {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 2px solid var(--accent);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: inherit;
+      padding: 0 0.45rem;
+      outline: none;
+      z-index: 25;
+      box-sizing: border-box;
+    }
+
+    /* Status Bar */
+    .sheet-status-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .sheet-stats-group {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      font-family: monospace;
+    }
+
+    .stat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .stat-val {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* Drag Drop Overlay */
+    .drop-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(78, 133, 191, 0.25);
+      backdrop-filter: blur(4px);
+      border: 2px dashed var(--accent);
+      z-index: 50;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #ffffff;
+      pointer-events: none;
+    }
+
+    .drop-overlay.active {
+      display: flex;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -24,31 +348,150 @@
 
   <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
-      <div class="tool-header">
-        <h1>ALL IN ONE Sheets</h1>
-        <p class="tool-description">Excel Compatible Spreadsheet with Formulas, Charts, XLSX Import/Export, and Offline Support.</p>
+    <div class="container tool-container" style="max-width: 1400px;">
+      <div class="tool-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h1 class="gradient-text">ALL IN ONE Sheets</h1>
+          <p class="tool-description">High-performance interactive spreadsheet with formulas, live formatting, templates, and CSV/JSON export.</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span class="badge">Sheets v2.4</span>
+        </div>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>ALL IN ONE Sheets</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Excel Compatible Spreadsheet with Formulas, Charts, XLSX Import/Export, and Offline Support.</div>
-            <div><strong>Inputs:</strong> excel, spreadsheet, business, data</div>
-            <div><strong>Category:</strong> excel</div>
+      <div class="sheet-app-container">
+        
+        <!-- Ribbon / Toolbar -->
+        <div class="sheet-toolbar-panel glass-panel">
+          <!-- Row 1: Templates & File I/O -->
+          <div class="sheet-toolbar-row">
+            <div class="sheet-tool-group">
+              <label for="sheet-template" style="font-size: 0.775rem; font-weight: 600; padding-left: 0.5rem; color: var(--text-secondary);">Template:</label>
+              <select id="sheet-template" class="form-select" style="padding: 0.3rem 0.6rem; font-size: 0.825rem; width: auto; min-width: 160px; height: 32px;">
+                <option value="sales">Sales Ledger</option>
+                <option value="budget">Monthly Budget</option>
+                <option value="inventory">Inventory Tracker</option>
+                <option value="blank">Blank Grid</option>
+              </select>
+            </div>
+
+            <div class="tool-sep"></div>
+
+            <div class="sheet-tool-group">
+              <label class="btn btn-secondary btn-sm" style="cursor: pointer; margin: 0; height: 32px; display: inline-flex; align-items: center;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Import CSV
+                <input type="file" id="sheet-file-input" accept=".csv,.txt" style="display:none">
+              </label>
+              <button id="btn-export-csv" class="btn btn-secondary btn-sm" style="height: 32px;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                Export CSV
+              </button>
+              <button id="btn-export-json" class="btn btn-secondary btn-sm" style="height: 32px;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                Export JSON
+              </button>
+              <button id="btn-clear-sheet" class="btn btn-secondary btn-sm" style="height: 32px; color: var(--error);">
+                Clear
+              </button>
+            </div>
+
+            <div class="tool-sep"></div>
+
+            <!-- Grid Dimensions -->
+            <div class="sheet-tool-group">
+              <button id="btn-add-row" class="sheet-btn-icon" title="Add Row Below" style="width: auto; padding: 0 0.5rem; font-size: 0.8rem;">+ Row</button>
+              <button id="btn-del-row" class="sheet-btn-icon" title="Remove Last Row" style="width: auto; padding: 0 0.5rem; font-size: 0.8rem;">- Row</button>
+              <button id="btn-add-col" class="sheet-btn-icon" title="Add Column Right" style="width: auto; padding: 0 0.5rem; font-size: 0.8rem;">+ Col</button>
+              <button id="btn-del-col" class="sheet-btn-icon" title="Remove Last Column" style="width: auto; padding: 0 0.5rem; font-size: 0.8rem;">- Col</button>
+            </div>
+          </div>
+
+          <!-- Row 2: Formatting Toolbar -->
+          <div class="sheet-toolbar-row">
+            <!-- Undo / Redo -->
+            <div class="sheet-tool-group">
+              <button id="btn-undo" class="sheet-btn-icon" title="Undo (Ctrl+Z)">↺</button>
+              <button id="btn-redo" class="sheet-btn-icon" title="Redo (Ctrl+Y)">↻</button>
+            </div>
+
+            <div class="tool-sep"></div>
+
+            <!-- Typography & Formatting -->
+            <div class="sheet-tool-group">
+              <button id="btn-bold" class="sheet-btn-icon" title="Bold (Ctrl+B)"><b>B</b></button>
+              <button id="btn-italic" class="sheet-btn-icon" title="Italic (Ctrl+I)"><i>I</i></button>
+            </div>
+
+            <div class="sheet-tool-group">
+              <button id="btn-align-left" class="sheet-btn-icon" title="Align Left">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="17" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg>
+              </button>
+              <button id="btn-align-center" class="sheet-btn-icon" title="Align Center">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="10" x2="6" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="18" y1="18" x2="6" y2="18"></line></svg>
+              </button>
+              <button id="btn-align-right" class="sheet-btn-icon" title="Align Right">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" y1="10" x2="7" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="21" y1="18" x2="7" y2="18"></line></svg>
+              </button>
+            </div>
+
+            <div class="tool-sep"></div>
+
+            <!-- Number Formatting -->
+            <div class="sheet-tool-group">
+              <button id="btn-fmt-currency" class="sheet-btn-icon" title="Currency Format ($)">$</button>
+              <button id="btn-fmt-percent" class="sheet-btn-icon" title="Percent Format (%)">%</button>
+              <button id="btn-fmt-dec2" class="sheet-btn-icon" title="2 Decimals (.00)" style="font-family: monospace; font-size: 0.8rem;">.00</button>
+              <button id="btn-fmt-dec0" class="sheet-btn-icon" title="Integer (.0)" style="font-family: monospace; font-size: 0.8rem;">.0</button>
+              <button id="btn-fmt-plain" class="sheet-btn-icon" title="General Format" style="font-family: monospace; font-size: 0.8rem;">123</button>
+            </div>
+          </div>
+
+          <!-- Row 3: Formula Bar -->
+          <div class="formula-bar-container">
+            <input type="text" id="cell-name-box" class="name-box" value="A1" readonly title="Selected Cell">
+            <span class="fx-symbol">fx</span>
+            <input type="text" id="cell-formula-input" class="formula-input" placeholder="Type a value or formula (e.g. =SUM(A1:A5), =AVERAGE(B1:B10), =A1*B1)..." autocomplete="off" spellcheck="false">
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Grid Viewport -->
+        <div class="sheet-viewport glass-panel" id="sheet-viewport">
+          <div class="drop-overlay" id="drop-overlay">
+            <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom: 0.5rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Drop CSV File to Import Into Sheet
+          </div>
+
+          <table class="sheet-table" id="sheet-table">
+            <thead id="sheet-thead">
+              <!-- Dynamically populated headers -->
+            </thead>
+            <tbody id="sheet-tbody">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="sheet-status-bar">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span>Cell: <strong id="status-cell" style="color: var(--text-primary); font-family: monospace;">A1</strong></span>
+            <span>Mode: <strong id="status-mode" style="color: var(--accent);">READY</strong></span>
+            <span style="color: var(--text-tertiary);">|</span>
+            <span style="font-size: 0.75rem; color: var(--text-tertiary);">Formulas: =SUM, =AVERAGE, =MIN, =MAX, =COUNT, + - * /</span>
+          </div>
+
+          <div class="sheet-stats-group">
+            <span class="stat-pill">Count: <span class="stat-val" id="stat-count">0</span></span>
+            <span class="stat-pill">Sum: <span class="stat-val" id="stat-sum">-</span></span>
+            <span class="stat-pill">Avg: <span class="stat-val" id="stat-avg">-</span></span>
+            <span class="stat-pill">Min: <span class="stat-val" id="stat-min">-</span></span>
+            <span class="stat-pill">Max: <span class="stat-val" id="stat-max">-</span></span>
+          </div>
+        </div>
+
       </div>
-    
     </div>
   </main>
 

@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Data Profiler - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Column analysis, data types, unique values, and null value detection.">
-  <meta name="keywords" content="analytics, data, excel, data profiler, free, online, tool, utility">
+  <meta name="description" content="In-depth column profiling matrix: automatic data type inference, null percentage meters, distinct cardinality ratio, min/max length, memory footprint, and distribution preview.">
+  <meta name="keywords" content="analytics, data, excel, data profiler, column profiling, data type inference, cardinality ratio, null meter, memory footprint">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/data-profiler/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,251 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+  <style>
+    .profiler-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .preset-btn {
+      padding: 0.35rem 0.85rem;
+      font-size: 0.8rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .preset-btn:hover {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+
+    .kpi-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .kpi-value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      font-family: var(--font-display), monospace;
+      color: var(--accent);
+      line-height: 1.1;
+    }
+
+    .kpi-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+      font-weight: 600;
+    }
+
+    .schema-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+    }
+
+    .type-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.18rem 0.55rem;
+      border-radius: var(--radius-full);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .type-integer { background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .type-float { background: rgba(14, 165, 233, 0.15); color: #0ea5e9; border: 1px solid rgba(14, 165, 233, 0.3); }
+    .type-currency { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .type-date { background: rgba(168, 85, 247, 0.15); color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.3); }
+    .type-boolean { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .type-categorical { background: rgba(236, 72, 153, 0.15); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.3); }
+    .type-text { background: rgba(107, 114, 128, 0.2); color: #9ca3af; border: 1px solid rgba(107, 114, 128, 0.4); }
+
+    .cardinality-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+    }
+
+    .card-key { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+    .card-high { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+    .card-medium { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+    .card-low { background: rgba(236, 72, 153, 0.2); color: #ec4899; }
+    .card-constant { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+    .matrix-wrapper {
+      overflow-x: auto;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      text-align: left;
+    }
+
+    .matrix-table th {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-weight: 600;
+      padding: 0.75rem 0.85rem;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    .matrix-table td {
+      padding: 0.65rem 0.85rem;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      color: var(--text-secondary);
+      vertical-align: middle;
+    }
+
+    .matrix-table tr:hover td {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .null-meter {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      min-width: 110px;
+    }
+
+    .null-bar-track {
+      height: 6px;
+      background: var(--bg-secondary);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .null-bar-fill {
+      height: 100%;
+      transition: width 0.3s;
+    }
+
+    .mini-dist-bar {
+      display: flex;
+      height: 14px;
+      border-radius: 4px;
+      overflow: hidden;
+      min-width: 120px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .dist-segment {
+      height: 100%;
+      transition: opacity 0.2s;
+    }
+
+    .dist-segment:hover {
+      opacity: 0.8;
+    }
+
+    /* Column Detail Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .modal-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      font-size: 1.5rem;
+      line-height: 1;
+      padding: 0.25rem;
+      transition: var(--transition);
+    }
+
+    .modal-close-btn:hover {
+      color: var(--text-primary);
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,30 +272,175 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Data Profiler</h1>
-        <p class="tool-description">Column analysis, data types, unique values, and null value detection.</p>
+        <p class="tool-description">In-depth column profiling matrix: automatic data type inference, null percentage meters, distinct cardinality ratio, min/max length, memory footprint, and distribution preview.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Data Profiler</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Column analysis, data types, unique values, and null value detection.</div>
-            <div><strong>Inputs:</strong> analytics, data, excel, data profiler</div>
-            <div><strong>Category:</strong> excel</div>
+      <!-- Main Tool Workspace -->
+      <div class="profiler-workspace">
+
+        <!-- Top Presets and Input Panel -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+              <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-right: 0.5rem;">Sample Profiling Datasets:</span>
+              <div class="preset-chips" style="display: inline-flex;">
+                <button type="button" class="preset-btn" data-preset="financial">Financial Invoicing</button>
+                <button type="button" class="preset-btn" data-preset="saas">SaaS Telemetry & Engagement</button>
+                <button type="button" class="preset-btn" data-preset="clinical">Clinical Health Registry</button>
+              </div>
+            </div>
+            <button type="button" id="btn-clear-profiler" class="btn btn-secondary" style="padding: 0.4rem 0.85rem; font-size: 0.8rem;">Clear All</button>
+          </div>
+
+          <div class="tool-workarea split-view" style="margin-top: 0.75rem;">
+            <!-- Left: File Drop -->
+            <div class="form-group">
+              <label>Upload Dataset (CSV, TSV, JSON, TXT):</label>
+              <div id="profiler-drop-zone" class="file-drag-area">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <div style="font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem;">Drop dataset file here or click to browse</div>
+                <div style="font-size: 0.8rem; color: var(--text-tertiary);">Supports .csv, .tsv, .txt, .json formats</div>
+                <input type="file" id="profiler-file-input" accept=".csv,.tsv,.txt,.json" style="display: none;">
+              </div>
+            </div>
+
+            <!-- Right: Paste Text & Settings -->
+            <div class="form-group" style="display: flex; flex-direction: column; justify-content: space-between;">
+              <label for="profiler-raw-input">Or Paste Tabular Text / CSV / TSV / JSON:</label>
+              <textarea id="profiler-raw-input" class="form-textarea" style="min-height: 120px; font-size: 0.82rem;" placeholder="Paste CSV, TSV, or JSON data here..."></textarea>
+              
+              <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-top: 0.75rem;">
+                <label class="checkbox-label" style="font-size: 0.82rem;">
+                  <input type="checkbox" id="chk-profiler-headers" checked>
+                  <span>First row contains headers</span>
+                </label>
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--text-secondary);">
+                  <span>Delimiter:</span>
+                  <select id="select-profiler-delimiter" class="form-select" style="width: auto; padding: 0.35rem 0.6rem; font-size: 0.82rem;">
+                    <option value="auto">Auto-Detect</option>
+                    <option value=",">Comma (,)</option>
+                    <option value="&#9;">Tab (\t)</option>
+                    <option value=";">Semicolon (;)</option>
+                    <option value="|">Pipe (|)</option>
+                  </select>
+                </div>
+                <button type="button" id="btn-profile-data" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.85rem; margin-left: auto;">
+                  Profile Dataset
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Profiling Results Section -->
+        <div id="profiler-results-section" style="display: none; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Dataset Level KPI Summary -->
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <span class="kpi-value" id="prof-kpi-rows">0</span>
+              <span class="kpi-label">Total Records</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-value" id="prof-kpi-cols">0</span>
+              <span class="kpi-label">Total Columns</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-value" id="prof-kpi-completeness">0%</span>
+              <span class="kpi-label">Completeness Rate</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-value" id="prof-kpi-dups">0</span>
+              <span class="kpi-label">Duplicate Rows</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-value" id="prof-kpi-memory">0 KB</span>
+              <span class="kpi-label">Est. Memory Size</span>
+            </div>
+          </div>
+
+          <!-- Inferred Schema Breakdown -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+              <span style="font-size: 0.875rem; font-weight: 700; color: var(--text-primary);">Inferred Schema Composition:</span>
+              <div id="schema-composition-pills" class="schema-chips"></div>
+            </div>
+          </div>
+
+          <!-- Column Profiling Matrix -->
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.75rem;">
+              <div>
+                <h3 style="font-size: 1.2rem; font-weight: 700;">Column Profiling Matrix</h3>
+                <p style="font-size: 0.825rem; color: var(--text-secondary);">Comprehensive structural analysis across all attributes.</p>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                <input type="text" id="filter-column-name" class="form-input" style="max-width: 180px; padding: 0.35rem 0.65rem; font-size: 0.8rem;" placeholder="Filter column...">
+                <select id="filter-column-type" class="form-select" style="max-width: 150px; padding: 0.35rem 0.6rem; font-size: 0.8rem;">
+                  <option value="all">All Types</option>
+                  <option value="Integer">Integer</option>
+                  <option value="Float">Float</option>
+                  <option value="Currency">Currency</option>
+                  <option value="Date">Date</option>
+                  <option value="Boolean">Boolean</option>
+                  <option value="Categorical">Categorical</option>
+                  <option value="Free Text">Free Text</option>
+                </select>
+                <button type="button" id="btn-export-profile-csv" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">Export CSV</button>
+                <button type="button" id="btn-copy-profile" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">Copy Summary</button>
+              </div>
+            </div>
+
+            <!-- Profiling Matrix Table -->
+            <div class="matrix-wrapper">
+              <table class="matrix-table" id="profiler-matrix-table">
+                <thead>
+                  <tr>
+                    <th>Column Name</th>
+                    <th>Inferred Type</th>
+                    <th>Fill Status / Null %</th>
+                    <th>Distinct Cardinality</th>
+                    <th>Min / Max Length</th>
+                    <th>Est. Memory</th>
+                    <th>Top Distribution</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="profiler-matrix-tbody">
+                  <!-- Injected dynamically -->
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
     
     </div>
   </main>
+
+  <!-- Deep Dive Column Inspector Modal -->
+  <div id="inspector-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h3 id="modal-col-title" style="font-size: 1.2rem; font-weight: 700;">Column Profile Deep Dive</h3>
+          <p id="modal-col-subtitle" style="font-size: 0.825rem; color: var(--text-secondary);"></p>
+        </div>
+        <button type="button" id="btn-close-modal" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body-content">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>

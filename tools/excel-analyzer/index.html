@@ -4,14 +4,256 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Excel Analyzer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Advanced Excel file analytics with automatic data profiling.">
-  <meta name="keywords" content="analytics, data, excel, excel analyzer, free, online, tool, utility">
+  <meta name="description" content="Advanced multi-sheet workbook profiling, column schema detection, cell distribution histograms, and pivot table aggregation.">
+  <meta name="keywords" content="analytics, data, excel, excel analyzer, pivot table, schema, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/excel-analyzer/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Excel Analyzer Custom Styles */
+    .analyzer-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    /* Sheet Tabs Bar */
+    .sheet-tabs-container {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      padding: 0.5rem 0.75rem 0;
+      overflow-x: auto;
+    }
+
+    .sheet-tab {
+      padding: 0.55rem 1.15rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      user-select: none;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .sheet-tab:hover {
+      color: var(--text-primary);
+      background: var(--border);
+    }
+
+    .sheet-tab.active {
+      background: var(--bg-primary);
+      color: var(--accent);
+      border-top: 2px solid var(--accent);
+      font-weight: 700;
+    }
+
+    .sheet-tab-add {
+      padding: 0.4rem 0.75rem;
+      background: transparent;
+      border: 1px dashed var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 0.85rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .sheet-tab-add:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* KPI Summary Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+
+    .kpi-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .kpi-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .kpi-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+    }
+
+    .kpi-sub {
+      font-size: 0.775rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Section Sub-nav */
+    .view-switcher {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: -1px;
+    }
+
+    .view-btn {
+      padding: 0.65rem 1.25rem;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+
+    .view-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .view-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      background: var(--accent-glow);
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    }
+
+    .view-panel {
+      display: none;
+    }
+
+    .view-panel.active {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* Table container */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.1);
+      max-height: 480px;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .data-table th {
+      position: sticky;
+      top: 0;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-weight: 700;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      z-index: 5;
+    }
+
+    .data-table td {
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .data-table tr:hover td {
+      background: var(--accent-glow);
+      color: var(--text-primary);
+    }
+
+    /* SVG Chart Containers */
+    .chart-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .svg-chart {
+      width: 100%;
+      height: 320px;
+      overflow: visible;
+    }
+
+    /* Schema Table */
+    .schema-badge {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: monospace;
+    }
+
+    .type-currency { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+    .type-number { background: rgba(78, 133, 191, 0.15); color: var(--accent); }
+    .type-percent { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+    .type-text { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
+    .type-date { background: rgba(236, 72, 153, 0.15); color: #f472b6; }
+    .type-id { background: rgba(107, 114, 128, 0.2); color: var(--text-primary); }
+
+    /* Pivot Section */
+    .pivot-controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      padding: 1.25rem;
+      border-radius: var(--radius-md);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -24,31 +266,204 @@
 
   <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
-      <div class="tool-header">
-        <h1>Excel Analyzer</h1>
-        <p class="tool-description">Advanced Excel file analytics with automatic data profiling.</p>
+    <div class="container tool-container" style="max-width: 1400px;">
+      <div class="tool-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h1 class="gradient-text">Excel Analyzer</h1>
+          <p class="tool-description">Advanced multi-worksheet explorer, column schema profiling, memory footprint estimation, and pivot table aggregation.</p>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <span class="badge" id="active-sheet-badge">Sheet: Revenue_Streams</span>
+        </div>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Excel Analyzer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Advanced Excel file analytics with automatic data profiling.</div>
-            <div><strong>Inputs:</strong> analytics, data, excel, excel analyzer</div>
-            <div><strong>Category:</strong> excel</div>
+      <div class="analyzer-workspace">
+        
+        <!-- Top Toolbar & Workbook Controls -->
+        <div class="tool-panel glass-panel" style="padding: 1rem 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+              <label class="btn btn-primary btn-sm" style="cursor: pointer; margin: 0;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                Import Sheet (CSV)
+                <input type="file" id="excel-file-input" accept=".csv,.txt" style="display: none;">
+              </label>
+
+              <button id="btn-load-corp" class="btn btn-secondary btn-sm">Load Enterprise Sample</button>
+              <button id="btn-load-supply" class="btn btn-secondary btn-sm">Load Logistics Sample</button>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+              <button id="btn-export-sheet" class="btn btn-secondary btn-sm">Export Sheet (CSV)</button>
+              <button id="btn-export-workbook" class="btn btn-secondary btn-sm">Export Workbook (JSON)</button>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Multi-Tab Worksheet Bar -->
+        <div class="sheet-tabs-container" id="sheet-tabs-bar">
+          <!-- Dynamically populated sheet tabs -->
+          <button class="sheet-tab-add" id="btn-add-tab" title="Add blank sheet">+ Tab</button>
+        </div>
+
+        <!-- Summary KPI Metrics Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <span class="kpi-label">Worksheet Rows</span>
+            <span class="kpi-value" id="kpi-total-rows">0</span>
+            <span class="kpi-sub" id="kpi-rows-sub">Active worksheet</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Total Columns</span>
+            <span class="kpi-value" id="kpi-total-cols">0</span>
+            <span class="kpi-sub" id="kpi-cols-sub">Schema attributes</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Memory Footprint</span>
+            <span class="kpi-value" id="kpi-memory">0 KB</span>
+            <span class="kpi-sub" id="kpi-memory-sub">Estimated payload</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Data Density</span>
+            <span class="kpi-value" id="kpi-density">100%</span>
+            <span class="kpi-sub" id="kpi-density-sub">0 empty cells</span>
+          </div>
+        </div>
+
+        <!-- Main View Switcher & Panels -->
+        <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+          <div class="view-switcher">
+            <button class="view-btn active" data-view="view-grid">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+              Worksheet Data Grid
+            </button>
+            <button class="view-btn" data-view="view-schema">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              Column Schema Detector
+            </button>
+            <button class="view-btn" data-view="view-dist">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+              Cell Value Distribution
+            </button>
+            <button class="view-btn" data-view="view-pivot">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+              Pivot Aggregator & Charts
+            </button>
+          </div>
+
+          <!-- VIEW 1: WORKSHEET GRID -->
+          <div class="view-panel active" id="view-grid" style="margin-top: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+              <input type="text" id="grid-search-input" class="form-input" placeholder="Quick filter active worksheet..." style="max-width: 380px; padding: 0.45rem 0.85rem; font-size: 0.85rem;">
+              <span id="grid-status-info" style="font-size: 0.825rem; color: var(--text-secondary);">Showing all records</span>
+            </div>
+            <div class="table-container">
+              <table class="data-table" id="grid-data-table">
+                <thead id="grid-thead"></thead>
+                <tbody id="grid-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- VIEW 2: COLUMN SCHEMA DETECTOR -->
+          <div class="view-panel" id="view-schema" style="margin-top: 1rem;">
+            <div style="font-size: 0.875rem; color: var(--text-secondary);">
+              Automatic type inference, nullability, unique entropy, and key constraints for all fields in the active sheet.
+            </div>
+            <div class="table-container">
+              <table class="data-table" id="schema-table">
+                <thead>
+                  <tr>
+                    <th>Column Name</th>
+                    <th>Inferred Type</th>
+                    <th>Nullability</th>
+                    <th>Density (%)</th>
+                    <th>Unique Values</th>
+                    <th>Key Candidate</th>
+                    <th>Sample Range / Examples</th>
+                  </tr>
+                </thead>
+                <tbody id="schema-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- VIEW 3: CELL VALUE DISTRIBUTION -->
+          <div class="view-panel" id="view-dist" style="margin-top: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+              <label for="dist-col-select" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Select Target Column:</label>
+              <select id="dist-col-select" class="form-select" style="width: auto; min-width: 220px; font-size: 0.85rem; padding: 0.4rem 0.8rem;"></select>
+              <span id="dist-summary-label" style="font-size: 0.825rem; color: var(--text-secondary);"></span>
+            </div>
+
+            <div class="chart-box">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h4 id="dist-chart-title" style="font-size: 1rem; font-weight: 700;">Distribution Histogram</h4>
+                <span class="badge" id="dist-chart-badge">SVG Live Vector</span>
+              </div>
+              <svg id="dist-svg" class="svg-chart" viewBox="0 0 800 320"></svg>
+            </div>
+          </div>
+
+          <!-- VIEW 4: PIVOT AGGREGATOR & SVG BAR CHART -->
+          <div class="view-panel" id="view-pivot" style="margin-top: 1rem;">
+            <!-- Pivot configuration controls -->
+            <div class="pivot-controls">
+              <div class="form-group">
+                <label for="pivot-group-col">Group By (Category):</label>
+                <select id="pivot-group-col" class="form-select"></select>
+              </div>
+
+              <div class="form-group">
+                <label for="pivot-val-col">Values Column (Metric):</label>
+                <select id="pivot-val-col" class="form-select"></select>
+              </div>
+
+              <div class="form-group">
+                <label for="pivot-agg-func">Aggregation Function:</label>
+                <select id="pivot-agg-func" class="form-select">
+                  <option value="SUM">SUM</option>
+                  <option value="AVERAGE">AVERAGE (Mean)</option>
+                  <option value="COUNT">COUNT (Rows)</option>
+                  <option value="MIN">MIN</option>
+                  <option value="MAX">MAX</option>
+                </select>
+              </div>
+
+              <div class="form-group" style="justify-content: flex-end;">
+                <label>&nbsp;</label>
+                <button id="btn-export-pivot-csv" class="btn btn-secondary btn-sm" style="height: 42px;">Export Pivot CSV</button>
+              </div>
+            </div>
+
+            <!-- SVG Pivot Bar Chart -->
+            <div class="chart-box">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h4 id="pivot-chart-title" style="font-size: 1rem; font-weight: 700;">Pivot Group Distribution</h4>
+                <span class="badge" id="pivot-chart-badge">Aggregated Metric</span>
+              </div>
+              <svg id="pivot-svg" class="svg-chart" viewBox="0 0 800 320"></svg>
+            </div>
+
+            <!-- Pivot Summary Table -->
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Group Category</th>
+                    <th>Records Count</th>
+                    <th>Aggregated Value</th>
+                    <th>% of Total</th>
+                  </tr>
+                </thead>
+                <tbody id="pivot-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
       </div>
-    
     </div>
   </main>
 
