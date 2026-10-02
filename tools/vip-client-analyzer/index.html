@@ -4,14 +4,223 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VIP Client Analyzer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Analyze purchasing habits of high-net-worth clients.">
-  <meta name="keywords" content="vip, client, crm, free, online, tool, utility">
+  <meta name="description" content="RFM customer analytics, VIP tier classification, Customer Lifetime Value (CLV) estimation, and tailored retention action plans for luxury retail.">
+  <meta name="keywords" content="vip, client, rfm, clv, customer lifetime value, luxury retail, crm, diamond tier, platinum tier">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/vip-client-analyzer/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* VIP Client Analyzer Styles */
+    .vip-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 1080px) {
+      .vip-grid {
+        grid-template-columns: 380px 1fr;
+      }
+    }
+
+    /* VIP Tier Themes */
+    .tier-badge-diamond {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.25) 0%, rgba(14, 165, 233, 0.4) 100%);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.3);
+    }
+    .tier-badge-platinum {
+      background: linear-gradient(135deg, rgba(226, 232, 240, 0.2) 0%, rgba(148, 163, 184, 0.3) 100%);
+      color: #f1f5f9;
+      border: 1px solid rgba(226, 232, 240, 0.5);
+      box-shadow: 0 0 14px rgba(226, 232, 240, 0.2);
+    }
+    .tier-badge-gold {
+      background: linear-gradient(135deg, rgba(234, 179, 8, 0.2) 0%, rgba(202, 138, 4, 0.35) 100%);
+      color: #facc15;
+      border: 1px solid rgba(234, 179, 8, 0.5);
+      box-shadow: 0 0 14px rgba(234, 179, 8, 0.2);
+    }
+    .tier-badge-silver {
+      background: rgba(148, 163, 184, 0.15);
+      color: #94a3b8;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    /* RFM Score Meters */
+    .rfm-score-bars {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+
+    .rfm-metric-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .rfm-metric-letter {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .rfm-metric-score {
+      font-size: 1.75rem;
+      font-weight: 800;
+      font-family: var(--font-display);
+      color: var(--accent);
+    }
+
+    .rfm-progress-bar {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-top: 0.2rem;
+    }
+
+    .rfm-progress-fill {
+      height: 100%;
+      background: var(--accent-gradient);
+      border-radius: var(--radius-full);
+      transition: width 0.4s ease;
+    }
+
+    /* Action Plan Cards */
+    .action-plan-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .action-step-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .step-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .step-card-content {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Roster Table */
+    .roster-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-top: 1rem;
+    }
+
+    .roster-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+
+    .roster-table th {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 600;
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .roster-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-primary);
+      vertical-align: middle;
+    }
+
+    .roster-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+      cursor: pointer;
+    }
+
+    .roster-table tr.selected td {
+      background: rgba(78, 133, 191, 0.12);
+    }
+
+    .churn-risk-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .risk-low {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+    }
+    .risk-med {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+    }
+    .risk-high {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--error);
+    }
+
+    @media print {
+      app-header, app-breadcrumbs, app-footer,
+      .vip-form-panel, .action-bar, .roster-filter-row, #btn-save-client, #btn-print-vip, #btn-copy-dossier {
+        display: none !important;
+      }
+      body {
+        background: #fff !important;
+        color: #000 !important;
+      }
+      .vip-grid {
+        display: block !important;
+      }
+      .tool-panel {
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+        background: #fff !important;
+        color: #000 !important;
+      }
+      .rfm-metric-card, .action-step-card {
+        background: #f9f9f9 !important;
+        border: 1px solid #ddd !important;
+        color: #000 !important;
+      }
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,28 +236,320 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>VIP Client Analyzer</h1>
-        <p class="tool-description">Analyze purchasing habits of high-net-worth clients.</p>
+        <p class="tool-description">Advanced RFM (Recency, Frequency, Monetary) modeling, VIP tier classification, predictive Customer Lifetime Value (CLV), and bespoke retention roadmaps.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>VIP Client Analyzer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Analyze purchasing habits of high-net-worth clients.</div>
-            <div><strong>Inputs:</strong> vip, client, crm</div>
-            <div><strong>Category:</strong> luxury</div>
-          </div>
+      <!-- Main Layout Grid -->
+      <div class="vip-grid">
+        
+        <!-- Client Inputs Form Panel -->
+        <div class="tool-panel glass-panel vip-form-panel" style="gap: 1.15rem;">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            Client Profile &amp; Transactions
+          </h2>
+
+          <form id="vip-form" style="display: flex; flex-direction: column; gap: 1rem;">
+            <!-- Client Name & ID -->
+            <div class="form-group">
+              <label for="client-name">Client Full Name / Title</label>
+              <input type="text" id="client-name" class="form-input" value="Lord Harrison Sterling" placeholder="e.g. Lord Harrison Sterling" required>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <label for="client-id">Client Reference ID</label>
+                <input type="text" id="client-id" class="form-input" value="VIP-LON-8801">
+              </div>
+              <div class="form-group">
+                <label for="client-advisor">Private Client Advisor</label>
+                <input type="text" id="client-advisor" class="form-input" value="Camilla Laurent">
+              </div>
+            </div>
+
+            <!-- RFM Core Inputs -->
+            <div style="border-top: 1px solid var(--border); padding-top: 0.75rem;">
+              <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-tertiary); letter-spacing: 0.05em; display: block; margin-bottom: 0.75rem;">
+                RFM Metrics (Trailing 12 Mo)
+              </span>
+
+              <!-- Recency -->
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <label for="client-recency">Recency (Days Since Last Order)</label>
+                  <span id="recency-display-val" style="font-family: monospace; font-weight: 700; color: var(--accent);">14 days</span>
+                </div>
+                <input type="number" id="client-recency" class="form-input" min="0" max="730" value="14" required>
+                <div style="font-size: 0.75rem; color: var(--text-tertiary);">Lower days = higher engagement</div>
+              </div>
+
+              <!-- Frequency -->
+              <div class="form-group" style="margin-top: 0.75rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <label for="client-frequency">Annual Orders (Frequency)</label>
+                  <span id="frequency-display-val" style="font-family: monospace; font-weight: 700; color: var(--accent);">9 orders</span>
+                </div>
+                <input type="number" id="client-frequency" class="form-input" min="1" max="100" value="9" required>
+                <div style="font-size: 0.75rem; color: var(--text-tertiary);">Total discrete purchases in past year</div>
+              </div>
+
+              <!-- Monetary Spend -->
+              <div class="form-group" style="margin-top: 0.75rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <label for="client-monetary">Total Annual Spend ($)</label>
+                  <span id="monetary-display-val" style="font-family: monospace; font-weight: 700; color: var(--accent);">$145,000</span>
+                </div>
+                <input type="number" id="client-monetary" class="form-input" min="100" step="500" value="145000" required>
+                <div style="font-size: 0.75rem; color: var(--text-tertiary);">Cumulative gross spend in USD</div>
+              </div>
+            </div>
+
+            <!-- CLV Parameters -->
+            <div style="border-top: 1px solid var(--border); padding-top: 0.75rem;">
+              <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-tertiary); letter-spacing: 0.05em; display: block; margin-bottom: 0.5rem;">
+                CLV Horizon &amp; Margin
+              </span>
+
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <label for="clv-horizon">Relationship Horizon</label>
+                  <span id="clv-horizon-val" class="range-value">5 Years</span>
+                </div>
+                <input type="range" id="clv-horizon" min="1" max="15" value="5" class="range-slider">
+              </div>
+
+              <div class="form-group" style="margin-top: 0.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <label for="clv-margin">Gross Luxury Margin %</label>
+                  <span id="clv-margin-val" class="range-value">70%</span>
+                </div>
+                <input type="range" id="clv-margin" min="30" max="90" step="5" value="70" class="range-slider">
+              </div>
+            </div>
+
+            <!-- Advisor Notes -->
+            <div class="form-group">
+              <label for="client-notes">Client Preferences &amp; Atelier Notes</label>
+              <textarea id="client-notes" class="form-textarea" style="min-height: 70px; font-family: var(--font-sans);" placeholder="Avid horology collector, prefers Dom Pérignon Rosé, bespoke cufflinks collector..."></textarea>
+            </div>
+
+            <!-- Form Action Buttons -->
+            <div class="action-bar" style="margin-top: 0.5rem;">
+              <button type="submit" id="btn-save-client" class="btn btn-primary" style="flex: 1;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Update / Save to Roster
+              </button>
+              <button type="button" id="btn-reset-client" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.6rem 0.8rem;">
+                Reset
+              </button>
+            </div>
+          </form>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Analytics & VIP Output Column -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- VIP Tier Header Banner -->
+          <div class="tool-panel glass-panel" id="tier-banner" style="padding: 1.5rem 2rem; position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 1rem;">
+            
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <span id="tier-badge" class="badge tier-badge-diamond" style="font-size: 0.9rem; padding: 0.4rem 1rem; border-radius: var(--radius-full); font-weight: 800; letter-spacing: 0.1em;">
+                    DIAMOND VIP
+                  </span>
+                  <span id="churn-risk-badge" class="churn-risk-badge risk-low">
+                    ● Active Engagement
+                  </span>
+                </div>
+                <h2 id="client-hero-name" style="font-family: var(--font-display); font-size: 2.25rem; font-weight: 800; margin-top: 0.5rem; color: var(--text-primary); line-height: 1.1;">
+                  Lord Harrison Sterling
+                </h2>
+                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                  ID: <span id="client-hero-id" style="font-family: monospace; color: var(--text-primary);">VIP-LON-8801</span> &bull; 
+                  Advisor: <span id="client-hero-advisor" style="color: var(--text-primary);">Camilla Laurent</span>
+                </div>
+              </div>
+
+              <!-- Quick Dossier Actions -->
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button type="button" id="btn-copy-dossier" class="btn btn-secondary" style="font-size: 0.825rem; padding: 0.5rem 0.85rem;">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                  Copy Brief
+                </button>
+                <button type="button" id="btn-print-vip" class="btn btn-primary" style="font-size: 0.825rem; padding: 0.5rem 1rem;">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                  Print Dossier
+                </button>
+              </div>
+            </div>
+
+            <!-- RFM Score Grid & Meter -->
+            <div class="rfm-score-bars">
+              
+              <!-- Recency -->
+              <div class="rfm-metric-card">
+                <span class="rfm-metric-letter">Recency (R)</span>
+                <span class="rfm-metric-score" id="score-r">5 / 5</span>
+                <div class="rfm-progress-bar">
+                  <div class="rfm-progress-fill" id="fill-r" style="width: 100%;"></div>
+                </div>
+                <span style="font-size: 0.72rem; color: var(--text-tertiary);" id="desc-r">Ordered 14d ago</span>
+              </div>
+
+              <!-- Frequency -->
+              <div class="rfm-metric-card">
+                <span class="rfm-metric-letter">Frequency (F)</span>
+                <span class="rfm-metric-score" id="score-f">5 / 5</span>
+                <div class="rfm-progress-bar">
+                  <div class="rfm-progress-fill" id="fill-f" style="width: 100%;"></div>
+                </div>
+                <span style="font-size: 0.72rem; color: var(--text-tertiary);" id="desc-f">9 orders/year</span>
+              </div>
+
+              <!-- Monetary -->
+              <div class="rfm-metric-card">
+                <span class="rfm-metric-letter">Monetary (M)</span>
+                <span class="rfm-metric-score" id="score-m">5 / 5</span>
+                <div class="rfm-progress-bar">
+                  <div class="rfm-progress-fill" id="fill-m" style="width: 100%;"></div>
+                </div>
+                <span style="font-size: 0.72rem; color: var(--text-tertiary);" id="desc-m">$145k annual</span>
+              </div>
+
+            </div>
+
+            <!-- Summary KPI Strip -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+              <div>
+                <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-tertiary); font-weight: 700;">Composite RFM</span>
+                <div id="composite-rfm" style="font-family: monospace; font-size: 1.4rem; font-weight: 800; color: var(--text-primary);">5-5-5</div>
+              </div>
+              <div>
+                <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-tertiary); font-weight: 700;">Average Order Value (AOV)</span>
+                <div id="stat-aov" style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; color: var(--accent);">$16,111</div>
+              </div>
+              <div>
+                <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-tertiary); font-weight: 700;">5-Year Projected CLV</span>
+                <div id="stat-clv" style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; color: #10b981;">$725,000</div>
+              </div>
+              <div>
+                <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-tertiary); font-weight: 700;">Est. Lifetime Profit</span>
+                <div id="stat-clv-profit" style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; color: #eab308;">$507,500</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Retention Action Plan Panel -->
+          <div class="tool-panel glass-panel">
+            <h3 class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              Tailored VIP Retention Action Plan
+            </h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">
+              Prescribed white-glove protocol customized to tier status, purchase cadence, and luxury client lifetime loyalty.
+            </p>
+
+            <div class="action-plan-grid">
+              
+              <!-- Card 1: 30-Day Touchpoint -->
+              <div class="action-step-card">
+                <div class="step-card-header">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  Next Touchpoint Protocol
+                </div>
+                <div class="step-card-content" id="plan-touchpoint">
+                  Executive personal outreach by Camilla Laurent. Schedule intimate private salon preview for Sovereign Autumn pieces.
+                </div>
+              </div>
+
+              <!-- Card 2: Concierge Gifting -->
+              <div class="action-step-card">
+                <div class="step-card-header">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="color: #eab308;"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>
+                  Bespoke Gifting Recommendation
+                </div>
+                <div class="step-card-content" id="plan-gifting">
+                  Curated grand cru vintage bottle of Dom Pérignon Rosé accompanied by hand-embossed Italian leather travel horology roll.
+                </div>
+              </div>
+
+              <!-- Card 3: Atelier Privileges -->
+              <div class="action-step-card">
+                <div class="step-card-header">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="color: #38bdf8;"><path d="M2 20h20"></path><path d="M5 20V8l7-5 7 5v12"></path><rect x="9" y="13" width="6" height="7"></rect></svg>
+                  Atelier &amp; Allocation Privileges
+                </div>
+                <div class="step-card-content" id="plan-privileges">
+                  Direct allocation right for upcoming numbered limited editions (Piece 01-05). Exclusive invitation to Geneva master watchmaker dinner.
+                </div>
+              </div>
+
+              <!-- Card 4: Churn Mitigation -->
+              <div class="action-step-card">
+                <div class="step-card-header">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--success);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                  Loyalty Defense Strategy
+                </div>
+                <div class="step-card-content" id="plan-churn">
+                  High recency score (14d). Client is highly engaged. Maintain proactive quarterly touchpoints and birthday anniversary bouquet.
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- VIP Client Roster Table -->
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+              <div>
+                <h3 class="panel-title" style="margin-bottom: 0.15rem; border-bottom: none; padding-bottom: 0;">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                  Client VIP Directory &amp; Roster
+                </h3>
+                <span style="font-size: 0.8rem; color: var(--text-secondary);">Click any client to populate analyzer</span>
+              </div>
+
+              <div class="roster-filter-row" style="display: flex; gap: 0.5rem; align-items: center;">
+                <input type="text" id="roster-search" class="form-input" style="width: 170px; padding: 0.4rem 0.65rem; font-size: 0.8rem;" placeholder="Search client...">
+                <select id="roster-filter-tier" class="form-select" style="width: 130px; padding: 0.4rem 0.65rem; font-size: 0.8rem;">
+                  <option value="ALL">All Tiers</option>
+                  <option value="Diamond">Diamond</option>
+                  <option value="Platinum">Platinum</option>
+                  <option value="Gold">Gold</option>
+                  <option value="Silver">Silver</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="roster-table-wrap">
+              <table class="roster-table">
+                <thead>
+                  <tr>
+                    <th>Client Name</th>
+                    <th>VIP Tier</th>
+                    <th>RFM Score</th>
+                    <th>Recency</th>
+                    <th>Frequency</th>
+                    <th>Annual Spend</th>
+                    <th>5-Yr CLV</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="roster-tbody">
+                  <!-- Injected via script.js -->
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
-    
+
     </div>
   </main>
 
@@ -62,7 +563,7 @@
     "@type": "WebApplication",
     "name": "VIP Client Analyzer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/vip-client-analyzer/",
-    "description": "Analyze purchasing habits of high-net-worth clients.",
+    "description": "RFM customer analytics, VIP tier classification, Customer Lifetime Value (CLV) estimation, and tailored retention action plans for luxury retail.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

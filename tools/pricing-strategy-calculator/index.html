@@ -4,13 +4,251 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pricing Strategy Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Formulate premium pricing strategies.">
-  <meta name="keywords" content="price, strategy, premium, free, online, tool, utility">
+  <meta name="description" content="Compare Cost-Plus, Value-Based, Competitor, and Luxury Prestige pricing models side-by-side with margin and breakeven analytics.">
+  <meta name="keywords" content="price, strategy, luxury, prestige, cost plus, value based, markup, margins, breakeven, calculator">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/pricing-strategy-calculator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <style>
+    /* Custom Styling for Pricing Strategy Calculator */
+    .psc-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 1024px) {
+      .psc-grid {
+        grid-template-columns: 380px 1fr;
+      }
+    }
+
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .preset-chip {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .preset-chip:hover, .preset-chip.active {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .currency-input {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .currency-symbol {
+      position: absolute;
+      left: 0.85rem;
+      color: var(--text-tertiary);
+      font-weight: 600;
+      pointer-events: none;
+    }
+
+    .currency-input .form-input {
+      padding-left: 1.85rem;
+    }
+
+    .strategy-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .strategy-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .strategy-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .strategy-card.recommended-card {
+      border-color: var(--accent);
+      background: linear-gradient(180deg, var(--bg-secondary) 0%, rgba(78, 133, 191, 0.08) 100%);
+    }
+
+    .recommended-badge {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-full);
+    }
+
+    .strategy-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .strategy-price {
+      font-family: var(--font-display);
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.1;
+    }
+
+    .strategy-metrics {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      padding: 0.85rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .metric-label {
+      color: var(--text-secondary);
+    }
+
+    .metric-val {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-family: monospace;
+    }
+
+    .metric-val.positive {
+      color: var(--success);
+    }
+
+    /* Matrix Table */
+    .matrix-table-wrap {
+      overflow-x: auto;
+      margin-top: 1rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      text-align: left;
+    }
+
+    .matrix-table th {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 600;
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .matrix-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-primary);
+      vertical-align: middle;
+    }
+
+    .matrix-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .matrix-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .pill-green {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+    }
+
+    .pill-blue {
+      background: var(--accent-glow);
+      color: var(--accent);
+    }
+
+    .pill-amber {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+    }
+
+    .pill-purple {
+      background: rgba(168, 85, 247, 0.15);
+      color: #c084fc;
+    }
+
+    .info-tooltip {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      margin-top: 0.2rem;
+    }
+
+    .gold-accent {
+      color: #e5c07b;
+    }
+  </style>
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
@@ -27,28 +265,333 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Pricing Strategy Calculator</h1>
-        <p class="tool-description">Formulate premium pricing strategies.</p>
+        <p class="tool-description">Compare 4 dynamic pricing architectures: Cost-Plus, Value-Based, Competitor Benchmark, and Luxury Prestige Markup with instant margin, profit, and breakeven volume modeling.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Pricing Strategy Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Formulate premium pricing strategies.</div>
-            <div><strong>Inputs:</strong> price, strategy, premium</div>
-            <div><strong>Category:</strong> luxury</div>
-          </div>
-        </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+      <!-- Presets Selector -->
+      <div class="preset-chips">
+        <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); align-self: center; margin-right: 0.25rem;">PRESETS:</span>
+        <button type="button" class="preset-chip active" data-preset="haute-horlogerie">⌚ Haute Horlogerie</button>
+        <button type="button" class="preset-chip" data-preset="artisan-leather">👜 Artisan Leather Bag</button>
+        <button type="button" class="preset-chip" data-preset="niche-fragrance">✨ Niche Parfumerie</button>
+        <button type="button" class="preset-chip" data-preset="fine-jewelry">💎 High Jewelry</button>
+        <button type="button" class="preset-chip" data-preset="designer-fashion">🧥 Designer Apparel</button>
       </div>
-    
+
+      <!-- Main Calculator Grid -->
+      <div class="psc-grid">
+        
+        <!-- Controls Column -->
+        <div class="tool-panel glass-panel" style="gap: 1.15rem;">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v12M8 10h8"></path></svg>
+            Cost &amp; Valuation Inputs
+          </h2>
+
+          <!-- Currency Selector -->
+          <div class="form-group">
+            <label for="currency-selector">Currency Symbol</label>
+            <select id="currency-selector" class="form-select">
+              <option value="$" selected>USD ($)</option>
+              <option value="€">EUR (€)</option>
+              <option value="£">GBP (£)</option>
+              <option value="CHF ">CHF (Swiss Franc)</option>
+              <option value="¥">JPY / CNY (¥)</option>
+              <option value="AED ">AED (Dirham)</option>
+            </select>
+          </div>
+
+          <!-- Unit Cost -->
+          <div class="form-group">
+            <label for="unit-cost">Unit Production / Sourcing Cost (<span class="curr-sign">$</span>)</label>
+            <div class="currency-input">
+              <span class="currency-symbol curr-sign">$</span>
+              <input type="number" id="unit-cost" class="form-input" min="0" step="any" value="650">
+            </div>
+            <div class="info-tooltip">Direct materials, artisan labor &amp; direct fabrication</div>
+          </div>
+
+          <!-- Perceived Value -->
+          <div class="form-group">
+            <label for="perceived-value">Perceived Customer Value (<span class="curr-sign">$</span>)</label>
+            <div class="currency-input">
+              <span class="currency-symbol curr-sign">$</span>
+              <input type="number" id="perceived-value" class="form-input" min="0" step="any" value="4800">
+            </div>
+            <div class="info-tooltip">Maximum willingness-to-pay based on status &amp; utility</div>
+          </div>
+
+          <!-- Competitor Prices -->
+          <div class="form-group">
+            <label>Competitor Benchmarks (<span class="curr-sign">$</span>)</label>
+            <div class="input-row">
+              <div class="currency-input">
+                <span class="currency-symbol curr-sign">$</span>
+                <input type="number" id="comp-1" class="form-input" placeholder="Comp A" value="3200" title="Competitor A">
+              </div>
+              <div class="currency-input">
+                <span class="currency-symbol curr-sign">$</span>
+                <input type="number" id="comp-2" class="form-input" placeholder="Comp B" value="4100" title="Competitor B">
+              </div>
+            </div>
+            <div class="currency-input" style="margin-top: 0.5rem;">
+              <span class="currency-symbol curr-sign">$</span>
+              <input type="number" id="comp-3" class="form-input" placeholder="Comp C (Premium Peer)" value="5200" title="Competitor C">
+            </div>
+            <div class="info-tooltip">Benchmark average: <span id="comp-avg-display" style="font-weight: 600; color: var(--text-primary);">$4,167</span></div>
+          </div>
+
+          <!-- Fixed Overhead -->
+          <div class="form-group">
+            <label for="fixed-costs">Annual Fixed Overhead Costs (<span class="curr-sign">$</span>)</label>
+            <div class="currency-input">
+              <span class="currency-symbol curr-sign">$</span>
+              <input type="number" id="fixed-costs" class="form-input" min="0" step="1000" value="120000">
+            </div>
+            <div class="info-tooltip">Atelier rent, marketing, showroom &amp; administrative expenses</div>
+          </div>
+
+          <div style="border-top: 1px solid var(--border); margin: 0.25rem 0;"></div>
+
+          <!-- Sliders and Specific Multipliers -->
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label for="cost-plus-markup">Cost-Plus Markup %</label>
+              <span id="cost-plus-markup-val" class="range-value">60%</span>
+            </div>
+            <input type="range" id="cost-plus-markup" min="10" max="300" step="5" value="60" class="range-slider">
+          </div>
+
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label for="value-capture-ratio">Value Capture Ratio %</label>
+              <span id="value-capture-ratio-val" class="range-value">75%</span>
+            </div>
+            <input type="range" id="value-capture-ratio" min="20" max="100" step="5" value="75" class="range-slider">
+          </div>
+
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label for="competitor-positioning">Competitor Positioning</label>
+              <span id="competitor-positioning-val" class="range-value">+15% (Premium)</span>
+            </div>
+            <input type="range" id="competitor-positioning" min="-30" max="50" step="5" value="15" class="range-slider">
+          </div>
+
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label for="luxury-multiplier">Luxury Prestige Multiplier</label>
+              <span id="luxury-multiplier-val" class="range-value" style="color: #e5c07b;">8.5x</span>
+            </div>
+            <input type="range" id="luxury-multiplier" min="2.0" max="25.0" step="0.5" value="8.5" class="range-slider">
+            <div class="info-tooltip">Applies brand equity multiplier directly to artisan cost</div>
+          </div>
+
+          <div class="action-bar" style="margin-top: 0.5rem;">
+            <button type="button" id="reset-inputs-btn" class="btn btn-secondary" style="flex: 1; font-size: 0.85rem; padding: 0.6rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+              Reset
+            </button>
+            <button type="button" id="copy-summary-btn" class="btn btn-secondary" style="flex: 1; font-size: 0.85rem; padding: 0.6rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Summary
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Comparison Cards Column -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Recommendation Banner -->
+          <div id="recommendation-banner" class="tool-panel glass-panel" style="padding: 1.25rem 1.5rem; border-left: 4px solid var(--accent); flex-direction: row; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--accent-glow); display: flex; align-items: center; justify-content: center; color: var(--accent); flex-shrink: 0;">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              </div>
+              <div>
+                <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); font-weight: 700;">Optimal Architecture Match</div>
+                <div id="recommended-strategy-name" style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary);">Luxury Prestige Markup</div>
+                <p id="recommended-strategy-reason" style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.15rem;">High perceived value (7.4x cost) unlocks superior Veblen status pricing.</p>
+              </div>
+            </div>
+            <button type="button" id="export-csv-btn" class="btn btn-primary" style="font-size: 0.85rem; padding: 0.6rem 1.25rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export CSV
+            </button>
+          </div>
+
+          <!-- 4 Cards Side-by-Side -->
+          <div class="strategy-cards-grid">
+            
+            <!-- Card 1: Cost-Plus -->
+            <div class="strategy-card" id="card-cost-plus">
+              <div class="strategy-title">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                Cost-Plus
+              </div>
+              <div>
+                <div class="strategy-price" id="cost-plus-price">$1,040</div>
+                <div style="font-size: 0.75rem; color: var(--text-tertiary); font-weight: 600;">Cost + Markup Strategy</div>
+              </div>
+              <div class="strategy-metrics">
+                <div class="metric-row">
+                  <span class="metric-label">Gross Margin:</span>
+                  <span class="metric-val positive" id="cost-plus-margin">37.5%</span>
+                </div>
+                <div class="metric-row">
+                  <span class="metric-label">Unit Profit:</span>
+                  <span class="metric-val" id="cost-plus-profit">$390</span>
+                </div>
+                <div class="metric-row">
+                  <span class="metric-label">Markup on Cost:</span>
+                  <span class="metric-val" id="cost-plus-markup-stat">60.0%</span>
+                </div>
+                <div class="metric-row">
+                  <span class="metric-label">Breakeven Volume:</span>
+                  <span class="metric-val" id="cost-plus-breakeven">308 units</span>
+                </div>
+              </div>
+              <div style="font-size: 0.775rem; color: var(--text-tertiary); line-height: 1.4;">
+                Safe floor pricing ensuring direct unit profitability, ideal for contract wholesale.
+              </div>
+            </div>
+
+            <!-- Card 2: Value-Based -->
+            <div class="strategy-card" id="card-value-based">
+              <div class="strategy-title">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--success);"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                Value-Based
+              </div>
+              <div>
+                <div class="strategy-price" id="value-based-price">$3,600</div>
+                <div style="font-size: 0.75rem; color: var(--text-tertiary); font-weight: 600;">75% Value Captured</div>
+              </div>
+              <div class="strategy-metrics">
+                <div class="metric-row">
+                  <span class="metric-label">Gross Margin:</span>
+                  <span class="metric-val positive" id="value-based-margin">81.9%</span>
+                </div>
+                <div class="metric-row">
+                  <span class="metric-label">Unit Profit:</span>
+                  <span class="metric-val" id="value-based-profit">$2,950</span>
+                </div>
+                <div class="metric-row">
+                  <span class="metric-label">Consumer Surplus:</span>
+                  <span class="metric-val" id="value-surplus">$1,200</span>
+                </div>
+                <div class="metric-row">
+                  <span class="metric-label">Breakeven Volume:</span>
+                  <span class="metric-val" id="value-based-breakeven">41 units</span>
+                </div>
+              </div>
+              <div style="font-size: 0.775rem; color: var(--text-tertiary); line-height: 1.4;">
+                Anchored to customer's perceived benefit and delight rather than production costs.
+              </div>
+            </div>
+
+            <!-- Card 3: Competitor-Based -->
+            <div class="strategy-card" id="card-competitor">
+              <div class="strategy-title">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color: #c084fc;"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                Competitor-Based
+              </div>
+              <div>
+                <div class="strategy-price" id="competitor-price">$4,792</div>
+                <div style="font-size: 0.75rem; color: var(--text-tertiary); font-weight: 600;">Benchmark + 15%</div>
+              </div>
+              <div class="strategy-metrics">
+                <div class="metric-row">
+                  <span class="metric-label">Gross Margin:</span>
+                  <span class="metric-val positive" id="competitor-margin">86.4%</span>
+                </div>
+                <div class="metric-row">
+                  <span class="metric-label">Unit Profit:</span>
+                  <span class="metric-val" id="competitor-profit">$4,142</span>
+                </div>
+                <div class="metric-row">
+                  <span class="metric-label">Peer Difference:</span>
+                  <span class="metric-val" id="competitor-diff">+$625</span>
+                </div>
+                <div class="metric-row">
+                  <span class="metric-label">Breakeven Volume:</span>
+                  <span class="metric-val" id="competitor-breakeven">29 units</span>
+                </div>
+              </div>
+              <div style="font-size: 0.775rem; color: var(--text-tertiary); line-height: 1.4;">
+                Calibrated to tier alternatives, positioning your piece deliberately above market.
+              </div>
+            </div>
+
+            <!-- Card 4: Luxury Prestige Markup -->
+            <div class="strategy-card recommended-card" id="card-luxury-prestige">
+              <div class="recommended-badge" id="prestige-tag">TOP PRESTIGE</div>
+              <div class="strategy-title">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" class="gold-accent"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                Luxury Prestige
+              </div>
+              <div>
+                <div class="strategy-price" id="luxury-price" style="color: #e5c07b;">$5,525</div>
+                <div style="font-size: 0.75rem; color: var(--text-tertiary); font-weight: 600;">8.5x Artisan Multiplier</div>
+              </div>
+              <div class="strategy-metrics">
+                <div class="metric-row">
+                  <span class="metric-label">Gross Margin:</span>
+                  <span class="metric-val positive" id="luxury-margin">88.2%</span>
+                </div>
+                <div class="metric-row">
+                  <span class="metric-label">Unit Profit:</span>
+                  <span class="metric-val" id="luxury-profit">$4,875</span>
+                </div>
+                <div class="metric-row">
+                  <span class="metric-label">Prestige Multiple:</span>
+                  <span class="metric-val" id="luxury-mult-stat">8.5x</span>
+                </div>
+                <div class="metric-row">
+                  <span class="metric-label">Breakeven Volume:</span>
+                  <span class="metric-val" id="luxury-breakeven">25 units</span>
+                </div>
+              </div>
+              <div style="font-size: 0.775rem; color: var(--text-tertiary); line-height: 1.4;">
+                Veblen good pricing signaling scarcity, elite heritage, and peerless exclusivity.
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Strategy Suggestion Matrix -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              Strategy Suggestion &amp; Decision Matrix
+            </h2>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">Comprehensive evaluation comparing margin profile, volume demands, positioning risks, and fit for high-end commerce.</p>
+
+            <div class="matrix-table-wrap">
+              <table class="matrix-table">
+                <thead>
+                  <tr>
+                    <th>Strategy Model</th>
+                    <th>Target Price</th>
+                    <th>Gross Margin</th>
+                    <th>Breakeven Units</th>
+                    <th>Volume Need</th>
+                    <th>Primary Risk</th>
+                    <th>Suitability</th>
+                  </tr>
+                </thead>
+                <tbody id="matrix-tbody">
+                  <!-- Generated dynamically in script.js -->
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   </main>
 
@@ -62,7 +605,7 @@
     "@type": "WebApplication",
     "name": "Pricing Strategy Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/pricing-strategy-calculator/",
-    "description": "Formulate premium pricing strategies.",
+    "description": "Compare Cost-Plus, Value-Based, Competitor, and Luxury Prestige pricing models side-by-side with margin and breakeven analytics.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

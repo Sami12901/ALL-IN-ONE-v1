@@ -4,14 +4,242 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product Profit Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Calculate net profit per product sold.">
-  <meta name="keywords" content="product, profit, margin, free, online, tool, utility">
+  <meta name="description" content="Calculate net profit per unit, profit margin, markup percentage, breakeven selling price, and ROI with platform fee presets for Amazon, Shopify, eBay, and Etsy.">
+  <meta name="keywords" content="product profit calculator, ecommerce profit margin, amazon fba calculator, shopify profit, breakeven price, roi calculator">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/product-profit-calculator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Product Profit Calculator Workspace Styles */
+    .calculator-workarea {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+
+    @media (min-width: 992px) {
+      .calculator-workarea {
+        grid-template-columns: 1.1fr 1fr;
+      }
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    @media (max-width: 580px) {
+      .form-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .preset-chips-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .preset-chip {
+      padding: 0.45rem 0.9rem;
+      border-radius: var(--radius-full);
+      font-size: 0.825rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .preset-chip:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    .preset-chip.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    .section-divider {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin: 1.25rem 0 0.5rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-divider:first-of-type {
+      margin-top: 0;
+    }
+
+    /* KPI Highlights Cards */
+    .kpi-cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    @media (max-width: 500px) {
+      .kpi-cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kpi-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .kpi-card.hero-kpi {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.12), rgba(16, 185, 129, 0.08));
+      border: 1px solid rgba(78, 133, 191, 0.35);
+      padding: 1.25rem;
+      text-align: center;
+    }
+
+    .kpi-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+    }
+
+    .kpi-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .kpi-value.hero-val {
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: var(--success);
+    }
+
+    .kpi-sub {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    /* Profit Breakdown Segment Bar */
+    .breakdown-bar-container {
+      margin: 1.25rem 0;
+    }
+
+    .breakdown-bar {
+      height: 20px;
+      width: 100%;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      display: flex;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-bottom: 0.75rem;
+    }
+
+    .bar-segment {
+      height: 100%;
+      transition: width 0.3s ease;
+      position: relative;
+    }
+
+    .bar-seg-cogs { background: #3b82f6; }
+    .bar-seg-shipping { background: #f59e0b; }
+    .bar-seg-fees { background: #8b5cf6; }
+    .bar-seg-ads { background: #ec4899; }
+    .bar-seg-tax { background: #06b6d4; }
+    .bar-seg-profit { background: #10b981; }
+    .bar-seg-loss { background: #ef4444; }
+
+    .breakdown-legend {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-secondary);
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Breakdown Table */
+    .cost-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-top: 0.75rem;
+    }
+
+    .cost-table tr {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cost-table td {
+      padding: 0.5rem 0.25rem;
+    }
+
+    .cost-table td.col-val {
+      text-align: right;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .cost-table tr.total-cost-row {
+      border-top: 1px solid var(--accent);
+      font-weight: 700;
+    }
+
+    .health-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .health-great { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .health-good { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .health-warning { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .health-danger { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,28 +255,252 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Product Profit Calculator</h1>
-        <p class="tool-description">Calculate net profit per product sold.</p>
+        <p class="tool-description">Calculate net profit per unit, profit margins, markup, and breakeven selling price with platform fee presets.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Product Profit Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Calculate net profit per product sold.</div>
-            <div><strong>Inputs:</strong> product, profit, margin</div>
-            <div><strong>Category:</strong> ecommerce</div>
+      <!-- Preset Bar -->
+      <div class="tool-panel glass-panel" style="padding: 1rem 1.25rem;">
+        <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.5rem;">
+          Platform & Marketplace Presets
+        </span>
+        <div class="preset-chips-container">
+          <button type="button" class="preset-chip active" data-preset="amazon">Amazon (15% + FBA)</button>
+          <button type="button" class="preset-chip" data-preset="shopify">Shopify DTC (Stripe 2.9% + 30¢)</button>
+          <button type="button" class="preset-chip" data-preset="ebay">eBay (13.25% + 30¢)</button>
+          <button type="button" class="preset-chip" data-preset="etsy">Etsy (6.5% + 3% + 45¢)</button>
+          <button type="button" class="preset-chip" data-preset="custom">Custom / Manual</button>
+        </div>
+      </div>
+
+      <!-- Main Workspace Grid -->
+      <div class="calculator-workarea">
+        <!-- Input Form (Left) -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v12M8 10h8M8 14h6"></path></svg>
+            Product Cost & Pricing
+          </h2>
+
+          <div class="section-divider">Currency & Sales Target</div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="calc-currency">Currency Symbol</label>
+              <select id="calc-currency" class="form-select">
+                <option value="$" selected>USD ($)</option>
+                <option value="€">EUR (€)</option>
+                <option value="£">GBP (£)</option>
+                <option value="C$">CAD (C$)</option>
+                <option value="A$">AUD (A$)</option>
+                <option value="¥">JPY (¥)</option>
+                <option value="₹">INR (₹)</option>
+                <option value="৳">BDT (৳)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="inp-sell-price">Target Selling Price</label>
+              <input type="number" id="inp-sell-price" class="form-input" min="0" step="0.01" value="49.99">
+            </div>
+          </div>
+
+          <div class="section-divider">Direct Production & Fulfillment Costs</div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="inp-cost-price">Cost Price (COGS / Unit)</label>
+              <input type="number" id="inp-cost-price" class="form-input" min="0" step="0.01" value="14.50">
+            </div>
+            <div class="form-group">
+              <label for="inp-shipping-cost">Shipping Cost (per unit)</label>
+              <input type="number" id="inp-shipping-cost" class="form-input" min="0" step="0.01" value="4.80">
+            </div>
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="inp-packaging-cost">Packaging & Box Cost</label>
+              <input type="number" id="inp-packaging-cost" class="form-input" min="0" step="0.01" value="1.20">
+            </div>
+            <div class="form-group">
+              <label for="inp-ad-spend">Ad Spend / CAC (per unit)</label>
+              <input type="number" id="inp-ad-spend" class="form-input" min="0" step="0.01" value="6.50">
+            </div>
+          </div>
+
+          <div class="section-divider">Platform & Payment Fees</div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="inp-market-fee-pct">Marketplace Fee (%)</label>
+              <input type="number" id="inp-market-fee-pct" class="form-input" min="0" max="100" step="0.01" value="15.0">
+            </div>
+            <div class="form-group">
+              <label for="inp-market-fee-fixed">Marketplace Fixed Fee</label>
+              <input type="number" id="inp-market-fee-fixed" class="form-input" min="0" step="0.01" value="0.00">
+            </div>
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="inp-gateway-fee-pct">Payment Gateway Fee (%)</label>
+              <input type="number" id="inp-gateway-fee-pct" class="form-input" min="0" max="100" step="0.01" value="0.0">
+            </div>
+            <div class="form-group">
+              <label for="inp-gateway-fee-fixed">Payment Gateway Fixed Fee</label>
+              <input type="number" id="inp-gateway-fee-fixed" class="form-input" min="0" step="0.01" value="0.00">
+            </div>
+          </div>
+
+          <div class="section-divider">Taxes & Volume Projections</div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="inp-tax-pct">Sales Tax / VAT (%)</label>
+              <input type="number" id="inp-tax-pct" class="form-input" min="0" max="100" step="0.1" value="0.0">
+            </div>
+            <div class="form-group">
+              <label for="inp-monthly-units">Monthly Sales Volume (units)</label>
+              <input type="number" id="inp-monthly-units" class="form-input" min="1" step="1" value="100">
+            </div>
+          </div>
+
+          <div class="action-bar" style="margin-top: 1.5rem;">
+            <button type="button" id="btn-reset-calc" class="btn btn-secondary" style="width: 100%;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><polyline points="3 3 3 8 8 8"></polyline></svg>
+              Reset to Defaults
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Profit Analysis & Visuals (Right) -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+            <h2 class="panel-title" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+              Profitability Breakdown
+            </h2>
+            <div id="margin-health-badge" class="health-pill health-great">High Margin</div>
+          </div>
+
+          <!-- Hero KPI Cards -->
+          <div class="kpi-cards-grid" style="margin-top: 1rem;">
+            <div class="kpi-card hero-kpi">
+              <span class="kpi-title">Net Profit Per Unit</span>
+              <div id="out-net-profit" class="kpi-value hero-val">$15.49</div>
+              <span id="out-profit-status" class="kpi-sub" style="color: var(--success); font-weight: 600;">Positive Profit per Sale</span>
+            </div>
+
+            <div class="kpi-card">
+              <span class="kpi-title">Profit Margin</span>
+              <div id="out-profit-margin" class="kpi-value">31.0%</div>
+              <span class="kpi-sub">Net Profit / Sell Price</span>
+            </div>
+
+            <div class="kpi-card">
+              <span class="kpi-title">Markup on Cost</span>
+              <div id="out-markup" class="kpi-value">244.8%</div>
+              <span class="kpi-sub">(Sell Price - COGS) / COGS</span>
+            </div>
+
+            <div class="kpi-card">
+              <span class="kpi-title">Breakeven Sell Price</span>
+              <div id="out-breakeven" class="kpi-value">$31.76</div>
+              <span class="kpi-sub">Min. price for $0 profit</span>
+            </div>
+
+            <div class="kpi-card">
+              <span class="kpi-title">Return on Investment (ROI)</span>
+              <div id="out-roi" class="kpi-value">44.9%</div>
+              <span class="kpi-sub">Profit / Total Unit Cost</span>
+            </div>
+          </div>
+
+          <!-- Visual Profit Breakdown Bar -->
+          <div class="breakdown-bar-container">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.5rem;">
+              Revenue Distribution per Unit
+            </span>
+            <div class="breakdown-bar" id="breakdown-bar">
+              <div class="bar-segment bar-seg-cogs" id="bar-cogs" title="Cost of Goods" style="width: 29%;"></div>
+              <div class="bar-segment bar-seg-shipping" id="bar-shipping" title="Shipping & Packaging" style="width: 12%;"></div>
+              <div class="bar-segment bar-seg-fees" id="bar-fees" title="Platform & Payment Fees" style="width: 15%;"></div>
+              <div class="bar-segment bar-seg-ads" id="bar-ads" title="Marketing / CAC" style="width: 13%;"></div>
+              <div class="bar-segment bar-seg-tax" id="bar-tax" title="Taxes / VAT" style="width: 0%;"></div>
+              <div class="bar-segment bar-seg-profit" id="bar-profit" title="Net Profit" style="width: 31%;"></div>
+            </div>
+
+            <!-- Bar Legend -->
+            <div class="breakdown-legend">
+              <div class="legend-item"><span class="legend-dot" style="background: #3b82f6;"></span>COGS: <strong id="leg-cogs-pct">29%</strong></div>
+              <div class="legend-item"><span class="legend-dot" style="background: #f59e0b;"></span>Ship & Pack: <strong id="leg-ship-pct">12%</strong></div>
+              <div class="legend-item"><span class="legend-dot" style="background: #8b5cf6;"></span>Fees: <strong id="leg-fees-pct">15%</strong></div>
+              <div class="legend-item"><span class="legend-dot" style="background: #ec4899;"></span>Ad Spend: <strong id="leg-ads-pct">13%</strong></div>
+              <div class="legend-item"><span class="legend-dot" style="background: #06b6d4;"></span>Tax/VAT: <strong id="leg-tax-pct">0%</strong></div>
+              <div class="legend-item"><span class="legend-dot" style="background: #10b981;"></span>Net Profit: <strong id="leg-profit-pct">31%</strong></div>
+            </div>
+          </div>
+
+          <!-- Unit Itemized Cost Table -->
+          <div style="margin-top: 1.25rem;">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.25rem;">
+              Unit Economics Details
+            </span>
+            <table class="cost-table">
+              <tbody>
+                <tr>
+                  <td>Target Selling Price</td>
+                  <td class="col-val" id="row-sell-price">$49.99</td>
+                </tr>
+                <tr>
+                  <td>- Product Cost (COGS)</td>
+                  <td class="col-val" id="row-cogs" style="color: var(--text-secondary);">$14.50</td>
+                </tr>
+                <tr>
+                  <td>- Shipping & Packaging</td>
+                  <td class="col-val" id="row-shipping" style="color: var(--text-secondary);">$6.00</td>
+                </tr>
+                <tr>
+                  <td>- Platform & Gateway Fees</td>
+                  <td class="col-val" id="row-fees" style="color: var(--text-secondary);">$7.50</td>
+                </tr>
+                <tr>
+                  <td>- Marketing (Ad Spend / CAC)</td>
+                  <td class="col-val" id="row-ads" style="color: var(--text-secondary);">$6.50</td>
+                </tr>
+                <tr>
+                  <td>- Sales Tax / VAT</td>
+                  <td class="col-val" id="row-tax" style="color: var(--text-secondary);">$0.00</td>
+                </tr>
+                <tr class="total-cost-row">
+                  <td>Total Unit Expenses</td>
+                  <td class="col-val" id="row-total-cost" style="color: var(--error);">$34.50</td>
+                </tr>
+                <tr style="border-bottom: none; font-size: 0.95rem; font-weight: 800;">
+                  <td>Net Profit / Unit</td>
+                  <td class="col-val" id="row-net-profit" style="color: var(--success); font-size: 1.05rem;">+$15.49</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Monthly Projection Box -->
+          <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem; margin-top: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em;">
+                Monthly Projection (<span id="proj-unit-count">100</span> units)
+              </span>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; text-align: center;">
+              <div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">Monthly Revenue</div>
+                <div id="proj-revenue" style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary);">$4,999.00</div>
+              </div>
+              <div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">Monthly Costs</div>
+                <div id="proj-costs" style="font-size: 1.1rem; font-weight: 700; color: var(--error);">$3,450.00</div>
+              </div>
+              <div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">Monthly Profit</div>
+                <div id="proj-profit" style="font-size: 1.1rem; font-weight: 800; color: var(--success);">$1,549.00</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
 
@@ -62,7 +514,7 @@
     "@type": "WebApplication",
     "name": "Product Profit Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/product-profit-calculator/",
-    "description": "Calculate net profit per product sold.",
+    "description": "Calculate net profit per unit, profit margin, markup percentage, breakeven selling price, and ROI with platform fee presets for Amazon, Shopify, eBay, and Etsy.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

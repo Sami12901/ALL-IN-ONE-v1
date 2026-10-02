@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Scientific Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Advanced scientific math computations.">
-  <meta name="keywords" content="calculator, scientific, trig, math, equations, free, online, tool, utility">
+  <meta name="description" content="Advanced scientific calculator supporting arithmetic, exponents, roots, trigonometry, logarithms, memory functions, and calculation history.">
+  <meta name="keywords" content="scientific calculator, math calculator, online calculator, trig, sin, cos, tan, sqrt, log, memory, free utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/scientific-calculator/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,250 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+  
+  <style>
+    .calc-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      max-width: 1050px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    @media (min-width: 900px) {
+      .calc-container {
+        grid-template-columns: 1fr 340px;
+      }
+    }
+    .calculator-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+    .calc-screen {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      min-height: 120px;
+      justify-content: space-between;
+      position: relative;
+    }
+    .calc-screen-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+    }
+    .mode-indicators {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .mode-badge {
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      user-select: none;
+      transition: var(--transition);
+    }
+    .mode-badge.active {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .memory-badge {
+      display: none;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .calc-expression {
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      min-height: 1.5rem;
+      word-break: break-all;
+      text-align: right;
+      overflow-x: auto;
+      white-space: nowrap;
+      padding-bottom: 2px;
+    }
+    .calc-result {
+      font-family: var(--font-sans);
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      text-align: right;
+      line-height: 1.1;
+      word-break: break-all;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    .calc-result.preview {
+      color: var(--accent-light);
+      opacity: 0.85;
+    }
+    .calc-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.6rem;
+    }
+    @media (max-width: 480px) {
+      .calc-grid {
+        gap: 0.4rem;
+      }
+      .calc-btn {
+        padding: 0.65rem 0.25rem !important;
+        font-size: 0.85rem !important;
+      }
+    }
+    .calc-btn {
+      padding: 0.85rem 0.5rem;
+      border-radius: var(--radius-md);
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      transition: var(--transition);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    .calc-btn:hover {
+      background: var(--border);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    .calc-btn:active {
+      transform: translateY(0);
+    }
+    .calc-btn-num {
+      background: var(--bg-tertiary);
+      font-weight: 700;
+      font-size: 1.15rem;
+    }
+    .calc-btn-fn {
+      background: rgba(78, 133, 191, 0.1);
+      color: var(--accent);
+      border-color: rgba(78, 133, 191, 0.2);
+      font-size: 0.9rem;
+    }
+    .calc-btn-fn:hover {
+      background: rgba(78, 133, 191, 0.2);
+    }
+    .calc-btn-op {
+      background: rgba(137, 170, 204, 0.15);
+      color: var(--accent);
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+    .calc-btn-mem {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      background: var(--bg-secondary);
+    }
+    .calc-btn-danger {
+      background: rgba(239, 68, 68, 0.12);
+      color: #ef4444;
+      border-color: rgba(239, 68, 68, 0.25);
+    }
+    .calc-btn-danger:hover {
+      background: rgba(239, 68, 68, 0.25);
+    }
+    .calc-btn-equal {
+      background: var(--accent-gradient);
+      color: #ffffff;
+      font-size: 1.25rem;
+      font-weight: 700;
+      border-color: transparent;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+    .calc-btn-equal:hover {
+      opacity: 0.95;
+      box-shadow: 0 6px 18px var(--accent-glow);
+    }
+    .history-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-height: 600px;
+    }
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+    }
+    .history-list {
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      padding-right: 0.25rem;
+      flex: 1;
+    }
+    .history-item {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      transition: var(--transition);
+      text-align: right;
+    }
+    .history-item:hover {
+      border-color: var(--accent);
+      transform: translateX(-2px);
+    }
+    .history-expr {
+      font-size: 0.85rem;
+      color: var(--text-tertiary);
+      font-family: 'Consolas', 'Monaco', monospace;
+      word-break: break-all;
+    }
+    .history-res {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--accent);
+      word-break: break-all;
+    }
+    .history-time {
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+      text-align: left;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -26,29 +270,109 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Scientific Calculator</h1>
-        <p class="tool-description">Advanced scientific math computations.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Scientific Calculator</h1>
+        <p class="tool-description">Advanced precision math calculator with support for arithmetic, powers, square roots, trigonometry, logarithms, memory operations, and keyboard navigation.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Scientific Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Advanced scientific math computations.</div>
-            <div><strong>Inputs:</strong> calculator, scientific, trig, math, equations</div>
-            <div><strong>Category:</strong> math</div>
+      <!-- Calculator & History Container -->
+      <div class="calc-container">
+        <!-- Main Calculator Workspace -->
+        <div class="calculator-card glass-panel">
+          <!-- Display Screen -->
+          <div class="calc-screen" id="screen">
+            <div class="calc-screen-top">
+              <div class="mode-indicators">
+                <button type="button" class="mode-badge active" id="deg-rad-btn" title="Toggle Degrees or Radians">DEG</button>
+                <span class="memory-badge" id="mem-indicator">M</span>
+              </div>
+              <span id="calc-status" style="font-size: 0.75rem;">Standard</span>
+            </div>
+
+            <!-- Current Expression -->
+            <div class="calc-expression" id="expression-display"></div>
+
+            <!-- Calculated Result / Preview -->
+            <div class="calc-result" id="result-display">0</div>
+          </div>
+
+          <!-- Keypad Grid -->
+          <div class="calc-grid">
+            <!-- Row 1: Memory & Angle -->
+            <button class="calc-btn calc-btn-mem" data-action="deg-rad">DEG/RAD</button>
+            <button class="calc-btn calc-btn-mem" data-action="mc" title="Memory Clear">MC</button>
+            <button class="calc-btn calc-btn-mem" data-action="mr" title="Memory Recall">MR</button>
+            <button class="calc-btn calc-btn-mem" data-action="m-plus" title="Memory Add">M+</button>
+            <button class="calc-btn calc-btn-mem" data-action="m-minus" title="Memory Subtract">M-</button>
+
+            <!-- Row 2: Scientific Functions & Constants -->
+            <button class="calc-btn calc-btn-fn" data-val="sin(">sin</button>
+            <button class="calc-btn calc-btn-fn" data-val="cos(">cos</button>
+            <button class="calc-btn calc-btn-fn" data-val="tan(">tan</button>
+            <button class="calc-btn calc-btn-fn" data-val="pi" title="Pi (3.14159...)">&pi;</button>
+            <button class="calc-btn calc-btn-fn" data-val="e" title="Euler's Constant (2.71828...)">e</button>
+
+            <!-- Row 3: Powers, Roots, Logs -->
+            <button class="calc-btn calc-btn-fn" data-val="^" title="Power (x^y)">x^y</button>
+            <button class="calc-btn calc-btn-fn" data-val="sqrt(" title="Square Root">&radic;</button>
+            <button class="calc-btn calc-btn-fn" data-val="log10(" title="Base-10 Logarithm">log</button>
+            <button class="calc-btn calc-btn-fn" data-val="ln(" title="Natural Logarithm">ln</button>
+            <button class="calc-btn calc-btn-op" data-val="%" title="Modulo / Percentage">%</button>
+
+            <!-- Row 4: Parentheses & Edit Keys -->
+            <button class="calc-btn calc-btn-fn" data-val="(">(</button>
+            <button class="calc-btn calc-btn-fn" data-val=")">)</button>
+            <button class="calc-btn calc-btn-danger" data-action="backspace" title="Backspace (⌫)">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><line x1="18" y1="9" x2="12" y2="15"></line><line x1="12" y1="9" x2="18" y2="15"></line></svg>
+            </button>
+            <button class="calc-btn calc-btn-danger" data-action="clear-entry" title="Clear current entry">C</button>
+            <button class="calc-btn calc-btn-danger" data-action="all-clear" title="All Clear (AC)">AC</button>
+
+            <!-- Row 5: 7, 8, 9, ÷ -->
+            <button class="calc-btn calc-btn-num" data-val="7">7</button>
+            <button class="calc-btn calc-btn-num" data-val="8">8</button>
+            <button class="calc-btn calc-btn-num" data-val="9">9</button>
+            <button class="calc-btn calc-btn-op" data-val="/" title="Divide">&divide;</button>
+            <button class="calc-btn calc-btn-fn" data-action="square" title="Square (x²)">x&sup2;</button>
+
+            <!-- Row 6: 4, 5, 6, × -->
+            <button class="calc-btn calc-btn-num" data-val="4">4</button>
+            <button class="calc-btn calc-btn-num" data-val="5">5</button>
+            <button class="calc-btn calc-btn-num" data-val="6">6</button>
+            <button class="calc-btn calc-btn-op" data-val="*" title="Multiply">&times;</button>
+            <button class="calc-btn calc-btn-fn" data-action="invert" title="Reciprocal (1/x)">1/x</button>
+
+            <!-- Row 7: 1, 2, 3, - -->
+            <button class="calc-btn calc-btn-num" data-val="1">1</button>
+            <button class="calc-btn calc-btn-num" data-val="2">2</button>
+            <button class="calc-btn calc-btn-num" data-val="3">3</button>
+            <button class="calc-btn calc-btn-op" data-val="-" title="Subtract">&minus;</button>
+            <button class="calc-btn calc-btn-fn" data-action="negate" title="Toggle Positive/Negative">&plusmn;</button>
+
+            <!-- Row 8: 0, ., +, = -->
+            <button class="calc-btn calc-btn-num" data-val="0" style="grid-column: span 2;">0</button>
+            <button class="calc-btn calc-btn-num" data-val=".">.</button>
+            <button class="calc-btn calc-btn-op" data-val="+" title="Add">&plus;</button>
+            <button class="calc-btn calc-btn-equal" data-action="calculate" title="Calculate (=)">=</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- History Panel -->
+        <div class="history-card glass-panel">
+          <div class="history-header">
+            <h2 class="panel-title" style="margin: 0; padding: 0; border: none; font-size: 1.05rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              Calculation History
+            </h2>
+            <button id="clear-history-btn" class="btn btn-secondary" style="padding: 0.25rem 0.6rem; font-size: 0.75rem;" title="Clear calculation history">Clear</button>
+          </div>
+
+          <div class="history-list" id="history-list">
+            <div style="color: var(--text-tertiary); font-style: italic; text-align: center; padding: 2.5rem 1rem;">
+              No calculations yet. Enter an expression and press '=' to save history.
+            </div>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
 
@@ -62,7 +386,7 @@
     "@type": "WebApplication",
     "name": "Scientific Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/scientific-calculator/",
-    "description": "Advanced scientific math computations.",
+    "description": "Scientific math calculator with trigonometric, logarithmic, and power functions.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

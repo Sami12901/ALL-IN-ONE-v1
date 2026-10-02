@@ -4,14 +4,446 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Luxury Catalog Builder - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Build high-end product catalogs.">
-  <meta name="keywords" content="catalog, lookbook, luxury, free, online, tool, utility">
+  <meta name="description" content="Build high-end product lookbooks and luxury catalogs with craftsmanship details, image management, and print-ready presentation.">
+  <meta name="keywords" content="catalog, lookbook, luxury, showcase, craftsmanship, print catalog, high end, portfolio">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/luxury-catalog-builder/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Luxury Catalog Builder Styles */
+    :root {
+      --gold-accent: #d4af37;
+      --gold-light: #f3e5ab;
+      --gold-glow: rgba(212, 175, 55, 0.15);
+    }
+
+    .catalog-layout-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 1080px) {
+      .catalog-layout-grid {
+        grid-template-columns: 420px 1fr;
+      }
+    }
+
+    .gold-text {
+      color: var(--gold-accent);
+    }
+
+    /* Stats Bar */
+    .catalog-stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-pill {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .stat-pill-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      font-weight: 700;
+    }
+
+    .stat-pill-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-display);
+    }
+
+    /* Material Tag Suggestions */
+    .material-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.4rem;
+    }
+
+    .material-chip {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .material-chip:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      background: var(--accent-glow);
+    }
+
+    /* Image Preview Box */
+    .img-upload-box {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      text-align: center;
+      background: var(--bg-tertiary);
+      position: relative;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 140px;
+    }
+
+    .img-upload-box:hover, .img-upload-box.drag-over {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .img-preview-thumb {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+      display: none;
+    }
+
+    .img-upload-prompt {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    /* Preset Sample Images */
+    .image-presets-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.25rem;
+    }
+
+    .img-preset-btn {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      padding: 0;
+      overflow: hidden;
+      cursor: pointer;
+      background: var(--bg-tertiary);
+      transition: var(--transition);
+    }
+
+    .img-preset-btn:hover {
+      border-color: var(--gold-accent);
+      transform: scale(1.05);
+    }
+
+    .img-preset-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Lookbook Grid */
+    .lookbook-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .lookbook-filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .lookbook-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Luxury Item Card */
+    .luxury-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: var(--transition);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .luxury-card:hover {
+      border-color: rgba(212, 175, 55, 0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .luxury-card-media {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: #0d0e12;
+      overflow: hidden;
+    }
+
+    .luxury-card-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+
+    .luxury-card:hover .luxury-card-media img {
+      transform: scale(1.06);
+    }
+
+    .luxury-card-badge {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
+      background: rgba(10, 10, 10, 0.75);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      color: var(--gold-accent);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      z-index: 2;
+    }
+
+    .luxury-card-sku {
+      position: absolute;
+      bottom: 0.75rem;
+      right: 0.75rem;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      color: #ccc;
+      font-family: monospace;
+      font-size: 0.65rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      z-index: 2;
+    }
+
+    .luxury-card-body {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      gap: 0.75rem;
+    }
+
+    .luxury-collection-name {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-tertiary);
+      font-weight: 600;
+    }
+
+    .luxury-item-title {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin: 0.1rem 0;
+    }
+
+    .luxury-item-price {
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      color: var(--gold-accent);
+      font-weight: 800;
+    }
+
+    .luxury-item-details {
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      flex: 1;
+    }
+
+    .luxury-card-actions {
+      display: flex;
+      gap: 0.5rem;
+      border-top: 1px solid var(--border);
+      padding-top: 0.75rem;
+      margin-top: auto;
+    }
+
+    .card-action-btn {
+      flex: 1;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.775rem;
+      padding: 0.45rem 0.5rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+    }
+
+    .card-action-btn:hover {
+      background: var(--accent-glow);
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+
+    .card-action-btn.delete-btn:hover {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--error);
+      border-color: var(--error);
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      max-width: 720px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      position: relative;
+      animation: role-fade-in 0.3s ease;
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(0,0,0,0.6);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    /* Print Styles for Luxury Lookbook */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #111111 !important;
+      }
+      app-header, app-breadcrumbs, app-footer,
+      .catalog-stats-bar, .lookbook-toolbar, .catalog-editor-panel,
+      .preset-chips, .action-bar, .card-action-btn, #add-item-form,
+      .modal-overlay {
+        display: none !important;
+      }
+      .tool-layout {
+        padding: 0 !important;
+      }
+      .catalog-layout-grid {
+        display: block !important;
+      }
+      .tool-container {
+        max-width: 100% !important;
+        padding: 0 !important;
+      }
+      .tool-header h1 {
+        color: #000 !important;
+        font-family: 'Instrument Serif', Georgia, serif !important;
+        font-size: 2.5rem !important;
+        text-align: center !important;
+      }
+      .tool-description {
+        text-align: center !important;
+        color: #444 !important;
+        margin-bottom: 2rem !important;
+      }
+      .lookbook-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 2rem !important;
+      }
+      .luxury-card {
+        background: #ffffff !important;
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      .luxury-item-title, .luxury-item-price {
+        color: #000000 !important;
+      }
+      .luxury-card-badge {
+        background: #f4f4f4 !important;
+        color: #666 !important;
+        border-color: #ddd !important;
+      }
+      .luxury-card-sku {
+        background: #f4f4f4 !important;
+        color: #444 !important;
+      }
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,30 +459,238 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Luxury Catalog Builder</h1>
-        <p class="tool-description">Build high-end product catalogs.</p>
+        <p class="tool-description">Curate bespoke lookbooks and high-end product collections with craftsmanship narratives, high-resolution imagery, and magazine-ready print export.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Luxury Catalog Builder</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Build high-end product catalogs.</div>
-            <div><strong>Inputs:</strong> catalog, lookbook, luxury</div>
-            <div><strong>Category:</strong> luxury</div>
-          </div>
+      <!-- Top Stats Bar -->
+      <div class="catalog-stats-bar">
+        <div class="stat-pill">
+          <span class="stat-pill-label">Total Curated Pieces</span>
+          <span class="stat-pill-value" id="stats-total-items">4</span>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+        <div class="stat-pill">
+          <span class="stat-pill-label">Collection Valuation</span>
+          <span class="stat-pill-value gold-text" id="stats-total-val">$184,500</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-pill-label">Average Piece Value</span>
+          <span class="stat-pill-value" id="stats-avg-val">$46,125</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-pill-label">Active House / Brand</span>
+          <span class="stat-pill-value" id="stats-brand-name" style="font-size: 1.25rem;">Maison Aurum</span>
+        </div>
       </div>
-    
+
+      <!-- Main Layout Grid -->
+      <div class="catalog-layout-grid">
+        
+        <!-- Editor Panel -->
+        <div class="tool-panel glass-panel catalog-editor-panel" style="gap: 1.15rem;">
+          <h2 class="panel-title" id="form-heading">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+            <span id="form-action-title">Add Luxury Piece</span>
+          </h2>
+
+          <form id="item-form" style="display: flex; flex-direction: column; gap: 1rem;">
+            <input type="hidden" id="edit-item-id" value="">
+
+            <!-- Brand & Collection Row -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <label for="item-brand">Brand / Maison</label>
+                <input type="text" id="item-brand" class="form-input" value="Maison Aurum" required>
+              </div>
+              <div class="form-group">
+                <label for="item-collection">Collection</label>
+                <input type="text" id="item-collection" class="form-input" value="Sovereign Winter 2026" required>
+              </div>
+            </div>
+
+            <!-- Title & SKU Row -->
+            <div class="form-group">
+              <label for="item-title">Product Title</label>
+              <input type="text" id="item-title" class="form-input" placeholder="e.g. Celestial Tourbillon Chronograph" required>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr auto; gap: 0.5rem; align-items: flex-end;">
+              <div class="form-group" style="flex: 1;">
+                <label for="item-sku">SKU / Reference No.</label>
+                <input type="text" id="item-sku" class="form-input" placeholder="MA-WAT-2026-01" required>
+              </div>
+              <button type="button" id="btn-gen-sku" class="btn btn-secondary" style="padding: 0.75rem 0.85rem; font-size: 0.8rem;" title="Auto-generate SKU">
+                Auto SKU
+              </button>
+            </div>
+
+            <!-- Price & Currency & Category -->
+            <div style="display: grid; grid-template-columns: 80px 1fr; gap: 0.5rem;">
+              <div class="form-group">
+                <label for="item-currency">Curr</label>
+                <select id="item-currency" class="form-select">
+                  <option value="$" selected>$</option>
+                  <option value="€">€</option>
+                  <option value="£">£</option>
+                  <option value="CHF">CHF</option>
+                  <option value="¥">¥</option>
+                  <option value="AED">AED</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="item-price">Retail Price</label>
+                <input type="number" id="item-price" class="form-input" min="0" step="100" placeholder="e.g. 84500" required>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <label for="item-category">Category</label>
+                <select id="item-category" class="form-select">
+                  <option value="Timepieces">Timepieces</option>
+                  <option value="Haute Joaillerie">Haute Joaillerie</option>
+                  <option value="Leather Goods">Leather Goods</option>
+                  <option value="Haute Couture">Haute Couture</option>
+                  <option value="Fragrance">Fragrance</option>
+                  <option value="Bespoke Accessories">Bespoke Accessories</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="item-edition">Edition Status</label>
+                <select id="item-edition" class="form-select">
+                  <option value="Limited Edition (1 of 25)">Limited (1 of 25)</option>
+                  <option value="Bespoke Made-to-Order">Bespoke Made-to-Order</option>
+                  <option value="Permanent Collection">Permanent Collection</option>
+                  <option value="Atelier Reserve">Atelier Reserve</option>
+                  <option value="Private Salon Preview">Private Salon Preview</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Craftsmanship / Materials -->
+            <div class="form-group">
+              <label for="item-craftsmanship">Craftsmanship &amp; Provenance Details</label>
+              <textarea id="item-craftsmanship" class="form-textarea" style="min-height: 90px; font-family: var(--font-sans);" placeholder="Artisan hand-assembled calibre, Geneva seal finishing, 18K solid rose gold bezel, alligator leather strap..."></textarea>
+              <div class="material-chips">
+                <span class="material-chip" data-insert="Hand-stitched Full-Grain Calfskin">+ Calfskin</span>
+                <span class="material-chip" data-insert="18K Rose Gold Hardware">+ 18K Gold</span>
+                <span class="material-chip" data-insert="Swiss Haute Horlogerie Tourbillon">+ Tourbillon</span>
+                <span class="material-chip" data-insert="Flawless Diamond Pavé (VVS1)">+ Diamonds</span>
+                <span class="material-chip" data-insert="Grade 5 Brushed Titanium">+ Titanium</span>
+                <span class="material-chip" data-insert="Limited Numbered Atelier Edition">+ Numbered</span>
+              </div>
+            </div>
+
+            <!-- Image Upload & Preset -->
+            <div class="form-group">
+              <label>Product Imagery</label>
+              <div class="img-upload-box" id="img-dropzone">
+                <img id="img-preview" class="img-preview-thumb" alt="Product preview">
+                <div id="img-prompt-text" class="img-upload-prompt">
+                  <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                  <span>Drag &amp; drop high-res image, or <strong style="color: var(--accent);">browse</strong></span>
+                  <span style="font-size: 0.75rem; color: var(--text-tertiary);">Supports JPG, PNG, WEBP</span>
+                </div>
+                <input type="file" id="item-file-input" accept="image/*" style="display: none;">
+              </div>
+
+              <!-- Fallback Image URL input -->
+              <input type="url" id="item-image-url" class="form-input" style="margin-top: 0.5rem; font-size: 0.8rem;" placeholder="Or paste direct image URL...">
+
+              <!-- Sample Presets for Quick Testing -->
+              <div style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.5rem; font-weight: 600;">Sample Luxury Presets:</div>
+              <div class="image-presets-row">
+                <button type="button" class="img-preset-btn" data-img="watch" title="Haute Horlogerie">
+                  <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&auto=format&fit=crop&q=80" alt="Watch">
+                </button>
+                <button type="button" class="img-preset-btn" data-img="bag" title="Leather Bag">
+                  <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop&q=80" alt="Bag">
+                </button>
+                <button type="button" class="img-preset-btn" data-img="jewelry" title="Fine Jewelry">
+                  <img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&auto=format&fit=crop&q=80" alt="Ring">
+                </button>
+                <button type="button" class="img-preset-btn" data-img="perfume" title="Haute Fragrance">
+                  <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=600&auto=format&fit=crop&q=80" alt="Perfume">
+                </button>
+                <button type="button" class="img-preset-btn" data-img="fashion" title="Haute Couture">
+                  <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600&auto=format&fit=crop&q=80" alt="Couture">
+                </button>
+              </div>
+            </div>
+
+            <!-- Submit Button & Cancel -->
+            <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+              <button type="submit" id="btn-save-item" class="btn btn-primary" style="flex: 1;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span id="btn-save-label">Add Piece to Catalog</span>
+              </button>
+              <button type="button" id="btn-cancel-edit" class="btn btn-secondary" style="display: none;">Cancel</button>
+            </div>
+          </form>
+
+        </div>
+
+        <!-- Lookbook Preview & Management -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          
+          <!-- Toolbar -->
+          <div class="tool-panel glass-panel" style="padding: 1rem 1.25rem;">
+            <div class="lookbook-toolbar" style="margin-bottom: 0;">
+              
+              <!-- Search & Filter -->
+              <div class="lookbook-filter-group">
+                <input type="text" id="catalog-search" class="form-input" style="width: 180px; padding: 0.5rem 0.75rem; font-size: 0.85rem;" placeholder="Search catalog...">
+                <select id="catalog-filter-category" class="form-select" style="width: 150px; padding: 0.5rem 0.75rem; font-size: 0.85rem;">
+                  <option value="ALL">All Categories</option>
+                  <option value="Timepieces">Timepieces</option>
+                  <option value="Haute Joaillerie">Haute Joaillerie</option>
+                  <option value="Leather Goods">Leather Goods</option>
+                  <option value="Haute Couture">Haute Couture</option>
+                  <option value="Fragrance">Fragrance</option>
+                  <option value="Bespoke Accessories">Accessories</option>
+                </select>
+              </div>
+
+              <!-- Action Buttons -->
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button type="button" id="btn-print-catalog" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.85rem;" title="Print or Save PDF Lookbook">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                  Print Lookbook
+                </button>
+                <button type="button" id="btn-export-json" class="btn btn-secondary" style="padding: 0.5rem 0.85rem; font-size: 0.85rem;" title="Export Catalog JSON">
+                  Export JSON
+                </button>
+                <label class="btn btn-secondary" style="padding: 0.5rem 0.85rem; font-size: 0.85rem; cursor: pointer; margin: 0;" title="Import Catalog JSON">
+                  Import JSON
+                  <input type="file" id="import-json-input" accept=".json" style="display: none;">
+                </label>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Cards Grid -->
+          <div class="lookbook-grid" id="lookbook-cards-container">
+            <!-- Rendered dynamically by script.js -->
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   </main>
+
+  <!-- Lookbook Modal for Detailed Inspection -->
+  <div class="modal-overlay" id="item-modal">
+    <div class="modal-container">
+      <button type="button" class="modal-close-btn" id="modal-close-btn" aria-label="Close modal">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      <div id="modal-content-body" style="display: flex; flex-direction: column;">
+        <!-- Injected via script.js -->
+      </div>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,7 +702,7 @@
     "@type": "WebApplication",
     "name": "Luxury Catalog Builder",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/luxury-catalog-builder/",
-    "description": "Build high-end product catalogs.",
+    "description": "Build high-end product lookbooks and luxury catalogs with craftsmanship details, image management, and print-ready presentation.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

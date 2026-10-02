@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Excel Data Typing Practice - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Enhance your skills with Excel Data Typing Practice.">
-  <meta name="keywords" content="typing, keyboard, practice, free, online, tool, utility">
+  <title>Excel Data Typing Practice - Spreadsheet 10-Key Speed Test - ALL IN ONE</title>
+  <meta name="description" content="Master spreadsheet data entry and numeric keypad 10-key typing speed with realistic tabular rows, Tab/Enter keyboard navigation, and live WPM/KPM tracking.">
+  <meta name="keywords" content="excel data typing, spreadsheet practice, 10-key test, numpad speed test, data entry practice, keyboard navigation, wpm kpm">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/excel-data-typing-practice/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,353 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+  <style>
+    .excel-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    .excel-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+
+    .excel-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+    }
+
+    .excel-stat-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      transition: var(--transition);
+    }
+
+    .excel-stat-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .excel-stat-val {
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1.1;
+      font-family: var(--font-display), monospace;
+      color: var(--accent);
+    }
+
+    .excel-stat-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+      font-weight: 600;
+    }
+
+    /* Reference Card - Current Target Row */
+    .reference-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .reference-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+
+    .reference-row-display {
+      display: grid;
+      grid-template-columns: 70px repeat(6, 1fr) 110px;
+      gap: 0.5rem;
+      align-items: center;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem;
+      overflow-x: auto;
+    }
+
+    .ref-cell-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      min-width: 90px;
+    }
+
+    .ref-cell-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
+
+    .ref-cell-val {
+      font-family: 'Fira Code', Menlo, Consolas, monospace;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Spreadsheet Grid Container */
+    .spreadsheet-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Formula Bar */
+    .formula-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.6rem 1rem;
+      background: var(--bg-tertiary);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+
+    .cell-address-badge {
+      font-family: monospace;
+      font-weight: 700;
+      background: var(--bg-secondary);
+      padding: 0.25rem 0.6rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      min-width: 48px;
+      text-align: center;
+    }
+
+    .formula-fx {
+      font-style: italic;
+      font-family: 'Instrument Serif', serif;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      font-size: 1.1rem;
+    }
+
+    .formula-input-val {
+      flex: 1;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Table Styling */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      max-height: 480px;
+      position: relative;
+    }
+
+    .excel-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      min-width: 880px;
+    }
+
+    .excel-table th {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 600;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid var(--border);
+      text-align: left;
+      font-size: 0.8rem;
+      letter-spacing: 0.03em;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .excel-table th.col-header-excel {
+      text-align: center;
+      color: var(--accent);
+      width: 45px;
+    }
+
+    .excel-table td {
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.5rem;
+      background: var(--bg-secondary);
+      transition: background-color 0.15s ease;
+    }
+
+    .excel-table td.row-num {
+      text-align: center;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      background: var(--bg-tertiary);
+      user-select: none;
+      width: 45px;
+      font-size: 0.8rem;
+    }
+
+    .excel-table tr.active-row {
+      background: rgba(78, 133, 191, 0.08);
+    }
+
+    .excel-table tr.completed-row {
+      background: rgba(16, 185, 129, 0.05);
+    }
+
+    .excel-table tr.completed-row td.row-num {
+      color: var(--success);
+      font-weight: 800;
+    }
+
+    .cell-input {
+      width: 100%;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      padding: 0.45rem 0.6rem;
+      background: transparent;
+      color: var(--text-primary);
+      font-family: 'Fira Code', monospace;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .cell-input:focus {
+      background: var(--bg-primary);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .cell-input.valid {
+      color: #22c55e;
+      background: rgba(34, 197, 94, 0.08);
+    }
+
+    .cell-input.invalid {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.15);
+      border-color: var(--error);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .badge-pending {
+      background: var(--bg-tertiary);
+      color: var(--text-tertiary);
+      border: 1px solid var(--border);
+    }
+
+    .badge-active {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+
+    .badge-success {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid #10b981;
+    }
+
+    .badge-error {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid #ef4444;
+    }
+
+    /* Modal / Results Overlay */
+    .excel-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .excel-modal-backdrop.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .excel-modal-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 620px;
+      text-align: center;
+      transform: scale(0.92);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .excel-modal-backdrop.show .excel-modal-card {
+      transform: scale(1);
+    }
+
+    @media (max-width: 768px) {
+      .reference-row-display {
+        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,30 +374,179 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Excel Data Typing Practice</h1>
-        <p class="tool-description">Enhance your skills with Excel Data Typing Practice.</p>
+        <p class="tool-description">Simulate high-speed spreadsheet data entry. Hone your 10-key numeric keypad, tabular navigation with Tab and Enter, and precision row verification.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Excel Data Typing Practice</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Enhance your skills with Excel Data Typing Practice.</div>
-            <div><strong>Inputs:</strong> typing, keyboard, practice</div>
-            <div><strong>Category:</strong> typing</div>
+      <div class="excel-workspace">
+        
+        <!-- Controls Toolbar -->
+        <div class="excel-toolbar glass-panel">
+          <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center;">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;">Batch Size:</span>
+            <div class="tp-btn-group" id="batch-group">
+              <button class="tp-pill-btn" data-batch="5">5 Rows</button>
+              <button class="tp-pill-btn active" data-batch="10">10 Rows</button>
+              <button class="tp-pill-btn" data-batch="20">20 Rows</button>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center;">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;">Data Category:</span>
+            <div class="tp-btn-group" id="category-group">
+              <button class="tp-pill-btn active" data-cat="inventory">Inventory</button>
+              <button class="tp-pill-btn" data-cat="sales">Sales Ledger</button>
+              <button class="tp-pill-btn" data-cat="payroll">Employee Data</button>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <button id="excel-sound-btn" class="tp-pill-btn" title="Toggle Typing Sounds">
+              <span id="excel-sound-label">🔊 Audio On</span>
+            </button>
+            <button id="btn-generate-batch" class="btn btn-primary" style="padding: 0.45rem 0.9rem; font-size: 0.85rem;" title="Generate New Random Data Batch">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+              </svg>
+              <span>New Batch</span>
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Live Stats Dashboard -->
+        <div class="excel-stats-grid">
+          <div class="excel-stat-card">
+            <span class="excel-stat-val" id="stat-excel-wpm">0</span>
+            <span class="excel-stat-label">Data-Entry WPM</span>
+          </div>
+          <div class="excel-stat-card">
+            <span class="excel-stat-val" id="stat-excel-kpm" style="color: var(--accent);">0</span>
+            <span class="excel-stat-label">10-Key KPM</span>
+          </div>
+          <div class="excel-stat-card">
+            <span class="excel-stat-val" id="stat-excel-accuracy">100%</span>
+            <span class="excel-stat-label">Accuracy</span>
+          </div>
+          <div class="excel-stat-card">
+            <span class="excel-stat-val" id="stat-excel-rows" style="color: var(--success);">0 / 10</span>
+            <span class="excel-stat-label">Completed Rows</span>
+          </div>
+          <div class="excel-stat-card">
+            <span class="excel-stat-val" id="stat-excel-time">00:00</span>
+            <span class="excel-stat-label">Elapsed Time</span>
+          </div>
+        </div>
+
+        <!-- Reference Panel: Displays Target Data for Currently Active Row -->
+        <div class="reference-panel glass-panel">
+          <div class="reference-header">
+            <div>
+              <span style="font-weight: 700; color: var(--text-primary);">TARGET ROW PROMPT:</span>
+              <span id="ref-row-indicator" style="font-weight: 700; color: var(--accent); margin-left: 0.5rem;">Row #1</span>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-tertiary);">
+              Press <kbd style="background: var(--bg-tertiary); padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border);">Tab</kbd> for next cell &bull; Press <kbd style="background: var(--bg-tertiary); padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border);">Enter</kbd> to submit row
+            </div>
+          </div>
+
+          <div class="reference-row-display" id="reference-row-display">
+            <!-- Dynamically populated reference items -->
+          </div>
+        </div>
+
+        <!-- Spreadsheet Simulation Grid -->
+        <div class="spreadsheet-box glass-panel">
+          <!-- Excel Formula Bar -->
+          <div class="formula-bar">
+            <div class="cell-address-badge" id="formula-cell-addr">A1</div>
+            <div class="formula-fx">fx</div>
+            <div class="formula-input-val" id="formula-cell-val">Select a cell to begin typing</div>
+          </div>
+
+          <!-- Tabular Sheet Area -->
+          <div class="table-container">
+            <table class="excel-table" id="spreadsheet-table">
+              <thead>
+                <tr>
+                  <th class="col-header-excel">#</th>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>SKU</th>
+                  <th>Qty</th>
+                  <th>Price ($)</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                  <th style="text-align: center; width: 110px;">Verification</th>
+                </tr>
+              </thead>
+              <tbody id="spreadsheet-body">
+                <!-- Rows dynamically injected -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Feedback & Keyboard Helpers -->
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; font-size: 0.825rem; color: var(--text-secondary); padding: 0 0.5rem;">
+          <div id="row-feedback" style="font-weight: 600;">Type the values exactly as shown in the target row prompt above.</div>
+          <div style="display: flex; gap: 1rem;">
+            <span>Numerical Keystrokes: <strong id="stat-numpad-keystrokes" style="color: var(--text-primary);">0</strong></span>
+            <span>Total Errors: <strong id="stat-excel-errors" style="color: var(--error);">0</strong></span>
+          </div>
+        </div>
+
       </div>
-    
     </div>
   </main>
+
+  <!-- Excel Completion Modal -->
+  <div class="excel-modal-backdrop" id="excel-modal" role="dialog" aria-modal="true">
+    <div class="excel-modal-card">
+      <div class="badge" style="background: rgba(16, 185, 129, 0.2); color: #10b981; border-color: #10b981; margin-bottom: 1rem; font-size: 0.9rem; padding: 0.4rem 1.2rem;">
+        ★ DATA ENTRY SESSION COMPLETE
+      </div>
+      <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">Batch Reconciled!</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">All spreadsheet records were successfully keyed in and validated.</p>
+
+      <div class="tp-modal-scores">
+        <div>
+          <div id="modal-excel-wpm" style="font-size: 2.3rem; font-weight: 800; color: var(--accent); line-height: 1.1;">0</div>
+          <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-tertiary); font-weight: 700;">Data WPM</span>
+        </div>
+        <div>
+          <div id="modal-excel-kpm" style="font-size: 2.3rem; font-weight: 800; color: var(--success); line-height: 1.1;">0</div>
+          <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-tertiary); font-weight: 700;">10-Key KPM</span>
+        </div>
+        <div>
+          <div id="modal-excel-acc" style="font-size: 2.3rem; font-weight: 800; color: var(--text-primary); line-height: 1.1;">100%</div>
+          <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-tertiary); font-weight: 700;">Accuracy</span>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-around; font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.5rem; padding: 0.75rem; background: var(--bg-tertiary); border-radius: var(--radius-md);">
+        <div>Rows: <strong id="modal-excel-rows-count" style="color: var(--text-primary);">10 / 10</strong></div>
+        <div>Errors: <strong id="modal-excel-errs" style="color: var(--error);">0</strong></div>
+        <div>Time: <strong id="modal-excel-duration" style="color: var(--text-primary);">01:15</strong></div>
+      </div>
+
+      <div class="tp-modal-actions">
+        <button id="modal-excel-btn-retry" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.19"></path>
+          </svg>
+          Next Practice Batch
+        </button>
+        <a id="modal-excel-btn-cert" href="../typing-certificate-generator/" class="btn btn-secondary" style="border-color: var(--accent); color: var(--accent);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="7"></circle>
+            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+          </svg>
+          Claim Certificate
+        </a>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,8 +558,8 @@
     "@type": "WebApplication",
     "name": "Excel Data Typing Practice",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/excel-data-typing-practice/",
-    "description": "Enhance your skills with Excel Data Typing Practice.",
-    "applicationCategory": "UtilityPage",
+    "description": "Master spreadsheet data entry, numeric keypad 10-key speed, and Tab/Enter keyboard navigation.",
+    "applicationCategory": "EducationalApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

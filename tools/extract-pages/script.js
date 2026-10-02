@@ -26,7 +26,7 @@ class ExtractPages {
     this.fileInput.addEventListener('change', (e) => this.handleFile(e.target.files[0]));
 
     this.uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); this.uploadZone.classList.add('dragover'); });
-    this.uploadZone.addEventListener('dragleave', () => this.uploadZone.classList.remove('dragover'); });
+    this.uploadZone.addEventListener('dragleave', () => { this.uploadZone.classList.remove('dragover'); });
     this.uploadZone.addEventListener('drop', (e) => {
       e.preventDefault();
       this.uploadZone.classList.remove('dragover');

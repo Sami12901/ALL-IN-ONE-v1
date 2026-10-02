@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Visa Fee Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Calculate total visa processing costs.">
-  <meta name="keywords" content="visa, cost, travel, free, online, tool, utility">
+  <meta name="description" content="Calculate total visa processing costs, embassy fees, service charges, and taxes across popular travel destinations with multi-currency support.">
+  <meta name="keywords" content="visa fee calculator, travel visa cost, embassy fees, visa processing, visa quotation, free online tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/visa-fee-calculator/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,213 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+
+  <style>
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .calc-grid {
+        grid-template-columns: 1.15fr 1fr;
+        align-items: start;
+      }
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 576px) {
+      .form-row.two-cols {
+        grid-template-columns: 1fr 1fr;
+      }
+      .form-row.three-cols {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+    }
+    .speed-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+    @media (max-width: 480px) {
+      .speed-options {
+        grid-template-columns: 1fr;
+      }
+    }
+    .speed-card {
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 0.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .speed-card:hover {
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+    }
+    .speed-card.active {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+    .speed-card .speed-name {
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--text-primary);
+    }
+    .speed-card .speed-time {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+    .speed-card .speed-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.15rem 0.4rem;
+      border-radius: var(--radius-full);
+      background: rgba(255,255,255,0.06);
+      color: var(--accent);
+    }
+    .currency-pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .curr-pill {
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .curr-pill:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+    .curr-pill.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+    .breakdown-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+    .breakdown-table th {
+      text-align: left;
+      padding: 0.6rem 0.5rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+    }
+    .breakdown-table td {
+      padding: 0.65rem 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+    }
+    .breakdown-table tr.subtotal-row td {
+      border-top: 1px dashed var(--border);
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .breakdown-table tr.total-row td {
+      border-top: 2px solid var(--accent);
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
+    }
+    .total-highlight-card {
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.12), rgba(137, 170, 204, 0.04));
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .total-highlight-amount {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.1;
+      margin: 0.25rem 0;
+      letter-spacing: -0.02em;
+    }
+    .toast-msg {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      color: var(--text-primary);
+      border: 1px solid var(--accent);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      z-index: 1000;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+    .toast-msg.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      app-header, app-breadcrumbs, app-footer, .no-print, .btn, .speed-options, .currency-pill-group {
+        display: none !important;
+      }
+      .calc-grid {
+        display: block !important;
+      }
+      .tool-panel {
+        border: 1px solid #ddd !important;
+        background: #fff !important;
+        color: #000 !important;
+        box-shadow: none !important;
+      }
+      .breakdown-table th, .breakdown-table td {
+        color: #000 !important;
+        border-color: #ddd !important;
+      }
+      .total-highlight-card {
+        border-color: #333 !important;
+        background: #f9f9f9 !important;
+      }
+      .total-highlight-amount {
+        color: #000 !important;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,30 +234,216 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Visa Fee Calculator</h1>
-        <p class="tool-description">Calculate total visa processing costs.</p>
+        <p class="tool-description">Estimate official embassy visa fees, administrative charges, optional insurance, and expedited processing costs across top destinations.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Visa Fee Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Calculate total visa processing costs.</div>
-            <div><strong>Inputs:</strong> visa, cost, travel</div>
-            <div><strong>Category:</strong> travel</div>
+      <div class="calc-grid">
+        
+        <!-- Left Panel: Configuration & Parameters -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+              <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+              <line x1="7" y1="8" x2="17" y2="8"></line>
+              <line x1="7" y1="12" x2="17" y2="12"></line>
+              <line x1="7" y1="16" x2="13" y2="16"></line>
+            </svg>
+            Visa Application Parameters
           </div>
+
+          <!-- Currency Selector -->
+          <div class="form-group">
+            <label>Display Currency</label>
+            <div class="currency-pill-group" id="currency-pills">
+              <button type="button" class="curr-pill active" data-currency="USD">USD ($)</button>
+              <button type="button" class="curr-pill" data-currency="EUR">EUR (€)</button>
+              <button type="button" class="curr-pill" data-currency="GBP">GBP (£)</button>
+              <button type="button" class="curr-pill" data-currency="BDT">BDT (৳)</button>
+              <button type="button" class="curr-pill" data-currency="SAR">SAR (﷼)</button>
+            </div>
+          </div>
+
+          <!-- Destination & Visa Type -->
+          <div class="form-row two-cols">
+            <div class="form-group">
+              <label for="dest-country">Destination Country</label>
+              <select id="dest-country" class="form-select">
+                <option value="USA" selected>United States (USA)</option>
+                <option value="UK">United Kingdom (UK)</option>
+                <option value="Schengen">Schengen Area (Europe)</option>
+                <option value="Saudi Arabia">Saudi Arabia (KSA)</option>
+                <option value="UAE">United Arab Emirates (UAE)</option>
+                <option value="Canada">Canada</option>
+                <option value="Australia">Australia</option>
+                <option value="Singapore">Singapore</option>
+                <option value="Malaysia">Malaysia</option>
+                <option value="India">India</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="visa-type">Visa Category / Type</label>
+              <select id="visa-type" class="form-select">
+                <option value="Tourist" selected>Tourist / Visitor</option>
+                <option value="Business">Business Visa</option>
+                <option value="Student">Student / Study Permit</option>
+                <option value="Transit">Transit Visa</option>
+                <option value="Work">Work / Employment</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Processing Speed Selection -->
+          <div class="form-group">
+            <label>Processing Speed</label>
+            <div class="speed-options" id="speed-selector">
+              <div class="speed-card active" data-speed="standard">
+                <span class="speed-name">Standard</span>
+                <span class="speed-time">10–15 Days</span>
+                <span class="speed-badge">Normal</span>
+              </div>
+              <div class="speed-card" data-speed="express">
+                <span class="speed-name">Express</span>
+                <span class="speed-time">5–7 Days</span>
+                <span class="speed-badge">+ Priority</span>
+              </div>
+              <div class="speed-card" data-speed="urgent">
+                <span class="speed-name">Urgent</span>
+                <span class="speed-time">2–3 Days</span>
+                <span class="speed-badge">+ VIP Fast</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Applicants & Custom Base Overrides -->
+          <div class="form-row three-cols">
+            <div class="form-group">
+              <label for="applicants-count">Applicants</label>
+              <input type="number" id="applicants-count" class="form-input" min="1" max="25" value="1">
+            </div>
+
+            <div class="form-group">
+              <label for="embassy-fee">Embassy Fee (<span class="curr-code">USD</span>)</label>
+              <input type="number" id="embassy-fee" class="form-input" min="0" step="any" value="185">
+            </div>
+
+            <div class="form-group">
+              <label for="service-charge">Service Charge (<span class="curr-code">USD</span>)</label>
+              <input type="number" id="service-charge" class="form-input" min="0" step="any" value="30">
+            </div>
+          </div>
+
+          <!-- Add-ons & Taxes -->
+          <div class="form-group" style="margin-top: 0.25rem;">
+            <label>Optional Add-ons & Taxes</label>
+            <div class="checkbox-group" style="gap: 0.6rem;">
+              <label class="checkbox-label">
+                <input type="checkbox" id="include-insurance" checked>
+                <span>Travel & Medical Insurance (<span id="insurance-rate-disp">$25</span> per applicant)</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="include-courier">
+                <span>Passport Courier & SMS Tracking (<span id="courier-rate-disp">$15</span> per applicant)</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-row two-cols" style="align-items: center;">
+            <div class="form-group">
+              <label for="tax-rate">Government / Agency VAT (%)</label>
+              <input type="number" id="tax-rate" class="form-input" min="0" max="50" step="0.5" value="5">
+            </div>
+            <div class="form-group" style="padding-top: 1.4rem;">
+              <button type="button" id="btn-reset" class="btn btn-secondary" style="width: 100%;">
+                Reset to Standard Defaults
+              </button>
+            </div>
+          </div>
+
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Panel: Quotation & Itemized Breakdown -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title" style="justify-content: space-between;">
+            <span style="display: flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+                <line x1="12" y1="1" x2="12" y2="23"></line>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+              </svg>
+              Quotation Summary
+            </span>
+            <span id="country-tag" class="badge">USA &bull; Tourist</span>
+          </div>
+
+          <!-- Grand Total Hero Card -->
+          <div class="total-highlight-card">
+            <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); font-weight: 700;">
+              Total Estimated Payable
+            </div>
+            <div class="total-highlight-amount" id="grand-total-disp">$236.25</div>
+            <div style="font-size: 0.825rem; color: var(--text-secondary);" id="per-person-disp">
+              $236.25 per applicant &bull; 1 Applicant
+            </div>
+          </div>
+
+          <!-- Timeline & Speed Badge -->
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 0.9rem; background: var(--bg-tertiary); border-radius: var(--radius-md); font-size: 0.825rem; border: 1px solid var(--border);">
+            <span style="color: var(--text-secondary);">Estimated Processing Turnaround:</span>
+            <span id="timeline-disp" style="font-weight: 700; color: var(--accent);">10–15 Business Days</span>
+          </div>
+
+          <!-- Itemized Breakdown Table -->
+          <div style="overflow-x: auto; margin-top: 0.5rem;">
+            <table class="breakdown-table">
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th style="text-align: right;">Unit Fee</th>
+                  <th style="text-align: center;">Qty</th>
+                  <th style="text-align: right;">Total</th>
+                </tr>
+              </thead>
+              <tbody id="breakdown-body">
+                <!-- Populated via script.js -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Actions: Copy & Print -->
+          <div class="action-bar no-print" style="margin-top: 1rem;">
+            <button type="button" id="btn-copy" class="btn btn-primary" style="flex: 1;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy Summary
+            </button>
+            <button type="button" id="btn-print" class="btn btn-secondary" style="flex: 1;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+              </svg>
+              Print / Save Quote
+            </button>
+          </div>
+
+          <div style="font-size: 0.75rem; color: var(--text-tertiary); text-align: center; margin-top: 0.5rem;">
+            *Embassy fees are set by consular authorities and subject to exchange rate fluctuations.
+          </div>
+
+        </div>
+
       </div>
-    
+
     </div>
   </main>
+
+  <div id="toast" class="toast-msg">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">Quotation copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,7 +455,7 @@
     "@type": "WebApplication",
     "name": "Visa Fee Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/visa-fee-calculator/",
-    "description": "Calculate total visa processing costs.",
+    "description": "Calculate total visa processing costs, embassy fees, service charges, and taxes across popular travel destinations with multi-currency support.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

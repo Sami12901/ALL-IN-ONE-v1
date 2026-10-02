@@ -4,14 +4,294 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Receipt Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create digital purchase receipts.">
-  <meta name="keywords" content="receipt, proof, purchase, free, online, tool, utility">
+  <meta name="description" content="Generate authentic thermal POS receipts for retail, cafes, restaurants, and businesses. Customize line items, taxes, discounts, tender, and change.">
+  <meta name="keywords" content="receipt generator, thermal receipt maker, pos receipt, sales receipt, store proof of purchase, fake receipt maker">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/receipt-generator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Receipt Generator Workspace Styles */
+    .receipt-workarea {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+
+    @media (min-width: 1024px) {
+      .receipt-workarea {
+        grid-template-columns: 1.15fr 0.85fr;
+      }
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    @media (max-width: 600px) {
+      .form-grid-2, .form-grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .sub-section-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 1.25rem 0 0.5rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .sub-section-title:first-of-type {
+      margin-top: 0;
+    }
+
+    /* Dynamic Items Table in Editor */
+    .receipt-items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+    }
+
+    .receipt-items-table th {
+      text-align: left;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      padding: 0.5rem 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .receipt-items-table td {
+      padding: 0.4rem;
+      vertical-align: middle;
+    }
+
+    .receipt-items-table input {
+      padding: 0.5rem 0.6rem;
+      font-size: 0.875rem;
+    }
+
+    .btn-icon-del {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: var(--error);
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-icon-del:hover {
+      background: var(--error);
+      color: #fff;
+    }
+
+    /* Thermal Receipt Authentic Preview Styling */
+    .receipt-preview-wrapper {
+      position: sticky;
+      top: 5.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+    }
+
+    .thermal-paper {
+      position: relative;
+      width: 100%;
+      max-width: 360px;
+      background: #ffffff;
+      color: #111827;
+      font-family: 'Courier New', Courier, 'Lucida Console', Monaco, monospace;
+      padding: 2rem 1.5rem;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 0, 0, 0.05);
+      border-radius: 2px;
+      line-height: 1.4;
+      font-size: 0.85rem;
+    }
+
+    /* Sawtooth jagged paper edges */
+    .thermal-paper::before {
+      content: "";
+      position: absolute;
+      top: -8px;
+      left: 0;
+      right: 0;
+      height: 8px;
+      background: linear-gradient(135deg, transparent 4px, #ffffff 4px),
+                  linear-gradient(-135deg, transparent 4px, #ffffff 4px);
+      background-size: 12px 8px;
+    }
+
+    .thermal-paper::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      right: 0;
+      height: 8px;
+      background: linear-gradient(45deg, transparent 4px, #ffffff 4px),
+                  linear-gradient(-45deg, transparent 4px, #ffffff 4px);
+      background-size: 12px 8px;
+    }
+
+    .rcpt-header {
+      text-align: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .rcpt-business-title {
+      font-size: 1.25rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+
+    .rcpt-business-sub {
+      font-size: 0.75rem;
+      color: #4b5563;
+      margin-bottom: 0.15rem;
+    }
+
+    .rcpt-divider {
+      border: none;
+      border-top: 1px dashed #6b7280;
+      margin: 0.65rem 0;
+    }
+
+    .rcpt-double-divider {
+      border: none;
+      border-top: 2px dashed #111827;
+      margin: 0.65rem 0;
+    }
+
+    .rcpt-meta-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: #374151;
+      margin-bottom: 0.2rem;
+    }
+
+    .rcpt-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.5rem 0;
+      font-size: 0.8rem;
+    }
+
+    .rcpt-table th {
+      text-align: left;
+      font-weight: 700;
+      padding: 0.25rem 0;
+      border-bottom: 1px dashed #6b7280;
+    }
+
+    .rcpt-table th.col-r, .rcpt-table td.col-r {
+      text-align: right;
+    }
+
+    .rcpt-table td {
+      padding: 0.3rem 0;
+      vertical-align: top;
+    }
+
+    .rcpt-summary-line {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.2rem 0;
+      font-size: 0.825rem;
+    }
+
+    .rcpt-total-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.15rem;
+      font-weight: 900;
+      padding: 0.4rem 0;
+      letter-spacing: 0.02em;
+    }
+
+    .rcpt-barcode-container {
+      text-align: center;
+      margin-top: 1rem;
+      padding-top: 0.5rem;
+    }
+
+    .rcpt-barcode-svg {
+      width: 80%;
+      height: 42px;
+      margin: 0 auto;
+      display: block;
+    }
+
+    .rcpt-footer-note {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #4b5563;
+      margin-top: 0.75rem;
+      line-height: 1.4;
+      white-space: pre-line;
+    }
+
+    /* Print media styles */
+    @media print {
+      app-header, app-breadcrumbs, app-footer, .tool-header, .receipt-editor-panel, .action-bar, .no-print {
+        display: none !important;
+      }
+      body, main, .tool-layout, .tool-container, .receipt-workarea {
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: block !important;
+        width: 100% !important;
+      }
+      .receipt-preview-wrapper {
+        position: static !important;
+        border: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+      }
+      .thermal-paper {
+        box-shadow: none !important;
+        margin: 0 auto !important;
+        padding: 10mm 5mm !important;
+      }
+      .thermal-paper::before, .thermal-paper::after {
+        display: none !important;
+      }
+      @page {
+        size: auto;
+        margin: 5mm;
+      }
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,28 +307,288 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Receipt Generator</h1>
-        <p class="tool-description">Create digital purchase receipts.</p>
+        <p class="tool-description">Create authentic, printable thermal POS receipts for retail shops, cafes, and business transactions.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Receipt Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create digital purchase receipts.</div>
-            <div><strong>Inputs:</strong> receipt, proof, purchase</div>
-            <div><strong>Category:</strong> ecommerce</div>
+      <!-- Action Bar -->
+      <div class="action-bar no-print">
+        <button id="btn-print-rcpt" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          Print Thermal Receipt
+        </button>
+        <button id="btn-copy-txt" class="btn btn-secondary">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          Copy Text Receipt
+        </button>
+        <button id="btn-sample-rcpt" class="btn btn-secondary">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          Load Sample (Cafe)
+        </button>
+        <button id="btn-reset-rcpt" class="btn btn-secondary">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><polyline points="3 3 3 8 8 8"></polyline></svg>
+          Reset Form
+        </button>
+      </div>
+
+      <!-- Main Workspace -->
+      <div class="receipt-workarea">
+        <!-- Form Controls (Left) -->
+        <div class="tool-panel glass-panel receipt-editor-panel no-print">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            Receipt Settings
+          </h2>
+
+          <!-- Business Info -->
+          <div class="sub-section-title">Store & Business Details</div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="rcpt-store-name">Business / Store Name</label>
+              <input type="text" id="rcpt-store-name" class="form-input" value="THE DAILY ROAST COFFEE">
+            </div>
+            <div class="form-group">
+              <label for="rcpt-tagline">Branch / Subtitle</label>
+              <input type="text" id="rcpt-tagline" class="form-input" value="Artisan Espresso & Bakery">
+            </div>
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="rcpt-address">Address & City</label>
+              <input type="text" id="rcpt-address" class="form-input" value="542 Market St, San Francisco, CA">
+            </div>
+            <div class="form-group">
+              <label for="rcpt-phone">Phone / Tax Registration</label>
+              <input type="text" id="rcpt-phone" class="form-input" value="Tel: (415) 555-0199 | Tax: 94-82194">
+            </div>
+          </div>
+
+          <!-- Transaction Info -->
+          <div class="sub-section-title">Transaction Details</div>
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label for="rcpt-number">Receipt #</label>
+              <div style="display: flex; gap: 0.35rem;">
+                <input type="text" id="rcpt-number" class="form-input" value="REC-84920">
+                <button type="button" id="btn-gen-num" class="btn btn-secondary" style="padding: 0.4rem 0.6rem;" title="Generate Random ID">🎲</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="rcpt-datetime">Date & Time</label>
+              <input type="datetime-local" id="rcpt-datetime" class="form-input">
+            </div>
+            <div class="form-group">
+              <label for="rcpt-cashier">Cashier / Server</label>
+              <input type="text" id="rcpt-cashier" class="form-input" value="Jordan S. (Reg 01)">
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="rcpt-currency">Currency Symbol</label>
+              <select id="rcpt-currency" class="form-select">
+                <option value="$" selected>USD ($)</option>
+                <option value="€">EUR (€)</option>
+                <option value="£">GBP (£)</option>
+                <option value="C$">CAD (C$)</option>
+                <option value="A$">AUD (A$)</option>
+                <option value="¥">JPY (¥)</option>
+                <option value="₹">INR (₹)</option>
+                <option value="৳">BDT (৳)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="rcpt-payment-method">Payment Method</label>
+              <select id="rcpt-payment-method" class="form-select">
+                <option value="Cash" selected>Cash</option>
+                <option value="Credit Card">Credit Card (Visa / MC)</option>
+                <option value="Debit Card">Debit Card</option>
+                <option value="Mobile Pay">Mobile Pay (Apple / Google)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Items Table -->
+          <div class="sub-section-title" style="justify-content: space-between;">
+            <span>Purchased Items</span>
+            <button type="button" id="btn-rcpt-add-item" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+              + Add Item
+            </button>
+          </div>
+
+          <div style="overflow-x: auto;">
+            <table class="receipt-items-table">
+              <thead>
+                <tr>
+                  <th style="min-width: 140px;">Item Name</th>
+                  <th style="width: 65px;">Qty</th>
+                  <th style="width: 85px;">Price</th>
+                  <th style="width: 75px; text-align: right;">Total</th>
+                  <th style="width: 40px; text-align: center;"></th>
+                </tr>
+              </thead>
+              <tbody id="rcpt-items-tbody">
+                <!-- Dynamically populated items -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Taxes, Discounts & Payment Tendered -->
+          <div class="sub-section-title">Discounts, Taxes & Tender</div>
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label for="rcpt-tax-pct">Tax Rate (%)</label>
+              <input type="number" id="rcpt-tax-pct" class="form-input" min="0" max="100" step="0.25" value="8.5">
+            </div>
+            <div class="form-group">
+              <label for="rcpt-discount">Discount (Fixed $)</label>
+              <input type="number" id="rcpt-discount" class="form-input" min="0" step="0.01" value="0.00">
+            </div>
+            <div class="form-group">
+              <label for="rcpt-tendered">Amount Tendered</label>
+              <input type="number" id="rcpt-tendered" class="form-input" min="0" step="0.01" value="30.00">
+            </div>
+          </div>
+
+          <!-- Footer note -->
+          <div class="sub-section-title">Receipt Footer Message</div>
+          <div class="form-group">
+            <textarea id="rcpt-footer-input" class="form-textarea" style="min-height: 70px;">*** THANK YOU FOR YOUR VISIT! ***
+Free WiFi: DailyRoastGuest (pw: coffee2026)
+Retain receipt for returns within 14 days.
+www.dailyroastcoffee.example.com</textarea>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- POS Thermal Receipt Preview (Right) -->
+        <div class="receipt-preview-wrapper">
+          <div id="receipt-paper" class="thermal-paper">
+            <!-- Header -->
+            <div class="rcpt-header">
+              <div id="prev-store-name" class="rcpt-business-title">THE DAILY ROAST COFFEE</div>
+              <div id="prev-store-tagline" class="rcpt-business-sub">Artisan Espresso & Bakery</div>
+              <div id="prev-store-address" class="rcpt-business-sub">542 Market St, San Francisco, CA</div>
+              <div id="prev-store-phone" class="rcpt-business-sub">Tel: (415) 555-0199 | Tax: 94-82194</div>
+            </div>
+
+            <hr class="rcpt-divider">
+
+            <!-- Meta Data -->
+            <div class="rcpt-meta-row">
+              <span>RC#: <strong id="prev-rcpt-num">REC-84920</strong></span>
+              <span id="prev-rcpt-date">10/02/2026 12:45 PM</span>
+            </div>
+            <div class="rcpt-meta-row">
+              <span>CLERK: <span id="prev-cashier">Jordan S. (Reg 01)</span></span>
+              <span>PAY: <span id="prev-pay-method">Cash</span></span>
+            </div>
+
+            <hr class="rcpt-divider">
+
+            <!-- Table of Items -->
+            <table class="rcpt-table">
+              <thead>
+                <tr>
+                  <th style="width: 15%;">QTY</th>
+                  <th style="width: 55%;">ITEM</th>
+                  <th class="col-r" style="width: 30%;">TOTAL</th>
+                </tr>
+              </thead>
+              <tbody id="prev-rcpt-items">
+                <!-- Dynamically rendered -->
+              </tbody>
+            </table>
+
+            <hr class="rcpt-divider">
+
+            <!-- Financial Calculation Totals -->
+            <div class="rcpt-summary-line">
+              <span>SUBTOTAL:</span>
+              <span id="prev-rcpt-subtotal">$0.00</span>
+            </div>
+            <div class="rcpt-summary-line" id="prev-rcpt-disc-row" style="display: none;">
+              <span>DISCOUNT:</span>
+              <span id="prev-rcpt-discount">-$0.00</span>
+            </div>
+            <div class="rcpt-summary-line">
+              <span>SALES TAX (<span id="prev-rcpt-tax-pct">8.5</span>%):</span>
+              <span id="prev-rcpt-tax">$0.00</span>
+            </div>
+
+            <hr class="rcpt-double-divider">
+
+            <div class="rcpt-total-line">
+              <span>TOTAL DUE:</span>
+              <span id="prev-rcpt-total">$0.00</span>
+            </div>
+
+            <hr class="rcpt-double-divider">
+
+            <!-- Tendered & Change -->
+            <div class="rcpt-summary-line">
+              <span>AMOUNT TENDERED:</span>
+              <span id="prev-rcpt-tendered">$0.00</span>
+            </div>
+            <div class="rcpt-summary-line" style="font-weight: 700;">
+              <span>CHANGE DUE:</span>
+              <span id="prev-rcpt-change">$0.00</span>
+            </div>
+
+            <!-- Barcode Simulation -->
+            <div class="rcpt-barcode-container">
+              <svg class="rcpt-barcode-svg" viewBox="0 0 240 40" preserveAspectRatio="none">
+                <!-- Simulated Code 128 barcode pattern -->
+                <rect x="0" y="0" width="3" height="40" fill="#111827"/>
+                <rect x="5" y="0" width="2" height="40" fill="#111827"/>
+                <rect x="9" y="0" width="5" height="40" fill="#111827"/>
+                <rect x="16" y="0" width="1" height="40" fill="#111827"/>
+                <rect x="20" y="0" width="4" height="40" fill="#111827"/>
+                <rect x="27" y="0" width="2" height="40" fill="#111827"/>
+                <rect x="31" y="0" width="6" height="40" fill="#111827"/>
+                <rect x="40" y="0" width="2" height="40" fill="#111827"/>
+                <rect x="45" y="0" width="4" height="40" fill="#111827"/>
+                <rect x="52" y="0" width="1" height="40" fill="#111827"/>
+                <rect x="56" y="0" width="5" height="40" fill="#111827"/>
+                <rect x="63" y="0" width="2" height="40" fill="#111827"/>
+                <rect x="68" y="0" width="4" height="40" fill="#111827"/>
+                <rect x="74" y="0" width="2" height="40" fill="#111827"/>
+                <rect x="78" y="0" width="6" height="40" fill="#111827"/>
+                <rect x="87" y="0" width="3" height="40" fill="#111827"/>
+                <rect x="93" y="0" width="2" height="40" fill="#111827"/>
+                <rect x="98" y="0" width="4" height="40" fill="#111827"/>
+                <rect x="105" y="0" width="3" height="40" fill="#111827"/>
+                <rect x="111" y="0" width="5" height="40" fill="#111827"/>
+                <rect x="119" y="0" width="2" height="40" fill="#111827"/>
+                <rect x="123" y="0" width="4" height="40" fill="#111827"/>
+                <rect x="130" y="0" width="2" height="40" fill="#111827"/>
+                <rect x="135" y="0" width="6" height="40" fill="#111827"/>
+                <rect x="144" y="0" width="3" height="40" fill="#111827"/>
+                <rect x="150" y="0" width="1" height="40" fill="#111827"/>
+                <rect x="154" y="0" width="4" height="40" fill="#111827"/>
+                <rect x="161" y="0" width="3" height="40" fill="#111827"/>
+                <rect x="166" y="0" width="5" height="40" fill="#111827"/>
+                <rect x="174" y="0" width="2" height="40" fill="#111827"/>
+                <rect x="179" y="0" width="4" height="40" fill="#111827"/>
+                <rect x="186" y="0" width="2" height="40" fill="#111827"/>
+                <rect x="190" y="0" width="6" height="40" fill="#111827"/>
+                <rect x="199" y="0" width="2" height="40" fill="#111827"/>
+                <rect x="204" y="0" width="4" height="40" fill="#111827"/>
+                <rect x="211" y="0" width="2" height="40" fill="#111827"/>
+                <rect x="216" y="0" width="4" height="40" fill="#111827"/>
+                <rect x="223" y="0" width="2" height="40" fill="#111827"/>
+                <rect x="228" y="0" width="5" height="40" fill="#111827"/>
+                <rect x="236" y="0" width="4" height="40" fill="#111827"/>
+              </svg>
+              <div style="font-size: 0.7rem; letter-spacing: 0.15em; margin-top: 0.25rem;" id="prev-barcode-label">REC-84920</div>
+            </div>
+
+            <!-- Footer Message -->
+            <div id="prev-footer-note" class="rcpt-footer-note">*** THANK YOU FOR YOUR VISIT! ***
+Free WiFi: DailyRoastGuest (pw: coffee2026)
+Retain receipt for returns within 14 days.
+www.dailyroastcoffee.example.com</div>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
 
@@ -62,7 +602,7 @@
     "@type": "WebApplication",
     "name": "Receipt Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/receipt-generator/",
-    "description": "Create digital purchase receipts.",
+    "description": "Create digital purchase receipts with an authentic thermal POS look and feel.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

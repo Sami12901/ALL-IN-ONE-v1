@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Travel Quotation Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Generate custom tour and travel quotes.">
-  <meta name="keywords" content="quote, proposal, package, free, online, tool, utility">
+  <meta name="description" content="Generate professional, itemized tour and travel quotations with flights, hotels, visa fees, activities, margin markup, and print-ready PDF export.">
+  <meta name="keywords" content="travel quotation generator, tour package quote, travel agency proposal, flight hotel quote, travel invoice, travel agent tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/travel-quotation-generator/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,288 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+
+  <style>
+    .quote-workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 1080px) {
+      .quote-workspace {
+        grid-template-columns: 1.05fr 1.25fr;
+        align-items: start;
+      }
+    }
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 540px) {
+      .form-grid-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+      .form-grid-3 {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+    }
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+    .activity-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .activity-row input[type="text"] {
+      flex: 2;
+    }
+    .activity-row input[type="number"] {
+      flex: 1;
+    }
+    .btn-icon {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--error);
+      border-radius: var(--radius-sm);
+      width: 36px;
+      height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+    .btn-icon:hover {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: var(--error);
+    }
+
+    /* Quotation Preview Card Styling */
+    .quotation-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      box-shadow: var(--glass-shadow);
+      color: var(--text-primary);
+      position: relative;
+    }
+    .quote-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.25rem;
+      gap: 1rem;
+    }
+    .quote-brand-title {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+    .quote-brand-sub {
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .quote-meta-block {
+      text-align: right;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .quote-info-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      border: 1px solid var(--border);
+      margin-bottom: 1.25rem;
+    }
+    @media (min-width: 576px) {
+      .quote-info-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .quote-info-col h4 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-tertiary);
+      margin-bottom: 0.35rem;
+      font-weight: 700;
+    }
+    .quote-info-val {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .quote-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      margin-top: 1rem;
+    }
+    .quote-table th {
+      padding: 0.75rem 0.5rem;
+      border-bottom: 2px solid var(--border);
+      text-align: left;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      letter-spacing: 0.05em;
+    }
+    .quote-table td {
+      padding: 0.75rem 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+    }
+    .quote-table td.money {
+      text-align: right;
+      font-weight: 600;
+    }
+    .quote-summary-block {
+      margin-top: 1.25rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: flex-end;
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 320px;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+    .summary-row.total-row {
+      border-top: 2px solid var(--accent);
+      padding-top: 0.75rem;
+      margin-top: 0.25rem;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+    .summary-row.total-row .total-price {
+      color: var(--accent);
+    }
+    .per-pax-box {
+      background: var(--accent-glow);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-sm);
+      padding: 0.4rem 0.75rem;
+      font-size: 0.825rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-top: 0.25rem;
+    }
+    .quote-terms {
+      margin-top: 1.5rem;
+      border-top: 1px dashed var(--border);
+      padding-top: 1rem;
+      font-size: 0.78rem;
+      color: var(--text-tertiary);
+      line-height: 1.6;
+    }
+    .toast-msg {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      color: var(--text-primary);
+      border: 1px solid var(--accent);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      z-index: 1000;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+    .toast-msg.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    /* Print Document Rules */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      app-header, app-breadcrumbs, app-footer, .no-print, .btn, .tool-header {
+        display: none !important;
+      }
+      .quote-workspace {
+        display: block !important;
+      }
+      .quotation-card {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        background: transparent !important;
+        color: #000000 !important;
+      }
+      .quote-brand-title {
+        color: #000000 !important;
+      }
+      .quote-info-grid {
+        background: #f8f8f8 !important;
+        border: 1px solid #ddd !important;
+        color: #000000 !important;
+      }
+      .quote-info-val, .quote-info-col h4 {
+        color: #000000 !important;
+      }
+      .quote-table th {
+        border-color: #333 !important;
+        color: #000000 !important;
+      }
+      .quote-table td {
+        border-color: #ddd !important;
+        color: #000000 !important;
+      }
+      .summary-row {
+        color: #333 !important;
+      }
+      .summary-row.total-row {
+        color: #000000 !important;
+        border-color: #000000 !important;
+      }
+      .summary-row.total-row .total-price {
+        color: #000000 !important;
+      }
+      .per-pax-box {
+        background: #eee !important;
+        color: #000 !important;
+        border-color: #ccc !important;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -24,33 +306,286 @@
 
   <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
+    <div class="container tool-container" style="max-width: 1400px;">
       <div class="tool-header">
         <h1>Travel Quotation Generator</h1>
-        <p class="tool-description">Generate custom tour and travel quotes.</p>
+        <p class="tool-description">Create customized tour itineraries and price quotations with flight, accommodation, visa fees, excursions, markup margins, and print-ready PDF export.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Travel Quotation Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Generate custom tour and travel quotes.</div>
-            <div><strong>Inputs:</strong> quote, proposal, package</div>
-            <div><strong>Category:</strong> travel</div>
+      <!-- Main Workspace -->
+      <div class="quote-workspace">
+        
+        <!-- Left Panel: Quotation Form -->
+        <div class="tool-panel glass-panel no-print">
+          <div class="panel-title" style="justify-content: space-between;">
+            <span style="display: flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              Quotation Editor
+            </span>
+            <button type="button" id="btn-load-sample" class="btn btn-secondary" style="padding: 0.25rem 0.6rem; font-size: 0.75rem;">
+              Load Sample Itinerary
+            </button>
           </div>
+
+          <!-- Section 1: Client & Booking Details -->
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="client-name">Customer Full Name</label>
+              <input type="text" id="client-name" class="form-input" value="Sarah Jenkins">
+            </div>
+            <div class="form-group">
+              <label for="client-contact">Customer Email / Phone</label>
+              <input type="text" id="client-contact" class="form-input" value="sarah.jenkins@example.com">
+            </div>
+          </div>
+
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label for="travel-pax">Adults</label>
+              <input type="number" id="travel-pax" class="form-input" min="1" max="50" value="2">
+            </div>
+            <div class="form-group">
+              <label for="travel-kids">Children</label>
+              <input type="number" id="travel-kids" class="form-input" min="0" max="20" value="0">
+            </div>
+            <div class="form-group">
+              <label for="quote-currency">Currency</label>
+              <select id="quote-currency" class="form-select">
+                <option value="USD" selected>USD ($)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="GBP">GBP (£)</option>
+                <option value="BDT">BDT (৳)</option>
+                <option value="AUD">AUD ($)</option>
+                <option value="CAD">CAD ($)</option>
+                <option value="SAR">SAR (﷼)</option>
+                <option value="AED">AED (AED)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Section 2: Destination & Dates -->
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="trip-destination">Destination Country / City</label>
+              <input type="text" id="trip-destination" class="form-input" value="Bali & Nusa Penida, Indonesia">
+            </div>
+            <div class="form-group">
+              <label for="trip-title">Package / Tour Title</label>
+              <input type="text" id="trip-title" class="form-input" value="7D6N Tropical Island & Culture Escape">
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="depart-date">Departure Date</label>
+              <input type="date" id="depart-date" class="form-input">
+            </div>
+            <div class="form-group">
+              <label for="return-date">Return Date</label>
+              <input type="date" id="return-date" class="form-input">
+            </div>
+          </div>
+
+          <!-- Section 3: Cost Components -->
+          <div style="font-weight: 700; font-size: 0.95rem; margin-top: 0.5rem; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 0.4rem;">
+            Primary Travel Services
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="flight-cost">Flight Cost (Per Person)</label>
+              <input type="number" id="flight-cost" class="form-input" min="0" step="any" value="650">
+            </div>
+            <div class="form-group">
+              <label for="flight-desc">Flight Route / Airline Notes</label>
+              <input type="text" id="flight-desc" class="form-input" value="Roundtrip Economy Flights (Singapore Airlines)">
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="hotel-cost">Hotel Cost (Total Package)</label>
+              <input type="number" id="hotel-cost" class="form-input" min="0" step="any" value="850">
+            </div>
+            <div class="form-group">
+              <label for="hotel-desc">Hotel & Room Details</label>
+              <input type="text" id="hotel-desc" class="form-input" value="6 Nights at Maya Ubud Resort & Spa (Deluxe Suite)">
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="visa-cost">Visa Cost (Per Person)</label>
+              <input type="number" id="visa-cost" class="form-input" min="0" step="any" value="35">
+            </div>
+            <div class="form-group">
+              <label for="transfers-cost">Ground Transfers & Transport (Total)</label>
+              <input type="number" id="transfers-cost" class="form-input" min="0" step="any" value="120">
+            </div>
+          </div>
+
+          <!-- Section 4: Tour Activities & Excursions -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem;">
+            <span style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">Tour Activities & Excursions</span>
+            <button type="button" id="btn-add-activity" class="btn btn-secondary" style="padding: 0.2rem 0.6rem; font-size: 0.75rem;">
+              + Add Activity
+            </button>
+          </div>
+
+          <div id="activities-container">
+            <!-- Dynamic Activity Rows -->
+          </div>
+
+          <!-- Section 5: Margin & Discount -->
+          <div style="font-weight: 700; font-size: 0.95rem; margin-top: 0.5rem; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 0.4rem;">
+            Agency Markup & Discounts
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="margin-pct">Agency Margin / Profit (%)</label>
+              <input type="number" id="margin-pct" class="form-input" min="0" max="100" step="0.5" value="15">
+            </div>
+            <div class="form-group">
+              <label for="discount-pct">Promotional Discount (%)</label>
+              <input type="number" id="discount-pct" class="form-input" min="0" max="100" step="0.5" value="5">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="quote-terms-input">Inclusions, Exclusions & Terms Notes</label>
+            <textarea id="quote-terms-input" class="form-input" rows="2" style="font-size: 0.825rem;">Includes daily gourmet buffet breakfast, private chauffeur, guided tours, and all attraction entry tickets. Excludes personal laundry, international visa processing, and tips.</textarea>
+          </div>
+
+          <div class="action-bar" style="margin-top: 1rem;">
+            <button type="button" id="btn-reset-quote" class="btn btn-secondary" style="width: 100%;">
+              Reset Quotation
+            </button>
+          </div>
+
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Panel: Quotation Document Preview -->
+        <div>
+          
+          <!-- Interactive Action Bar on top of preview -->
+          <div class="action-bar no-print" style="margin-bottom: 1rem; display: flex; gap: 0.75rem;">
+            <button type="button" id="btn-print-quote" class="btn btn-primary" style="flex: 1.5; padding: 0.85rem 1.25rem;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+              </svg>
+              Print / Save Quotation (PDF)
+            </button>
+            <button type="button" id="btn-copy-quote" class="btn btn-secondary" style="flex: 1;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy Summary
+            </button>
+          </div>
+
+          <!-- THE PRINTABLE QUOTATION CARD -->
+          <div class="quotation-card" id="quote-preview-card">
+            
+            <!-- Brand & Quote Header -->
+            <div class="quote-card-header">
+              <div>
+                <div class="quote-brand-title">ALL IN ONE TRAVEL</div>
+                <div class="quote-brand-sub">Luxury Tour & Travel Itinerary Quotation</div>
+              </div>
+              <div class="quote-meta-block">
+                <div><strong>Quote Ref:</strong> <span id="out-quote-id">TRV-2026-8094</span></div>
+                <div><strong>Issue Date:</strong> <span id="out-quote-date">Oct 02, 2026</span></div>
+                <div><strong>Valid Until:</strong> <span id="out-valid-date">Oct 16, 2026</span></div>
+              </div>
+            </div>
+
+            <!-- Client & Trip Summary Grid -->
+            <div class="quote-info-grid">
+              <div class="quote-info-col">
+                <h4>Prepared For</h4>
+                <div class="quote-info-val" id="out-client-name">Sarah Jenkins</div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary);" id="out-client-contact">sarah.jenkins@example.com</div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.2rem;" id="out-passengers">2 Adults &bull; 0 Children (2 Total Pax)</div>
+              </div>
+
+              <div class="quote-info-col">
+                <h4>Tour Details</h4>
+                <div class="quote-info-val" id="out-trip-title">7D6N Tropical Island & Culture Escape</div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary);" id="out-trip-dest">Bali & Nusa Penida, Indonesia</div>
+                <div style="font-size: 0.8rem; color: var(--accent); font-weight: 700; margin-top: 0.2rem;" id="out-trip-duration">7 Days / 6 Nights (Nov 01 – Nov 07, 2026)</div>
+              </div>
+            </div>
+
+            <!-- Itemized Cost Table -->
+            <div style="overflow-x: auto;">
+              <table class="quote-table">
+                <thead>
+                  <tr>
+                    <th style="width: 50%;">Description / Service Item</th>
+                    <th style="text-align: center; width: 15%;">Quantity / Pax</th>
+                    <th style="text-align: right; width: 15%;">Unit Rate</th>
+                    <th style="text-align: right; width: 20%;">Total Amount</th>
+                  </tr>
+                </thead>
+                <tbody id="out-quote-table-body">
+                  <!-- Dynamically populated via script.js -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Totals & Margin Calculations -->
+            <div class="quote-summary-block">
+              <div class="summary-row">
+                <span>Subtotal (Direct Package Cost):</span>
+                <span id="out-subtotal">$2,690.00</span>
+              </div>
+              <div class="summary-row">
+                <span>Agency Planning & Service Margin (<span id="out-margin-pct">15</span>%):</span>
+                <span id="out-margin-val">$403.50</span>
+              </div>
+              <div class="summary-row" id="out-discount-row">
+                <span>Promotional VIP Discount (<span id="out-discount-pct">5</span>%):</span>
+                <span id="out-discount-val" style="color: var(--success);">-$154.68</span>
+              </div>
+              <div class="summary-row total-row">
+                <span>Grand Total Package:</span>
+                <span class="total-price" id="out-grand-total">$2,938.82</span>
+              </div>
+              <div class="per-pax-box" id="out-per-pax-disp">
+                $1,469.41 per person (All-inclusive for 2 Pax)
+              </div>
+            </div>
+
+            <!-- Inclusions & Terms -->
+            <div class="quote-terms">
+              <div style="font-weight: 700; color: var(--text-secondary); margin-bottom: 0.25rem;">Terms & Conditions:</div>
+              <p id="out-terms-disp">Includes daily gourmet buffet breakfast, private chauffeur, guided tours, and all attraction entry tickets. Excludes personal laundry, international visa processing, and tips.</p>
+              <div style="margin-top: 0.5rem; font-size: 0.72rem;">*Prices and flight seats are subject to availability at the time of final confirmation and payment receipt.</div>
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
-    
+
     </div>
   </main>
+
+  <div id="toast" class="toast-msg">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">Quotation copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,7 +597,7 @@
     "@type": "WebApplication",
     "name": "Travel Quotation Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/travel-quotation-generator/",
-    "description": "Generate custom tour and travel quotes.",
+    "description": "Generate customized tour itineraries and price quotations with flight, accommodation, visa fees, excursions, markup margins, and print-ready PDF export.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

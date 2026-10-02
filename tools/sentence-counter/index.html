@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sentence Counter - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Count total sentence fragments in a text.">
-  <meta name="keywords" content="sentence, counter, count, paragraph, free, online, tool, utility">
+  <meta name="description" content="Instant sentence analysis: sentence count, words, syllables, average sentence length, Flesch reading ease, and sentence-by-sentence breakdown.">
+  <meta name="keywords" content="sentence counter, word count, readability score, flesch reading ease, syllables, text analyzer, writing assistant">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/sentence-counter/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,183 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+  
+  <style>
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1rem;
+      text-align: center;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.35rem;
+    }
+    .stat-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.1;
+      font-family: var(--font-sans);
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+    }
+    .stat-subtext {
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+    }
+    .extremes-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    @media (min-width: 768px) {
+      .extremes-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .extreme-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .extreme-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+    .extreme-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .extreme-title.shortest {
+      color: #10b981;
+    }
+    .extreme-title.longest {
+      color: #f59e0b;
+    }
+    .extreme-badge {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .extreme-content {
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      line-height: 1.5;
+      font-style: italic;
+      word-break: break-word;
+      max-height: 120px;
+      overflow-y: auto;
+      padding: 0.4rem;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-sm);
+    }
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      max-height: 480px;
+      position: relative;
+    }
+    .sentence-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.875rem;
+    }
+    .sentence-table th {
+      position: sticky;
+      top: 0;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-weight: 700;
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      z-index: 2;
+    }
+    .sentence-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+      vertical-align: top;
+    }
+    .sentence-table tr:hover td {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-primary);
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-short {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .badge-medium {
+      background: rgba(78, 133, 191, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(78, 133, 191, 0.3);
+    }
+    .badge-long {
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .badge-very-long {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    .badge-pill {
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      padding: 0.3rem 0.8rem;
+    }
+    .ease-score-badge {
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -26,29 +203,131 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Sentence Counter</h1>
-        <p class="tool-description">Count total sentence fragments in a text.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Sentence Counter</h1>
+        <p class="tool-description">Analyze sentence structures, word and syllable distributions, readability grades, and inspect granular sentence-by-sentence breakdowns in real time.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Sentence Counter</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Count total sentence fragments in a text.</div>
-            <div><strong>Inputs:</strong> sentence, counter, count, paragraph</div>
-            <div><strong>Category:</strong> text</div>
+      <!-- Stats Summary Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-sentences">0</div>
+          <div class="stat-label">Total Sentences</div>
+          <div class="stat-subtext" id="stat-sentences-sub">0 paragraphs</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-words">0</div>
+          <div class="stat-label">Total Words</div>
+          <div class="stat-subtext" id="stat-chars-sub">0 characters</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-avg-length">0.0</div>
+          <div class="stat-label">Avg Sentence Length</div>
+          <div class="stat-subtext">words / sentence</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-syllables">0</div>
+          <div class="stat-label">Total Syllables</div>
+          <div class="stat-subtext" id="stat-avg-syllables">0.0 / word</div>
+        </div>
+        <div class="stat-card" style="grid-column: span 1;">
+          <div class="stat-value" id="stat-reading-ease">0</div>
+          <div class="stat-label">Flesch Reading Ease</div>
+          <div class="stat-subtext" id="stat-reading-level">No text provided</div>
+        </div>
+      </div>
+
+      <!-- Main Input Workspace -->
+      <div class="tool-panel glass-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+          <h2 class="panel-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Text Input
+          </h2>
+          <div class="action-bar" style="margin-top: 0;">
+            <button id="sample-btn" class="btn btn-secondary" style="padding: 0.45rem 0.9rem; font-size: 0.85rem;" title="Load sample text for instant testing">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+              Sample Text
+            </button>
+            <button id="copy-summary-btn" class="btn btn-secondary" style="padding: 0.45rem 0.9rem; font-size: 0.85rem;" title="Copy analytical metrics report">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Summary
+            </button>
+            <button id="clear-btn" class="btn btn-secondary" style="padding: 0.45rem 0.9rem; font-size: 0.85rem;" title="Clear input text">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              Clear
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="form-group" style="margin-top: 0.5rem;">
+          <textarea id="text-input" class="form-textarea" placeholder="Paste or type your text here. The analysis will update automatically as you type..." style="min-height: 220px; font-family: var(--font-sans); font-size: 1rem; line-height: 1.6;"></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; font-size: 0.825rem; color: var(--text-tertiary); padding: 0.25rem 0.5rem;">
+          <div id="char-details">Characters: 0 | Without spaces: 0 | Paragraphs: 0</div>
+          <div id="read-duration">Reading time: ~0m 0s</div>
+        </div>
+
+        <!-- Shortest & Longest Sentence Panels -->
+        <div class="extremes-grid">
+          <div class="extreme-card">
+            <div class="extreme-header">
+              <span class="extreme-title shortest">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14l8-8 8 8"></path></svg>
+                Shortest Sentence
+              </span>
+              <span class="extreme-badge" id="shortest-stats">0 words</span>
+            </div>
+            <div class="extreme-content" id="shortest-text">No sentence detected yet.</div>
+          </div>
+          <div class="extreme-card">
+            <div class="extreme-header">
+              <span class="extreme-title longest">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10l-8 8-8-8"></path></svg>
+                Longest Sentence
+              </span>
+              <span class="extreme-badge" id="longest-stats">0 words</span>
+            </div>
+            <div class="extreme-content" id="longest-text">No sentence detected yet.</div>
+          </div>
+        </div>
       </div>
-    
+
+      <!-- Sentence Breakdown Table -->
+      <div class="tool-panel glass-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+          <h2 class="panel-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+            Sentence-by-Sentence Breakdown
+          </h2>
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <input type="text" id="sentence-search" class="form-input" placeholder="Filter sentences..." style="padding: 0.4rem 0.75rem; font-size: 0.85rem; width: 200px;">
+            <span id="sentence-table-count" class="badge badge-medium">0 entries</span>
+          </div>
+        </div>
+
+        <div class="table-container" style="margin-top: 0.75rem;">
+          <table class="sentence-table" id="breakdown-table">
+            <thead>
+              <tr>
+                <th style="width: 50px; text-align: center;">#</th>
+                <th>Sentence</th>
+                <th style="width: 80px; text-align: right;">Words</th>
+                <th style="width: 80px; text-align: right;">Chars</th>
+                <th style="width: 80px; text-align: right;">Syllables</th>
+                <th style="width: 120px; text-align: center;">Pacing</th>
+              </tr>
+            </thead>
+            <tbody id="breakdown-body">
+              <tr>
+                <td colspan="6" style="text-align: center; padding: 2.5rem; color: var(--text-tertiary);">
+                  Type or paste text above to see sentence metrics.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </main>
 
@@ -62,7 +341,7 @@
     "@type": "WebApplication",
     "name": "Sentence Counter",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/sentence-counter/",
-    "description": "Count total sentence fragments in a text.",
+    "description": "Count total sentence fragments, syllables, words, average sentence length, and Flesch reading ease in text.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
