@@ -1,7 +1,7 @@
 # ALL IN ONE — High-Performance Client-Side Web Utilities Suite
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Active Tools](https://img.shields.io/badge/Active%20Tools-153%20Functional-10b981.svg)](https://sami12901.github.io/ALL-IN-ONE-v1/)
+[![Active Tools](https://img.shields.io/badge/Active%20Tools-164%20Functional-10b981.svg)](https://sami12901.github.io/ALL-IN-ONE-v1/)
 [![Total Catalog](https://img.shields.io/badge/Total%20Catalog-496%20Utilities-6366f1.svg)](https://sami12901.github.io/ALL-IN-ONE-v1/)
 [![PWA](https://img.shields.io/badge/PWA-Offline%20Ready-f59e0b.svg)](https://sami12901.github.io/ALL-IN-ONE-v1/)
 [![Privacy](https://img.shields.io/badge/Privacy-100%25%20Client--Side-ec4899.svg)](https://sami12901.github.io/ALL-IN-ONE-v1/)
@@ -22,8 +22,9 @@ Every single operation runs **100% client-side** inside the browser sandbox. No 
 
 ## 🚀 Key Highlights & Architectural Strengths
 
-- **153 Active, Production-Ready Utilities**: Structured across 24 distinct categories with 496 total cataloged endpoints.
+- **164 Active, Production-Ready Utilities**: Structured across 24 distinct categories with 496 total cataloged endpoints.
 - **100% Complete Specialized Suites**:
+  - 🖼️ **Image Processing & Creative Suite**: **12 out of 12 tools fully functional** (Cropper, Resizer, Base64 Converters, SVG Vectors, Palette Extractor, EXIF Metadata, Meme Maker, Watermarking, Sprites).
   - 💻 **Developer Utilities Suite**: **25 out of 25 tools fully functional** (Formatters, Minifiers, Cryptographic Hashes, Tokens, Visual Layouts, Network Diagnostics).
   - 📄 **PDF Document Suite**: **48 out of 48 tools fully functional** (Editor, Merge, Split, Compress, Protect, Unlock, Watermark, Flatten, Converters, AI Intelligence).
   - 📊 **Excel & Analytics Suite**: **20 out of 20 tools fully functional** (Spreadsheets, Profiling, Cleaning, BI Dashboards, Forecasting, AI Insights).
@@ -110,7 +111,7 @@ ALL-IN-ONE-v1/
 ├── seo/
 │   ├── robots.txt         # Search engine crawler directives
 │   └── sitemap.xml        # Comprehensive auto-compiled XML sitemap
-├── tools/                 # 496 tool directories (153 fully functional)
+├── tools/                 # 496 tool directories (164 fully functional)
 │   ├── all-in-one-sheets/
 │   ├── data-analyzer/
 │   ├── invoice-generator/
@@ -126,7 +127,7 @@ ALL-IN-ONE-v1/
 
 ---
 
-## 🛠️ Complete Directory of All 153 Active Functional Tools
+## 🛠️ Complete Directory of All 164 Active Functional Tools
 
 ### 📊 Excel & Core Analytics (20 Tools)
 1. **ALL IN ONE Sheets**: Excel-compatible spreadsheet grid with formulas, cell formatting, and CSV/JSON I/O.
@@ -280,34 +281,47 @@ ALL-IN-ONE-v1/
 135. **Resume Generator**: Form-driven modern resume compiler.
 136. **Resume Optimizer**: Keyword density and ATS formatting suggestions for job applications.
 
-### 🎨 Image & Color Tools (2 Tools)
-137. **Color Picker**: Visual canvas palette picker with format conversion (HEX, RGB, HSL).
-138. **Image Resizer & Compressor**: Client-side image resizing, compression, and WebP/PNG/JPG conversion.
+### 🖼️ Image Utilities Suite (12 Tools — 100% Complete)
+137. **Image Resizer & Compressor**: Client-side image resizing, compression, and WebP/PNG/JPG conversion.
+138. **Image Cropper**: Interactive canvas crop box with aspect ratio presets (1:1, 4:3, 16:9, 9:16) and rotation.
+139. **Image to Base64 Converter**: Two-way image to Base64 converter with Data URI, HTML tag, and CSS snippets.
+140. **Base64 to Image Converter**: Decode Base64 data strings into downloadable image files with format conversion.
+141. **SVG to PNG Converter**: Ultra-high DPI vector rasterizer (up to 8x) with aspect ratio lock and custom backgrounds.
+142. **PNG to SVG Vector Trace**: Client-side raster-to-vector tracer generating clean scalable SVG path polygons.
+143. **Image Color Palette Extractor**: Extract dominant color palettes via quantization with CSS/Tailwind exports.
+144. **EXIF Metadata Reader**: Binary camera and lens metadata parser with GPS mapping and privacy stripper.
+145. **Image Format Converter**: Universal in-browser image format converter (PNG, JPG, WebP, GIF, BMP, ICO) with ZIP download.
+146. **Meme Generator**: Client-side meme maker with classic templates, Impact styling, and draggable text.
+147. **Image Watermark Tool**: Full-featured text and logo watermark overlay with 9-point grid and tile repeat pattern.
+148. **CSS Sprite Sheet Generator**: Multi-file sprite stitcher with bin-packing layout and auto-generated CSS classes.
+
+### 🎨 Color Tools (1 Tool)
+149. **Color Picker**: Visual canvas palette picker with format conversion (HEX, RGB, HSL).
 
 ### ⌨️ Typing & Productivity Suite (3 Tools)
-139. **Typing Practice**: Real-time typing speed test with WPM, accuracy %, timer modes, and audio feedback.
-140. **Excel Data Typing Practice**: Spreadsheet data-entry simulator with numerical keypad KPM tracking.
-141. **Typing Certificate Generator**: High-resolution HTML5 canvas certificate generator with PNG download.
+150. **Typing Practice**: Real-time typing speed test with WPM, accuracy %, timer modes, and audio feedback.
+151. **Excel Data Typing Practice**: Spreadsheet data-entry simulator with numerical keypad KPM tracking.
+152. **Typing Certificate Generator**: High-resolution HTML5 canvas certificate generator with PNG download.
 
 ### ✈️ Travel Operations Suite (3 Tools)
-142. **Visa Fee Calculator**: Consular fee calculator with multi-currency conversion (USD, EUR, GBP, BDT, SAR).
-143. **Passport Expiry Checker**: Validity calculator with 6-month & Schengen 3-month rules and country database.
-144. **Travel Quotation Generator**: Agency quotation builder with flights, accommodation, tour items, and A4 print layout.
+153. **Visa Fee Calculator**: Consular fee calculator with multi-currency conversion (USD, EUR, GBP, BDT, SAR).
+154. **Passport Expiry Checker**: Validity calculator with 6-month & Schengen 3-month rules and country database.
+155. **Travel Quotation Generator**: Agency quotation builder with flights, accommodation, tour items, and A4 print layout.
 
 ### 🛒 E-commerce & Business Operations Suite (3 Tools)
-145. **Invoice Generator**: Billing invoice creator with dynamic line items, taxes, discounts, and print/PDF export.
-146. **Product Profit Calculator**: Unit economics simulator with Amazon/Shopify presets, margins, and cost breakdown bar.
-147. **Receipt Generator**: Thermal POS receipt generator with barcode simulation and printable layout.
+156. **Invoice Generator**: Billing invoice creator with dynamic line items, taxes, discounts, and print/PDF export.
+157. **Product Profit Calculator**: Unit economics simulator with Amazon/Shopify presets, margins, and cost breakdown bar.
+158. **Receipt Generator**: Thermal POS receipt generator with barcode simulation and printable layout.
 
 ### 📢 Digital Marketing & Presentation Suite (2 Tools)
-148. **Instagram Caption Generator**: Creative copy generator with tone selectors and hashtag recommendations.
-149. **Presentation Builder Pro**: Interactive slide presentation deck creator and HTML export.
+159. **Instagram Caption Generator**: Creative copy generator with tone selectors and hashtag recommendations.
+160. **Presentation Builder Pro**: Interactive slide presentation deck creator and HTML export.
 
 ### 🧮 Math, Security & Utility Suite (4 Tools)
-150. **BMI Calculator**: Metric & imperial Body Mass Index calculator with health category classifications.
-151. **Scientific Calculator**: Full scientific expression evaluator (trig, log, powers, sqrt, memory registers).
-152. **Password Generator**: Secure cryptographic password generator with character sets and strength meter.
-153. **List Visualizer & Bullets**: Interactive list formatter with custom bullets, numbering, and prefixes.
+161. **BMI Calculator**: Metric & imperial Body Mass Index calculator with health category classifications.
+162. **Scientific Calculator**: Full scientific expression evaluator (trig, log, powers, sqrt, memory registers).
+163. **Password Generator**: Secure cryptographic password generator with character sets and strength meter.
+164. **List Visualizer & Bullets**: Interactive list formatter with custom bullets, numbering, and prefixes.
 
 ---
 

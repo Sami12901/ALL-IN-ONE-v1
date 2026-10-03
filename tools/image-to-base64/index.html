@@ -4,14 +4,270 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Image to Base64 Converter - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Convert image files into Base64 data URI strings.">
-  <meta name="keywords" content="image, base64, convert, uri, data, free, online, tool, utility">
+  <meta name="description" content="Convert image files into Base64 data URI strings, raw base64, HTML img snippets, and CSS background-image code online. 100% private and in-browser.">
+  <meta name="keywords" content="image, base64, data uri, convert, encoder, html img, css background, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/image-to-base64/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Image to Base64 Specific Styles */
+    .file-dropzone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.75rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      background: var(--bg-tertiary);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .file-dropzone:hover, .file-dropzone.dragover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .dropzone-icon {
+      width: 52px;
+      height: 52px;
+      color: var(--accent);
+      margin-bottom: 0.85rem;
+      opacity: 0.9;
+    }
+
+    .dropzone-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.35rem;
+    }
+
+    .dropzone-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.25rem;
+    }
+
+    /* Preview Card */
+    .preview-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .preview-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .preview-filename {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 260px;
+    }
+
+    .preview-stage {
+      width: 100%;
+      height: 220px;
+      background: repeating-conic-gradient(rgba(255, 255, 255, 0.04) 0% 25%, rgba(0, 0, 0, 0.2) 0% 50%) 50% / 16px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 0.5rem;
+    }
+
+    .preview-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: var(--radius-sm);
+    }
+
+    /* Metadata Grid */
+    .metadata-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+
+    .metadata-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.6rem 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .metadata-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-tertiary);
+      font-weight: 600;
+    }
+
+    .metadata-value {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      font-family: monospace;
+    }
+
+    .overhead-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #f59e0b;
+      font-size: 0.8rem;
+      font-weight: 600;
+      width: fit-content;
+    }
+
+    /* Output Format Tabs */
+    .format-tabs {
+      display: flex;
+      gap: 0.4rem;
+      background: var(--bg-tertiary);
+      padding: 0.3rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      overflow-x: auto;
+    }
+
+    .format-tab-btn {
+      flex: 1;
+      padding: 0.55rem 0.85rem;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+      transition: var(--transition);
+    }
+
+    .format-tab-btn.active {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .format-tab-btn:hover:not(.active) {
+      color: var(--text-primary);
+    }
+
+    .output-editor {
+      width: 100%;
+      height: 230px;
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-family: monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      resize: vertical;
+      word-break: break-all;
+    }
+
+    .output-editor:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .output-stats {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+      margin-top: -0.5rem;
+    }
+
+    /* Empty state */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 3.5rem 1.5rem;
+      color: var(--text-tertiary);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--bg-tertiary);
+      height: 100%;
+      min-height: 280px;
+    }
+
+    .empty-state svg {
+      opacity: 0.4;
+      margin-bottom: 1rem;
+    }
+
+    /* Toast Notification */
+    .app-toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--accent);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 15px var(--accent-glow);
+      color: var(--text-primary);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      z-index: 9999;
+      transform: translateY(100px);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .app-toast.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,30 +283,167 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Image to Base64 Converter</h1>
-        <p class="tool-description">Convert image files into Base64 data URI strings.</p>
+        <p class="tool-description">Instant client-side encoding of images into Data URIs, raw Base64 strings, HTML &lt;img&gt; tags, and CSS background rules. 100% private, processed in your browser.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Image to Base64 Converter</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Convert image files into Base64 data URI strings.</div>
-            <div><strong>Inputs:</strong> image, base64, convert, uri, data</div>
-            <div><strong>Category:</strong> image</div>
+      <div class="tool-workarea split-view">
+        
+        <!-- Left Panel: Upload & Image Metadata -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+            Source Image
+          </h2>
+
+          <!-- Dropzone -->
+          <div id="dropzone" class="file-dropzone">
+            <input type="file" id="file-input" accept="image/*" style="display: none;">
+            <svg class="dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <div class="dropzone-title">Drag & Drop Image Here</div>
+            <div class="dropzone-subtitle">Supports PNG, JPG, WebP, SVG, GIF, BMP, ICO &bull; Paste clipboard (Ctrl+V)</div>
+            <button id="browse-btn" class="btn btn-primary" type="button">
+              Choose Image File
+            </button>
+          </div>
+
+          <!-- Preview & Metadata Card (hidden initially) -->
+          <div id="preview-card" class="preview-card" style="display: none;">
+            <div class="preview-card-header">
+              <span id="preview-filename" class="preview-filename">image.png</span>
+              <button id="clear-image-btn" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;" type="button">
+                Change Image
+              </button>
+            </div>
+
+            <div class="preview-stage">
+              <img id="preview-image" class="preview-img" alt="Uploaded preview">
+            </div>
+
+            <!-- Metadata Grid -->
+            <div class="metadata-grid">
+              <div class="metadata-item">
+                <span class="metadata-label">MIME Type</span>
+                <span id="meta-mime" class="metadata-value">image/png</span>
+              </div>
+              <div class="metadata-item">
+                <span class="metadata-label">Dimensions</span>
+                <span id="meta-dims" class="metadata-value">0 × 0 px</span>
+              </div>
+              <div class="metadata-item">
+                <span class="metadata-label">Original File Size</span>
+                <span id="meta-orig-size" class="metadata-value">0 KB</span>
+              </div>
+              <div class="metadata-item">
+                <span class="metadata-label">Base64 String Length</span>
+                <span id="meta-b64-len" class="metadata-value">0 chars</span>
+              </div>
+            </div>
+
+            <!-- Overhead Badge -->
+            <div class="overhead-badge" id="overhead-badge" title="Base64 encoding uses 4 characters per 3 bytes of binary data, introducing ~33% overhead.">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+              <span id="meta-overhead">~33.3% Overhead (Binary &rarr; Text)</span>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Panel: Base64 Output Snippets -->
+        <div class="tool-panel glass-panel" style="display: flex; flex-direction: column;">
+          <h2 class="panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="16 18 22 12 16 6"></polyline>
+              <polyline points="8 6 2 12 8 18"></polyline>
+            </svg>
+            Base64 Output
+          </h2>
+
+          <!-- Empty State -->
+          <div id="output-empty-state" class="empty-state">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            <p style="font-weight: 600; font-size: 1rem; margin-bottom: 0.25rem;">Waiting for Image</p>
+            <p style="font-size: 0.85rem; max-width: 320px;">Upload or drop an image on the left to instantly generate Data URIs, raw Base64, and embed codes.</p>
+          </div>
+
+          <!-- Active Output Area (hidden initially) -->
+          <div id="output-active-state" style="display: none; flex-direction: column; gap: 1rem; flex: 1;">
+            
+            <!-- Format Tabs -->
+            <div class="format-tabs">
+              <button id="tab-datauri" class="format-tab-btn active" data-format="datauri" type="button">
+                Data URI
+              </button>
+              <button id="tab-raw" class="format-tab-btn" data-format="raw" type="button">
+                Raw Base64
+              </button>
+              <button id="tab-html" class="format-tab-btn" data-format="html" type="button">
+                HTML &lt;img&gt;
+              </button>
+              <button id="tab-css" class="format-tab-btn" data-format="css" type="button">
+                CSS Background
+              </button>
+            </div>
+
+            <!-- Output Editor -->
+            <textarea id="output-textarea" class="output-editor" readonly spellcheck="false" placeholder="Base64 encoded string will appear here..."></textarea>
+
+            <div class="output-stats">
+              <span id="output-format-desc">Full Data URI with MIME prefix</span>
+              <span id="output-char-count">0 characters</span>
+            </div>
+
+            <!-- Actions Bar -->
+            <div class="action-bar" style="margin-top: auto;">
+              <button id="copy-btn" class="btn btn-primary" style="flex: 1;" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span id="copy-btn-text">Copy to Clipboard</span>
+              </button>
+              <button id="download-txt-btn" class="btn btn-secondary" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Download as .txt
+              </button>
+            </div>
+          </div>
+
+        </div>
+
       </div>
     
     </div>
   </main>
+
+  <!-- Global Toast Notification -->
+  <div id="app-toast" class="app-toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span id="toast-message">Copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,7 +455,7 @@
     "@type": "WebApplication",
     "name": "Image to Base64 Converter",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/image-to-base64/",
-    "description": "Convert image files into Base64 data URI strings.",
+    "description": "Convert image files into Base64 data URI strings, raw base64, HTML img snippets, and CSS background-image code.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

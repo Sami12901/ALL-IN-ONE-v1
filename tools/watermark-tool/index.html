@@ -4,14 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Image Watermark Tool - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Apply transparent text or logo watermarks to photos.">
-  <meta name="keywords" content="watermark, protect, photo, logo, text, free, online, tool, utility">
+  <meta name="description" content="Protect and brand photos with custom text or logo watermarks. Choose from a 9-point placement grid or repeat tiled pattern. 100% private and client-side.">
+  <meta name="keywords" content="watermark photo, image watermark online, add logo to image, text watermark, copyright photos, tile watermark">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/watermark-tool/">
+
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+  <link rel="stylesheet" href="./style.css">
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -25,32 +27,254 @@
   <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
-      <div class="tool-header">
-        <h1>Image Watermark Tool</h1>
-        <p class="tool-description">Apply transparent text or logo watermarks to photos.</p>
+      <div class="tool-header" style="text-align: center;">
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Image Watermark Studio</h1>
+        <p class="tool-description" style="margin: 0 auto;">Brand and safeguard your photos with custom text or logo stamps, 9-point positioning, and security tile patterns.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Image Watermark Tool</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Apply transparent text or logo watermarks to photos.</div>
-            <div><strong>Inputs:</strong> watermark, protect, photo, logo, text</div>
-            <div><strong>Category:</strong> image</div>
+      <div class="wm-workspace">
+        <!-- Upload Drop Zone (shown when no image loaded) -->
+        <div class="wm-upload-area" id="drop-zone">
+          <svg viewBox="0 0 24 24" width="52" height="52" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+          <h2 style="font-size: 1.35rem; margin-bottom: 0.5rem; color: var(--text-primary); font-family: var(--font-sans); font-weight: 700;">Drag & Drop Base Photo Here</h2>
+          <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">Supports JPG, PNG, WebP, GIF, SVG</p>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;">
+            <button type="button" class="btn btn-primary" id="browse-btn">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              Choose Image
+            </button>
+            <button type="button" class="btn btn-secondary" id="sample-btn">Try Sample Photo</button>
+          </div>
+          <input type="file" id="base-file-input" accept="image/*" style="display: none;">
+        </div>
+
+        <!-- Info Strip (shown when image is loaded) -->
+        <div class="wm-info-strip" id="info-strip" style="display: none;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+          <span id="file-name" style="font-weight: 600;">photo.jpg</span>
+          <span style="color: var(--text-tertiary);">|</span>
+          <span>Resolution: <strong id="base-dims">0 × 0 px</strong></span>
+          <span style="color: var(--text-tertiary);">|</span>
+          <span style="color: var(--accent); font-weight: 600;" id="mode-badge">Text Mode</span>
+
+          <div style="margin-left: auto; display: flex; gap: 0.5rem;">
+            <button type="button" class="btn btn-secondary" id="change-image-btn" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">Change Photo</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Main Studio Grid -->
+        <div class="wm-grid" id="studio-grid" style="display: none;">
+          <!-- Left: Stage Preview Panel -->
+          <div class="wm-stage-panel">
+            <div class="wm-stage-header">
+              <span>Live Watermark Canvas</span>
+              <span style="font-size: 0.8rem; color: var(--text-tertiary);">Real-time preview &bull; Exports at original full resolution</span>
+            </div>
+
+            <div class="wm-stage-wrapper" id="stage-wrapper">
+              <canvas id="preview-canvas"></canvas>
+            </div>
+          </div>
+
+          <!-- Right: Controls Sidebar -->
+          <div class="wm-controls-panel">
+            <!-- Mode Selector Tabs -->
+            <div class="wm-mode-tabs">
+              <button type="button" class="wm-mode-tab active" id="tab-text">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+                Text Watermark
+              </button>
+              <button type="button" class="wm-mode-tab" id="tab-logo">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                Logo Watermark
+              </button>
+            </div>
+
+            <!-- TEXT WATERMARK SETTINGS -->
+            <div id="text-settings-section">
+              <div class="form-group" style="margin-bottom: 0.85rem;">
+                <label for="wm-text">Watermark Text</label>
+                <input type="text" id="wm-text" class="form-input" value="© ALL IN ONE STUDIO" placeholder="e.g. COPYRIGHT © 2026">
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0.85rem;">
+                <div style="display: flex; justify-content: space-between;">
+                  <label for="font-size-slider">Font Size</label>
+                  <span id="font-size-val" style="font-family: monospace; font-weight: 700; color: var(--accent);">42px</span>
+                </div>
+                <input type="range" id="font-size-slider" class="range-slider" min="12" max="120" value="42">
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0.85rem;">
+                <label for="font-family-select">Font Family</label>
+                <select id="font-family-select" class="form-select">
+                  <option value="Inter, sans-serif">Inter (Modern Clean)</option>
+                  <option value="Arial, sans-serif">Arial</option>
+                  <option value="Impact, sans-serif">Impact (Bold Headline)</option>
+                  <option value="Georgia, serif">Georgia (Editorial Serif)</option>
+                  <option value="'Courier New', monospace">Courier New (Monospace)</option>
+                  <option value="'Times New Roman', serif">Times New Roman</option>
+                  <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
+                  <option value="'Comic Sans MS', cursive">Comic Sans</option>
+                </select>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0.85rem;">
+                <label>Text Style</label>
+                <div class="style-toggles">
+                  <button type="button" class="style-toggle-btn active" id="btn-bold">Bold</button>
+                  <button type="button" class="style-toggle-btn" id="btn-italic">Italic</button>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0.85rem;">
+                <label for="text-color">Color & Opacity</label>
+                <div class="color-picker-wrap">
+                  <input type="color" id="text-color" class="color-input" value="#ffffff">
+                  <div style="flex: 1;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.2rem;">
+                      <span style="color: var(--text-secondary);">Opacity</span>
+                      <span id="text-opacity-val" style="font-family: monospace; color: var(--accent); font-weight: 700;">60%</span>
+                    </div>
+                    <input type="range" id="text-opacity-slider" class="range-slider" min="10" max="100" value="60">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0.85rem;">
+                <div style="display: flex; justify-content: space-between;">
+                  <label for="text-rotation-slider">Rotation Angle</label>
+                  <span id="text-rotation-val" style="font-family: monospace; font-weight: 700; color: var(--accent);">0°</span>
+                </div>
+                <input type="range" id="text-rotation-slider" class="range-slider" min="-90" max="90" value="0">
+              </div>
+            </div>
+
+            <!-- LOGO WATERMARK SETTINGS -->
+            <div id="logo-settings-section" style="display: none;">
+              <div class="form-group" style="margin-bottom: 0.85rem;">
+                <label>Logo Graphic</label>
+                <div class="logo-upload-drop" id="logo-drop-zone">
+                  <img id="logo-thumb" class="logo-preview-thumb" src="../../assets/images/logo.svg" alt="Logo preview" style="display: none;">
+                  <div id="logo-prompt" style="font-size: 0.8rem; color: var(--text-secondary);">
+                    Click to select Logo PNG / SVG or drop here
+                  </div>
+                  <input type="file" id="logo-file-input" accept="image/png,image/svg+xml,image/webp" style="display: none;">
+                </div>
+                <div style="display: flex; gap: 0.5rem; margin-top: 0.4rem;">
+                  <button type="button" class="btn btn-secondary" id="use-default-logo-btn" style="padding: 0.3rem 0.6rem; font-size: 0.75rem; flex: 1;">Use Default Logo</button>
+                  <button type="button" class="btn btn-secondary" id="use-shield-logo-btn" style="padding: 0.3rem 0.6rem; font-size: 0.75rem; flex: 1;">Use Shield Badge</button>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0.85rem;">
+                <div style="display: flex; justify-content: space-between;">
+                  <label for="logo-scale-slider">Logo Scale</label>
+                  <span id="logo-scale-val" style="font-family: monospace; font-weight: 700; color: var(--accent);">20%</span>
+                </div>
+                <input type="range" id="logo-scale-slider" class="range-slider" min="5" max="80" value="20">
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0.85rem;">
+                <div style="display: flex; justify-content: space-between;">
+                  <label for="logo-opacity-slider">Logo Opacity</label>
+                  <span id="logo-opacity-val" style="font-family: monospace; font-weight: 700; color: var(--accent);">70%</span>
+                </div>
+                <input type="range" id="logo-opacity-slider" class="range-slider" min="10" max="100" value="70">
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0.85rem;">
+                <div style="display: flex; justify-content: space-between;">
+                  <label for="logo-rotation-slider">Rotation Angle</label>
+                  <span id="logo-rotation-val" style="font-family: monospace; font-weight: 700; color: var(--accent);">0°</span>
+                </div>
+                <input type="range" id="logo-rotation-slider" class="range-slider" min="-90" max="90" value="0">
+              </div>
+            </div>
+
+            <!-- POSITIONING & LAYOUT CONTROLS -->
+            <div class="form-group">
+              <div class="wm-section-title">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                Placement
+              </div>
+
+              <!-- Full Tile Toggle Switch -->
+              <div style="margin-top: 0.5rem; margin-bottom: 0.75rem; background: var(--bg-tertiary); padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+                <label class="switch-label">
+                  <span>Full Tile / Repeat Pattern</span>
+                  <div class="switch-wrap">
+                    <input type="checkbox" id="tile-toggle">
+                    <span class="switch-slider"></span>
+                  </div>
+                </label>
+              </div>
+
+              <!-- 9-Point Grid Container -->
+              <div id="grid-position-box" class="pos-grid-container">
+                <label style="text-align: center; font-size: 0.8rem; color: var(--text-secondary);">9-Point Alignment Grid</label>
+                <div class="pos-grid" id="pos-grid">
+                  <button type="button" class="pos-grid-btn" data-pos="top-left" title="Top-Left">&#8598;</button>
+                  <button type="button" class="pos-grid-btn" data-pos="top-center" title="Top-Center">&#8593;</button>
+                  <button type="button" class="pos-grid-btn" data-pos="top-right" title="Top-Right">&#8599;</button>
+                  <button type="button" class="pos-grid-btn" data-pos="center-left" title="Center-Left">&#8592;</button>
+                  <button type="button" class="pos-grid-btn" data-pos="center" title="Center">&#9632;</button>
+                  <button type="button" class="pos-grid-btn" data-pos="center-right" title="Center-Right">&#8594;</button>
+                  <button type="button" class="pos-grid-btn" data-pos="bottom-left" title="Bottom-Left">&#8601;</button>
+                  <button type="button" class="pos-grid-btn" data-pos="bottom-center" title="Bottom-Center">&#8595;</button>
+                  <button type="button" class="pos-grid-btn active" data-pos="bottom-right" title="Bottom-Right">&#8600;</button>
+                </div>
+
+                <div style="margin-top: 0.5rem;">
+                  <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.2rem;">
+                    <span style="color: var(--text-secondary);">Border Margin</span>
+                    <span id="margin-val" style="font-family: monospace; font-weight: 700; color: var(--accent);">30px</span>
+                  </div>
+                  <input type="range" id="margin-slider" class="range-slider" min="0" max="150" value="30">
+                </div>
+              </div>
+
+              <!-- Tile Spacing Slider (shown only when tile is active) -->
+              <div id="tile-spacing-box" style="display: none; margin-top: 0.5rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.2rem;">
+                  <span style="color: var(--text-secondary);">Tile Spacing / Density</span>
+                  <span id="tile-gap-val" style="font-family: monospace; font-weight: 700; color: var(--accent);">180px</span>
+                </div>
+                <input type="range" id="tile-gap-slider" class="range-slider" min="80" max="400" value="180">
+              </div>
+            </div>
+
+            <!-- EXPORT CONTROLS -->
+            <div class="form-group">
+              <div class="wm-section-title">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Export Format
+              </div>
+              <select id="export-format" class="form-select" style="margin-top: 0.35rem;">
+                <option value="image/png">PNG (.png) - Pristine Quality</option>
+                <option value="image/jpeg" selected>JPEG (.jpg) - Balanced File Size</option>
+                <option value="image/webp">WebP (.webp) - Optimized Modern</option>
+              </select>
+            </div>
+
+            <!-- Download Button -->
+            <button type="button" class="btn btn-primary btn-block" id="download-btn">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download Watermarked Image
+            </button>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
+
+  <div class="wm-toast" id="toast">Ready!</div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,7 +286,7 @@
     "@type": "WebApplication",
     "name": "Image Watermark Tool",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/watermark-tool/",
-    "description": "Apply transparent text or logo watermarks to photos.",
+    "description": "Apply transparent text or logo watermarks to photos with 9-point grid alignment and security tile repeats.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

@@ -4,14 +4,179 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CSS Sprite Sheet Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Layout icons into a single sprite sheet.">
-  <meta name="keywords" content="sprite, spritesheet, css, icons, merge, free, online, tool, utility">
+  <meta name="description" content="Synthesize multiple icons and images into an optimized CSS sprite sheet with 2D bin-packing, custom spacing, instant canvas preview, and CSS code generation.">
+  <meta name="keywords" content="sprite, spritesheet, css, icons, bin packing, merge, generator, free, online, tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/sprite-sheet-generator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    /* Custom Styling for Sprite Sheet Generator */
+    .sprite-workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 1024px) {
+      .sprite-workspace-grid {
+        grid-template-columns: 420px 1fr;
+      }
+    }
+
+    .checkerboard-bg {
+      background-color: var(--bg-tertiary);
+      background-image: 
+        linear-gradient(45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.05) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.05) 75%);
+      background-size: 16px 16px;
+      background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+    }
+
+    .sprite-canvas-container {
+      width: 100%;
+      min-height: 280px;
+      max-height: 480px;
+      overflow: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    #sprite-canvas {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      border-radius: 4px;
+      image-rendering: pixelated;
+      max-width: none;
+      transition: transform 0.2s ease;
+      transform-origin: center center;
+    }
+
+    .sprite-list-container {
+      max-height: 260px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding-right: 0.25rem;
+    }
+
+    .sprite-item-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 0.75rem;
+      transition: var(--transition);
+    }
+    .sprite-item-card:hover {
+      border-color: var(--accent);
+    }
+    .sprite-item-card.active-sprite {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .sprite-thumb {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-sm);
+      padding: 2px;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .sprite-item-details {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .sprite-item-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text-primary);
+    }
+
+    .sprite-item-meta {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      font-family: monospace;
+    }
+
+    .sprite-remove-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 0.3rem;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+    }
+    .sprite-remove-btn:hover {
+      color: var(--danger);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .zoom-btn {
+      padding: 0.25rem 0.6rem;
+      font-size: 0.75rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+    }
+    .zoom-btn:hover, .zoom-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    .toast-msg {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      color: var(--text-primary);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+      pointer-events: none;
+    }
+    .toast-msg.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,31 +191,172 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>CSS Sprite Sheet Generator</h1>
-        <p class="tool-description">Layout icons into a single sprite sheet.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">CSS Sprite Sheet Generator</h1>
+        <p class="tool-description">Merge multiple icons or images into an optimized CSS sprite sheet with 2D bin-packing, customizable padding, live canvas inspection, and production-ready CSS styles.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>CSS Sprite Sheet Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Layout icons into a single sprite sheet.</div>
-            <div><strong>Inputs:</strong> sprite, spritesheet, css, icons, merge</div>
-            <div><strong>Category:</strong> image</div>
+      <!-- Main Workspace Grid -->
+      <div class="sprite-workspace-grid">
+        
+        <!-- Left Panel: Upload Zone & Configuration -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+            Sprite Sprites & Settings
+          </h2>
+
+          <!-- Multi-File Drop Area -->
+          <div class="file-drag-area" id="drop-zone" style="padding: 1.75rem 1rem;">
+            <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            <p style="font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem;">Drop multiple icons or images here</p>
+            <p style="font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 0.75rem;">PNG, SVG, JPG, WebP (select multiple)</p>
+            <button type="button" class="btn btn-primary" id="browse-btn" style="padding: 0.45rem 1rem; font-size: 0.85rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              Choose Multiple Files
+            </button>
+            <input type="file" id="file-input" accept="image/*" multiple style="display: none;">
           </div>
+
+          <!-- Sample Icons Loader -->
+          <div>
+            <button type="button" class="btn btn-secondary" id="btn-load-samples" style="width: 100%; font-size: 0.825rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+              Load Sample UI Icon Set (10 Icons)
+            </button>
+          </div>
+
+          <!-- Layout & Packing Options -->
+          <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem; display: flex; flex-direction: column; gap: 0.85rem;">
+            <div style="font-size: 0.825rem; font-weight: 700; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); padding-bottom: 0.35rem;">
+              Layout Configuration
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <label for="layout-mode" style="font-size: 0.8rem;">Layout Mode</label>
+                <select id="layout-mode" class="form-select" style="padding: 0.45rem 0.65rem; font-size: 0.85rem;">
+                  <option value="compact" selected>Compact 2D Grid</option>
+                  <option value="horizontal">Horizontal Strip</option>
+                  <option value="vertical">Vertical Strip</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="sprite-padding" style="font-size: 0.8rem;">Padding / Gap</label>
+                <select id="sprite-padding" class="form-select" style="padding: 0.45rem 0.65rem; font-size: 0.85rem;">
+                  <option value="0">0px (None)</option>
+                  <option value="4">4px</option>
+                  <option value="8" selected>8px (Recommended)</option>
+                  <option value="16">16px</option>
+                  <option value="24">24px</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <label for="class-prefix" style="font-size: 0.8rem;">CSS Prefix</label>
+                <input type="text" id="class-prefix" class="form-input" value="icon-" style="padding: 0.45rem 0.65rem; font-size: 0.85rem; font-family: monospace;">
+              </div>
+
+              <div class="form-group">
+                <label for="sheet-url" style="font-size: 0.8rem;">Sprite Image URL</label>
+                <input type="text" id="sheet-url" class="form-input" value="spritesheet.png" style="padding: 0.45rem 0.65rem; font-size: 0.85rem; font-family: monospace;">
+              </div>
+            </div>
+          </div>
+
+          <!-- Sprites Management List -->
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span style="font-size: 0.85rem; font-weight: 600;">Uploaded Sprites (<span id="sprite-count">0</span>)</span>
+              <button type="button" id="btn-clear-all" style="font-size: 0.75rem; color: var(--danger); background: transparent; border: none; cursor: pointer;">Clear All</button>
+            </div>
+            
+            <div class="sprite-list-container" id="sprite-list">
+              <div style="text-align: center; color: var(--text-tertiary); font-size: 0.8rem; padding: 1.5rem 0;">No sprites uploaded yet</div>
+            </div>
+          </div>
+
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Panel: Interactive Canvas & Generated Code -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;">
+            <h2 class="panel-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+              Synthesized Sprite Sheet
+            </h2>
+
+            <!-- Zoom & Pan Controls -->
+            <div style="display: flex; align-items: center; gap: 0.35rem;">
+              <span style="font-size: 0.75rem; color: var(--text-tertiary); margin-right: 0.25rem;">Zoom:</span>
+              <button type="button" class="zoom-btn active" data-zoom="1">1x</button>
+              <button type="button" class="zoom-btn" data-zoom="2">2x</button>
+              <button type="button" class="zoom-btn" data-zoom="3">3x</button>
+            </div>
+          </div>
+
+          <!-- Canvas Preview -->
+          <div class="sprite-canvas-container checkerboard-bg" id="canvas-container">
+            <canvas id="sprite-canvas"></canvas>
+          </div>
+
+          <!-- Canvas Info Bar -->
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-secondary); background: var(--bg-tertiary); padding: 0.6rem 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+            <div style="font-family: monospace;">
+              Dimensions: <strong id="sheet-dimensions" style="color: var(--text-primary);">0 &times; 0 px</strong>
+            </div>
+            <div id="active-sprite-coords" style="font-family: monospace; color: var(--accent-light);">
+              Hover or click sprite to view coordinates
+            </div>
+          </div>
+
+          <!-- Action Toolbar -->
+          <div class="action-bar" style="margin-top: 0.5rem;">
+            <button type="button" class="btn btn-primary" id="btn-download-png">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download Sprite Sheet PNG
+            </button>
+            <button type="button" class="btn btn-secondary" id="btn-download-css">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              Download CSS Stylesheet
+            </button>
+            <button type="button" class="btn btn-secondary" id="btn-download-json">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              JSON Manifest
+            </button>
+          </div>
+
+          <!-- Generated CSS Output Area -->
+          <div style="margin-top: 0.5rem; position: relative;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <span style="font-size: 0.85rem; font-weight: 600;">Generated CSS Stylesheet</span>
+              <button type="button" id="btn-copy-css" class="btn btn-secondary" style="padding: 0.25rem 0.6rem; font-size: 0.775rem;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy CSS
+              </button>
+            </div>
+            <textarea id="css-output" class="form-textarea" readonly style="min-height: 180px; font-size: 0.825rem; font-family: monospace; background: var(--bg-tertiary);" placeholder="/* CSS styles will appear here after loading sprites */"></textarea>
+          </div>
+
+        </div>
+
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Interactive Toast Notification -->
+  <div id="toast" class="toast-msg">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--success)" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">Copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,7 +368,7 @@
     "@type": "WebApplication",
     "name": "CSS Sprite Sheet Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/sprite-sheet-generator/",
-    "description": "Layout icons into a single sprite sheet.",
+    "description": "Synthesize multiple icons or images into a single compact CSS sprite sheet with 2D bin packing.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
