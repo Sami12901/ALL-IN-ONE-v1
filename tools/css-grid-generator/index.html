@@ -12,8 +12,320 @@
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <style>
+    .grid-app-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .grid-app-layout {
+        grid-template-columns: 360px 1fr;
+      }
+    }
+    .grid-ctrl-section {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .grid-ctrl-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .dimension-control {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .dimension-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .dimension-val-badge {
+      background: var(--accent-glow);
+      color: var(--accent);
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-family: monospace;
+      font-weight: 700;
+    }
+    .gap-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    .gap-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .gap-input-wrap input {
+      flex: 1;
+      padding: 0.5rem;
+    }
+    .gap-input-wrap select {
+      width: 70px;
+      padding: 0.5rem 0.25rem;
+    }
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .preset-chip {
+      padding: 0.3rem 0.65rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .preset-chip:hover {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .area-creator-box {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .color-name-group {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .area-color-picker {
+      width: 44px;
+      height: 40px;
+      padding: 0.15rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      cursor: pointer;
+    }
+    .areas-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+    .area-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 0.75rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+    }
+    .area-item-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .area-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+    .area-del-btn {
+      background: none;
+      border: none;
+      color: var(--error);
+      cursor: pointer;
+      padding: 0.2rem 0.4rem;
+      border-radius: var(--radius-sm);
+      opacity: 0.8;
+      transition: var(--transition);
+    }
+    .area-del-btn:hover {
+      opacity: 1;
+      background: rgba(239, 68, 68, 0.15);
+    }
+
+    /* Grid Stage */
+    .grid-stage-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .stage-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .stage-tabs {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--bg-tertiary);
+      padding: 0.25rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    .stage-tab {
+      padding: 0.4rem 0.9rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .stage-tab.active {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
+    }
+    .grid-canvas-container {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      min-height: 380px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: auto;
+      user-select: none;
+    }
+    .grid-visual-board {
+      width: 100%;
+      height: 100%;
+      min-height: 340px;
+      display: grid;
+      transition: gap 0.2s ease;
+    }
+    .grid-cell {
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-family: monospace;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      position: relative;
+      min-height: 52px;
+      transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    }
+    .grid-cell:hover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+    .grid-cell.selected {
+      border: 2px solid var(--accent);
+      background: rgba(var(--accent-rgb), 0.25);
+      color: var(--accent);
+      font-weight: bold;
+    }
+    .grid-cell.has-area {
+      border-style: solid;
+      border-width: 1px;
+      font-weight: 600;
+    }
+    .grid-cell-label {
+      pointer-events: none;
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      max-width: 90%;
+    }
+
+    /* Live Preview Container */
+    .grid-live-preview {
+      width: 100%;
+      min-height: 340px;
+      display: grid;
+      border-radius: var(--radius-md);
+      transition: gap 0.2s ease;
+    }
+    .preview-area-block {
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-weight: 700;
+      font-size: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: var(--shadow-sm);
+      text-align: center;
+    }
+    .preview-area-desc {
+      font-size: 0.75rem;
+      font-weight: 400;
+      opacity: 0.8;
+      margin-top: 0.25rem;
+    }
+
+    /* Code Output */
+    .code-output-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 768px) {
+      .code-output-container {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .code-box-wrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .code-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .code-box-pre {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.825rem;
+      color: var(--text-primary);
+      height: 200px;
+      overflow: auto;
+      white-space: pre;
+      line-height: 1.5;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,26 +339,171 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>CSS Grid Generator</h1>
-        <p class="tool-description">Visually design CSS Grid layouts and copy code.</p>
+        <p class="tool-description">Visually design CSS Grid layouts, map named grid areas, and export production-ready CSS and HTML markup.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>CSS Grid Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Visually design CSS Grid layouts and copy code.</div>
-            <div><strong>Inputs:</strong> css, grid, layout, visual, generator</div>
-            <div><strong>Category:</strong> developer</div>
+      <div class="grid-app-layout">
+        <!-- Sidebar Controls -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">Grid Configuration</h2>
+
+          <!-- Dimensions -->
+          <div class="grid-ctrl-section">
+            <div class="grid-ctrl-title">
+              <span>Grid Structure</span>
+            </div>
+            <div class="dimension-control">
+              <div class="dimension-header">
+                <label for="cols-slider">Columns</label>
+                <span id="cols-val" class="dimension-val-badge">4</span>
+              </div>
+              <input type="range" id="cols-slider" class="range-slider" min="1" max="12" value="4">
+            </div>
+
+            <div class="dimension-control">
+              <div class="dimension-header">
+                <label for="rows-slider">Rows</label>
+                <span id="rows-val" class="dimension-val-badge">4</span>
+              </div>
+              <input type="range" id="rows-slider" class="range-slider" min="1" max="12" value="4">
+            </div>
+
+            <div class="gap-row">
+              <div class="form-group">
+                <label for="col-gap-input">Column Gap</label>
+                <div class="gap-input-wrap">
+                  <input type="number" id="col-gap-input" class="form-input" min="0" max="100" value="12">
+                  <select id="col-gap-unit" class="form-select">
+                    <option value="px" selected>px</option>
+                    <option value="rem">rem</option>
+                    <option value="em">em</option>
+                    <option value="%">%</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="row-gap-input">Row Gap</label>
+                <div class="gap-input-wrap">
+                  <input type="number" id="row-gap-input" class="form-input" min="0" max="100" value="12">
+                  <select id="row-gap-unit" class="form-select">
+                    <option value="px" selected>px</option>
+                    <option value="rem">rem</option>
+                    <option value="em">em</option>
+                    <option value="%">%</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Area Creator -->
+          <div class="grid-ctrl-section">
+            <div class="grid-ctrl-title">
+              <span>Grid Area Mapping</span>
+            </div>
+            <p style="font-size: 0.775rem; color: var(--text-secondary); line-height: 1.4;">
+              Click or drag across cells in the editor to select a bounding box, then name and assign your area.
+            </p>
+
+            <div class="preset-chips">
+              <span class="preset-chip" data-preset="header">header</span>
+              <span class="preset-chip" data-preset="nav">nav</span>
+              <span class="preset-chip" data-preset="sidebar">sidebar</span>
+              <span class="preset-chip" data-preset="main">main</span>
+              <span class="preset-chip" data-preset="content">content</span>
+              <span class="preset-chip" data-preset="footer">footer</span>
+            </div>
+
+            <div class="area-creator-box">
+              <div class="color-name-group">
+                <input type="color" id="area-color" class="area-color-picker" value="#4e85bf" title="Area Color">
+                <input type="text" id="area-name-input" class="form-input" placeholder="Area name (e.g. header)" style="flex: 1;">
+              </div>
+              <div class="action-bar" style="margin-top: 0.25rem;">
+                <button id="assign-area-btn" class="btn btn-primary" style="flex: 1; padding: 0.6rem 1rem;">
+                  Assign Area
+                </button>
+                <button id="clear-selection-btn" class="btn btn-secondary" style="padding: 0.6rem 0.8rem;" title="Clear cell selection">
+                  Deselect
+                </button>
+              </div>
+              <div id="selection-status" style="font-size: 0.75rem; color: var(--text-tertiary); min-height: 1.2rem;">
+                No cells selected
+              </div>
+            </div>
+          </div>
+
+          <!-- Defined Areas List -->
+          <div class="grid-ctrl-section">
+            <div class="grid-ctrl-title">
+              <span>Defined Areas</span>
+              <span id="areas-count" style="font-size: 0.75rem; color: var(--text-secondary); font-weight: normal;">0 areas</span>
+            </div>
+            <div id="areas-list" class="areas-list">
+              <div style="font-size: 0.8rem; color: var(--text-tertiary); text-align: center; padding: 1rem;">
+                No grid areas defined yet
+              </div>
+            </div>
+            <div class="action-bar" style="margin-top: 0.25rem;">
+              <button id="clear-all-areas-btn" class="btn btn-secondary" style="width: 100%; font-size: 0.8rem; padding: 0.5rem;">
+                Reset All Areas
+              </button>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Visual Stage & Code Output -->
+        <div class="grid-stage-wrapper">
+          <div class="tool-panel glass-panel">
+            <div class="stage-toolbar">
+              <h2 class="panel-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">
+                Live Stage
+              </h2>
+              <div class="stage-tabs">
+                <button id="tab-editor" class="stage-tab active">Interactive Editor</button>
+                <button id="tab-preview" class="stage-tab">Rendered Preview</button>
+              </div>
+            </div>
+
+            <!-- Canvas View -->
+            <div class="grid-canvas-container" id="canvas-container">
+              <!-- Visual Interactive Grid Editor -->
+              <div id="grid-visual-board" class="grid-visual-board"></div>
+              
+              <!-- Live Preview Stage (Hidden by default) -->
+              <div id="grid-live-preview" class="grid-live-preview" style="display: none;"></div>
+            </div>
+          </div>
+
+          <!-- Code Generation Cards -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">Generated Code</h2>
+            <div class="code-output-container">
+              <!-- CSS Code Output -->
+              <div class="code-box-wrapper">
+                <div class="code-box-header">
+                  <span>CSS Stylesheet</span>
+                  <button id="copy-css-btn" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">
+                    Copy CSS
+                  </button>
+                </div>
+                <pre id="css-output" class="code-box-pre">/* CSS Grid styles will appear here */</pre>
+              </div>
+
+              <!-- HTML Code Output -->
+              <div class="code-box-wrapper">
+                <div class="code-box-header">
+                  <span>HTML Container Markup</span>
+                  <button id="copy-html-btn" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">
+                    Copy HTML
+                  </button>
+                </div>
+                <pre id="html-output" class="code-box-pre">&lt;!-- HTML markup will appear here --&gt;</pre>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     
     </div>

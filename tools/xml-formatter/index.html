@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>XML Formatter - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Format and beautify XML code with proper indentation.">
-  <meta name="keywords" content="xml, format, beautify, indent, free, online, tool, utility">
+  <title>XML Formatter & Validator - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Format, beautify, minify, and validate XML code with line numbers, DOM syntax validation, and tree statistics.">
+  <meta name="keywords" content="xml, format, beautify, validate, minify, parser, dom, line numbers, tree stats, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/xml-formatter/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,129 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+  <style>
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      align-items: end;
+      margin-bottom: 1rem;
+    }
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .stat-badge {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.6rem 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .stat-badge .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .stat-badge .stat-value {
+      font-family: monospace;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .code-editor-box {
+      display: flex;
+      position: relative;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      flex: 1;
+      min-height: 380px;
+      transition: border-color 0.2s ease;
+    }
+    .code-editor-box:focus-within {
+      border-color: var(--accent);
+    }
+    .line-gutter {
+      width: 48px;
+      padding: 0.85rem 0.4rem;
+      background: rgba(0, 0, 0, 0.25);
+      border-right: 1px solid var(--border);
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      text-align: right;
+      color: var(--text-tertiary);
+      user-select: none;
+      overflow: hidden;
+      white-space: pre;
+    }
+    .editor-textarea {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 0.85rem;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: var(--text-primary);
+      resize: vertical;
+      outline: none;
+      white-space: pre;
+      overflow: auto;
+      tab-size: 2;
+    }
+    .panel-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .panel-header-row .panel-title {
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
+    .panel-meta {
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+      font-family: monospace;
+    }
+    .error-banner {
+      display: none;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: var(--error);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.875rem;
+      line-height: 1.4;
+    }
+    .error-banner strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-size: 0.9rem;
+    }
+    .success-banner {
+      display: none;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: var(--success);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.875rem;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -26,27 +149,97 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>XML Formatter</h1>
-        <p class="tool-description">Format and beautify XML code with proper indentation.</p>
+        <h1>XML Formatter & Validator</h1>
+        <p class="tool-description">Beautify, parse, validate, and minify XML code with line numbers, detailed DOM syntax error diagnostics, and element tree statistics.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>XML Formatter</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Format and beautify XML code with proper indentation.</div>
-            <div><strong>Inputs:</strong> xml, format, beautify, indent</div>
-            <div><strong>Category:</strong> developer</div>
+      <!-- Controls & Settings Panel -->
+      <div class="tool-panel glass-panel">
+        <div class="options-grid">
+          <div class="form-group">
+            <label for="xml-indent">Indentation Format</label>
+            <select id="xml-indent" class="form-select">
+              <option value="2" selected>2 Spaces</option>
+              <option value="4">4 Spaces</option>
+              <option value="tab">Tabs</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="xml-sample">Sample XML Templates</label>
+            <select id="xml-sample" class="form-select">
+              <option value="">-- Load a Sample --</option>
+              <option value="catalog">Product Catalog with Attributes</option>
+              <option value="soap">SOAP Web Service Envelope</option>
+              <option value="rss">RSS 2.0 Feed Document</option>
+            </select>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Tree Statistics -->
+        <div class="stats-row" id="stats-panel">
+          <div class="stat-badge">
+            <span class="stat-label">Elements</span>
+            <span class="stat-value" id="stat-elements">0</span>
+          </div>
+          <div class="stat-badge">
+            <span class="stat-label">Attributes</span>
+            <span class="stat-value" id="stat-attributes">0</span>
+          </div>
+          <div class="stat-badge">
+            <span class="stat-label">Max Depth</span>
+            <span class="stat-value" id="stat-depth">0</span>
+          </div>
+          <div class="stat-badge">
+            <span class="stat-label">Root Tag</span>
+            <span class="stat-value" id="stat-root" style="font-size: 0.95rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">None</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Workarea Split View -->
+      <div class="tool-workarea split-view">
+        <!-- Input Panel -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-header-row">
+            <h2 class="panel-title">XML Input</h2>
+            <span id="input-stats" class="panel-meta">Lines: 1 | Chars: 0</span>
+          </div>
+
+          <div id="xml-error-banner" class="error-banner"></div>
+          <div id="xml-success-banner" class="success-banner">XML is well-formed and valid!</div>
+
+          <div class="code-editor-box">
+            <div id="input-gutter" class="line-gutter">1</div>
+            <textarea id="xml-input" class="editor-textarea" placeholder="Paste or type raw XML code here..." spellcheck="false"></textarea>
+          </div>
+
+          <div class="action-bar">
+            <button id="format-btn" class="btn btn-primary">Format XML</button>
+            <button id="validate-btn" class="btn btn-secondary">Validate XML</button>
+            <button id="minify-btn" class="btn btn-secondary">Minify XML</button>
+            <button id="clear-btn" class="btn btn-secondary">Clear</button>
+          </div>
+        </div>
+
+        <!-- Output Panel -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-header-row">
+            <h2 class="panel-title">Formatted Output</h2>
+            <span id="output-stats" class="panel-meta">Lines: 1 | Chars: 0</span>
+          </div>
+
+          <div class="code-editor-box" style="position: relative;">
+            <button id="copy-btn" class="copy-btn" title="Copy to clipboard">Copy</button>
+            <div id="output-gutter" class="line-gutter">1</div>
+            <textarea id="xml-output" class="editor-textarea" readonly placeholder="Formatted XML will appear here..." spellcheck="false" style="padding-top: 2.5rem;"></textarea>
+          </div>
+
+          <div class="action-bar">
+            <button id="download-btn" class="btn btn-secondary">Download .xml</button>
+            <button id="copy-action-btn" class="btn btn-secondary">Copy XML</button>
+          </div>
+        </div>
       </div>
     
     </div>
@@ -60,10 +253,10 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "XML Formatter",
+    "name": "XML Formatter & Validator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/xml-formatter/",
-    "description": "Format and beautify XML code with proper indentation.",
-    "applicationCategory": "UtilityPage",
+    "description": "Format, validate, beautify, and minify XML data with line numbers and tree statistics.",
+    "applicationCategory": "DeveloperApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

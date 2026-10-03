@@ -4,14 +4,194 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UUID/GUID Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Generate bulk random cryptographically secure UUID v4.">
-  <meta name="keywords" content="uuid, guid, random, id, bulk, free, online, tool, utility">
+  <meta name="description" content="Generate bulk cryptographically secure UUID v4, time-ordered UUID v7, and timestamp UUID v1 with custom formatting, braces, and casing.">
+  <meta name="keywords" content="uuid, guid, uuid generator, uuid v4, uuid v7, uuid v1, bulk uuid, random id, rfc 4122, rfc 9562">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/uuid-generator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .version-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .version-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      user-select: none;
+      position: relative;
+    }
+    .version-card:hover {
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+    }
+    .version-card.active {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+    .version-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .version-title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--text-primary);
+    }
+    .version-badge {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: var(--radius-full);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .version-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .config-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+    }
+
+    .qty-buttons {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+    }
+    .qty-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .qty-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+    .qty-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    .uuid-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-height: 480px;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+    .uuid-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.65rem 1rem;
+      font-family: monospace;
+      font-size: 0.95rem;
+      transition: var(--transition);
+    }
+    .uuid-item:hover {
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+    }
+    .uuid-index {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      min-width: 2rem;
+      user-select: none;
+    }
+    .uuid-string {
+      flex: 1;
+      color: var(--text-primary);
+      word-break: break-all;
+      user-select: all;
+    }
+    .btn-item-copy {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.3rem 0.65rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+    .btn-item-copy:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .btn-item-copy.copied {
+      background: var(--success);
+      color: #ffffff;
+      border-color: transparent;
+    }
+
+    /* Anatomy Breakdown */
+    .anatomy-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .anatomy-display {
+      font-family: monospace;
+      font-size: 1.1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px;
+      padding: 0.65rem 1rem;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      letter-spacing: 0.05em;
+    }
+    .anatomy-part {
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    .part-time-low { color: #f87171; background: rgba(248, 113, 113, 0.1); }
+    .part-time-mid { color: #fb923c; background: rgba(251, 146, 60, 0.1); }
+    .part-ver { color: #facc15; background: rgba(250, 204, 21, 0.15); font-weight: 700; }
+    .part-var { color: #4ade80; background: rgba(74, 222, 128, 0.15); font-weight: 700; }
+    .part-node { color: #38bdf8; background: rgba(56, 189, 248, 0.1); }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,29 +206,148 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>UUID/GUID Generator</h1>
-        <p class="tool-description">Generate bulk random cryptographically secure UUID v4.</p>
+        <h1>UUID / GUID Generator</h1>
+        <p class="tool-description">Generate cryptographically secure random UUID v4, time-ordered UUID v7 for databases, and timestamp-based UUID v1 with full formatting controls.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>UUID/GUID Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Generate bulk random cryptographically secure UUID v4.</div>
-            <div><strong>Inputs:</strong> uuid, guid, random, id, bulk</div>
-            <div><strong>Category:</strong> developer</div>
+      <!-- Generator Configuration Panel -->
+      <div class="tool-panel glass-panel">
+        <h2 class="panel-title">1. Select UUID Version</h2>
+        
+        <div class="version-cards">
+          <div class="version-card active" data-version="v4" id="card-v4">
+            <div class="version-header">
+              <span class="version-title">UUID v4</span>
+              <span class="version-badge">Random (RFC 4122)</span>
+            </div>
+            <p class="version-desc">122 cryptographically secure random bits using browser Web Crypto. Ideal for distributed systems, session IDs, and general unique keys.</p>
+          </div>
+
+          <div class="version-card" data-version="v7" id="card-v7">
+            <div class="version-header">
+              <span class="version-title">UUID v7</span>
+              <span class="version-badge">Time-Ordered (RFC 9562)</span>
+            </div>
+            <p class="version-desc">Millisecond timestamp prefix followed by random bits. Modern standard for database primary keys (Postgres, MySQL, Mongo) to eliminate index fragmentation.</p>
+          </div>
+
+          <div class="version-card" data-version="v1" id="card-v1">
+            <div class="version-header">
+              <span class="version-title">UUID v1</span>
+              <span class="version-badge">Timestamp (RFC 4122)</span>
+            </div>
+            <p class="version-desc">Gregorian calendar 100-nanosecond timestamp with clock sequence and randomized 48-bit node identifier.</p>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <h2 class="panel-title">2. Formatting &amp; Quantity</h2>
+        
+        <div class="config-grid">
+          <!-- Quantity -->
+          <div class="form-group">
+            <label>Quantity to Generate:</label>
+            <div class="qty-buttons">
+              <button type="button" class="qty-btn" data-qty="1">1</button>
+              <button type="button" class="qty-btn active" data-qty="5">5</button>
+              <button type="button" class="qty-btn" data-qty="10">10</button>
+              <button type="button" class="qty-btn" data-qty="50">50</button>
+              <button type="button" class="qty-btn" data-qty="100">100</button>
+            </div>
+          </div>
+
+          <!-- Letter Case -->
+          <div class="form-group">
+            <label for="format-case">Letter Casing:</label>
+            <select id="format-case" class="form-select">
+              <option value="lower" selected>lowercase (standard)</option>
+              <option value="upper">UPPERCASE (Windows / GUID)</option>
+            </select>
+          </div>
+
+          <!-- Hyphens & Braces -->
+          <div class="form-group">
+            <label>Structure Options:</label>
+            <div class="checkbox-group" style="gap: 0.5rem;">
+              <label class="checkbox-label">
+                <input type="checkbox" id="opt-hyphens" checked>
+                <span>Include hyphens (8-4-4-4-12)</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="opt-braces">
+                <span>Enclose in curly braces { }</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Quotes -->
+          <div class="form-group">
+            <label for="format-quotes">Quotes Wrap:</label>
+            <select id="format-quotes" class="form-select">
+              <option value="none" selected>None (Raw ID)</option>
+              <option value="double">Double quotes ("...")</option>
+              <option value="single">Single quotes ('...')</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Master Generate Action -->
+        <div class="action-bar" style="margin-top: 0;">
+          <button id="btn-generate" class="btn btn-primary" type="button" style="padding: 0.75rem 2rem; font-size: 1rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            Generate UUIDs
+          </button>
+        </div>
       </div>
-    
+
+      <!-- Generated Results Section -->
+      <div class="tool-panel glass-panel">
+        <div class="panel-title" style="display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span>Generated Results</span>
+            <span class="version-badge" id="results-count-badge">5 Generated</span>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="btn-copy-all" class="btn-sm-action" type="button" title="Copy all UUIDs separated by newline">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy All
+            </button>
+            <button id="btn-download-txt" class="btn-sm-action" type="button" title="Download generated UUIDs as .txt file">
+              Download .txt
+            </button>
+            <button id="btn-clear-list" class="btn-sm-action" type="button" title="Clear results list">
+              Clear
+            </button>
+          </div>
+        </div>
+
+        <div class="uuid-list" id="uuid-results-list">
+          <!-- Populated by script.js -->
+        </div>
+      </div>
+
+      <!-- Anatomy & Version Breakdown Inspector -->
+      <div class="tool-panel glass-panel">
+        <h2 class="panel-title">UUID Structure Anatomy &amp; Bit Inspector</h2>
+        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: -0.5rem;">
+          Breakdown of the 128-bit structure for the top generated UUID:
+        </p>
+
+        <div class="anatomy-box">
+          <div class="anatomy-display" id="anatomy-display">
+            <!-- Colored spans populated by script -->
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; font-size: 0.8rem;">
+            <div><span class="anatomy-part part-time-low">32 bits</span> <strong id="lbl-p1">time_low / rand_1</strong></div>
+            <div><span class="anatomy-part part-time-mid">16 bits</span> <strong id="lbl-p2">time_mid / rand_2</strong></div>
+            <div><span class="anatomy-part part-ver">4 bits</span> <strong>version</strong> (<span id="lbl-ver">4</span>)</div>
+            <div><span class="anatomy-part part-var">2 bits</span> <strong>variant</strong> (RFC 4122 '10')</div>
+            <div><span class="anatomy-part part-node">48-62 bits</span> <strong id="lbl-p3">node / random</strong></div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
 
@@ -62,7 +361,7 @@
     "@type": "WebApplication",
     "name": "UUID/GUID Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/uuid-generator/",
-    "description": "Generate bulk random cryptographically secure UUID v4.",
+    "description": "Generate bulk random cryptographically secure UUID v4, time-ordered UUID v7, and timestamp UUID v1.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

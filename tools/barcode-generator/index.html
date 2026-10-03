@@ -4,14 +4,85 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Barcode Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Generate standard 1D barcodes (Code 128, EAN).">
-  <meta name="keywords" content="barcode, generate, ean, code128, free, online, tool, utility">
+  <meta name="description" content="Generate standard 1D barcodes (Code 128, EAN, UPC, Code 39, ITF).">
+  <meta name="keywords" content="barcode, generate, ean, upc, code128, code39, itf, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/barcode-generator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .barcode-preview-stage {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 280px;
+      border: 1px solid var(--border);
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.04);
+      position: relative;
+      overflow: hidden;
+    }
+    .barcode-svg-container {
+      max-width: 100%;
+      overflow-x: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+    #barcode-svg {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+    .presets-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.35rem;
+    }
+    .preset-btn {
+      padding: 0.3rem 0.65rem;
+      font-size: 0.775rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .preset-btn:hover {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .color-swatch-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    .color-input-box {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .color-input-box input[type="color"] {
+      width: 44px;
+      height: 40px;
+      padding: 0.2rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      cursor: pointer;
+    }
+  </style>
+
+  <script src="../../assets/lib/JsBarcode.all.min.js"></script>
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,26 +98,172 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Barcode Generator</h1>
-        <p class="tool-description">Generate standard 1D barcodes (Code 128, EAN).</p>
+        <p class="tool-description">Create custom, high-resolution 1D barcodes in formats like Code 128, EAN-13, UPC-A, and Code 39. Download instantly as vector SVG or crisp PNG.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Barcode Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Generate standard 1D barcodes (Code 128, EAN).</div>
-            <div><strong>Inputs:</strong> barcode, generate, ean, code128</div>
-            <div><strong>Category:</strong> developer</div>
+      <div class="tool-workarea split-view">
+        <!-- Settings Panel -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">Barcode Settings</h2>
+
+          <!-- Format Selection -->
+          <div class="form-group">
+            <label for="barcode-format">Barcode Symbology / Format</label>
+            <select id="barcode-format" class="form-select">
+              <option value="CODE128" selected>CODE 128 (Universal alphanumeric, high density)</option>
+              <option value="EAN13">EAN-13 (13 digits, Global retail products)</option>
+              <option value="UPC">UPC-A (12 digits, North American retail)</option>
+              <option value="CODE39">CODE 39 (Alphanumeric industrial &amp; defense)</option>
+              <option value="ITF">ITF / Interleaved 2 of 5 (Even numeric length)</option>
+              <option value="ITF14">ITF-14 (14 digits, Master carton shipping)</option>
+              <option value="EAN8">EAN-8 (8 digits, Small retail packaging)</option>
+              <option value="MSI">MSI / Plessey (Numeric warehouse &amp; inventory)</option>
+              <option value="pharmacode">Pharmacode (Pharmaceutical numeric 3-131070)</option>
+            </select>
+          </div>
+
+          <!-- Presets -->
+          <div class="form-group">
+            <label>Sample Presets</label>
+            <div class="presets-wrap">
+              <button class="preset-btn" data-fmt="CODE128" data-val="INV-8942-AX">Code 128</button>
+              <button class="preset-btn" data-fmt="EAN13" data-val="4006381333931">EAN-13</button>
+              <button class="preset-btn" data-fmt="UPC" data-val="012345678905">UPC-A</button>
+              <button class="preset-btn" data-fmt="CODE39" data-val="PROD-39">Code 39</button>
+              <button class="preset-btn" data-fmt="ITF" data-val="1234567890">ITF</button>
+              <button class="preset-btn" data-fmt="pharmacode" data-val="12345">Pharmacode</button>
+            </div>
+          </div>
+
+          <!-- Value Input -->
+          <div class="form-group">
+            <label for="barcode-value">Barcode Content / Value</label>
+            <input type="text" id="barcode-value" class="form-input" value="INV-8942-AX" placeholder="Enter barcode text or numbers...">
+            <span id="format-hint" style="font-size: 0.775rem; color: var(--text-tertiary); margin-top: 0.2rem;">
+              Supports all standard ASCII characters.
+            </span>
+          </div>
+
+          <!-- Appearance Options -->
+          <div style="border-top: 1px solid var(--border); padding-top: 1rem; display: flex; flex-direction: column; gap: 1rem;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between;">
+                  <label for="bar-width">Bar Width</label>
+                  <span id="bar-width-val" style="font-family: monospace; color: var(--accent);">2px</span>
+                </div>
+                <input type="range" id="bar-width" class="range-slider" min="1" max="4" step="1" value="2">
+              </div>
+
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between;">
+                  <label for="bar-height">Bar Height</label>
+                  <span id="bar-height-val" style="font-family: monospace; color: var(--accent);">90px</span>
+                </div>
+                <input type="range" id="bar-height" class="range-slider" min="30" max="180" step="5" value="90">
+              </div>
+            </div>
+
+            <!-- Text Settings -->
+            <div class="checkbox-group">
+              <label class="checkbox-label" for="display-text-toggle">
+                <input type="checkbox" id="display-text-toggle" checked>
+                <span>Display text label below barcode</span>
+              </label>
+            </div>
+
+            <div id="text-options-wrap" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between;">
+                  <label for="font-size">Font Size</label>
+                  <span id="font-size-val" style="font-family: monospace; color: var(--accent);">18px</span>
+                </div>
+                <input type="range" id="font-size" class="range-slider" min="10" max="32" step="1" value="18">
+              </div>
+
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between;">
+                  <label for="text-margin">Text Margin</label>
+                  <span id="text-margin-val" style="font-family: monospace; color: var(--accent);">2px</span>
+                </div>
+                <input type="range" id="text-margin" class="range-slider" min="-5" max="25" step="1" value="2">
+              </div>
+            </div>
+
+            <!-- Colors -->
+            <div class="color-swatch-row">
+              <div class="form-group">
+                <label for="line-color">Line Color</label>
+                <div class="color-input-box">
+                  <input type="color" id="line-color" value="#000000">
+                  <span id="line-color-hex" style="font-size: 0.8rem; font-family: monospace; color: var(--text-secondary);">#000000</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="bg-color">Background Color</label>
+                <div class="color-input-box">
+                  <input type="color" id="bg-color" value="#ffffff">
+                  <span id="bg-color-hex" style="font-size: 0.8rem; font-family: monospace; color: var(--text-secondary);">#ffffff</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Preview & Export Panel -->
+        <div class="tool-panel glass-panel" style="display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+            <h2 class="panel-title" style="border: none; margin: 0; padding: 0;">Live Barcode Preview</h2>
+            <span id="status-badge" class="badge" style="background: rgba(16, 185, 129, 0.15); color: var(--success); border-color: rgba(16, 185, 129, 0.3);">
+              Valid Barcode
+            </span>
+          </div>
+
+          <!-- Error Alert Banner -->
+          <div id="barcode-error-banner" class="alert-error" style="display: none; margin-bottom: 1rem;">
+            Invalid input format.
+          </div>
+
+          <!-- The Live Preview Canvas Container -->
+          <div class="barcode-preview-stage" id="preview-stage">
+            <div class="barcode-svg-container">
+              <svg id="barcode-svg"></svg>
+            </div>
+          </div>
+
+          <!-- Actions & Downloads -->
+          <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
+            <div class="action-bar" style="margin-top: 0;">
+              <button id="download-svg-btn" class="btn btn-primary" style="flex: 1;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Download SVG
+              </button>
+              <button id="download-png-btn" class="btn btn-secondary" style="flex: 1;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+                Download PNG
+              </button>
+            </div>
+
+            <div class="action-bar" style="margin-top: 0;">
+              <button id="copy-value-btn" class="btn btn-secondary" style="width: 100%;">
+                Copy Barcode Content
+              </button>
+            </div>
+          </div>
+
+          <!-- Invisible canvas used for rasterizing to PNG -->
+          <canvas id="export-canvas" style="display: none;"></canvas>
+        </div>
       </div>
     
     </div>
@@ -62,7 +279,7 @@
     "@type": "WebApplication",
     "name": "Barcode Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/barcode-generator/",
-    "description": "Generate standard 1D barcodes (Code 128, EAN).",
+    "description": "Generate standard 1D barcodes (Code 128, EAN, UPC, Code 39, ITF).",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

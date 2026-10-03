@@ -3,15 +3,192 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HTML Entity Encoder - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Escape and unescape HTML tags and characters.">
-  <meta name="keywords" content="html, entity, escape, unescape, free, online, tool, utility">
+  <title>HTML Entity Encoder &amp; Decoder - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Encode and decode HTML entities. Convert special characters to named, decimal, and hexadecimal entities with live preview.">
+  <meta name="keywords" content="html, entity, encode, decode, escape, unescape, named entities, decimal, hex, web developer">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/html-entity-encoder/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
+      backdrop-filter: blur(var(--glass-blur));
+    }
+    .pill-group {
+      display: inline-flex;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 4px;
+      gap: 4px;
+    }
+    .pill-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 0.4rem 1rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .pill-btn:hover {
+      color: var(--text-primary);
+    }
+    .pill-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+    .options-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1.25rem;
+    }
+    .option-select-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .option-select-group select {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .option-select-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .stats-bar {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      padding: 0.6rem 0.85rem;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    .stats-item strong {
+      color: var(--text-primary);
+      font-family: monospace;
+    }
+    .panel-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-left: auto;
+    }
+    .btn-sm-action {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .btn-sm-action:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+    }
+    .center-actions {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: -0.5rem 0;
+    }
+    .swap-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.25s ease, border-color 0.2s ease, background-color 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .swap-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: rotate(180deg) scale(1.05);
+    }
+    .cheat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .cheat-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.65rem 0.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .cheat-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+    .cheat-char {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+    .cheat-code {
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+    }
+    .cheat-desc {
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+      text-align: center;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,27 +203,112 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>HTML Entity Encoder</h1>
-        <p class="tool-description">Escape and unescape HTML tags and characters.</p>
+        <h1>HTML Entity Encoder &amp; Decoder</h1>
+        <p class="tool-description">Seamlessly encode and decode characters to and from Named (&amp;amp;), Decimal (&amp;#38;), and Hexadecimal (&amp;#x26;) HTML entities in real time.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>HTML Entity Encoder</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Escape and unescape HTML tags and characters.</div>
-            <div><strong>Inputs:</strong> html, entity, escape, unescape</div>
-            <div><strong>Category:</strong> developer</div>
+      <!-- Control Toolbar -->
+      <div class="controls-bar">
+        <!-- Mode Switcher -->
+        <div class="pill-group" role="tablist" aria-label="Mode Selection">
+          <button id="mode-encode" class="pill-btn active" type="button" data-mode="encode">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            Encode
+          </button>
+          <button id="mode-decode" class="pill-btn" type="button" data-mode="decode">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>
+            Decode
+          </button>
+        </div>
+
+        <!-- Conversion Options -->
+        <div class="options-row">
+          <div class="option-select-group" id="format-select-wrapper">
+            <label for="entity-format">Entity Format:</label>
+            <select id="entity-format">
+              <option value="named" selected>Named (&amp;lt;, &amp;copy;)</option>
+              <option value="decimal">Decimal (&amp;#60;, &amp;#169;)</option>
+              <option value="hex">Hexadecimal (&amp;#x3C;, &amp;#xA9;)</option>
+            </select>
+          </div>
+
+          <div class="option-select-group" id="scope-select-wrapper">
+            <label for="encode-scope">Characters to Encode:</label>
+            <select id="encode-scope">
+              <option value="unsafe" selected>Unsafe HTML only (&lt; &gt; &amp; &quot; &#39;)</option>
+              <option value="nonascii">Non-ASCII characters only (&gt; 127)</option>
+              <option value="unsafe_nonascii">Unsafe HTML + Non-ASCII</option>
+              <option value="all">Encode all characters</option>
+            </select>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Quick actions -->
+        <div style="display: flex; gap: 0.5rem;">
+          <button id="btn-sample-html" class="btn-sm-action" type="button" title="Load sample HTML snippet">Sample HTML</button>
+          <button id="btn-sample-symbols" class="btn-sm-action" type="button" title="Load sample international characters">Sample Symbols</button>
+          <button id="btn-clear" class="btn-sm-action" type="button" title="Clear all text">Clear</button>
+        </div>
+      </div>
+
+      <!-- Main Workspace Split View -->
+      <div class="tool-workarea split-view">
+        <!-- Input Panel -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <span id="input-title">Plain Text / HTML Input</span>
+            <div class="panel-header-actions">
+              <button id="btn-paste" class="btn-sm-action" type="button" title="Paste from clipboard">Paste</button>
+            </div>
+          </div>
+          
+          <div class="form-group" style="flex: 1; display: flex; flex-direction: column;">
+            <textarea id="input-text" class="form-textarea" placeholder="Type or paste your content here to convert in real time..." style="flex: 1; min-height: 260px; font-family: monospace;"></textarea>
+          </div>
+
+          <div class="stats-bar" id="input-stats">
+            <div class="stats-item">Length: <strong id="stat-input-chars">0</strong> chars</div>
+            <div class="stats-item">Size: <strong id="stat-input-bytes">0</strong> bytes</div>
+            <div class="stats-item">Lines: <strong id="stat-input-lines">0</strong></div>
+          </div>
+        </div>
+
+        <!-- Output Panel -->
+        <div class="tool-panel glass-panel" style="position: relative;">
+          <div class="panel-title">
+            <span id="output-title">HTML Entity Output</span>
+            <div class="panel-header-actions">
+              <button id="btn-swap" class="btn-sm-action" type="button" title="Swap input and output and flip mode">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"/></svg>
+                Swap
+              </button>
+              <button id="btn-copy" class="btn-sm-action" type="button" title="Copy output to clipboard">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy
+              </button>
+              <button id="btn-download" class="btn-sm-action" type="button" title="Download as text file">Download</button>
+            </div>
+          </div>
+
+          <div class="form-group" style="flex: 1; display: flex; flex-direction: column; position: relative;">
+            <textarea id="output-text" class="form-textarea" readonly placeholder="Encoded or decoded entity output appears here automatically..." style="flex: 1; min-height: 260px; font-family: monospace;"></textarea>
+          </div>
+
+          <div class="stats-bar" id="output-stats">
+            <div class="stats-item">Length: <strong id="stat-output-chars">0</strong> chars</div>
+            <div class="stats-item">Size: <strong id="stat-output-bytes">0</strong> bytes</div>
+            <div class="stats-item">Expansion: <strong id="stat-output-ratio">0%</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Reference Cheat Sheet -->
+      <div class="tool-panel glass-panel" style="margin-top: 1rem;">
+        <h2 class="panel-title">Common HTML Entities Quick Reference (Click to Copy)</h2>
+        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: -0.5rem;">Click on any symbol below to instantly copy its named HTML entity to your clipboard or insert it into the editor.</p>
+        <div class="cheat-grid" id="cheat-sheet-grid">
+          <!-- Populated dynamically via script.js -->
+        </div>
       </div>
     
     </div>

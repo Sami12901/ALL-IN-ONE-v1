@@ -4,14 +4,136 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Epoch Unix Converter - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Convert Unix timestamps to dates and vice-versa.">
-  <meta name="keywords" content="epoch, timestamp, unix, date, time, free, online, tool, utility">
+  <meta name="description" content="Convert Unix timestamps to dates and vice-versa with live epoch clock, auto-unit detection, and milestone references.">
+  <meta name="keywords" content="epoch, timestamp, unix, date, time, epoch converter, seconds, milliseconds, free, online, tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/epoch-converter/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .epoch-hero {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.12), rgba(137, 170, 204, 0.05));
+      border: 1px solid var(--accent-glow);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+    @media (min-width: 768px) {
+      .epoch-hero {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .epoch-clock-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 1.25rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      position: relative;
+    }
+    .epoch-value {
+      font-family: monospace;
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      word-break: break-all;
+    }
+    .epoch-clock-card .copy-clock-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+    }
+    .pulse-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      margin-right: 6px;
+      box-shadow: 0 0 8px var(--success);
+      animation: pulse-glow 1.5s infinite;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+    .grid-date-inputs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+    }
+    @media (max-width: 640px) {
+      .grid-date-inputs {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .result-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      font-size: 0.9rem;
+    }
+    .result-table th, .result-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    .result-table tr:last-child th, .result-table tr:last-child td {
+      border-bottom: none;
+    }
+    .result-table th {
+      width: 25%;
+      color: var(--text-secondary);
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .result-table td {
+      font-family: monospace;
+      color: var(--text-primary);
+      word-break: break-word;
+    }
+    .milestones-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    .milestones-table th, .milestones-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    .milestones-table tr:hover {
+      background: rgba(78, 133, 191, 0.08);
+      cursor: pointer;
+    }
+    .badge-unit {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      background: var(--accent-glow);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+    .time-preview-text {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,28 +149,217 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Epoch Unix Converter</h1>
-        <p class="tool-description">Convert Unix timestamps to dates and vice-versa.</p>
+        <p class="tool-description">High-precision developer tool for bidirectional Unix timestamp conversions, auto-unit detection, live ticking epoch clock, and time milestones.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Epoch Unix Converter</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Convert Unix timestamps to dates and vice-versa.</div>
-            <div><strong>Inputs:</strong> epoch, timestamp, unix, date, time</div>
-            <div><strong>Category:</strong> developer</div>
+      <!-- Live Epoch Clock Banner -->
+      <div class="epoch-hero glass-panel">
+        <div class="epoch-clock-card">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary);">
+              <span class="pulse-dot"></span>Live Epoch (Seconds)
+            </span>
+          </div>
+          <div class="epoch-value" id="live-epoch-sec">--</div>
+          <div class="time-preview-text" id="live-utc-preview">UTC: Loading...</div>
+          <button class="btn btn-secondary btn-sm copy-clock-btn" id="copy-live-sec" title="Copy Seconds">Copy Sec</button>
+        </div>
+
+        <div class="epoch-clock-card">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary);">
+              <span class="pulse-dot"></span>Live Epoch (Milliseconds)
+            </span>
+          </div>
+          <div class="epoch-value" id="live-epoch-ms">--</div>
+          <div class="time-preview-text" id="live-local-preview">Local: Loading...</div>
+          <button class="btn btn-secondary btn-sm copy-clock-btn" id="copy-live-ms" title="Copy Milliseconds">Copy MS</button>
+        </div>
+      </div>
+
+      <!-- Work Area: Two Tools Split View -->
+      <div class="tool-workarea split-view">
+        
+        <!-- Tool 1: Timestamp to Date -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            Timestamp to Human Date
+          </h2>
+          
+          <div class="form-group">
+            <label for="input-timestamp">Unix Timestamp</label>
+            <input type="text" id="input-timestamp" class="form-input" placeholder="e.g. 1740000000 or 1740000000000" style="font-family: monospace; font-size: 1.05rem;" />
+          </div>
+
+          <div class="form-group">
+            <label for="select-unit">Unit Format</label>
+            <select id="select-unit" class="form-select">
+              <option value="auto">Auto-Detect (Seconds, Milliseconds, Microseconds)</option>
+              <option value="s">Seconds (10 digits)</option>
+              <option value="ms">Milliseconds (13 digits)</option>
+              <option value="us">Microseconds (16 digits)</option>
+              <option value="ns">Nanoseconds (19 digits)</option>
+            </select>
+          </div>
+
+          <div class="action-bar">
+            <button id="btn-convert-timestamp" class="btn btn-primary">Convert Timestamp</button>
+            <button id="btn-use-now-ts" class="btn btn-secondary">Use Current Epoch</button>
+            <button id="btn-clear-ts" class="btn btn-secondary">Clear</button>
+          </div>
+
+          <!-- Timestamp Results -->
+          <div id="ts-error" class="alert-error" style="display: none;"></div>
+          
+          <div id="ts-results" style="display: none; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span id="ts-detected-badge" class="badge-unit">Auto-Detected</span>
+              <button id="btn-copy-all-ts" class="btn btn-secondary btn-sm">Copy Formatted Text</button>
+            </div>
+
+            <table class="result-table">
+              <tbody>
+                <tr>
+                  <th>GMT / UTC</th>
+                  <td id="res-utc">--</td>
+                </tr>
+                <tr>
+                  <th>Your Timezone</th>
+                  <td id="res-local">--</td>
+                </tr>
+                <tr>
+                  <th>Relative Time</th>
+                  <td id="res-relative" style="color: var(--accent); font-weight: 600;">--</td>
+                </tr>
+                <tr>
+                  <th>ISO 8601</th>
+                  <td id="res-iso">--</td>
+                </tr>
+                <tr>
+                  <th>Day of Year / Week</th>
+                  <td id="res-extra">--</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Tool 2: Human Date to Timestamp -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            Human Date to Timestamp
+          </h2>
+
+          <div style="display: flex; gap: 1rem; align-items: center;">
+            <label style="font-size: 0.875rem; font-weight: 600; color: var(--text-secondary);">Input Timezone:</label>
+            <label class="checkbox-label" style="display: inline-flex; align-items: center; gap: 0.4rem; cursor: pointer;">
+              <input type="radio" name="date-tz" value="local" id="tz-local" checked>
+              <span>Local Time</span>
+            </label>
+            <label class="checkbox-label" style="display: inline-flex; align-items: center; gap: 0.4rem; cursor: pointer;">
+              <input type="radio" name="date-tz" value="utc" id="tz-utc">
+              <span>UTC (GMT)</span>
+            </label>
+          </div>
+
+          <div class="grid-date-inputs">
+            <div class="form-group">
+              <label for="date-year">Year (YYYY)</label>
+              <input type="number" id="date-year" class="form-input" min="1970" max="2100" placeholder="YYYY">
+            </div>
+            <div class="form-group">
+              <label for="date-month">Month (1-12)</label>
+              <input type="number" id="date-month" class="form-input" min="1" max="12" placeholder="MM">
+            </div>
+            <div class="form-group">
+              <label for="date-day">Day (1-31)</label>
+              <input type="number" id="date-day" class="form-input" min="1" max="31" placeholder="DD">
+            </div>
+            <div class="form-group">
+              <label for="date-hour">Hour (0-23)</label>
+              <input type="number" id="date-hour" class="form-input" min="0" max="23" placeholder="HH">
+            </div>
+            <div class="form-group">
+              <label for="date-minute">Minute (0-59)</label>
+              <input type="number" id="date-minute" class="form-input" min="0" max="59" placeholder="MM">
+            </div>
+            <div class="form-group">
+              <label for="date-second">Second (0-59)</label>
+              <input type="number" id="date-second" class="form-input" min="0" max="59" placeholder="SS">
+            </div>
+          </div>
+
+          <div class="action-bar">
+            <button id="btn-convert-date" class="btn btn-primary">Convert Date to Epoch</button>
+            <button id="btn-set-now" class="btn btn-secondary">Now</button>
+            <button id="btn-clear-date" class="btn btn-secondary">Clear</button>
+          </div>
+
+          <!-- Date Results -->
+          <div id="date-error" class="alert-error" style="display: none;"></div>
+          
+          <div id="date-results" style="display: none; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem;">
+            <table class="result-table">
+              <tbody>
+                <tr>
+                  <th>Epoch (Seconds)</th>
+                  <td>
+                    <span id="res-date-sec" style="font-weight: 700; color: var(--accent);">--</span>
+                    <button id="copy-res-sec" class="btn btn-secondary btn-sm" style="margin-left: 0.75rem; padding: 0.2rem 0.5rem; font-size: 0.75rem;">Copy</button>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Epoch (Milliseconds)</th>
+                  <td>
+                    <span id="res-date-ms" style="font-weight: 700;">--</span>
+                    <button id="copy-res-ms" class="btn btn-secondary btn-sm" style="margin-left: 0.75rem; padding: 0.2rem 0.5rem; font-size: 0.75rem;">Copy</button>
+                  </td>
+                </tr>
+                <tr>
+                  <th>ISO 8601 String</th>
+                  <td id="res-date-iso">--</td>
+                </tr>
+                <tr>
+                  <th>RFC 2822 String</th>
+                  <td id="res-date-rfc">--</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
       </div>
-    
+
+      <!-- Reference Table of Epoch Milestones -->
+      <div class="tool-panel glass-panel" style="margin-top: 0.5rem;">
+        <h2 class="panel-title">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          Epoch Milestones & Reference Times
+        </h2>
+        <p style="color: var(--text-secondary); font-size: 0.875rem;">
+          Quickly inspect historical benchmarks, calendar boundaries, and overflow limits. Click any row to load the timestamp into the converter.
+        </p>
+
+        <div style="overflow-x: auto; margin-top: 0.5rem;">
+          <table class="milestones-table">
+            <thead>
+              <tr style="color: var(--text-secondary); font-size: 0.8rem; text-transform: uppercase;">
+                <th>Milestone Event</th>
+                <th>Epoch (Seconds)</th>
+                <th>UTC Date & Time</th>
+                <th>Significance / Note</th>
+              </tr>
+            </thead>
+            <tbody id="milestones-body">
+              <!-- Rendered dynamically by script -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
   </main>
 
@@ -62,8 +373,8 @@
     "@type": "WebApplication",
     "name": "Epoch Unix Converter",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/epoch-converter/",
-    "description": "Convert Unix timestamps to dates and vice-versa.",
-    "applicationCategory": "UtilityPage",
+    "description": "Convert Unix timestamps to dates and vice-versa with live epoch clock, auto-unit detection, and milestone references.",
+    "applicationCategory": "DeveloperApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

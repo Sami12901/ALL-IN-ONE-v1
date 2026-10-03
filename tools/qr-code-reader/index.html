@@ -5,13 +5,242 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>QR Code Reader - Free Online Tool - ALL IN ONE</title>
   <meta name="description" content="Scan QR codes using camera or image file uploads.">
-  <meta name="keywords" content="qr, qrcode, scan, read, camera, free, online, tool, utility">
+  <meta name="keywords" content="qr, qrcode, scan, read, camera, decoder, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/qr-code-reader/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .scanner-mode-tabs {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--bg-tertiary);
+      padding: 0.35rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      margin-bottom: 1.25rem;
+    }
+    .scanner-tab-btn {
+      flex: 1;
+      padding: 0.6rem 1rem;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+    .scanner-tab-btn.active {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
+    }
+    .scanner-tab-btn:hover:not(.active) {
+      color: var(--text-primary);
+    }
+
+    /* Drop Zone */
+    .file-dropzone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 3rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      background: var(--bg-tertiary);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .file-dropzone:hover, .file-dropzone.dragover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+    .dropzone-icon {
+      width: 56px;
+      height: 56px;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      opacity: 0.9;
+    }
+    .dropzone-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.35rem;
+    }
+    .dropzone-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.25rem;
+    }
+
+    /* Live Camera Stage */
+    .camera-viewport {
+      position: relative;
+      width: 100%;
+      height: 380px;
+      background: #0a0a0a;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+    }
+    #camera-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .viewfinder-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .viewfinder-frame {
+      width: 220px;
+      height: 220px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      position: relative;
+      border-radius: var(--radius-md);
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
+    }
+    /* Corner Highlights */
+    .viewfinder-frame::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      width: 24px;
+      height: 24px;
+      border-top: 4px solid var(--accent);
+      border-left: 4px solid var(--accent);
+      border-top-left-radius: 6px;
+    }
+    .viewfinder-frame::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 24px;
+      height: 24px;
+      border-top: 4px solid var(--accent);
+      border-right: 4px solid var(--accent);
+      border-top-right-radius: 6px;
+    }
+    .frame-bottom-corners {
+      position: absolute;
+      bottom: -2px;
+      left: -2px;
+      right: -2px;
+      height: 24px;
+      pointer-events: none;
+    }
+    .frame-bottom-corners::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 24px;
+      height: 24px;
+      border-bottom: 4px solid var(--accent);
+      border-left: 4px solid var(--accent);
+      border-bottom-left-radius: 6px;
+    }
+    .frame-bottom-corners::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 24px;
+      height: 24px;
+      border-bottom: 4px solid var(--accent);
+      border-right: 4px solid var(--accent);
+      border-bottom-right-radius: 6px;
+    }
+    .scan-laser-line {
+      position: absolute;
+      width: 100%;
+      height: 3px;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent), 0 0 4px #ffffff;
+      animation: laserScan 2.4s infinite ease-in-out alternate;
+    }
+    @keyframes laserScan {
+      0% { top: 0%; opacity: 0.3; }
+      50% { opacity: 1; }
+      100% { top: 98%; opacity: 0.3; }
+    }
+    .viewfinder-text {
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      color: #ffffff;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      backdrop-filter: blur(4px);
+    }
+
+    /* Result Card */
+    .result-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: relative;
+    }
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .result-content-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      font-family: monospace;
+      font-size: 0.95rem;
+      word-break: break-all;
+      white-space: pre-wrap;
+      max-height: 240px;
+      overflow-y: auto;
+      line-height: 1.5;
+      color: var(--text-primary);
+    }
+    .result-preview-thumb {
+      max-width: 160px;
+      max-height: 160px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      object-fit: contain;
+      background: #000;
+      align-self: center;
+    }
+  </style>
+
+  <script src="../../assets/lib/jsQR.js"></script>
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,26 +256,142 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>QR Code Reader</h1>
-        <p class="tool-description">Scan QR codes using camera or image file uploads.</p>
+        <p class="tool-description">Scan and decode QR codes instantly from image files or in real time using your device camera. Privacy-focused and 100% client-side.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>QR Code Reader</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Scan QR codes using camera or image file uploads.</div>
-            <div><strong>Inputs:</strong> qr, qrcode, scan, read, camera</div>
-            <div><strong>Category:</strong> developer</div>
+      <div class="tool-workarea split-view">
+        <!-- Input Scanner Panel -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">Scanner Input</h2>
+
+          <!-- Mode Tabs -->
+          <div class="scanner-mode-tabs">
+            <button id="tab-file-mode" class="scanner-tab-btn active">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+              Upload Image
+            </button>
+            <button id="tab-camera-mode" class="scanner-tab-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+              Live Camera
+            </button>
+          </div>
+
+          <!-- File Upload Mode View -->
+          <div id="file-scanner-view">
+            <div id="file-dropzone" class="file-dropzone">
+              <input type="file" id="file-input" accept="image/*" style="display: none;">
+              <svg class="dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              <div class="dropzone-title">Drop QR Code Image Here</div>
+              <div class="dropzone-subtitle">Supports PNG, JPG, WebP, GIF &bull; Or paste clipboard (Ctrl+V)</div>
+              <button id="browse-file-btn" class="btn btn-primary" type="button">
+                Browse Image File
+              </button>
+            </div>
+          </div>
+
+          <!-- Live Camera View -->
+          <div id="camera-scanner-view" style="display: none; flex-direction: column; gap: 1rem;">
+            <div class="camera-viewport">
+              <video id="camera-video" playsinline></video>
+              <div class="viewfinder-overlay">
+                <div class="viewfinder-frame">
+                  <div class="scan-laser-line"></div>
+                  <div class="frame-bottom-corners"></div>
+                </div>
+                <div class="viewfinder-text">Point camera at QR code</div>
+              </div>
+            </div>
+
+            <div class="action-bar" style="margin-top: 0;">
+              <button id="toggle-camera-btn" class="btn btn-primary" style="flex: 1;">
+                Start Camera
+              </button>
+              <button id="switch-camera-btn" class="btn btn-secondary" style="display: none;">
+                Flip Camera
+              </button>
+            </div>
+            <div id="camera-status" style="font-size: 0.8rem; color: var(--text-tertiary); text-align: center;">
+              Camera is currently stopped.
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Result / Decoded Output Panel -->
+        <div class="tool-panel glass-panel" style="display: flex; flex-direction: column;">
+          <h2 class="panel-title">Decoded Content</h2>
+
+          <!-- Alert for errors/no qr code -->
+          <div id="scanner-error" class="alert-error" style="display: none; margin-bottom: 1rem;">
+            No QR code found in this image.
+          </div>
+
+          <!-- Empty State placeholder -->
+          <div id="result-empty-state" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--text-tertiary); padding: 3rem 1rem;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1rem; opacity: 0.5;">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            <p style="font-weight: 600; font-size: 1rem; margin-bottom: 0.25rem;">Waiting for QR Code</p>
+            <p style="font-size: 0.85rem;">Upload an image or start the camera scanner to decode content.</p>
+          </div>
+
+          <!-- Active Result Card -->
+          <div id="result-card" class="result-card" style="display: none;">
+            <div class="result-header">
+              <span id="result-type-badge" class="badge" style="background: var(--accent-glow); color: var(--accent); border-color: var(--border);">
+                URL
+              </span>
+              <span id="result-timestamp" style="font-size: 0.75rem; color: var(--text-tertiary);">Just now</span>
+            </div>
+
+            <!-- Uploaded Image Thumbnail Preview if available -->
+            <img id="result-thumb" class="result-preview-thumb" alt="Scanned thumbnail" style="display: none;">
+
+            <div class="form-group">
+              <label>Raw Decoded Value</label>
+              <div id="result-content" class="result-content-box"></div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="action-bar" style="margin-top: 0.5rem;">
+              <button id="copy-result-btn" class="btn btn-primary" style="flex: 1;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                Copy Content
+              </button>
+              <a id="open-link-btn" class="btn btn-secondary" href="#" target="_blank" rel="noopener noreferrer" style="display: none;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+                Open Link
+              </a>
+              <button id="clear-result-btn" class="btn btn-secondary">
+                Clear
+              </button>
+            </div>
+          </div>
+
+          <!-- Hidden processing canvas -->
+          <canvas id="qr-scan-canvas" style="display: none;"></canvas>
+        </div>
       </div>
     
     </div>

@@ -3,15 +3,134 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IP Lookup Tool - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Queries geolocation data using public APIs.">
-  <meta name="keywords" content="ip, lookup, geo, location, address, free, online, tool, utility">
+  <title>IP Lookup & CIDR Calculator - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Calculate IPv4 & IPv6 CIDR subnets, network masks, usable host ranges, binary representations, address classes, and RFC classifications.">
+  <meta name="keywords" content="ip, lookup, cidr, subnet calculator, network mask, wildcard, ipv4, ipv6, usable hosts, free, online, tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ip-lookup-tool/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .ip-input-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 640px) {
+      .ip-input-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .stats-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .stat-badge-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .stat-badge-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+    }
+    .stat-badge-value {
+      font-family: monospace;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--accent);
+      word-break: break-all;
+    }
+    .ip-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-top: 1rem;
+    }
+    .ip-table th, .ip-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    .ip-table tr:last-child th, .ip-table tr:last-child td {
+      border-bottom: none;
+    }
+    .ip-table th {
+      width: 28%;
+      color: var(--text-secondary);
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .ip-table td {
+      font-family: monospace;
+      color: var(--text-primary);
+      word-break: break-all;
+    }
+    .binary-text {
+      color: #89aacc;
+      letter-spacing: 0.04em;
+    }
+    .tag-category {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+    }
+    .tag-private {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
+    .tag-public {
+      background: rgba(78, 133, 191, 0.15);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+    .tag-loopback {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+      border: 1px solid var(--warning);
+    }
+    .tag-special {
+      background: rgba(139, 92, 246, 0.15);
+      color: #a78bfa;
+      border: 1px solid #8b5cf6;
+    }
+    .preset-pill {
+      font-size: 0.8rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+    .preset-pill:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,29 +145,159 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>IP Lookup Tool</h1>
-        <p class="tool-description">Queries geolocation data using public APIs.</p>
+        <h1>IP Lookup &amp; CIDR Calculator</h1>
+        <p class="tool-description">Professional network engineer suite for IPv4 and IPv6 CIDR subnetting, binary octet breakdown, wildcard masking, and RFC address classification.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>IP Lookup Tool</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Queries geolocation data using public APIs.</div>
-            <div><strong>Inputs:</strong> ip, lookup, geo, location, address</div>
-            <div><strong>Category:</strong> developer</div>
+      <!-- Quick Presets -->
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
+        <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Presets:</span>
+        <button class="preset-pill" data-ip="192.168.1.1" data-cidr="24">Home LAN (192.168.1.1/24)</button>
+        <button class="preset-pill" data-ip="10.0.0.1" data-cidr="16">Corporate VPC (10.0.0.1/16)</button>
+        <button class="preset-pill" data-ip="172.16.0.1" data-cidr="12">Private Cloud (172.16.0.1/12)</button>
+        <button class="preset-pill" data-ip="8.8.8.8" data-cidr="32">Google DNS (8.8.8.8/32)</button>
+        <button class="preset-pill" data-ip="1.1.1.1" data-cidr="24">Cloudflare Subnet (1.1.1.0/24)</button>
+        <button class="preset-pill" data-ip="127.0.0.1" data-cidr="8">Localhost Loopback (/8)</button>
+        <button class="preset-pill" data-ip="2001:db8::1" data-cidr="64">IPv6 Doc (/64)</button>
+      </div>
+
+      <!-- Main Input Panel -->
+      <div class="tool-panel glass-panel">
+        <h2 class="panel-title">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          IP Address &amp; CIDR Subnet Input
+        </h2>
+
+        <div class="ip-input-grid">
+          <div class="form-group">
+            <label for="ip-input">IP Address (IPv4 or IPv6 with optional /CIDR)</label>
+            <input type="text" id="ip-input" class="form-input" placeholder="e.g. 192.168.1.1 or 192.168.1.1/24" style="font-family: monospace; font-size: 1.05rem;" value="192.168.1.1">
+          </div>
+
+          <div class="form-group">
+            <label for="cidr-select">Subnet Mask / CIDR Prefix</label>
+            <select id="cidr-select" class="form-select" style="font-family: monospace; font-size: 0.95rem;">
+              <!-- 0 through 32 dynamically populated -->
+            </select>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="action-bar">
+          <button id="btn-calc" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"></rect><line x1="9" y1="9" x2="15" y2="9"></line><line x1="12" y1="12" x2="12" y2="15"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+            Calculate Subnet
+          </button>
+          <button id="btn-copy-summary" class="btn btn-secondary">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copy Network Summary
+          </button>
+          <button id="btn-download-report" class="btn btn-secondary">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Download Text Report
+          </button>
+          <button id="btn-clear" class="btn btn-secondary">Clear</button>
+        </div>
+
+        <div id="ip-error" class="alert-error" style="display: none; margin-top: 0.5rem;"></div>
       </div>
-    
+
+      <!-- Quick Metrics Summary Cards -->
+      <div id="ip-quick-stats" class="stats-summary-grid">
+        <div class="stat-badge-card">
+          <span class="stat-badge-title">Network Address</span>
+          <span class="stat-badge-value" id="badge-network">--</span>
+        </div>
+        <div class="stat-badge-card">
+          <span class="stat-badge-title">Usable Hosts</span>
+          <span class="stat-badge-value" id="badge-hosts">--</span>
+        </div>
+        <div class="stat-badge-card">
+          <span class="stat-badge-title">Subnet Mask</span>
+          <span class="stat-badge-value" id="badge-mask">--</span>
+        </div>
+        <div class="stat-badge-card">
+          <span class="stat-badge-title">Category</span>
+          <span class="stat-badge-value" id="badge-category">--</span>
+        </div>
+      </div>
+
+      <!-- Detailed Analysis Summary Table -->
+      <div class="tool-panel glass-panel" style="margin-top: 0.5rem;">
+        <h2 class="panel-title">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          Subnet &amp; Address Analysis Report
+        </h2>
+
+        <table class="ip-table">
+          <tbody>
+            <tr>
+              <th>IP Protocol Version</th>
+              <td id="res-version">--</td>
+            </tr>
+            <tr>
+              <th>IP Address (Decimal / Standard)</th>
+              <td id="res-ip-standard">--</td>
+            </tr>
+            <tr>
+              <th>Binary Representation of IP</th>
+              <td id="res-ip-binary" class="binary-text">--</td>
+            </tr>
+            <tr>
+              <th>Subnet Mask (Decimal)</th>
+              <td id="res-mask-decimal">--</td>
+            </tr>
+            <tr>
+              <th>Subnet Mask (Binary)</th>
+              <td id="res-mask-binary" class="binary-text">--</td>
+            </tr>
+            <tr>
+              <th>Wildcard Mask</th>
+              <td id="res-wildcard">--</td>
+            </tr>
+            <tr>
+              <th>CIDR Prefix Notation</th>
+              <td id="res-cidr">--</td>
+            </tr>
+            <tr>
+              <th>Network ID Address</th>
+              <td id="res-network">--</td>
+            </tr>
+            <tr>
+              <th>Broadcast Address</th>
+              <td id="res-broadcast">--</td>
+            </tr>
+            <tr>
+              <th>Usable Host Range</th>
+              <td id="res-usable-range" style="font-weight: 700; color: var(--accent);">--</td>
+            </tr>
+            <tr>
+              <th>Total Usable Host Count</th>
+              <td id="res-usable-hosts">--</td>
+            </tr>
+            <tr>
+              <th>Total Addresses in Block</th>
+              <td id="res-total-addresses">--</td>
+            </tr>
+            <tr>
+              <th>IP Class</th>
+              <td id="res-class">--</td>
+            </tr>
+            <tr>
+              <th>Address Category &amp; RFC Scope</th>
+              <td id="res-category">--</td>
+            </tr>
+            <tr>
+              <th>Integer (32-bit Integer)</th>
+              <td id="res-integer">--</td>
+            </tr>
+            <tr>
+              <th>Hexadecimal Representation</th>
+              <td id="res-hex">--</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
   </main>
 
@@ -60,10 +309,10 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "IP Lookup Tool",
+    "name": "IP Lookup Tool & CIDR Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ip-lookup-tool/",
-    "description": "Queries geolocation data using public APIs.",
-    "applicationCategory": "UtilityPage",
+    "description": "Calculate IPv4 & IPv6 CIDR subnets, network masks, usable host ranges, binary representations, address classes, and RFC classifications.",
+    "applicationCategory": "DeveloperApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

@@ -3,15 +3,206 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hash Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Generate SHA-1, SHA-256, SHA-512, and MD5 hashes.">
-  <meta name="keywords" content="hash, md5, sha256, sha512, sha1, free, online, tool, utility">
+  <title>Hash Generator &amp; Verifier - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Generate SHA-256, SHA-512, SHA-384, SHA-1, and MD5 hashes with optional HMAC secret keys. Verify and compare checksums instantly.">
+  <meta name="keywords" content="hash generator, sha256, sha512, md5, sha1, sha384, hmac, checksum verifier, crypto, online hash">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/hash-generator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .input-mode-tabs {
+      display: inline-flex;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 4px;
+      gap: 4px;
+      margin-bottom: 1rem;
+    }
+    .input-mode-tab {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 0.4rem 1.25rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .input-mode-tab:hover {
+      color: var(--text-primary);
+    }
+    .input-mode-tab.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    .file-card-info {
+      display: none;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.25rem;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 0.75rem;
+    }
+    .file-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      word-break: break-all;
+    }
+    .file-meta {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* HMAC Box */
+    .hmac-settings-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      transition: var(--transition);
+    }
+
+    /* Hash Cards Grid */
+    .hash-cards-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .hash-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: var(--transition);
+      position: relative;
+    }
+    .hash-card:hover {
+      border-color: var(--border-hover, var(--accent));
+    }
+    .hash-card.matched {
+      border-color: var(--success) !important;
+      background: rgba(16, 185, 129, 0.08) !important;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.2);
+    }
+    .hash-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .hash-algo-title {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .hash-badge {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: var(--radius-full);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-family: monospace;
+    }
+    .hash-val-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 0.75rem;
+    }
+    .hash-val-text {
+      flex: 1;
+      font-family: monospace;
+      font-size: 0.85rem;
+      word-break: break-all;
+      color: var(--accent);
+      user-select: all;
+    }
+    .hash-val-text.empty {
+      color: var(--text-tertiary);
+      font-style: italic;
+    }
+
+    /* Verifier Section */
+    .verifier-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .verifier-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .verifier-input {
+      font-family: monospace;
+      font-size: 0.9rem;
+      padding-right: 3rem;
+    }
+    .verifier-input.match {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.06);
+    }
+    .verifier-input.mismatch {
+      border-color: var(--error);
+      background: rgba(239, 68, 68, 0.06);
+    }
+    .verifier-feedback {
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+    }
+    .verifier-feedback.match {
+      color: var(--success);
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+    .verifier-feedback.mismatch {
+      color: var(--error);
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+    .verifier-feedback.neutral {
+      color: var(--text-tertiary);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,29 +217,188 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Hash Generator</h1>
-        <p class="tool-description">Generate SHA-1, SHA-256, SHA-512, and MD5 hashes.</p>
+        <h1>Cryptographic Hash Generator &amp; Verifier</h1>
+        <p class="tool-description">Generate SHA-256, SHA-512, SHA-384, SHA-1, and MD5 hashes for text or uploaded files with optional HMAC signing and real-time checksum verification.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Hash Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Generate SHA-1, SHA-256, SHA-512, and MD5 hashes.</div>
-            <div><strong>Inputs:</strong> hash, md5, sha256, sha512, sha1</div>
-            <div><strong>Category:</strong> developer</div>
+      <!-- Input Selection & Workspace -->
+      <div class="tool-workarea split-view">
+        <!-- Left: Input & Configurations -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <!-- Tabs -->
+            <div class="input-mode-tabs" role="tablist">
+              <button id="tab-text" class="input-mode-tab active" type="button">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                Plain Text
+              </button>
+              <button id="tab-file" class="input-mode-tab" type="button">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                File Drop
+              </button>
+            </div>
+
+            <!-- Quick Text Actions -->
+            <div id="text-actions-bar" style="display: flex; gap: 0.5rem;">
+              <button id="btn-sample" class="btn-sm-action" type="button">Sample Text</button>
+              <button id="btn-clear" class="btn-sm-action" type="button">Clear</button>
+            </div>
+          </div>
+
+          <!-- Plain Text Mode -->
+          <div id="text-input-section" class="form-group" style="flex: 1; display: flex; flex-direction: column;">
+            <label for="hash-text-input">Input Plain Text:</label>
+            <textarea id="hash-text-input" class="form-textarea" placeholder="Type or paste text here to compute cryptographic hashes..." style="flex: 1; min-height: 220px; font-family: monospace;"></textarea>
+          </div>
+
+          <!-- File Drop Mode -->
+          <div id="file-input-section" style="display: none; flex-direction: column;">
+            <div id="file-drop-zone" class="file-drag-area">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <p style="font-weight: 600;">Drag &amp; Drop Any File Here</p>
+              <p style="font-size: 0.8rem; color: var(--text-tertiary); margin-top: 0.25rem;">Or click to browse from device. Hashing occurs entirely offline.</p>
+              <input type="file" id="file-picker" style="display: none;">
+            </div>
+
+            <div id="file-card" class="file-card-info">
+              <div>
+                <div class="file-name" id="selected-file-name">-</div>
+                <div class="file-meta" id="selected-file-meta">-</div>
+              </div>
+              <button id="btn-remove-file" class="btn-sm-action" type="button">Remove</button>
+            </div>
+          </div>
+
+          <!-- HMAC Settings -->
+          <div class="hmac-settings-box">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <label class="checkbox-label" style="font-weight: 600; color: var(--text-primary);">
+                <input type="checkbox" id="hmac-toggle">
+                <span>Enable HMAC (Keyed-Hash Message Authentication)</span>
+              </label>
+            </div>
+
+            <div id="hmac-key-group" style="display: none; flex-direction: column; gap: 0.5rem;">
+              <label for="hmac-key" style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Secret Key:</label>
+              <input type="text" id="hmac-key" class="form-input" placeholder="Enter HMAC secret key...">
+            </div>
+          </div>
+
+          <!-- Output Format Options -->
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.5rem;">
+            <div class="checkbox-group" style="flex-direction: row; gap: 1.5rem;">
+              <label class="checkbox-label" style="font-size: 0.85rem;">
+                <input type="checkbox" id="opt-uppercase">
+                <span>Uppercase Hex Output</span>
+              </label>
+            </div>
+
+            <button id="btn-copy-all" class="btn-sm-action" type="button">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy All Hashes
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right: Hashes Output Cards -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <span id="output-panel-title">Computed Hashes</span>
+            <span style="font-size: 0.75rem; color: var(--text-tertiary); margin-left: auto;">Live calculations</span>
+          </div>
+
+          <div class="hash-cards-grid">
+            <!-- SHA-256 Card -->
+            <div class="hash-card" id="card-sha256" data-algo="SHA-256">
+              <div class="hash-card-header">
+                <span class="hash-algo-title">
+                  SHA-256
+                  <span class="hash-badge">256-bit</span>
+                </span>
+                <button class="btn-sm-action btn-copy-hash" data-target="hash-sha256" type="button">Copy</button>
+              </div>
+              <div class="hash-val-wrapper">
+                <span class="hash-val-text empty" id="hash-sha256">Enter text or drop a file to compute</span>
+              </div>
+            </div>
+
+            <!-- SHA-512 Card -->
+            <div class="hash-card" id="card-sha512" data-algo="SHA-512">
+              <div class="hash-card-header">
+                <span class="hash-algo-title">
+                  SHA-512
+                  <span class="hash-badge">512-bit</span>
+                </span>
+                <button class="btn-sm-action btn-copy-hash" data-target="hash-sha512" type="button">Copy</button>
+              </div>
+              <div class="hash-val-wrapper">
+                <span class="hash-val-text empty" id="hash-sha512">Enter text or drop a file to compute</span>
+              </div>
+            </div>
+
+            <!-- SHA-384 Card -->
+            <div class="hash-card" id="card-sha384" data-algo="SHA-384">
+              <div class="hash-card-header">
+                <span class="hash-algo-title">
+                  SHA-384
+                  <span class="hash-badge">384-bit</span>
+                </span>
+                <button class="btn-sm-action btn-copy-hash" data-target="hash-sha384" type="button">Copy</button>
+              </div>
+              <div class="hash-val-wrapper">
+                <span class="hash-val-text empty" id="hash-sha384">Enter text or drop a file to compute</span>
+              </div>
+            </div>
+
+            <!-- SHA-1 Card -->
+            <div class="hash-card" id="card-sha1" data-algo="SHA-1">
+              <div class="hash-card-header">
+                <span class="hash-algo-title">
+                  SHA-1
+                  <span class="hash-badge">160-bit</span>
+                </span>
+                <button class="btn-sm-action btn-copy-hash" data-target="hash-sha1" type="button">Copy</button>
+              </div>
+              <div class="hash-val-wrapper">
+                <span class="hash-val-text empty" id="hash-sha1">Enter text or drop a file to compute</span>
+              </div>
+            </div>
+
+            <!-- MD5 Card -->
+            <div class="hash-card" id="card-md5" data-algo="MD5">
+              <div class="hash-card-header">
+                <span class="hash-algo-title">
+                  MD5
+                  <span class="hash-badge">128-bit • Pure JS</span>
+                </span>
+                <button class="btn-sm-action btn-copy-hash" data-target="hash-md5" type="button">Copy</button>
+              </div>
+              <div class="hash-val-wrapper">
+                <span class="hash-val-text empty" id="hash-md5">Enter text or drop a file to compute</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    
+
+      <!-- Real-Time Checksum Verifier & Compare Panel -->
+      <div class="tool-panel glass-panel">
+        <h2 class="panel-title">Verify &amp; Compare Checksum</h2>
+        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: -0.5rem;">
+          Paste an expected hash checksum (e.g. from an official software download or database) to test against all computed algorithms.
+        </p>
+
+        <div class="verifier-box">
+          <div class="verifier-input-wrap">
+            <input type="text" id="verifier-input" class="form-input verifier-input" placeholder="Paste expected hash here to compare (case-insensitive)...">
+          </div>
+
+          <div id="verifier-feedback" class="verifier-feedback neutral">
+            <span>ℹ Enter an expected hash value above to verify match.</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
 

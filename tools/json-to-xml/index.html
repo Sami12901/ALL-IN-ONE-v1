@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JSON to XML Converter - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Translates JSON structures into XML elements.">
-  <meta name="keywords" content="json, xml, convert, translate, free, online, tool, utility">
+  <meta name="description" content="Convert JSON to XML online with deep object nesting, @ attribute prefix support, custom root & array elements, and real-time parsing.">
+  <meta name="keywords" content="json to xml, convert json to xml, json xml converter, xml generator, deep nesting, attributes, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/json-to-xml/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,82 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+  <style>
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+      align-items: end;
+      margin-bottom: 1rem;
+    }
+    .panel-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .panel-header-row .panel-title {
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
+    .panel-meta {
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+      font-family: monospace;
+    }
+    .editor-wrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 380px;
+    }
+    .code-area {
+      flex: 1;
+      width: 100%;
+      min-height: 380px;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      resize: vertical;
+      outline: none;
+      tab-size: 2;
+      transition: border-color 0.2s ease;
+    }
+    .code-area:focus {
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+    }
+    .error-banner {
+      display: none;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: var(--error);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.875rem;
+      line-height: 1.4;
+    }
+    .success-banner {
+      display: none;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: var(--success);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.875rem;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,26 +103,100 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>JSON to XML Converter</h1>
-        <p class="tool-description">Translates JSON structures into XML elements.</p>
+        <p class="tool-description">Seamlessly translate nested JSON structures into valid XML documents with configurable root/item tags, attribute prefix (@) notation, and real-time conversion.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>JSON to XML Converter</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Translates JSON structures into XML elements.</div>
-            <div><strong>Inputs:</strong> json, xml, convert, translate</div>
-            <div><strong>Category:</strong> developer</div>
+      <!-- Controls Panel -->
+      <div class="tool-panel glass-panel">
+        <div class="options-grid">
+          <div class="form-group">
+            <label for="root-element">Root Element Name</label>
+            <input type="text" id="root-element" class="form-input" value="root" placeholder="root">
+          </div>
+
+          <div class="form-group">
+            <label for="item-element">Array Item Name</label>
+            <input type="text" id="item-element" class="form-input" value="item" placeholder="item">
+          </div>
+
+          <div class="form-group">
+            <label for="attr-prefix">Attribute Prefix</label>
+            <input type="text" id="attr-prefix" class="form-input" value="@" placeholder="@">
+          </div>
+
+          <div class="form-group">
+            <label for="xml-indent">Indentation</label>
+            <select id="xml-indent" class="form-select">
+              <option value="2" selected>2 Spaces</option>
+              <option value="4">4 Spaces</option>
+              <option value="tab">Tabs</option>
+              <option value="compact">Compact (Minified)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="sample-json">Load Sample JSON</label>
+            <select id="sample-json" class="form-select">
+              <option value="">-- Choose Sample --</option>
+              <option value="ecommerce">E-Commerce Store &amp; Products</option>
+              <option value="userlist">User Accounts &amp; Permissions</option>
+              <option value="nestedarray">Deeply Nested Multilevel Data</option>
+            </select>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="checkbox-group" style="flex-direction: row; flex-wrap: wrap; gap: 1.5rem;">
+          <label class="checkbox-label">
+            <input type="checkbox" id="realtime-toggle" checked>
+            <span>Real-time conversion</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="xml-declaration" checked>
+            <span>Include XML declaration (&lt;?xml version="1.0" ...?&gt;)</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Workspace Split View -->
+      <div class="tool-workarea split-view">
+        <!-- Input Panel -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-header-row">
+            <h2 class="panel-title">JSON Input</h2>
+            <span id="input-stats" class="panel-meta">Lines: 0 | Chars: 0</span>
+          </div>
+
+          <div id="json-error-banner" class="error-banner"></div>
+
+          <div class="editor-wrapper">
+            <textarea id="json-input" class="code-area" placeholder='Paste JSON here... e.g. {"name": "Example", "@id": "123"}' spellcheck="false"></textarea>
+          </div>
+
+          <div class="action-bar">
+            <button id="convert-btn" class="btn btn-primary">Convert to XML</button>
+            <button id="clear-btn" class="btn btn-secondary">Clear</button>
+          </div>
+        </div>
+
+        <!-- Output Panel -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-header-row">
+            <h2 class="panel-title">XML Output</h2>
+            <span id="output-stats" class="panel-meta">Lines: 0 | Chars: 0</span>
+          </div>
+
+          <div id="xml-success-banner" class="success-banner">Successfully converted to XML!</div>
+
+          <div class="editor-wrapper">
+            <button id="copy-btn" class="copy-btn" title="Copy to clipboard">Copy</button>
+            <textarea id="xml-output" class="code-area" readonly placeholder="Generated XML will appear here..." spellcheck="false" style="padding-top: 2.5rem;"></textarea>
+          </div>
+
+          <div class="action-bar">
+            <button id="download-btn" class="btn btn-secondary">Download .xml</button>
+            <button id="copy-action-btn" class="btn btn-secondary">Copy XML</button>
+          </div>
+        </div>
       </div>
     
     </div>
@@ -62,8 +212,8 @@
     "@type": "WebApplication",
     "name": "JSON to XML Converter",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/json-to-xml/",
-    "description": "Translates JSON structures into XML elements.",
-    "applicationCategory": "UtilityPage",
+    "description": "Convert JSON data to XML documents with @ attribute notation, customizable root tags, and formatting options.",
+    "applicationCategory": "DeveloperApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

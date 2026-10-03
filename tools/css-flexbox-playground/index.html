@@ -12,8 +12,183 @@
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <style>
+    .flexbox-app-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .flexbox-app-layout {
+        grid-template-columns: 380px 1fr;
+      }
+    }
+    .ctrl-section {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .ctrl-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+    }
+    .btn-group-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.35rem;
+    }
+    .btn-group-grid.three-col {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .option-btn {
+      padding: 0.45rem 0.5rem;
+      font-size: 0.775rem;
+      font-weight: 500;
+      border-radius: var(--radius-sm);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      text-align: center;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    .option-btn:hover {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .option-btn.active {
+      background: var(--accent-gradient);
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: 0 2px 8px var(--accent-glow);
+      font-weight: 700;
+    }
+
+    /* Stage */
+    .stage-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .flex-stage-container {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      min-height: 420px;
+      position: relative;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .stage-canvas {
+      flex: 1;
+      min-height: 380px;
+      border: 2px dashed rgba(var(--accent-rgb), 0.3);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      background: var(--bg-secondary);
+      display: flex;
+      transition: all 0.25s ease;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    .flex-item {
+      min-width: 60px;
+      min-height: 60px;
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 2px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      position: relative;
+    }
+    .flex-item:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .flex-item.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow), 0 4px 14px rgba(0, 0, 0, 0.15);
+      background: rgba(var(--accent-rgb), 0.12);
+    }
+    .item-index-badge {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+    .item-meta-tag {
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+      margin-top: 0.25rem;
+      font-family: monospace;
+      text-align: center;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .item-badge-pill {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      font-size: 0.65rem;
+      background: var(--accent);
+      color: #ffffff;
+      padding: 0.1rem 0.35rem;
+      border-radius: var(--radius-full);
+      display: none;
+    }
+    .flex-item.active .item-badge-pill {
+      display: inline-block;
+    }
+
+    /* Code Previews */
+    .code-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 768px) {
+      .code-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .code-box-pre {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.825rem;
+      color: var(--text-primary);
+      height: 200px;
+      overflow: auto;
+      white-space: pre;
+      line-height: 1.5;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,26 +202,179 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>CSS Flexbox Playground</h1>
-        <p class="tool-description">Interactive sandbox to learn and generate flexbox styles.</p>
+        <p class="tool-description">Interactive visual sandbox to experiment with Flexbox container properties, inspect individual flex items, and generate clean CSS code.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>CSS Flexbox Playground</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Interactive sandbox to learn and generate flexbox styles.</div>
-            <div><strong>Inputs:</strong> flexbox, css, layout, flex, sandbox</div>
-            <div><strong>Category:</strong> developer</div>
+      <div class="flexbox-app-layout">
+        <!-- Controls Column -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">Flexbox Controls</h2>
+
+          <!-- Container Properties -->
+          <div class="ctrl-section">
+            <div class="ctrl-title">
+              <span>Container: flex-direction</span>
+            </div>
+            <div class="btn-group-grid" id="btn-group-direction">
+              <button class="option-btn active" data-prop="direction" data-val="row">row</button>
+              <button class="option-btn" data-prop="direction" data-val="column">column</button>
+              <button class="option-btn" data-prop="direction" data-val="row-reverse">row-reverse</button>
+              <button class="option-btn" data-prop="direction" data-val="column-reverse">column-reverse</button>
+            </div>
+          </div>
+
+          <div class="ctrl-section">
+            <div class="ctrl-title">
+              <span>Container: justify-content</span>
+            </div>
+            <div class="btn-group-grid three-col" id="btn-group-justify">
+              <button class="option-btn active" data-prop="justify" data-val="flex-start">flex-start</button>
+              <button class="option-btn" data-prop="justify" data-val="center">center</button>
+              <button class="option-btn" data-prop="justify" data-val="flex-end">flex-end</button>
+              <button class="option-btn" data-prop="justify" data-val="space-between">between</button>
+              <button class="option-btn" data-prop="justify" data-val="space-around">around</button>
+              <button class="option-btn" data-prop="justify" data-val="space-evenly">evenly</button>
+            </div>
+          </div>
+
+          <div class="ctrl-section">
+            <div class="ctrl-title">
+              <span>Container: align-items</span>
+            </div>
+            <div class="btn-group-grid" id="btn-group-align-items">
+              <button class="option-btn active" data-prop="alignItems" data-val="stretch">stretch</button>
+              <button class="option-btn" data-prop="alignItems" data-val="flex-start">flex-start</button>
+              <button class="option-btn" data-prop="alignItems" data-val="center">center</button>
+              <button class="option-btn" data-prop="alignItems" data-val="flex-end">flex-end</button>
+              <button class="option-btn" data-prop="alignItems" data-val="baseline" style="grid-column: span 2;">baseline</button>
+            </div>
+          </div>
+
+          <div class="ctrl-section">
+            <div class="ctrl-title">
+              <span>Container: flex-wrap &amp; gap</span>
+            </div>
+            <div class="form-group">
+              <label>flex-wrap</label>
+              <div class="btn-group-grid three-col" id="btn-group-wrap">
+                <button class="option-btn active" data-prop="wrap" data-val="nowrap">nowrap</button>
+                <button class="option-btn" data-prop="wrap" data-val="wrap">wrap</button>
+                <button class="option-btn" data-prop="wrap" data-val="wrap-reverse">wrap-rev</button>
+              </div>
+            </div>
+            <div class="form-group" style="margin-top: 0.35rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label for="container-gap-slider">gap: <span id="gap-val" style="color: var(--accent); font-weight: 700;">12px</span></label>
+              </div>
+              <input type="range" id="container-gap-slider" class="range-slider" min="0" max="64" value="12">
+            </div>
+          </div>
+
+          <!-- Per-Item Controls -->
+          <div class="ctrl-section" style="border-color: rgba(var(--accent-rgb), 0.35);">
+            <div class="ctrl-title">
+              <span style="color: var(--accent);">Item Controls: <span id="selected-item-label">Item 1</span></span>
+            </div>
+
+            <div class="form-group">
+              <label for="item-select">Selected Child Item</label>
+              <select id="item-select" class="form-select"></select>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <label for="item-grow">flex-grow: <span id="item-grow-val" class="range-value" style="font-size: 0.85rem;">0</span></label>
+                <input type="range" id="item-grow" class="range-slider" min="0" max="8" value="0">
+              </div>
+              <div class="form-group">
+                <label for="item-shrink">flex-shrink: <span id="item-shrink-val" class="range-value" style="font-size: 0.85rem;">1</span></label>
+                <input type="range" id="item-shrink" class="range-slider" min="0" max="8" value="1">
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <label for="item-basis">flex-basis</label>
+                <input type="text" id="item-basis" class="form-input" value="auto" placeholder="auto, 100px, 25%">
+              </div>
+              <div class="form-group">
+                <label for="item-order">order</label>
+                <input type="number" id="item-order" class="form-input" value="0" min="-10" max="10">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="item-align-self">align-self</label>
+              <select id="item-align-self" class="form-select">
+                <option value="auto" selected>auto</option>
+                <option value="flex-start">flex-start</option>
+                <option value="center">center</option>
+                <option value="flex-end">flex-end</option>
+                <option value="stretch">stretch</option>
+                <option value="baseline">baseline</option>
+              </select>
+            </div>
+
+            <div class="action-bar" style="margin-top: 0.25rem;">
+              <button id="reset-item-btn" class="btn btn-secondary" style="width: 100%; font-size: 0.8rem; padding: 0.45rem;">
+                Reset Current Item Styles
+              </button>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Stage & Output -->
+        <div class="stage-wrapper">
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+              <h2 class="panel-title" style="margin-bottom: 0; border: none; padding: 0;">Interactive Flex Stage</h2>
+              <div class="action-bar" style="margin: 0;">
+                <button id="add-item-btn" class="btn btn-primary" style="padding: 0.45rem 0.9rem; font-size: 0.85rem;">
+                  + Add Item
+                </button>
+                <button id="remove-item-btn" class="btn btn-secondary" style="padding: 0.45rem 0.9rem; font-size: 0.85rem;">
+                  - Remove Item
+                </button>
+                <button id="reset-all-btn" class="btn btn-secondary" style="padding: 0.45rem 0.9rem; font-size: 0.85rem;">
+                  Reset Stage
+                </button>
+              </div>
+            </div>
+
+            <div class="flex-stage-container">
+              <div id="stage-canvas" class="stage-canvas"></div>
+            </div>
+          </div>
+
+          <!-- Code Generation Cards -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">Generated Code</h2>
+            <div class="code-grid">
+              <!-- CSS Code Output -->
+              <div style="display: flex; flex-direction: column;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">
+                  <span>CSS Stylesheet</span>
+                  <button id="copy-css-btn" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">
+                    Copy CSS
+                  </button>
+                </div>
+                <pre id="css-output" class="code-box-pre">/* CSS Flexbox styles */</pre>
+              </div>
+
+              <!-- HTML Code Output -->
+              <div style="display: flex; flex-direction: column;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">
+                  <span>HTML Container Markup</span>
+                  <button id="copy-html-btn" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">
+                    Copy HTML
+                  </button>
+                </div>
+                <pre id="html-output" class="code-box-pre">&lt;!-- HTML container markup --&gt;</pre>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     
     </div>

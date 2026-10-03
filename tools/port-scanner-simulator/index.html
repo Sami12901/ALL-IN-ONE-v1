@@ -4,14 +4,213 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Port Scanner Simulator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Demonstrates connection limits and timeout behavior.">
-  <meta name="keywords" content="port, scanner, scan, simulator, network, free, online, tool, utility">
+  <meta name="description" content="Educational network engineering port scanner simulator with interactive radar visualizer, latency simulation, service detection, and security risk assessment.">
+  <meta name="keywords" content="port scanner, network simulator, tcp ports, open ports, security risk, nmap simulator, firewall, free, online, tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/port-scanner-simulator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .scanner-controls {
+      display: grid;
+      grid-template-columns: 2fr 1.5fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 768px) {
+      .scanner-controls {
+        grid-template-columns: 1fr;
+      }
+    }
+    .radar-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      background: radial-gradient(circle, rgba(14, 165, 233, 0.08) 0%, rgba(10, 15, 25, 0.4) 80%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      position: relative;
+      overflow: hidden;
+    }
+    .radar-canvas-container {
+      position: relative;
+      width: 200px;
+      height: 200px;
+    }
+    #radarCanvas {
+      width: 200px;
+      height: 200px;
+      display: block;
+    }
+    .radar-meta {
+      margin-top: 1rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .progress-bar-container {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-top: 0.75rem;
+      border: 1px solid var(--border);
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent-gradient);
+      transition: width 0.15s ease-out;
+    }
+    .stats-counters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.75rem;
+      width: 100%;
+      margin-top: 1rem;
+    }
+    .counter-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      text-align: center;
+    }
+    .counter-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-secondary);
+      letter-spacing: 0.05em;
+    }
+    .counter-value {
+      font-family: monospace;
+      font-size: 1.4rem;
+      font-weight: 800;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.6rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .status-open {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid #10b981;
+    }
+    .status-filtered {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border: 1px solid #f59e0b;
+    }
+    .status-closed {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid #ef4444;
+    }
+    .risk-badge {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      margin-right: 0.4rem;
+      display: inline-block;
+    }
+    .risk-critical {
+      background: rgba(239, 68, 68, 0.25);
+      color: #f87171;
+      border: 1px solid #ef4444;
+    }
+    .risk-warning {
+      background: rgba(245, 158, 11, 0.25);
+      color: #fbbf24;
+      border: 1px solid #f59e0b;
+    }
+    .risk-info {
+      background: rgba(78, 133, 191, 0.2);
+      color: #93c5fd;
+      border: 1px solid #3b82f6;
+    }
+    .risk-safe {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid #10b981;
+    }
+    .ports-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .ports-table th, .ports-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    .ports-table th {
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+    }
+    .ports-table tr:last-child td {
+      border-bottom: none;
+    }
+    .ports-table tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .filter-btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .filter-btn {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .filter-btn.active, .filter-btn:hover {
+      background: var(--bg-secondary);
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .preset-pill {
+      font-size: 0.8rem;
+      padding: 0.3rem 0.65rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .preset-pill:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,28 +226,148 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Port Scanner Simulator</h1>
-        <p class="tool-description">Demonstrates connection limits and timeout behavior.</p>
+        <p class="tool-description">Educational network engineering port scanner simulator. Test host accessibility, visualize TCP port response latency with a live radar sweep, and review security mitigation advisories.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Port Scanner Simulator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Demonstrates connection limits and timeout behavior.</div>
-            <div><strong>Inputs:</strong> port, scanner, scan, simulator, network</div>
-            <div><strong>Category:</strong> developer</div>
+      <!-- Presets and Educational Disclaimer -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+        <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Sample Targets:</span>
+          <button class="preset-pill" data-target="localhost">localhost (127.0.0.1)</button>
+          <button class="preset-pill" data-target="192.168.1.1">Router Gateway (192.168.1.1)</button>
+          <button class="preset-pill" data-target="scanme.nmap.org">scanme.nmap.org</button>
+          <button class="preset-pill" data-target="10.0.0.15">Database Server (10.0.0.15)</button>
+        </div>
+        <span style="font-size: 0.75rem; color: var(--text-tertiary);">* Simulation sandbox for network training &amp; security analysis.</span>
+      </div>
+
+      <!-- Scanner Configuration Panel -->
+      <div class="tool-panel glass-panel">
+        <h2 class="panel-title">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+          Scanner Parameters &amp; Execution
+        </h2>
+
+        <div class="scanner-controls">
+          <div class="form-group">
+            <label for="target-input">Target Hostname or IP</label>
+            <input type="text" id="target-input" class="form-input" placeholder="e.g. localhost, 192.168.1.1, scanme.nmap.org" value="localhost" style="font-family: monospace;">
+          </div>
+
+          <div class="form-group">
+            <label for="scan-mode">Scan Profile / Port Suite</label>
+            <select id="scan-mode" class="form-select">
+              <option value="top20">Top 20 Well-Known Ports</option>
+              <option value="webdb">Web &amp; Database Ports (80, 443, 3306, 5432, 27017, 6379, 8080)</option>
+              <option value="full">Full Extended Scan (45 Popular Services)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="scan-speed">Simulation Pace</label>
+            <select id="scan-speed" class="form-select">
+              <option value="fast">Fast (40 ms/port)</option>
+              <option value="normal" selected>Standard (100 ms/port)</option>
+              <option value="realistic">Realistic (200 ms/port)</option>
+            </select>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="action-bar">
+          <button id="btn-start-scan" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            Start Port Scan
+          </button>
+          <button id="btn-stop-scan" class="btn btn-secondary" disabled>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12"></rect></svg>
+            Stop Scan
+          </button>
+          <button id="btn-export-json" class="btn btn-secondary">Export JSON</button>
+          <button id="btn-export-txt" class="btn btn-secondary">Export TXT Report</button>
+          <button id="btn-clear-results" class="btn btn-secondary">Clear</button>
+        </div>
       </div>
-    
+
+      <!-- Radar Animation & Progress Status Area -->
+      <div class="radar-wrapper glass-panel">
+        <div class="radar-canvas-container">
+          <canvas id="radarCanvas" width="200" height="200"></canvas>
+        </div>
+
+        <div class="radar-meta">
+          <div id="radar-status-text" style="font-weight: 700; font-size: 1.1rem; color: var(--text-primary);">Ready to Scan</div>
+          <div id="radar-subtext" style="font-family: monospace; font-size: 0.85rem; color: var(--accent);">Target: localhost</div>
+        </div>
+
+        <div class="progress-bar-container">
+          <div id="scan-progress-fill" class="progress-bar-fill"></div>
+        </div>
+
+        <!-- Metric Counter Cards -->
+        <div class="stats-counters">
+          <div class="counter-card">
+            <span class="counter-title">Scanned Ports</span>
+            <span class="counter-value" id="count-total" style="color: var(--text-primary);">0</span>
+          </div>
+          <div class="counter-card">
+            <span class="counter-title">Open</span>
+            <span class="counter-value" id="count-open" style="color: #34d399;">0</span>
+          </div>
+          <div class="counter-card">
+            <span class="counter-title">Filtered</span>
+            <span class="counter-value" id="count-filtered" style="color: #fbbf24;">0</span>
+          </div>
+          <div class="counter-card">
+            <span class="counter-title">Closed</span>
+            <span class="counter-value" id="count-closed" style="color: #f87171;">0</span>
+          </div>
+          <div class="counter-card">
+            <span class="counter-title">Security Risks</span>
+            <span class="counter-value" id="count-risks" style="color: #ef4444;">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scan Results Table Section -->
+      <div class="tool-panel glass-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+          <h2 class="panel-title" style="margin: 0; padding: 0; border: none;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+            Port Discovery &amp; Security Assessment
+          </h2>
+
+          <!-- Filter Pills -->
+          <div class="filter-btn-group">
+            <button class="filter-btn active" data-filter="all">All (<span id="pill-all-count">0</span>)</button>
+            <button class="filter-btn" data-filter="open">Open (<span id="pill-open-count">0</span>)</button>
+            <button class="filter-btn" data-filter="filtered">Filtered (<span id="pill-filtered-count">0</span>)</button>
+            <button class="filter-btn" data-filter="closed">Closed (<span id="pill-closed-count">0</span>)</button>
+            <button class="filter-btn" data-filter="risk">Risks (<span id="pill-risk-count">0</span>)</button>
+          </div>
+        </div>
+
+        <div style="overflow-x: auto; margin-top: 1rem;">
+          <table class="ports-table">
+            <thead>
+              <tr>
+                <th style="width: 12%;">Port / Proto</th>
+                <th style="width: 18%;">Standard Service</th>
+                <th style="width: 12%;">State</th>
+                <th style="width: 12%;">Latency (RTT)</th>
+                <th>Security Assessment &amp; Advisory</th>
+              </tr>
+            </thead>
+            <tbody id="ports-table-body">
+              <tr>
+                <td colspan="5" style="text-align: center; color: var(--text-tertiary); padding: 2rem;">
+                  No scan initiated. Configure target parameters above and click "Start Port Scan".
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
   </main>
 
@@ -62,8 +381,8 @@
     "@type": "WebApplication",
     "name": "Port Scanner Simulator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/port-scanner-simulator/",
-    "description": "Demonstrates connection limits and timeout behavior.",
-    "applicationCategory": "UtilityPage",
+    "description": "Educational network engineering port scanner simulator with interactive radar visualizer, latency simulation, service detection, and security risk assessment.",
+    "applicationCategory": "DeveloperApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SQL Formatter - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Format and beautify raw SQL queries.">
-  <meta name="keywords" content="sql, format, beautify, query, free, online, tool, utility">
+  <title>SQL Formatter & Beautifier - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Format, beautify, and minify SQL queries across multiple dialects including PostgreSQL, MySQL, SQLite, T-SQL, and Standard SQL.">
+  <meta name="keywords" content="sql, format, beautify, query, minify, postgresql, mysql, sqlite, tsql, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/sql-formatter/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,79 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+  <style>
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      align-items: end;
+      margin-bottom: 1.25rem;
+    }
+    .panel-meta {
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+      font-family: monospace;
+      margin-left: auto;
+    }
+    .panel-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .panel-header-row .panel-title {
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
+    .editor-wrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 380px;
+    }
+    .sql-code-area {
+      flex: 1;
+      width: 100%;
+      min-height: 380px;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      resize: vertical;
+      tab-size: 2;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .sql-code-area:focus {
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+    }
+    .toast-msg {
+      display: none;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+    }
+    .toast-error {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: var(--error);
+    }
+    .toast-success {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--success);
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -26,27 +99,104 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>SQL Formatter</h1>
-        <p class="tool-description">Format and beautify raw SQL queries.</p>
+        <h1>SQL Formatter & Beautifier</h1>
+        <p class="tool-description">Beautify, format, validate, and minify complex SQL queries across Standard SQL, PostgreSQL, MySQL, SQLite, and T-SQL dialects.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>SQL Formatter</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Format and beautify raw SQL queries.</div>
-            <div><strong>Inputs:</strong> sql, format, beautify, query</div>
-            <div><strong>Category:</strong> developer</div>
+      <!-- Controls Panel -->
+      <div class="tool-panel glass-panel">
+        <div class="options-grid">
+          <div class="form-group">
+            <label for="sql-dialect">SQL Dialect</label>
+            <select id="sql-dialect" class="form-select">
+              <option value="standard" selected>Standard SQL (ANSI)</option>
+              <option value="postgresql">PostgreSQL</option>
+              <option value="mysql">MySQL</option>
+              <option value="sqlite">SQLite</option>
+              <option value="tsql">T-SQL (SQL Server)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="sql-case">Keyword Case</label>
+            <select id="sql-case" class="form-select">
+              <option value="upper" selected>UPPERCASE (SELECT, FROM)</option>
+              <option value="lower">lowercase (select, from)</option>
+              <option value="preserve">Preserve Original</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="sql-indent">Indentation</label>
+            <select id="sql-indent" class="form-select">
+              <option value="2" selected>2 Spaces</option>
+              <option value="4">4 Spaces</option>
+              <option value="tab">Tabs</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="sql-sample">Load Sample Query</label>
+            <select id="sql-sample" class="form-select">
+              <option value="">-- Choose Sample --</option>
+              <option value="joins">SELECT with Multi-Table JOINs</option>
+              <option value="insert">Multi-row INSERT Statement</option>
+              <option value="create">Complex CREATE TABLE with Constraints</option>
+            </select>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="checkbox-group" style="flex-direction: row; flex-wrap: wrap; gap: 1.5rem;">
+          <label class="checkbox-label">
+            <input type="checkbox" id="break-clauses" checked>
+            <span>Line breaks between major clauses</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="break-operators" checked>
+            <span>Break before logical operators (AND / OR)</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Tool Workspace Split View -->
+      <div class="tool-workarea split-view">
+        <!-- Input Panel -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-header-row">
+            <h2 class="panel-title">Raw SQL Input</h2>
+            <span id="input-stats" class="panel-meta">Lines: 0 | Chars: 0</span>
+          </div>
+
+          <div class="editor-wrapper">
+            <textarea id="sql-input" class="sql-code-area" placeholder="Paste or type raw SQL query here... e.g. SELECT * FROM users WHERE status = 'active'" spellcheck="false"></textarea>
+          </div>
+
+          <div class="action-bar">
+            <button id="format-btn" class="btn btn-primary">Format SQL</button>
+            <button id="minify-btn" class="btn btn-secondary">Minify SQL</button>
+            <button id="clear-btn" class="btn btn-secondary">Clear</button>
+          </div>
+        </div>
+
+        <!-- Output Panel -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-header-row">
+            <h2 class="panel-title">Formatted Output</h2>
+            <span id="output-stats" class="panel-meta">Lines: 0 | Chars: 0</span>
+          </div>
+
+          <div id="sql-msg" class="toast-msg"></div>
+
+          <div class="editor-wrapper">
+            <button id="copy-btn" class="copy-btn" title="Copy to clipboard">Copy</button>
+            <textarea id="sql-output" class="sql-code-area" readonly placeholder="Formatted SQL will appear here..." spellcheck="false" style="padding-top: 2.5rem;"></textarea>
+          </div>
+
+          <div class="action-bar">
+            <button id="download-btn" class="btn btn-secondary">Download .sql</button>
+            <button id="copy-action-btn" class="btn btn-secondary">Copy Query</button>
+          </div>
+        </div>
       </div>
     
     </div>
@@ -60,10 +210,10 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "SQL Formatter",
+    "name": "SQL Formatter & Beautifier",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/sql-formatter/",
-    "description": "Format and beautify raw SQL queries.",
-    "applicationCategory": "UtilityPage",
+    "description": "Format, beautify, and minify raw SQL queries with dialect support and customizable indentation.",
+    "applicationCategory": "DeveloperApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

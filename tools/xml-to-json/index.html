@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>XML to JSON Converter - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Translates XML elements back into JSON data.">
-  <meta name="keywords" content="xml, json, convert, translate, free, online, tool, utility">
+  <meta name="description" content="Convert XML documents into clean, structured JSON objects with customizable attribute handling, text node keys, and real-time parsing.">
+  <meta name="keywords" content="xml to json, convert xml to json, xml parser, dom to json, xml json converter, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/xml-to-json/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,82 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+  <style>
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      align-items: end;
+      margin-bottom: 1rem;
+    }
+    .panel-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .panel-header-row .panel-title {
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
+    .panel-meta {
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+      font-family: monospace;
+    }
+    .editor-wrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 380px;
+    }
+    .code-area {
+      flex: 1;
+      width: 100%;
+      min-height: 380px;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      resize: vertical;
+      outline: none;
+      tab-size: 2;
+      transition: border-color 0.2s ease;
+    }
+    .code-area:focus {
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+    }
+    .error-banner {
+      display: none;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: var(--error);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.875rem;
+      line-height: 1.4;
+    }
+    .success-banner {
+      display: none;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: var(--success);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.875rem;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,26 +103,108 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>XML to JSON Converter</h1>
-        <p class="tool-description">Translates XML elements back into JSON data.</p>
+        <p class="tool-description">Seamlessly translate XML documents into clean, structured JSON format with attribute configuration, type auto-detection, and real-time parsing.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>XML to JSON Converter</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Translates XML elements back into JSON data.</div>
-            <div><strong>Inputs:</strong> xml, json, convert, translate</div>
-            <div><strong>Category:</strong> developer</div>
+      <!-- Controls Panel -->
+      <div class="tool-panel glass-panel">
+        <div class="options-grid">
+          <div class="form-group">
+            <label for="attr-mode">Attribute Handling</label>
+            <select id="attr-mode" class="form-select">
+              <option value="prefix" selected>Preserve with @ prefix (@id)</option>
+              <option value="nested">Preserve in @attributes object</option>
+              <option value="flat">Flat (Merge directly into element)</option>
+              <option value="strip">Strip / Ignore attributes</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="text-key">Text Node Property</label>
+            <select id="text-key" class="form-select">
+              <option value="#text" selected>#text</option>
+              <option value="value">value</option>
+              <option value="_text">_text</option>
+              <option value="$t">$t</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="json-indent">JSON Indentation</label>
+            <select id="json-indent" class="form-select">
+              <option value="2" selected>2 Spaces</option>
+              <option value="4">4 Spaces</option>
+              <option value="compact">Compact (Minified)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="xml-sample">Sample XML Templates</label>
+            <select id="xml-sample" class="form-select">
+              <option value="">-- Choose Sample --</option>
+              <option value="catalog">Books Catalog with Attributes &amp; Arrays</option>
+              <option value="company">Corporate Organization Tree</option>
+              <option value="transactions">Financial Transaction Records</option>
+            </select>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="checkbox-group" style="flex-direction: row; flex-wrap: wrap; gap: 1.5rem;">
+          <label class="checkbox-label">
+            <input type="checkbox" id="realtime-toggle" checked>
+            <span>Real-time conversion</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="simplify-leaves" checked>
+            <span>Simplify leaf text nodes (no wrapper object)</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="auto-coerce" checked>
+            <span>Auto-detect numbers &amp; booleans</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Workspace Split View -->
+      <div class="tool-workarea split-view">
+        <!-- Input Panel -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-header-row">
+            <h2 class="panel-title">XML Input</h2>
+            <span id="input-stats" class="panel-meta">Lines: 0 | Chars: 0</span>
+          </div>
+
+          <div id="xml-error-banner" class="error-banner"></div>
+
+          <div class="editor-wrapper">
+            <textarea id="xml-input" class="code-area" placeholder="Paste or type raw XML here... e.g. <root><item id=&quot;1&quot;>Hello</item></root>" spellcheck="false"></textarea>
+          </div>
+
+          <div class="action-bar">
+            <button id="convert-btn" class="btn btn-primary">Convert to JSON</button>
+            <button id="clear-btn" class="btn btn-secondary">Clear</button>
+          </div>
+        </div>
+
+        <!-- Output Panel -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-header-row">
+            <h2 class="panel-title">JSON Output</h2>
+            <span id="output-stats" class="panel-meta">Lines: 0 | Chars: 0</span>
+          </div>
+
+          <div id="json-success-banner" class="success-banner">Successfully converted to JSON!</div>
+
+          <div class="editor-wrapper">
+            <button id="copy-btn" class="copy-btn" title="Copy to clipboard">Copy</button>
+            <textarea id="json-output" class="code-area" readonly placeholder="Converted JSON will appear here..." spellcheck="false" style="padding-top: 2.5rem;"></textarea>
+          </div>
+
+          <div class="action-bar">
+            <button id="download-btn" class="btn btn-secondary">Download .json</button>
+            <button id="copy-action-btn" class="btn btn-secondary">Copy JSON</button>
+          </div>
+        </div>
       </div>
     
     </div>
@@ -62,8 +220,8 @@
     "@type": "WebApplication",
     "name": "XML to JSON Converter",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/xml-to-json/",
-    "description": "Translates XML elements back into JSON data.",
-    "applicationCategory": "UtilityPage",
+    "description": "Convert XML documents into structured JSON objects with attribute options, type coercion, and real-time parsing.",
+    "applicationCategory": "DeveloperApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

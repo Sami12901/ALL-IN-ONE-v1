@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Regex Tester - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Test regular expressions with match groups and flags.">
-  <meta name="keywords" content="regex, regexp, test, expression, free, online, tool, utility">
+  <meta name="description" content="Interactive regular expression playground with real-time match highlighting, capture group badges, and cheat sheet.">
+  <meta name="keywords" content="regex, regexp, test, expression, playground, flags, groups, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/regex-tester/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,370 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+  <style>
+    /* KPI Metrics */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .kpi-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+    }
+    .kpi-card.highlight {
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.12) 0%, rgba(137, 170, 204, 0.05) 100%);
+      border-color: rgba(78, 133, 191, 0.35);
+    }
+    .kpi-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+    }
+    .kpi-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      font-family: monospace;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+    .kpi-card.highlight .kpi-value {
+      color: var(--accent);
+    }
+    .kpi-sub {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Pattern Input Controls */
+    .pattern-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .pattern-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .regex-input-box {
+      display: flex;
+      align-items: center;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0 0.85rem;
+      flex: 1;
+      min-width: 260px;
+      transition: border-color 0.2s ease;
+    }
+    .regex-input-box:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+    .slash-symbol {
+      font-family: monospace;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      user-select: none;
+    }
+    .pattern-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-primary);
+      font-family: 'Fira Code', 'Cascadia Code', Consolas, Monaco, monospace;
+      font-size: 1.05rem;
+      padding: 0.75rem 0.5rem;
+    }
+    .flags-container {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.25rem 0.5rem;
+    }
+    .flag-toggle {
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-tertiary);
+      font-family: monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .flag-toggle:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+    .flag-toggle.active {
+      color: #ffffff;
+      background: var(--accent);
+      border-color: var(--accent-light);
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    /* Error Banner */
+    .regex-error-box {
+      display: none;
+      align-items: flex-start;
+      gap: 0.75rem;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.25rem;
+      color: #fca5a5;
+      font-size: 0.875rem;
+      margin-bottom: 1.5rem;
+    }
+    .regex-error-box.show {
+      display: flex;
+    }
+
+    /* Work Area */
+    .editor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .editor-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .editor-stats {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      font-family: monospace;
+    }
+    .test-textarea {
+      width: 100%;
+      min-height: 260px;
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-family: 'Fira Code', 'Cascadia Code', Consolas, Monaco, monospace;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      resize: vertical;
+      transition: border-color 0.2s ease, background 0.2s ease;
+      white-space: pre-wrap;
+    }
+    .test-textarea:focus {
+      border-color: var(--accent);
+      outline: none;
+      background: var(--bg-secondary);
+    }
+
+    /* Highlight Stage */
+    .highlight-stage {
+      width: 100%;
+      min-height: 260px;
+      max-height: 480px;
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-family: 'Fira Code', 'Cascadia Code', Consolas, Monaco, monospace;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .highlight-stage:empty::before {
+      content: "Matched test string highlights will render here in real time...";
+      color: var(--text-tertiary);
+      font-style: italic;
+    }
+
+    /* Group Legend */
+    .group-legend {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      font-size: 0.75rem;
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+    }
+
+    /* Match Highlight Badges in Stage */
+    .match-highlight {
+      background: rgba(78, 133, 191, 0.28);
+      border-bottom: 2px solid var(--accent);
+      border-radius: 3px;
+      padding: 1px 2px;
+      position: relative;
+    }
+    .group-mark {
+      border-radius: 3px;
+      padding: 1px 3px;
+      font-weight: 600;
+      cursor: help;
+    }
+    .group-mark.g1 { background: rgba(16, 185, 129, 0.35); border: 1px solid #10b981; color: #a7f3d0; }
+    .group-mark.g2 { background: rgba(139, 92, 246, 0.35); border: 1px solid #8b5cf6; color: #ddd6fe; }
+    .group-mark.g3 { background: rgba(245, 158, 11, 0.35); border: 1px solid #f59e0b; color: #fde68a; }
+    .group-mark.g4 { background: rgba(236, 72, 153, 0.35); border: 1px solid #ec4899; color: #fbcfe8; }
+    .group-mark.g5 { background: rgba(14, 165, 233, 0.35); border: 1px solid #0ea5e9; color: #bae6fd; }
+
+    /* Summary Table */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+    }
+    .matches-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+    .matches-table th {
+      background: var(--bg-secondary);
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+    .matches-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-primary);
+      vertical-align: middle;
+    }
+    .matches-table tr:last-child td {
+      border-bottom: none;
+    }
+    .matches-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .code-badge {
+      font-family: monospace;
+      background: var(--bg-secondary);
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      word-break: break-all;
+    }
+    .group-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-family: monospace;
+      margin: 0.15rem 0.25rem 0.15rem 0;
+    }
+    .group-pill.g1 { background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.4); color: #6ee7b7; }
+    .group-pill.g2 { background: rgba(139, 92, 246, 0.2); border: 1px solid rgba(139, 92, 246, 0.4); color: #c4b5fd; }
+    .group-pill.g3 { background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.4); color: #fcd34d; }
+    .group-pill.g4 { background: rgba(236, 72, 153, 0.2); border: 1px solid rgba(236, 72, 153, 0.4); color: #f9a8d4; }
+    .group-pill.g5 { background: rgba(14, 165, 233, 0.2); border: 1px solid rgba(14, 165, 233, 0.4); color: #7dd3fc; }
+
+    /* Cheat Sheet Drawer / Grid */
+    .cheat-sheet-drawer {
+      display: none;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .cheat-sheet-drawer.open {
+      display: block;
+    }
+    .cheat-sheet-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .cheat-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+    .cheat-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .cheat-title {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .cheat-code {
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      background: var(--bg-tertiary);
+      padding: 0.35rem 0.5rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      word-break: break-all;
+    }
+    .cheat-desc {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,26 +391,159 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Regex Tester</h1>
-        <p class="tool-description">Test regular expressions with match groups and flags.</p>
+        <p class="tool-description">Interactive regular expression playground. Test patterns, capture groups, and flags with real-time colored group highlighting and cheat-sheet integration.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Regex Tester</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Test regular expressions with match groups and flags.</div>
-            <div><strong>Inputs:</strong> regex, regexp, test, expression</div>
-            <div><strong>Category:</strong> developer</div>
+      <!-- KPI Metrics Row -->
+      <div class="kpi-grid">
+        <div class="kpi-card highlight">
+          <span class="kpi-label">Total Matches</span>
+          <span class="kpi-value" id="kpi-match-count">0</span>
+          <span class="kpi-sub" id="kpi-match-sub">No matches found</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Capture Groups</span>
+          <span class="kpi-value" id="kpi-groups-count">0</span>
+          <span class="kpi-sub">Distinct groups captured</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Coverage</span>
+          <span class="kpi-value" id="kpi-coverage">0.0%</span>
+          <span class="kpi-sub" id="kpi-coverage-sub">0 / 0 characters matched</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Pattern Status</span>
+          <span class="kpi-value" id="kpi-status" style="font-size: 1.15rem;">Ready</span>
+          <span class="kpi-sub" id="kpi-status-sub">Evaluation active</span>
+        </div>
+      </div>
+
+      <!-- Error Banner -->
+      <div id="regex-error-box" class="regex-error-box">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <div>
+          <strong style="display:block; margin-bottom: 0.25rem;">Invalid Regular Expression</strong>
+          <span id="regex-error-msg">SyntaxError: Invalid regular expression</span>
+        </div>
+      </div>
+
+      <!-- Pattern Input & Flags Bar -->
+      <div class="pattern-card glass-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+          <div style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); display: flex; align-items: center; gap: 0.5rem;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+            Regular Expression Pattern &amp; Flags
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="btn-toggle-cheatsheet" class="btn btn-secondary" style="padding: 0.4rem 0.85rem; font-size: 0.825rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              Regex Cheat Sheet
+            </button>
+            <button id="btn-copy-regex" class="btn btn-secondary" style="padding: 0.4rem 0.85rem; font-size: 0.825rem;">
+              Copy /pattern/flags
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="pattern-bar">
+          <div class="regex-input-box">
+            <span class="slash-symbol">/</span>
+            <input type="text" id="regex-pattern" class="pattern-input" placeholder="Enter regular expression (e.g. ([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,}))" value="([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})" spellcheck="false">
+            <span class="slash-symbol">/</span>
+          </div>
+
+          <!-- Flag Toggles -->
+          <div class="flags-container">
+            <button type="button" class="flag-toggle active" data-flag="g" title="Global: Find all matches rather than stopping after the first">g</button>
+            <button type="button" class="flag-toggle active" data-flag="i" title="Ignore Case: Case-insensitive matching">i</button>
+            <button type="button" class="flag-toggle active" data-flag="m" title="Multiline: ^ and $ match line starts and ends">m</button>
+            <button type="button" class="flag-toggle" data-flag="s" title="DotAll: . matches newlines (\n)">s</button>
+            <button type="button" class="flag-toggle" data-flag="u" title="Unicode: Enable Unicode features">u</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Regex Cheat Sheet Drawer -->
+      <div id="cheat-sheet-drawer" class="cheat-sheet-drawer glass-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="font-size: 1.1rem; font-weight: 700; margin: 0;">Quick Regex Cheat Sheet &amp; Presets</h3>
+          <button id="btn-close-cheatsheet" class="btn btn-secondary" style="padding: 0.25rem 0.65rem; font-size: 0.8rem;">Close &times;</button>
+        </div>
+        <p style="font-size: 0.825rem; color: var(--text-secondary); margin-top: 0.25rem;">Select any template to test it with sample data:</p>
+        <div class="cheat-sheet-grid" id="cheat-sheet-grid">
+          <!-- Populated by script.js -->
+        </div>
+      </div>
+
+      <!-- Main Work Area Split View -->
+      <div class="tool-workarea split-view">
+        <!-- Input Panel: Test String -->
+        <div class="tool-panel glass-panel">
+          <div class="editor-header">
+            <div class="editor-title">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              <span>Test String</span>
+            </div>
+            <div class="editor-stats" id="test-stats">0 lines &bull; 0 chars</div>
+          </div>
+          <div class="form-group" style="position: relative;">
+            <textarea id="test-string" class="test-textarea" placeholder="Type or paste your test text here..." spellcheck="false"></textarea>
+          </div>
+          <div class="action-bar" style="justify-content: space-between;">
+            <div style="display: flex; gap: 0.5rem;">
+              <button id="btn-sample" class="btn btn-secondary">Load Sample Text</button>
+            </div>
+            <button id="btn-clear" class="btn btn-secondary">Clear Text</button>
+          </div>
+        </div>
+
+        <!-- Output Panel: Live Highlight Stage -->
+        <div class="tool-panel glass-panel">
+          <div class="editor-header">
+            <div class="editor-title">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <span>Match Highlights Stage</span>
+            </div>
+            <!-- Group Legend Badges -->
+            <div class="group-legend">
+              <span class="legend-item" style="background: rgba(78, 133, 191, 0.28); color: var(--accent);">Match</span>
+              <span class="legend-item group-mark g1">Group 1</span>
+              <span class="legend-item group-mark g2">Group 2</span>
+              <span class="legend-item group-mark g3">Group 3</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <div id="highlight-stage" class="highlight-stage"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Matches Summary Table Panel -->
+      <div class="tool-panel glass-panel" style="margin-top: 1.5rem;">
+        <div class="editor-header">
+          <div class="editor-title">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            <span>Matches Summary Table</span>
+          </div>
+          <span id="table-match-badge" class="badge">0 Matches</span>
+        </div>
+        <div class="table-container">
+          <table class="matches-table">
+            <thead>
+              <tr>
+                <th style="width: 80px;">Match #</th>
+                <th>Full Match</th>
+                <th>Capture Groups</th>
+                <th style="width: 170px;">Match Index</th>
+              </tr>
+            </thead>
+            <tbody id="matches-table-body">
+              <tr>
+                <td colspan="4" style="text-align: center; color: var(--text-tertiary); padding: 2rem;">No matches found for current pattern.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     
     </div>

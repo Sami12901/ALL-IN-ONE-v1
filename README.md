@@ -1,7 +1,7 @@
 # ALL IN ONE — High-Performance Client-Side Web Utilities Suite
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Active Tools](https://img.shields.io/badge/Active%20Tools-133%20Functional-10b981.svg)](https://sami12901.github.io/ALL-IN-ONE-v1/)
+[![Active Tools](https://img.shields.io/badge/Active%20Tools-153%20Functional-10b981.svg)](https://sami12901.github.io/ALL-IN-ONE-v1/)
 [![Total Catalog](https://img.shields.io/badge/Total%20Catalog-496%20Utilities-6366f1.svg)](https://sami12901.github.io/ALL-IN-ONE-v1/)
 [![PWA](https://img.shields.io/badge/PWA-Offline%20Ready-f59e0b.svg)](https://sami12901.github.io/ALL-IN-ONE-v1/)
 [![Privacy](https://img.shields.io/badge/Privacy-100%25%20Client--Side-ec4899.svg)](https://sami12901.github.io/ALL-IN-ONE-v1/)
@@ -22,8 +22,9 @@ Every single operation runs **100% client-side** inside the browser sandbox. No 
 
 ## 🚀 Key Highlights & Architectural Strengths
 
-- **133 Active, Production-Ready Utilities**: Structured across 24 distinct categories with 496 total cataloged endpoints.
+- **153 Active, Production-Ready Utilities**: Structured across 24 distinct categories with 496 total cataloged endpoints.
 - **100% Complete Specialized Suites**:
+  - 💻 **Developer Utilities Suite**: **25 out of 25 tools fully functional** (Formatters, Minifiers, Cryptographic Hashes, Tokens, Visual Layouts, Network Diagnostics).
   - 📄 **PDF Document Suite**: **48 out of 48 tools fully functional** (Editor, Merge, Split, Compress, Protect, Unlock, Watermark, Flatten, Converters, AI Intelligence).
   - 📊 **Excel & Analytics Suite**: **20 out of 20 tools fully functional** (Spreadsheets, Profiling, Cleaning, BI Dashboards, Forecasting, AI Insights).
   - 💎 **Luxury Brand Suite**: **10 out of 10 tools fully functional** (Identity Kit, Pricing Strategy, Catalog Builder, VIP Analytics, AI Segmentation).
@@ -109,7 +110,7 @@ ALL-IN-ONE-v1/
 ├── seo/
 │   ├── robots.txt         # Search engine crawler directives
 │   └── sitemap.xml        # Comprehensive auto-compiled XML sitemap
-├── tools/                 # 496 tool directories (133 fully functional)
+├── tools/                 # 496 tool directories (153 fully functional)
 │   ├── all-in-one-sheets/
 │   ├── data-analyzer/
 │   ├── invoice-generator/
@@ -125,7 +126,7 @@ ALL-IN-ONE-v1/
 
 ---
 
-## 🛠️ Complete Directory of All 133 Active Functional Tools
+## 🛠️ Complete Directory of All 153 Active Functional Tools
 
 ### 📊 Excel & Core Analytics (20 Tools)
 1. **ALL IN ONE Sheets**: Excel-compatible spreadsheet grid with formulas, cell formatting, and CSV/JSON I/O.
@@ -241,50 +242,72 @@ ALL-IN-ONE-v1/
 103. **Redirect Code Generator**: Generates 301/302 redirects for Apache `.htaccess` and Nginx server blocks.
 104. **Open Graph Meta Generator**: Generates Open Graph and Twitter Card tags with live social preview.
 
-### 💻 Developer Utilities Suite (4 Tools)
+### 💻 Developer Utilities Suite (25 Tools — 100% Complete)
 105. **JSON Formatter**: Format, beautify, validate, and minify JSON with tree visualization.
 106. **Base64 Encoder**: Convert text or binary files into Base64 format.
 107. **Base64 Decoder**: Decode Base64 strings back to text or downloadable binary files.
-108. **QR Code Generator**: Client-side QR code generator with custom size, foreground, and background colors.
+108. **HTML Entity Encoder**: Two-way named, decimal, and hex entity encoder and decoder with live statistics.
+109. **JWT Decoder**: Color-coded header, payload, and signature inspector with expiration parser and claims breakdown.
+110. **UUID/GUID Generator**: Cryptographic v4, v1 timestamp, and v7 time-ordered generator with bulk export.
+111. **Hash Generator**: Multi-algorithm hashing (SHA-256, SHA-512, SHA-384, SHA-1, MD5) with HMAC and file hashing.
+112. **SQL Formatter**: SQL beautifier and minifier with PostgreSQL, MySQL, SQLite, and T-SQL dialect options.
+113. **XML Formatter**: XML parser, beautifier, validator, and minifier with syntax error reporting and DOM tree stats.
+114. **Regex Tester**: Interactive regular expression playground with live colored capture group highlighting and cheat sheet.
+115. **Epoch Unix Converter**: Two-way epoch to human date converter with live ticking clock and milestone reference table.
+116. **User Agent Parser**: User-agent string analyzer extracting browser, engine, OS, device archetype, and CPU architecture.
+117. **CSS Grid Generator**: Visual interactive CSS Grid layout builder with named areas, gap controls, and code generator.
+118. **CSS Flexbox Playground**: Interactive visual flexbox container and child item inspector with live CSS generation.
+119. **HTML Minifier**: HTML whitespace and comment compressor with byte savings statistics and boolean cleanup.
+120. **CSS Minifier**: CSS rule optimizer, comment stripper, zero-unit trimmer, and hex shortener.
+121. **JS Minifier**: Client-side JavaScript minifier with token preservation and comment stripping.
+122. **QR Code Generator**: Client-side QR code generator with custom size, foreground, and background colors.
+123. **QR Code Reader**: Client-side QR code scanner from image drop or live webcam stream with URL detection.
+124. **Barcode Generator**: 1D barcode generator (CODE128, EAN-13, UPC, CODE39) with SVG/PNG download.
+125. **Port Scanner Simulator**: Educational network port scanner simulator with 50+ service signatures and risk assessment.
+126. **IP Lookup & Subnet Calculator**: IPv4/IPv6 CIDR subnetting calculator with binary masks and usable host ranges.
+127. **JSON to XML Converter**: Deep nested JSON to valid XML converter with custom root/item tags and attribute prefixes.
+128. **XML to JSON Converter**: XML DOM to structured JSON converter with attribute preservation and array grouping.
+129. **HTML Output Viewer**: Live split-view HTML/CSS/JS sandbox runner with isolated `<iframe>` preview.
 
 ### 🚀 Product Marketing Suite (4 Tools)
-109. **Product Poster Maker**: Promotional poster designer for retail and digital storefronts.
-110. **Product Social Media Post Maker**: Graphic card generator for Instagram, Facebook, and LinkedIn.
-111. **Product Price Tag Generator**: Printable retail price tags, promotional badges, and labels.
-112. **Product Image Tools**: E-commerce photo resizing, framing, and watermarking.
+130. **Product Poster Maker**: Promotional poster designer for retail and digital storefronts.
+131. **Product Social Media Post Maker**: Graphic card generator for Instagram, Facebook, and LinkedIn.
+132. **Product Price Tag Generator**: Printable retail price tags, promotional badges, and labels.
+133. **Product Image Tools**: E-commerce photo resizing, framing, and watermarking.
 
 ### 💼 CV & Resume Builder Suite (3 Tools)
-113. **Professional CV Builder Pro**: Interactive curriculum vitae builder with real-time preview and export.
-114. **Resume Generator**: Form-driven modern resume compiler.
-115. **Resume Optimizer**: Keyword density and ATS formatting suggestions for job applications.
+134. **Professional CV Builder Pro**: Interactive curriculum vitae builder with real-time preview and export.
+135. **Resume Generator**: Form-driven modern resume compiler.
+136. **Resume Optimizer**: Keyword density and ATS formatting suggestions for job applications.
 
-### 🎨 Image & Color Tools (3 Tools)
-116. **Color Picker**: Visual canvas palette picker with format conversion (HEX, RGB, HSL).
-117. **Image Resizer & Compressor**: Client-side image resizing, compression, and WebP/PNG/JPG conversion.
-118. **List Visualizer & Bullets**: Interactive list formatter with custom bullets, numbering, and prefixes.
+### 🎨 Image & Color Tools (2 Tools)
+137. **Color Picker**: Visual canvas palette picker with format conversion (HEX, RGB, HSL).
+138. **Image Resizer & Compressor**: Client-side image resizing, compression, and WebP/PNG/JPG conversion.
 
 ### ⌨️ Typing & Productivity Suite (3 Tools)
-119. **Typing Practice**: Real-time typing speed test with WPM, accuracy %, timer modes, and audio feedback.
-120. **Excel Data Typing Practice**: Spreadsheet data-entry simulator with numerical keypad KPM tracking.
-121. **Typing Certificate Generator**: High-resolution HTML5 canvas certificate generator with PNG download.
+139. **Typing Practice**: Real-time typing speed test with WPM, accuracy %, timer modes, and audio feedback.
+140. **Excel Data Typing Practice**: Spreadsheet data-entry simulator with numerical keypad KPM tracking.
+141. **Typing Certificate Generator**: High-resolution HTML5 canvas certificate generator with PNG download.
 
 ### ✈️ Travel Operations Suite (3 Tools)
-122. **Visa Fee Calculator**: Consular fee calculator with multi-currency conversion (USD, EUR, GBP, BDT, SAR).
-123. **Passport Expiry Checker**: Validity calculator with 6-month & Schengen 3-month rules and country database.
-124. **Travel Quotation Generator**: Agency quotation builder with flights, accommodation, tour items, and A4 print layout.
+142. **Visa Fee Calculator**: Consular fee calculator with multi-currency conversion (USD, EUR, GBP, BDT, SAR).
+143. **Passport Expiry Checker**: Validity calculator with 6-month & Schengen 3-month rules and country database.
+144. **Travel Quotation Generator**: Agency quotation builder with flights, accommodation, tour items, and A4 print layout.
 
-### 🛒 E-commerce Operations Suite (3 Tools)
-125. **Invoice Generator**: Billing invoice creator with dynamic line items, taxes, discounts, and print/PDF export.
-126. **Product Profit Calculator**: Unit economics simulator with Amazon/Shopify presets, margins, and cost breakdown bar.
-127. **Receipt Generator**: Thermal POS receipt generator with barcode simulation and printable layout.
+### 🛒 E-commerce & Business Operations Suite (3 Tools)
+145. **Invoice Generator**: Billing invoice creator with dynamic line items, taxes, discounts, and print/PDF export.
+146. **Product Profit Calculator**: Unit economics simulator with Amazon/Shopify presets, margins, and cost breakdown bar.
+147. **Receipt Generator**: Thermal POS receipt generator with barcode simulation and printable layout.
 
-### 🧮 Math & Utility Suite (6 Tools)
-128. **BMI Calculator**: Metric & imperial Body Mass Index calculator with health category classifications.
-129. **Scientific Calculator**: Full scientific expression evaluator (trig, log, powers, sqrt, memory registers).
-130. **Password Generator**: Secure cryptographic password generator with character sets and strength meter.
-131. **HTML Output Viewer**: Live split-view HTML/CSS/JS sandbox runner with isolated `<iframe>` preview.
-132. **Extract Pages (PDF)**: Specialized single and multi-page extractor from PDF documents.
-133. **Brand Identity Kit**: Luxury brand guideline and aesthetic kit creator.
+### 📢 Digital Marketing & Presentation Suite (2 Tools)
+148. **Instagram Caption Generator**: Creative copy generator with tone selectors and hashtag recommendations.
+149. **Presentation Builder Pro**: Interactive slide presentation deck creator and HTML export.
+
+### 🧮 Math, Security & Utility Suite (4 Tools)
+150. **BMI Calculator**: Metric & imperial Body Mass Index calculator with health category classifications.
+151. **Scientific Calculator**: Full scientific expression evaluator (trig, log, powers, sqrt, memory registers).
+152. **Password Generator**: Secure cryptographic password generator with character sets and strength meter.
+153. **List Visualizer & Bullets**: Interactive list formatter with custom bullets, numbering, and prefixes.
 
 ---
 
