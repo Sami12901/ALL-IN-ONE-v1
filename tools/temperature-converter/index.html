@@ -3,15 +3,335 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Temperature Converter - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Convert values between Celsius, Fahrenheit, and Kelvin.">
-  <meta name="keywords" content="temperature, temp, celsius, fahrenheit, kelvin, free, online, tool, utility">
+  <title>Temperature Converter - Thermal Scale Converter & Live Thermometer - ALL IN ONE</title>
+  <meta name="description" content="Precision thermal scale converter. Convert between Celsius, Fahrenheit, Kelvin, Rankine, Réaumur, and Rømer with an animated liquid thermometer and formula breakdown.">
+  <meta name="keywords" content="temperature converter, celsius to fahrenheit, fahrenheit to celsius, kelvin converter, rankine, reaumur, romer, thermal scales">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/temperature-converter/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    /* Scoped Temperature Converter Styles */
+    .temp-workarea {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .temp-workarea {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .temp-matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .temp-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      position: relative;
+      transition: all 0.25s var(--ease);
+    }
+
+    .temp-card:hover {
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px -6px var(--accent-glow);
+    }
+
+    .temp-card.active-card {
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .temp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .temp-symbol-box {
+      display: flex;
+      align-items: baseline;
+      gap: 0.4rem;
+    }
+
+    .temp-symbol {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: monospace;
+    }
+
+    .temp-name {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .temp-tag {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.15rem 0.45rem;
+      border-radius: var(--radius-full);
+      background: var(--glass-bg);
+      border: 1px solid var(--border);
+      color: var(--text-tertiary);
+    }
+
+    .temp-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .temp-input {
+      width: 100%;
+      padding: 0.65rem 2.5rem 0.65rem 0.75rem;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 1.1rem;
+      font-family: monospace;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .temp-input:focus {
+      border-color: var(--accent);
+      outline: none;
+      background: var(--bg-secondary);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .temp-copy-btn {
+      position: absolute;
+      right: 0.35rem;
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 0.4rem;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .temp-copy-btn:hover {
+      color: var(--accent);
+      background: var(--bg-tertiary);
+    }
+
+    .temp-copy-btn.copied {
+      color: var(--success);
+    }
+
+    /* Animated Liquid Thermometer */
+    .thermometer-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.75rem 1.25rem;
+      position: relative;
+    }
+
+    .thermometer-visual {
+      position: relative;
+      width: 140px;
+      height: 380px;
+      margin: 1rem 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .thermo-ticks {
+      position: absolute;
+      left: 10px;
+      top: 30px;
+      bottom: 75px;
+      width: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-end;
+      font-family: monospace;
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+      user-select: none;
+    }
+
+    .tick-mark {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tick-line {
+      width: 8px;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .tick-mark.major .tick-line {
+      width: 14px;
+      background: var(--text-secondary);
+    }
+
+    /* SVG Glass Tube and Bulb */
+    .thermo-svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 6px 16px rgba(0,0,0,0.4));
+    }
+
+    .liquid-stem {
+      transition: height 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), y 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), fill 0.5s ease;
+    }
+
+    .liquid-bulb {
+      transition: fill 0.5s ease;
+    }
+
+    .thermo-badge {
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: 0.9rem;
+      font-family: monospace;
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      text-align: center;
+      margin-top: 0.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .thermal-state-tag {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    /* Milestone Benchmark Pills */
+    .benchmark-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .benchmark-pill {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.4rem 0.85rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .benchmark-pill:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+      transform: translateY(-1px);
+    }
+
+    .benchmark-pill strong {
+      color: var(--accent);
+    }
+
+    /* Formula Cards */
+    .formula-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .formula-card-item {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .formula-card-title {
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+
+    .formula-eq {
+      font-family: monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .formula-step-calc {
+      font-family: monospace;
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+    }
+
+    /* Toast Notification */
+    .toast-notice {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      color: var(--text-primary);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      z-index: 100;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    .toast-notice.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,31 +346,170 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Temperature Converter</h1>
-        <p class="tool-description">Convert values between Celsius, Fahrenheit, and Kelvin.</p>
-      </div>
-
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Temperature Converter</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Convert values between Celsius, Fahrenheit, and Kelvin.</div>
-            <div><strong>Inputs:</strong> temperature, temp, celsius, fahrenheit, kelvin</div>
-            <div><strong>Category:</strong> converter</div>
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>Temperature Converter</h1>
+            <p class="tool-description">Complete thermal scale matrix with real-time liquid thermometer animation & step-by-step formula breakdowns.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <span class="badge" style="background: rgba(78, 133, 191, 0.15); color: var(--accent); border: 1px solid var(--accent);">6 Thermal Scales</span>
+            <span class="badge" id="thermo-status-pill" style="background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid var(--success);">Normal Thermal Range</span>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- Controls Toolbar -->
+      <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.25rem;">
+          <!-- Precision Slider -->
+          <div style="display: flex; align-items: center; gap: 0.75rem; min-width: 240px;">
+            <label for="temp-precision-slider" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); white-space: nowrap;">
+              Decimal Places:
+            </label>
+            <input type="range" id="temp-precision-slider" min="0" max="6" value="2" class="range-slider" style="flex: 1;">
+            <span id="temp-precision-val" class="range-value" style="min-width: 1.5rem;">2</span>
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <button id="reset-room-btn" class="btn btn-secondary" style="padding: 0.45rem 0.9rem; font-size: 0.85rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+              Room Temp (20 °C)
+            </button>
+            <button id="freeze-btn" class="btn btn-secondary" style="padding: 0.45rem 0.9rem; font-size: 0.85rem;">
+              Freezing (0 °C)
+            </button>
+            <button id="boil-btn" class="btn btn-secondary" style="padding: 0.45rem 0.9rem; font-size: 0.85rem;">
+              Boiling (100 °C)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Interactive Workarea (Matrix + Animated Thermometer) -->
+      <div class="temp-workarea">
+        <!-- Left: Matrix & Benchmarks -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          <!-- Matrix Panel -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+              Interactive Thermal Scale Matrix
+            </h2>
+
+            <div class="temp-matrix-grid" id="temp-cards-container">
+              <!-- Dynamically populated 6 thermal scale cards -->
+            </div>
+          </div>
+
+          <!-- Milestones & Benchmarks -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+              Common Scientific & Physical Milestones
+            </h2>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.25rem;">
+              Click any milestone to load exact thermal parameters:
+            </p>
+            <div class="benchmark-pills">
+              <button class="benchmark-pill" data-c="-273.15">Absolute Zero: <strong>-273.15 °C (0 K)</strong></button>
+              <button class="benchmark-pill" data-c="-195.79">Liquid Nitrogen: <strong>-195.8 °C</strong></button>
+              <button class="benchmark-pill" data-c="0">Water Freezing: <strong>0 °C (32 °F)</strong></button>
+              <button class="benchmark-pill" data-c="20">Room Temperature: <strong>20 °C (68 °F)</strong></button>
+              <button class="benchmark-pill" data-c="37">Human Body: <strong>37 °C (98.6 °F)</strong></button>
+              <button class="benchmark-pill" data-c="100">Water Boiling: <strong>100 °C (212 °F)</strong></button>
+              <button class="benchmark-pill" data-c="5505">Surface of Sun: <strong>5,505 °C</strong></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Animated Vertical Liquid Thermometer -->
+        <div class="tool-panel glass-panel thermometer-container">
+          <h2 class="panel-title" style="align-self: flex-start; width: 100%;">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"></path></svg>
+            Liquid Thermometer
+          </h2>
+
+          <div class="thermometer-visual">
+            <!-- Graduation Ticks -->
+            <div class="thermo-ticks">
+              <div class="tick-mark major"><span>100°</span><div class="tick-line"></div></div>
+              <div class="tick-mark"><span>80°</span><div class="tick-line"></div></div>
+              <div class="tick-mark"><span>60°</span><div class="tick-line"></div></div>
+              <div class="tick-mark major"><span>37°</span><div class="tick-line"></div></div>
+              <div class="tick-mark"><span>20°</span><div class="tick-line"></div></div>
+              <div class="tick-mark major"><span>0°</span><div class="tick-line"></div></div>
+              <div class="tick-mark"><span>-20°</span><div class="tick-line"></div></div>
+              <div class="tick-mark major"><span>-50°</span><div class="tick-line"></div></div>
+            </div>
+
+            <!-- Thermometer SVG -->
+            <svg class="thermo-svg" viewBox="0 0 100 340">
+              <defs>
+                <!-- Dynamic Liquid Gradient -->
+                <linearGradient id="liquidGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+                  <stop offset="0%" id="grad-stop-bulb" stop-color="#4facfe" />
+                  <stop offset="100%" id="grad-stop-meniscus" stop-color="#00f2fe" />
+                </linearGradient>
+
+                <!-- Glass Tube Reflection -->
+                <linearGradient id="glassReflection" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="rgba(255,255,255,0.15)" />
+                  <stop offset="35%" stop-color="rgba(255,255,255,0.02)" />
+                  <stop offset="70%" stop-color="rgba(255,255,255,0)" />
+                  <stop offset="100%" stop-color="rgba(255,255,255,0.25)" />
+                </linearGradient>
+              </defs>
+
+              <!-- Outer Glass Stem Background -->
+              <rect x="58" y="25" width="20" height="230" rx="10" fill="rgba(255, 255, 255, 0.05)" stroke="var(--border)" stroke-width="2" />
+              
+              <!-- Outer Glass Bulb Background -->
+              <circle cx="68" cy="285" r="28" fill="rgba(255, 255, 255, 0.05)" stroke="var(--border)" stroke-width="2" />
+
+              <!-- Liquid Column Stem (clip path or animated rect) -->
+              <!-- y range: 40 (high/100C) to 245 (low/-50C). height range: 10 to 215 -->
+              <rect id="thermo-liquid-stem" class="liquid-stem" x="62" y="160" width="12" height="95" rx="6" fill="url(#liquidGradient)" />
+
+              <!-- Liquid Bulb Core -->
+              <circle id="thermo-liquid-bulb" class="liquid-bulb" cx="68" cy="285" r="22" fill="#00f2fe" />
+
+              <!-- Glass Highlights Over Liquid -->
+              <rect x="58" y="25" width="20" height="230" rx="10" fill="url(#glassReflection)" />
+              <circle cx="68" cy="285" r="28" fill="url(#glassReflection)" />
+              <!-- Specular White Arc on Bulb -->
+              <path d="M52 272 A 22 22 0 0 1 78 266" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="3" stroke-linecap="round" />
+            </svg>
+          </div>
+
+          <div class="thermo-badge" id="thermo-digital-val">20.00 °C</div>
+          <div class="thermal-state-tag" id="thermo-state-desc">Room Temperature (Mild)</div>
+        </div>
+      </div>
+
+      <!-- Step-by-Step Formula Breakdown Cards -->
+      <div class="tool-panel glass-panel">
+        <h2 class="panel-title">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+          Step-by-Step Conversion Formulas
+        </h2>
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">
+          Mathematical steps for converting from current active scale (<span id="active-scale-label" style="color: var(--accent); font-weight: 600;">Celsius</span>):
+        </p>
+
+        <div class="formula-grid" id="formula-cards-container">
+          <!-- Dynamically populated formula cards -->
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- 1-Click Toast Message -->
+  <div id="toast" class="toast-notice">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-msg">Copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,7 +521,7 @@
     "@type": "WebApplication",
     "name": "Temperature Converter",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/temperature-converter/",
-    "description": "Convert values between Celsius, Fahrenheit, and Kelvin.",
+    "description": "Convert between Celsius, Fahrenheit, Kelvin, Rankine, Réaumur, and Rømer with animated liquid thermometer and formula breakdown.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

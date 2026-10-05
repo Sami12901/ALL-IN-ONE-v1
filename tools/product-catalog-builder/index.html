@@ -12,6 +12,718 @@
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Catalog Builder Specialized Styles */
+    .catalog-workspace {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1080px) {
+      .catalog-workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Top Action Bar */
+    .catalog-top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+
+    .catalog-stats-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .catalog-stat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--bg-tertiary);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border);
+      font-weight: 500;
+    }
+
+    .catalog-stat-pill strong {
+      color: var(--accent);
+    }
+
+    .catalog-btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Tabs inside sidebar */
+    .tab-nav {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      gap: 0.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .tab-btn {
+      padding: 0.65rem 1rem;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .tab-content {
+      display: none;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .tab-content.active {
+      display: flex;
+    }
+
+    /* Product mini list item */
+    .product-manage-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      max-height: 480px;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+
+    .product-manage-card {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.6rem 0.75rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      transition: var(--transition);
+    }
+
+    .product-manage-card:hover {
+      border-color: var(--accent);
+      background: var(--surface);
+    }
+
+    .product-thumb-mini {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      background: #000;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+    }
+
+    .product-manage-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .product-manage-title {
+      font-weight: 600;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text-primary);
+    }
+
+    .product-manage-sub {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 2px;
+    }
+
+    .product-manage-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .icon-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+      padding: 0;
+    }
+
+    .icon-btn:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .icon-btn.delete-btn:hover {
+      color: var(--danger);
+      border-color: var(--danger);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    /* Lookbook Preview Stage */
+    .preview-header-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+
+    .layout-switcher {
+      display: inline-flex;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 2px;
+    }
+
+    .layout-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 0.4rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+
+    .layout-btn.active {
+      background: var(--surface);
+      color: var(--accent);
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .category-filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-bottom: 1rem;
+    }
+
+    .cat-filter-btn {
+      padding: 0.3rem 0.7rem;
+      font-size: 0.775rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .cat-filter-btn:hover, .cat-filter-btn.active {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* The Luxury Lookbook Sheet */
+    .lookbook-sheet {
+      background: #0f1318;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 2.5rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      min-height: 700px;
+      position: relative;
+      color: #e5e7eb;
+    }
+
+    /* Light mode lookbook theme override */
+    [data-theme="light"] .lookbook-sheet {
+      background: #ffffff;
+      color: #1f2937;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .lookbook-header {
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+    }
+
+    [data-theme="light"] .lookbook-header {
+      border-bottom-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .brand-title-hero {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+    }
+
+    .brand-tagline-hero {
+      font-size: 0.95rem;
+      opacity: 0.75;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .brand-meta-hero {
+      text-align: right;
+      font-size: 0.8rem;
+      opacity: 0.7;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 640px) {
+      .brand-meta-hero {
+        text-align: left;
+      }
+    }
+
+    /* Grid Layouts for Products */
+    .catalog-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .catalog-grid.layout-1col {
+      grid-template-columns: 1fr;
+    }
+
+    .catalog-grid.layout-2col {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .catalog-grid.layout-3col {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .catalog-grid.layout-4col {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    @media (max-width: 900px) {
+      .catalog-grid.layout-3col, .catalog-grid.layout-4col {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .catalog-grid.layout-2col, .catalog-grid.layout-3col, .catalog-grid.layout-4col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Product Card Styling */
+    .catalog-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    [data-theme="light"] .catalog-card {
+      background: #fafafa;
+      border: 1px solid #e5e7eb;
+    }
+
+    .catalog-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    /* 1-Col List variant */
+    .catalog-grid.layout-1col .catalog-card {
+      flex-direction: row;
+      gap: 1.5rem;
+    }
+
+    .catalog-grid.layout-1col .card-image-wrap {
+      width: 240px;
+      height: 240px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 700px) {
+      .catalog-grid.layout-1col .catalog-card {
+        flex-direction: column;
+      }
+      .catalog-grid.layout-1col .card-image-wrap {
+        width: 100%;
+        height: 220px;
+      }
+    }
+
+    .card-image-wrap {
+      width: 100%;
+      height: 220px;
+      background: #000000;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .catalog-grid.layout-4col .card-image-wrap {
+      height: 160px;
+    }
+
+    .card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .catalog-card:hover .card-img {
+      transform: scale(1.04);
+    }
+
+    .badge-stock {
+      position: absolute;
+      top: 0.6rem;
+      left: 0.6rem;
+      padding: 0.25rem 0.55rem;
+      font-size: 0.68rem;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      z-index: 2;
+    }
+
+    .stock-in {
+      background: rgba(16, 185, 129, 0.9);
+      color: #ffffff;
+    }
+
+    .stock-low {
+      background: rgba(245, 158, 11, 0.9);
+      color: #ffffff;
+    }
+
+    .stock-pre {
+      background: rgba(99, 102, 241, 0.9);
+      color: #ffffff;
+    }
+
+    .stock-out {
+      background: rgba(239, 68, 68, 0.9);
+      color: #ffffff;
+    }
+
+    .badge-discount {
+      position: absolute;
+      top: 0.6rem;
+      right: 0.6rem;
+      background: rgba(239, 68, 68, 0.95);
+      color: #ffffff;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.68rem;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      z-index: 2;
+    }
+
+    .card-body {
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .card-meta-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.35rem;
+      font-size: 0.75rem;
+    }
+
+    .card-cat-tag {
+      color: var(--accent);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    .card-sku {
+      font-family: monospace;
+      opacity: 0.6;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      line-height: 1.3;
+    }
+
+    .catalog-grid.layout-4col .card-title {
+      font-size: 0.925rem;
+    }
+
+    .card-desc {
+      font-size: 0.825rem;
+      line-height: 1.5;
+      opacity: 0.75;
+      margin-bottom: 0.75rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .catalog-grid.layout-1col .card-desc {
+      -webkit-line-clamp: 3;
+    }
+
+    .card-specs-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 0.85rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      font-size: 0.75rem;
+      opacity: 0.8;
+    }
+
+    .card-specs-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .card-specs-list li::before {
+      content: "•";
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    .card-price-row {
+      margin-top: auto;
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      padding-top: 0.65rem;
+      border-top: 1px dashed rgba(255, 255, 255, 0.1);
+    }
+
+    [data-theme="light"] .card-price-row {
+      border-top-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .price-regular {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .price-discounted {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #10b981;
+    }
+
+    .price-original {
+      font-size: 0.85rem;
+      text-decoration: line-through;
+      opacity: 0.5;
+    }
+
+    .card-hover-actions {
+      display: flex;
+      gap: 0.35rem;
+      position: absolute;
+      bottom: 0.75rem;
+      right: 0.75rem;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .catalog-card:hover .card-hover-actions {
+      opacity: 1;
+    }
+
+    .lookbook-footer {
+      border-top: 2px solid rgba(255, 255, 255, 0.1);
+      margin-top: 2.5rem;
+      padding-top: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+
+    [data-theme="light"] .lookbook-footer {
+      border-top-color: rgba(0, 0, 0, 0.1);
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 640px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 1.75rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .close-modal-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      app-header, app-breadcrumbs, app-footer,
+      .tool-header, .catalog-top-bar, .catalog-workspace > .tool-panel,
+      .preview-header-bar, .category-filter-bar, .card-hover-actions,
+      .modal-overlay, #global-navbar {
+        display: none !important;
+      }
+      .tool-layout {
+        padding: 0 !important;
+      }
+      .tool-container {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .catalog-workspace {
+        display: block !important;
+      }
+      .lookbook-sheet {
+        background: #ffffff !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        min-height: auto !important;
+      }
+      .lookbook-header {
+        border-bottom: 2px solid #000000 !important;
+      }
+      .catalog-card {
+        background: #ffffff !important;
+        border: 1px solid #d1d5db !important;
+        box-shadow: none !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      .card-image-wrap {
+        background: #f3f4f6 !important;
+      }
+      .price-discounted {
+        color: #047857 !important;
+      }
+      .badge-stock, .badge-discount {
+        print-color-adjust: exact !important;
+        -webkit-print-color-adjust: exact !important;
+      }
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,30 +739,299 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Product Catalog Builder</h1>
-        <p class="tool-description">Build multi-page product catalogs with price lists and export to PDF.</p>
+        <p class="tool-description">Create multi-page luxury lookbooks, wholesale line sheets, and e-commerce product catalogs. Customize branding, manage inventory, and export to PDF, standalone HTML, or JSON.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Product Catalog Builder</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Build multi-page product catalogs with price lists and export to PDF.</div>
-            <div><strong>Inputs:</strong> product, catalog, pdf, builder, ecommerce, marketing</div>
-            <div><strong>Category:</strong> product-marketing</div>
+      <!-- Top Utility Action Bar -->
+      <div class="catalog-top-bar">
+        <div class="catalog-stats-group">
+          <div class="catalog-stat-pill">
+            <span>Products:</span>
+            <strong id="stat-total-products">0</strong>
+          </div>
+          <div class="catalog-stat-pill">
+            <span>Categories:</span>
+            <strong id="stat-total-categories">0</strong>
+          </div>
+          <div class="catalog-stat-pill">
+            <span>Currency:</span>
+            <strong id="stat-currency-code">USD ($)</strong>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="catalog-btn-row">
+          <button type="button" class="btn btn-secondary" id="btn-load-presets" title="Load sample luxury product catalog">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            Load Presets
+          </button>
+          <button type="button" class="btn btn-secondary" id="btn-import-json" title="Import Catalog JSON">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            Import JSON
+          </button>
+          <input type="file" id="import-json-file" accept=".json" style="display: none;">
+          <button type="button" class="btn btn-secondary" id="btn-export-json" title="Export Catalog JSON">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Export JSON
+          </button>
+          <button type="button" class="btn btn-secondary" id="btn-export-html" title="Download standalone interactive HTML lookbook">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            Export HTML
+          </button>
+          <button type="button" class="btn btn-primary" id="btn-print-pdf" title="Print catalog or save as PDF">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            Print / PDF
+          </button>
+        </div>
       </div>
-    
+
+      <!-- Main Workspace -->
+      <div class="catalog-workspace">
+        <!-- Left Sidebar / Management Panel -->
+        <div class="tool-panel glass-panel">
+          <div class="tab-nav">
+            <button type="button" class="tab-btn active" data-tab="tab-products">Products</button>
+            <button type="button" class="tab-btn" data-tab="tab-store">Store Brand</button>
+            <button type="button" class="tab-btn" data-tab="tab-layout">Display</button>
+          </div>
+
+          <!-- TAB 1: PRODUCT MANAGER -->
+          <div class="tab-content active" id="tab-products">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-weight: 700; font-size: 0.9rem;">Catalog Inventory</span>
+              <button type="button" class="btn btn-primary" id="btn-open-add-modal" style="padding: 0.4rem 0.85rem; font-size: 0.825rem;">
+                + Add Product
+              </button>
+            </div>
+
+            <div class="form-group" style="margin-top: 0.25rem;">
+              <input type="text" id="manage-search" class="form-input" placeholder="Search by title, SKU, category..." style="padding: 0.5rem 0.75rem; font-size: 0.85rem;">
+            </div>
+
+            <div class="product-manage-list" id="product-manage-list">
+              <!-- Dynamically populated products -->
+            </div>
+          </div>
+
+          <!-- TAB 2: STORE / BRAND SETTINGS -->
+          <div class="tab-content" id="tab-store">
+            <div class="form-group">
+              <label for="store-name">Brand / Store Name</label>
+              <input type="text" id="store-name" class="form-input" value="LUMIÈRE ATELIER" placeholder="e.g. Maison de Luxe">
+            </div>
+
+            <div class="form-group">
+              <label for="store-tagline">Tagline / Subtitle</label>
+              <input type="text" id="store-tagline" class="form-input" value="Autumn / Winter Haute Collection &amp; Lookbook" placeholder="e.g. Fine Crafted Essentials">
+            </div>
+
+            <div class="form-group">
+              <label for="store-currency">Currency Symbol &amp; Code</label>
+              <select id="store-currency" class="form-select">
+                <option value="USD" selected>USD ($) - US Dollar</option>
+                <option value="EUR">EUR (€) - Euro</option>
+                <option value="GBP">GBP (£) - British Pound</option>
+                <option value="CAD">CAD (CA$) - Canadian Dollar</option>
+                <option value="AUD">AUD (AU$) - Australian Dollar</option>
+                <option value="JPY">JPY (¥) - Japanese Yen</option>
+                <option value="BDT">BDT (৳) - Bangladeshi Taka</option>
+                <option value="INR">INR (₹) - Indian Rupee</option>
+                <option value="CNY">CNY (¥) - Chinese Yuan</option>
+                <option value="CHF">CHF (CHF) - Swiss Franc</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="store-contact">Contact Info / Website</label>
+              <input type="text" id="store-contact" class="form-input" value="atelier@lumiere.com • www.lumiere-atelier.com" placeholder="Email or Website">
+            </div>
+
+            <div class="form-group">
+              <label for="store-notes">Wholesale Notes / Terms</label>
+              <textarea id="store-notes" class="form-input" rows="2" style="font-size: 0.85rem;" placeholder="e.g. Minimum order quantity 10 units. Net 30 terms.">Net 30 wholesale terms available on select orders. Worldwide courier delivery.</textarea>
+            </div>
+          </div>
+
+          <!-- TAB 3: DISPLAY SETTINGS -->
+          <div class="tab-content" id="tab-layout">
+            <div class="form-group">
+              <label>Default Grid Layout</label>
+              <div class="layout-switcher" style="width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); text-align: center;">
+                <button type="button" class="layout-btn" data-layout="layout-1col">1-Col</button>
+                <button type="button" class="layout-btn" data-layout="layout-2col">2-Col</button>
+                <button type="button" class="layout-btn active" data-layout="layout-3col">3-Col</button>
+                <button type="button" class="layout-btn" data-layout="layout-4col">4-Col</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="price-display-mode">Price Display Mode</label>
+              <select id="price-display-mode" class="form-select">
+                <option value="both" selected>Show Prices &amp; Discounts</option>
+                <option value="regular-only">Show Regular Price Only</option>
+                <option value="hide">Hide Prices (Wholesale Inquiries)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="show-specs-toggle" checked>
+                <span>Display Feature Bullet Points</span>
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="show-sku-toggle" checked>
+                <span>Display SKU Identifiers</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Panel / Live Lookbook Preview -->
+        <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+          <div class="preview-header-bar">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <span style="font-weight: 700; font-size: 0.95rem;">Live Lookbook</span>
+              <div class="layout-switcher">
+                <button type="button" class="layout-btn" data-layout="layout-1col" title="1-Column Editorial List">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                  1-Col
+                </button>
+                <button type="button" class="layout-btn" data-layout="layout-2col" title="2-Column Line Sheet">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="18" rx="1"></rect><rect x="13" y="3" width="8" height="18" rx="1"></rect></svg>
+                  2-Col
+                </button>
+                <button type="button" class="layout-btn active" data-layout="layout-3col" title="3-Column Showcase Grid">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="5.5" height="18" rx="1"></rect><rect x="9.25" y="3" width="5.5" height="18" rx="1"></rect><rect x="16.5" y="3" width="5.5" height="18" rx="1"></rect></svg>
+                  3-Col
+                </button>
+                <button type="button" class="layout-btn" data-layout="layout-4col" title="4-Column Compact Grid">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="4" height="18"></rect><rect x="7.33" y="3" width="4" height="18"></rect><rect x="12.66" y="3" width="4" height="18"></rect><rect x="18" y="3" width="4" height="18"></rect></svg>
+                  4-Col
+                </button>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <input type="text" id="live-filter-search" class="form-input" placeholder="Quick filter..." style="padding: 0.35rem 0.65rem; font-size: 0.8rem; width: 140px;">
+            </div>
+          </div>
+
+          <!-- Category filter buttons -->
+          <div class="category-filter-bar" id="category-filter-bar">
+            <button type="button" class="cat-filter-btn active" data-cat="all">All Categories</button>
+          </div>
+
+          <!-- The Rendered Lookbook Page -->
+          <div class="lookbook-sheet" id="lookbook-sheet">
+            <!-- Header section -->
+            <div class="lookbook-header">
+              <div>
+                <h2 class="brand-title-hero" id="preview-brand-name">LUMIÈRE ATELIER</h2>
+                <div class="brand-tagline-hero" id="preview-brand-tagline">Autumn / Winter Haute Collection &amp; Lookbook</div>
+              </div>
+              <div class="brand-meta-hero">
+                <div id="preview-brand-contact">atelier@lumiere.com • www.lumiere-atelier.com</div>
+                <div>Curated Line Sheet • <span id="preview-date-str">2026 Edition</span></div>
+              </div>
+            </div>
+
+            <!-- Products Grid Container -->
+            <div class="catalog-grid layout-3col" id="catalog-grid-container">
+              <!-- Dynamically populated cards -->
+            </div>
+
+            <!-- Footer section -->
+            <div class="lookbook-footer">
+              <div id="preview-footer-terms">Net 30 wholesale terms available on select orders. Worldwide courier delivery.</div>
+              <div>ALL IN ONE Catalog Engine • Page 1</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
+
+  <!-- Product Add / Edit Modal -->
+  <div class="modal-overlay" id="product-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-title-text">Add New Product</h3>
+        <button type="button" class="close-modal-btn" id="btn-close-modal">&times;</button>
+      </div>
+
+      <form id="product-form" style="display: flex; flex-direction: column; gap: 1rem;">
+        <input type="hidden" id="edit-product-id">
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label for="form-title">Product Title *</label>
+            <input type="text" id="form-title" class="form-input" required placeholder="e.g. Chronograph Heritage 1968">
+          </div>
+          <div class="form-group">
+            <label for="form-sku">SKU Code</label>
+            <input type="text" id="form-sku" class="form-input" placeholder="e.g. WTC-68">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label for="form-category">Category</label>
+            <input type="text" id="form-category" class="form-input" placeholder="e.g. Horology, Audio, Skincare">
+          </div>
+          <div class="form-group">
+            <label for="form-stock">Stock Availability</label>
+            <select id="form-stock" class="form-select">
+              <option value="in" selected>In Stock</option>
+              <option value="low">Low Stock</option>
+              <option value="pre">Pre-Order</option>
+              <option value="out">Out of Stock</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label for="form-regular-price">Regular Price *</label>
+            <input type="number" step="0.01" min="0" id="form-regular-price" class="form-input" required placeholder="e.g. 2450.00">
+          </div>
+          <div class="form-group">
+            <label for="form-discount-price">Sale / Discount Price (Optional)</label>
+            <input type="number" step="0.01" min="0" id="form-discount-price" class="form-input" placeholder="e.g. 1980.00">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="form-desc">Description</label>
+          <textarea id="form-desc" class="form-input" rows="3" placeholder="Detailed product craftsmanship and material specifications..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="form-specs">Key Features / Specs (One per line)</label>
+          <textarea id="form-specs" class="form-input" rows="3" placeholder="42mm Case Diameter&#10;Automatic Calibre Movement&#10;100m Water Resistance"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Product Image</label>
+          <div style="display: flex; gap: 0.75rem; align-items: center;">
+            <div id="image-preview-thumb" style="width: 64px; height: 64px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: #000; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <span style="font-size: 0.7rem; color: var(--text-secondary);">No Img</span>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 0.35rem;">
+              <input type="file" id="form-image-file" accept="image/*" class="form-input" style="font-size: 0.8rem; padding: 0.4rem;">
+              <input type="text" id="form-image-url" class="form-input" placeholder="Or paste image URL / SVG data URI" style="font-size: 0.8rem; padding: 0.4rem;">
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 0.5rem;">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-product">Save Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>

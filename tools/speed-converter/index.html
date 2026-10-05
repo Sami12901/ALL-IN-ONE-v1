@@ -3,15 +3,275 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Speed & Time Converter - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Convert values between speed metrics and time units.">
-  <meta name="keywords" content="speed, time, convert, mph, kph, free, online, tool, utility">
+  <title>Speed Converter - Velocity & Aerospace Speedometer - ALL IN ONE</title>
+  <meta name="description" content="Precision velocity converter for km/h, mph, m/s, ft/s, knots, Mach, and % speed of light. Features an animated SVG speedometer gauge and travel duration calculator.">
+  <meta name="keywords" content="speed converter, velocity converter, kmh to mph, mph to kmh, knots to mph, mach calculator, speed of light, travel time calculator">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/speed-converter/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    /* Scoped Speed Converter Luxury Styles */
+    .speed-workarea {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 992px) {
+      .speed-workarea {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .speed-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .speed-unit-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      position: relative;
+      transition: all 0.25s var(--ease);
+    }
+
+    .speed-unit-card:hover {
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px -6px var(--accent-glow);
+    }
+
+    .speed-unit-card.active-unit {
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .speed-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .speed-title-group {
+      display: flex;
+      align-items: baseline;
+      gap: 0.4rem;
+    }
+
+    .speed-symbol {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--text-primary);
+      font-family: monospace;
+    }
+
+    .speed-name {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .speed-tag {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.15rem 0.45rem;
+      border-radius: var(--radius-full);
+      background: var(--glass-bg);
+      border: 1px solid var(--border);
+      color: var(--text-tertiary);
+    }
+
+    .speed-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .speed-input {
+      width: 100%;
+      padding: 0.65rem 2.5rem 0.65rem 0.75rem;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-family: monospace;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .speed-input:focus {
+      border-color: var(--accent);
+      outline: none;
+      background: var(--bg-secondary);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .speed-copy-btn {
+      position: absolute;
+      right: 0.35rem;
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 0.4rem;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .speed-copy-btn:hover {
+      color: var(--accent);
+      background: var(--bg-tertiary);
+    }
+
+    .speed-copy-btn.copied {
+      color: var(--success);
+    }
+
+    /* Speedometer Panel & SVG Dial */
+    .speedo-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.75rem 1.25rem;
+    }
+
+    .speedo-svg-wrap {
+      width: 100%;
+      max-width: 320px;
+      height: 250px;
+      position: relative;
+    }
+
+    .speedo-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .speedo-needle {
+      transform-origin: 160px 165px;
+      transition: transform 0.4s cubic-bezier(0.34, 1.45, 0.64, 1);
+    }
+
+    .speedo-zone-pill {
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 0.3rem 0.85rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: all 0.3s ease;
+    }
+
+    /* Travel Calculator Styles */
+    .travel-calc-box {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .travel-result-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .travel-time-highlight {
+      font-size: 1.35rem;
+      font-weight: 800;
+      font-family: monospace;
+      color: var(--accent);
+    }
+
+    /* Benchmark Milestone Pills */
+    .benchmark-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .benchmark-pill {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.4rem 0.85rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .benchmark-pill:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+      transform: translateY(-1px);
+    }
+
+    .benchmark-pill strong {
+      color: var(--accent);
+    }
+
+    /* Toast Notification */
+    .toast-notice {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      color: var(--text-primary);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      z-index: 100;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    .toast-notice.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,31 +286,221 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Speed & Time Converter</h1>
-        <p class="tool-description">Convert values between speed metrics and time units.</p>
-      </div>
-
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Speed & Time Converter</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Convert values between speed metrics and time units.</div>
-            <div><strong>Inputs:</strong> speed, time, convert, mph, kph</div>
-            <div><strong>Category:</strong> converter</div>
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>Speed & Velocity Converter</h1>
+            <p class="tool-description">Velocity, ground transport, and aerospace speed matrix with dynamic dial gauge and travel duration calculator.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <span class="badge" style="background: rgba(78, 133, 191, 0.15); color: var(--accent); border: 1px solid var(--accent);">Mach & % Light Speed</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid var(--success);">Instant Matrix</span>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- Controls Toolbar -->
+      <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.25rem;">
+          <!-- Precision Slider -->
+          <div style="display: flex; align-items: center; gap: 0.75rem; min-width: 250px;">
+            <label for="speed-precision-slider" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); white-space: nowrap;">
+              Decimal Places:
+            </label>
+            <input type="range" id="speed-precision-slider" min="0" max="8" value="2" class="range-slider" style="flex: 1;">
+            <span id="speed-precision-val" class="range-value" style="min-width: 2rem;">2</span>
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <button id="reset-speed-btn" class="btn btn-secondary" style="padding: 0.45rem 0.9rem; font-size: 0.85rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+              Highway (100 km/h)
+            </button>
+            <button id="speed-clear-btn" class="btn btn-secondary" style="padding: 0.45rem 0.9rem; font-size: 0.85rem;">
+              Clear
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Workarea: Matrix & Speedometer -->
+      <div class="speed-workarea">
+        <!-- Left: Velocity Units & Milestones -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          <!-- Units Matrix -->
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+              <h2 class="panel-title" style="margin-bottom: 0; border: none; padding: 0;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                Instant Speed Conversion Matrix
+              </h2>
+              <span style="font-size: 0.8rem; color: var(--text-secondary);">Type in any unit to update all</span>
+            </div>
+
+            <div class="speed-card-grid" id="speed-cards-container">
+              <!-- Dynamically populated 7 unit cards -->
+            </div>
+          </div>
+
+          <!-- Milestones & Benchmarks -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+              Velocity Milestones & Real-World Speeds
+            </h2>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.25rem;">
+              Click any benchmark to test that velocity:
+            </p>
+            <div class="benchmark-pills">
+              <button class="benchmark-pill" data-unit="kmh" data-val="5">Human Walking: <strong>5 km/h</strong></button>
+              <button class="benchmark-pill" data-unit="kmh" data-val="110">Cheetah Sprint: <strong>110 km/h</strong></button>
+              <button class="benchmark-pill" data-unit="kmh" data-val="320">Bullet Train (Shinkansen): <strong>320 km/h</strong></button>
+              <button class="benchmark-pill" data-unit="kmh" data-val="900">Commercial Jet: <strong>900 km/h</strong></button>
+              <button class="benchmark-pill" data-unit="mach" data-val="1">Mach 1 (Sound Barrier): <strong>1 Ma (1,235 km/h)</strong></button>
+              <button class="benchmark-pill" data-unit="kmh" data-val="27600">ISS Orbit: <strong>27,600 km/h</strong></button>
+              <button class="benchmark-pill" data-unit="c_pct" data-val="100">Speed of Light (c): <strong>100% c</strong></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Animated SVG Speedometer Dial -->
+        <div class="tool-panel glass-panel speedo-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <h2 class="panel-title" style="margin-bottom: 0; border: none; padding: 0;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 0-7.07 17.07l1.41-1.41A8 8 0 1 1 12 20v2a10 10 0 0 0 0-20z"></path><path d="M12 12l5-5"></path></svg>
+              Speedometer Dial
+            </h2>
+            <div id="speedo-zone-badge" class="speedo-zone-pill" style="color: var(--accent); border-color: var(--accent);">
+              Highway Speed
+            </div>
+          </div>
+
+          <!-- Dynamic SVG Speedometer -->
+          <div class="speedo-svg-wrap">
+            <svg class="speedo-svg" viewBox="0 0 320 250">
+              <defs>
+                <!-- Arc gradient from Cyan (walking) -> Green (highway) -> Amber (train/jet) -> Red (supersonic) -> Purple (orbital) -->
+                <linearGradient id="speedoArcGrad" x1="0%" y1="100%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00f2fe" />
+                  <stop offset="25%" stop-color="#10b981" />
+                  <stop offset="50%" stop-color="#f59e0b" />
+                  <stop offset="75%" stop-color="#ef4444" />
+                  <stop offset="100%" stop-color="#a855f7" />
+                </linearGradient>
+
+                <linearGradient id="needleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#ef4444" />
+                  <stop offset="100%" stop-color="#f87171" />
+                </linearGradient>
+              </defs>
+
+              <!-- Dial Background Arc -->
+              <!-- Center at (160, 165), radius = 115. Arc from -135deg to +135deg -->
+              <path d="M 78.7 246.3 A 115 115 0 1 1 241.3 246.3" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="14" stroke-linecap="round" />
+
+              <!-- Active Colored Gradient Arc -->
+              <path d="M 78.7 246.3 A 115 115 0 1 1 241.3 246.3" fill="none" stroke="url(#speedoArcGrad)" stroke-width="10" stroke-linecap="round" opacity="0.85" />
+
+              <!-- Speedometer Center Hub & Digital Readout -->
+              <circle cx="160" cy="165" r="50" fill="var(--bg-secondary)" stroke="var(--border)" stroke-width="2" />
+              
+              <!-- Digital Speed Text inside Hub -->
+              <text id="speedo-digital-num" x="160" y="160" text-anchor="middle" font-family="monospace" font-size="20" font-weight="800" fill="var(--text-primary)">100</text>
+              <text id="speedo-digital-unit" x="160" y="178" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="700" fill="var(--accent)">KM/H</text>
+
+              <!-- Dynamic Needle (Rotates from -135deg to +135deg around 160, 165) -->
+              <g id="speedo-needle-g" class="speedo-needle" style="transform: rotate(0deg);">
+                <!-- Needle Pointer -->
+                <polygon points="156,165 160,65 164,165" fill="url(#needleGrad)" />
+                <circle cx="160" cy="165" r="8" fill="#ef4444" stroke="#ffffff" stroke-width="1.5" />
+              </g>
+
+              <!-- Zone Labels around the arc -->
+              <text x="50" y="250" font-size="9" fill="var(--text-tertiary)" font-family="monospace">0</text>
+              <text x="45" y="145" font-size="9" fill="var(--text-tertiary)" font-family="monospace">Walking</text>
+              <text x="90" y="70" font-size="9" fill="var(--text-tertiary)" font-family="monospace">City</text>
+              <text x="160" y="40" text-anchor="middle" font-size="9" fill="var(--accent)" font-family="monospace">Highway</text>
+              <text x="230" y="70" font-size="9" fill="var(--text-tertiary)" font-family="monospace">Jet</text>
+              <text x="250" y="145" font-size="9" fill="var(--text-tertiary)" font-family="monospace">Mach 1+</text>
+              <text x="255" y="250" font-size="9" fill="var(--text-tertiary)" font-family="monospace">Space</text>
+            </svg>
+          </div>
+
+          <div style="font-size: 0.8rem; color: var(--text-secondary); text-align: center;" id="speedo-summary-text">
+            Standard motor highway cruising velocity.
+          </div>
+        </div>
+      </div>
+
+      <!-- Travel Duration Calculator & Formulas -->
+      <div class="tool-workarea split-view">
+        <!-- Travel Duration Calculator -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            Travel Duration Calculator
+          </h2>
+          <p style="font-size: 0.85rem; color: var(--text-secondary);">
+            Calculate time required to travel a specific distance at the current speed:
+          </p>
+
+          <div class="travel-calc-box">
+            <div style="display: grid; grid-template-columns: 1fr 140px; gap: 0.75rem;">
+              <div class="form-group">
+                <label for="travel-distance-input">Target Distance</label>
+                <input type="number" id="travel-distance-input" class="form-input" value="100" min="0" step="any" placeholder="Distance">
+              </div>
+              <div class="form-group">
+                <label for="travel-distance-unit">Distance Unit</label>
+                <select id="travel-distance-unit" class="form-select">
+                  <option value="km" selected>Kilometers (km)</option>
+                  <option value="mi">Miles (mi)</option>
+                  <option value="m">Meters (m)</option>
+                  <option value="marathon">Marathon (42.2 km)</option>
+                  <option value="earth_moon">Earth to Moon (384,400 km)</option>
+                  <option value="earth_sun">Earth to Sun (1 AU)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Calculated Result -->
+            <div class="travel-result-box">
+              <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-tertiary); font-weight: 700;">Estimated Travel Time</span>
+              <div id="travel-time-display" class="travel-time-highlight">1 hour 0 minutes</div>
+              <div id="travel-detail-display" style="font-size: 0.8rem; color: var(--text-secondary);">
+                Traveling 100 km at 100 km/h (62.14 mph)
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Formula Cards -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            Velocity Conversion Standards
+          </h2>
+          <div class="travel-calc-box">
+            <div style="font-family: monospace; font-size: 0.95rem; color: var(--accent); font-weight: 700;" id="speed-formula-headline">
+              1 km/h = 0.621371 mph = 0.277778 m/s
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+              <div><strong>Knots (kn):</strong> Nautical miles per hour (1 kn = 1.852 km/h = 1.15078 mph). Used in aviation & maritime navigation.</div>
+              <div><strong>Mach 1 (Sound):</strong> Speed of sound in air at 20°C (343 m/s = 1,234.8 km/h = 767.27 mph).</div>
+              <div><strong>Speed of Light (c):</strong> Universal constant in vacuum: 299,792,458 m/s (approx. 1.079 billion km/h).</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- 1-Click Toast Message -->
+  <div id="toast" class="toast-notice">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-msg">Copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -60,9 +510,9 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Speed & Time Converter",
+    "name": "Speed Converter",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/speed-converter/",
-    "description": "Convert values between speed metrics and time units.",
+    "description": "Convert velocity between km/h, mph, m/s, ft/s, knots, Mach, and speed of light with interactive speedometer and travel calculator.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

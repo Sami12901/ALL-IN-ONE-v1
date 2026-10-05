@@ -3,15 +3,281 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mass & Weight Converter - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Convert values between kilograms, pounds, and ounces.">
-  <meta name="keywords" content="mass, weight, convert, kg, lbs, free, online, tool, utility">
+  <title>Mass Converter - Weight, Mass & Precious Metals Matrix - ALL IN ONE</title>
+  <meta name="description" content="Precision mass and weight converter. Convert mg, g, kg, tonnes, oz, lb, stone, short tons, long tons, troy ounces (gold), and carats with an interactive balance scale indicator.">
+  <meta name="keywords" content="mass converter, weight converter, kg to lbs, pounds to kilograms, grams to ounces, troy ounce, gold carat, stone weight">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/mass-converter/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    /* Scoped Mass Converter Luxury Styles */
+    .mass-workarea {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 992px) {
+      .mass-workarea {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .mass-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .mass-unit-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      position: relative;
+      transition: all 0.25s var(--ease);
+    }
+
+    .mass-unit-card:hover {
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px -6px var(--accent-glow);
+    }
+
+    .mass-unit-card.active-unit {
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .mass-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .mass-title-group {
+      display: flex;
+      align-items: baseline;
+      gap: 0.4rem;
+    }
+
+    .mass-symbol {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--text-primary);
+      font-family: monospace;
+    }
+
+    .mass-name {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .mass-tag {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.15rem 0.45rem;
+      border-radius: var(--radius-full);
+      background: var(--glass-bg);
+      border: 1px solid var(--border);
+      color: var(--text-tertiary);
+    }
+
+    .mass-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .mass-input {
+      width: 100%;
+      padding: 0.65rem 2.5rem 0.65rem 0.75rem;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-family: monospace;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .mass-input:focus {
+      border-color: var(--accent);
+      outline: none;
+      background: var(--bg-secondary);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .mass-copy-btn {
+      position: absolute;
+      right: 0.35rem;
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 0.4rem;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .mass-copy-btn:hover {
+      color: var(--accent);
+      background: var(--bg-tertiary);
+    }
+
+    .mass-copy-btn.copied {
+      color: var(--success);
+    }
+
+    /* Balance Scale Indicator Styles */
+    .scale-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.75rem 1.25rem;
+    }
+
+    .balance-svg-wrap {
+      width: 100%;
+      max-width: 340px;
+      height: 240px;
+      position: relative;
+    }
+
+    .balance-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      filter: drop-shadow(0 6px 16px rgba(0,0,0,0.3));
+    }
+
+    .scale-pan-label {
+      font-size: 0.75rem;
+      font-family: monospace;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .scale-status-box {
+      width: 100%;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .scale-status-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .scale-status-sub {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    /* Benchmark Milestone Pills */
+    .benchmark-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .benchmark-pill {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.4rem 0.85rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .benchmark-pill:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+      transform: translateY(-1px);
+    }
+
+    .benchmark-pill strong {
+      color: var(--accent);
+    }
+
+    /* Formula Breakdown Card */
+    .formula-badge-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      font-family: monospace;
+      font-size: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      color: var(--text-secondary);
+    }
+
+    .formula-highlight {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    /* Toast Notification */
+    .toast-notice {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      color: var(--text-primary);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      z-index: 100;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    .toast-notice.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,31 +292,197 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Mass & Weight Converter</h1>
-        <p class="tool-description">Convert values between kilograms, pounds, and ounces.</p>
-      </div>
-
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Mass & Weight Converter</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Convert values between kilograms, pounds, and ounces.</div>
-            <div><strong>Inputs:</strong> mass, weight, convert, kg, lbs</div>
-            <div><strong>Category:</strong> converter</div>
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>Mass & Weight Converter</h1>
+            <p class="tool-description">Universal mass, imperial weight, and precious metals converter with real-time balance scale physics.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <span class="badge" style="background: rgba(78, 133, 191, 0.15); color: var(--accent); border: 1px solid var(--accent);">11 Mass Units</span>
+            <span class="badge" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid #f59e0b;">Gold & Gems Supported</span>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- Controls Toolbar -->
+      <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.25rem;">
+          <!-- Precision Slider -->
+          <div style="display: flex; align-items: center; gap: 0.75rem; min-width: 250px;">
+            <label for="mass-precision-slider" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); white-space: nowrap;">
+              Decimal Places:
+            </label>
+            <input type="range" id="mass-precision-slider" min="0" max="10" value="4" class="range-slider" style="flex: 1;">
+            <span id="mass-precision-val" class="range-value" style="min-width: 2rem;">4</span>
+          </div>
+
+          <!-- Scientific Notation & Reset -->
+          <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+            <label class="checkbox-label" style="font-size: 0.85rem;">
+              <input type="checkbox" id="mass-sci-toggle">
+              <span>Scientific Notation</span>
+            </label>
+            <button id="reset-kg-btn" class="btn btn-secondary" style="padding: 0.45rem 0.9rem; font-size: 0.85rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+              Reset (1 kg)
+            </button>
+            <button id="mass-clear-btn" class="btn btn-secondary" style="padding: 0.45rem 0.9rem; font-size: 0.85rem;">
+              Clear
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Workarea: Matrix & Balance Scale -->
+      <div class="mass-workarea">
+        <!-- Left: Real-time 11 Mass Unit Matrix Cards -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+              <h2 class="panel-title" style="margin-bottom: 0; border: none; padding: 0;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18"></path><path d="m3 7 9-4 9 4"></path><path d="M6 10h12"></path></svg>
+                Instant Mass & Weight Matrix
+              </h2>
+              <span style="font-size: 0.8rem; color: var(--text-secondary);">Recalculates all units immediately</span>
+            </div>
+
+            <div class="mass-card-grid" id="mass-cards-container">
+              <!-- Dynamically populated 11 unit cards -->
+            </div>
+          </div>
+
+          <!-- Milestones & Benchmarks -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+              Common Real-World Mass Benchmarks
+            </h2>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.25rem;">
+              Click any benchmark to populate the converter:
+            </p>
+            <div class="benchmark-pills">
+              <button class="benchmark-pill" data-unit="mg" data-val="0.05">Grain of Sand: <strong>0.05 mg</strong></button>
+              <button class="benchmark-pill" data-unit="ct" data-val="1">1 Carat Diamond: <strong>1 ct (0.2 g)</strong></button>
+              <button class="benchmark-pill" data-unit="g" data-val="2.5">US Penny: <strong>2.5 g</strong></button>
+              <button class="benchmark-pill" data-unit="g" data-val="180">Smartphone: <strong>180 g</strong></button>
+              <button class="benchmark-pill" data-unit="kg" data-val="3.785">Gallon of Water: <strong>3.785 kg</strong></button>
+              <button class="benchmark-pill" data-unit="kg" data-val="70">Adult Human: <strong>70 kg (154 lb)</strong></button>
+              <button class="benchmark-pill" data-unit="kg" data-val="1400">Compact Car: <strong>1,400 kg</strong></button>
+              <button class="benchmark-pill" data-unit="ozt" data-val="400">Gold Bar: <strong>400 oz t (12.4 kg)</strong></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Interactive Balance Scale -->
+        <div class="tool-panel glass-panel scale-panel">
+          <h2 class="panel-title" style="align-self: flex-start; width: 100%;">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="2" x2="12" y2="22"></line><line x1="2" y1="7" x2="22" y2="7"></line></svg>
+            Interactive Balance Scale
+          </h2>
+
+          <!-- Scale Compare Selector -->
+          <div style="width: 100%;">
+            <label for="scale-compare-select" style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 600;">Weigh Against (Right Pan):</label>
+            <select id="scale-compare-select" class="form-select" style="margin-top: 0.35rem; padding: 0.5rem 0.75rem; font-size: 0.85rem;">
+              <option value="sand">Grain of Sand (0.05 mg)</option>
+              <option value="penny">US Penny (2.5 g)</option>
+              <option value="smartphone">Smartphone (180 g)</option>
+              <option value="water_gal">Gallon of Water (3.785 kg)</option>
+              <option value="human" selected>Adult Human (70 kg)</option>
+              <option value="gold_bar">Standard Gold Bar (12.44 kg)</option>
+              <option value="car">Compact Car (1,400 kg)</option>
+              <option value="custom">Match Current Value (Equal Balance)</option>
+            </select>
+          </div>
+
+          <!-- Dynamic SVG Scale -->
+          <div class="balance-svg-wrap">
+            <svg class="balance-svg" viewBox="0 0 340 240">
+              <defs>
+                <!-- Metallic Gold/Silver Gradient -->
+                <linearGradient id="beamGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#89aacc" />
+                  <stop offset="50%" stop-color="#ccddee" />
+                  <stop offset="100%" stop-color="#4e85bf" />
+                </linearGradient>
+                <linearGradient id="fulcrumGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+                  <stop offset="0%" stop-color="#1e293b" />
+                  <stop offset="100%" stop-color="#475569" />
+                </linearGradient>
+              </defs>
+
+              <!-- Scale Base Pedestal & Fulcrum Column -->
+              <polygon points="170,75 145,215 195,215" fill="url(#fulcrumGrad)" stroke="var(--border)" stroke-width="1.5" />
+              <!-- Base Platform -->
+              <rect x="110" y="215" width="120" height="14" rx="4" fill="#334155" stroke="var(--border)" stroke-width="1.5" />
+
+              <!-- Center Dial / Inclinometer Ring -->
+              <circle cx="170" cy="75" r="16" fill="var(--bg-secondary)" stroke="var(--accent)" stroke-width="2" />
+              <!-- Needle indicator inside dial -->
+              <line id="scale-needle" x1="170" y1="75" x2="170" y2="62" stroke="#ef4444" stroke-width="2" stroke-linecap="round" />
+
+              <!-- Pivoting Balance Beam Group -->
+              <g id="scale-beam-group">
+                <line id="scale-beam-line" x1="50" y1="75" x2="290" y2="75" stroke="url(#beamGrad)" stroke-width="6" stroke-linecap="round" />
+                <circle cx="170" cy="75" r="5" fill="#ffffff" />
+              </g>
+
+              <!-- Left Pan Assembly (Suspended) -->
+              <g id="left-pan-group">
+                <line id="left-chain-1" x1="50" y1="75" x2="25" y2="155" stroke="var(--text-tertiary)" stroke-width="1.2" stroke-dasharray="2,2" />
+                <line id="left-chain-2" x1="50" y1="75" x2="75" y2="155" stroke="var(--text-tertiary)" stroke-width="1.2" stroke-dasharray="2,2" />
+                <!-- Left Plate -->
+                <path d="M 20 155 Q 50 172 80 155 Z" fill="rgba(78, 133, 191, 0.4)" stroke="var(--accent)" stroke-width="2" />
+                <!-- Weight Icon / Object on Left Plate -->
+                <circle id="left-pan-dot" cx="50" cy="152" r="9" fill="var(--accent)" />
+              </g>
+
+              <!-- Right Pan Assembly (Suspended) -->
+              <g id="right-pan-group">
+                <line id="right-chain-1" x1="290" y1="75" x2="265" y2="155" stroke="var(--text-tertiary)" stroke-width="1.2" stroke-dasharray="2,2" />
+                <line id="right-chain-2" x1="290" y1="75" x2="315" y2="155" stroke="var(--text-tertiary)" stroke-width="1.2" stroke-dasharray="2,2" />
+                <!-- Right Plate -->
+                <path d="M 260 155 Q 290 172 320 155 Z" fill="rgba(245, 158, 11, 0.4)" stroke="#f59e0b" stroke-width="2" />
+                <!-- Weight Icon / Object on Right Plate -->
+                <circle id="right-pan-dot" cx="290" cy="152" r="9" fill="#f59e0b" />
+              </g>
+            </svg>
+          </div>
+
+          <!-- Real-Time Scale Readout & Status -->
+          <div class="scale-status-box">
+            <div id="scale-status-text" class="scale-status-title">Right side is heavier</div>
+            <div id="scale-details-text" class="scale-status-sub">Your weight: 1 kg vs Human: 70 kg</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formula Breakdown Panel -->
+      <div class="tool-panel glass-panel">
+        <h2 class="panel-title">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          Mass Conversion Formulas & Standards
+        </h2>
+        <div class="formula-badge-card" id="mass-formula-card">
+          <span style="color: var(--text-tertiary); font-size: 0.8rem; text-transform: uppercase;">Direct Conversion Math</span>
+          <div id="mass-formula-text" class="formula-highlight">1 kg = 2.20462 lb</div>
+          <div id="mass-formula-steps" style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem; line-height: 1.5;">
+            Multiply the mass in kilograms by 2.2046226218 to obtain pounds (avoirdupois).
+          </div>
+          <div id="mass-formula-troy" style="font-size: 0.8rem; color: var(--text-tertiary); margin-top: 0.25rem;">
+            Precious Metals Note: 1 Troy Ounce (oz t) = 31.1034768 grams | 1 Gem Carat (ct) = 0.200 grams.
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- 1-Click Toast Message -->
+  <div id="toast" class="toast-notice">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-msg">Copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -60,9 +492,9 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Mass & Weight Converter",
+    "name": "Mass Converter",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/mass-converter/",
-    "description": "Convert values between kilograms, pounds, and ounces.",
+    "description": "Convert mass and weight between mg, g, kg, tonnes, ounces, pounds, stone, short tons, long tons, troy ounces, and carats.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
