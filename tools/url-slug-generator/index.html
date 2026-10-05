@@ -4,14 +4,298 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>URL Slug Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your URL Slug Generator online.">
-  <meta name="keywords" content="marketing, digital, seo, free, online, tool, utility">
+  <meta name="description" content="Convert text or article titles into clean, SEO-optimized URL slugs instantly. Features single and batch mode, stop word removal, diacritic transliteration, and custom casing.">
+  <meta name="keywords" content="url slug generator, slug maker, seo slug, permalink generator, batch slug generator, clean url, permalink builder">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/url-slug-generator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Scoped styling for URL Slug Generator */
+    .mode-tab-bar {
+      display: inline-flex;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.35rem;
+      gap: 0.35rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .mode-tab-btn {
+      padding: 0.5rem 1.4rem;
+      border-radius: var(--radius-full);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .mode-tab-btn.active {
+      background: var(--accent-gradient);
+      color: #ffffff;
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    .mode-tab-btn:hover:not(.active) {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      padding: 1.25rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-top: 1rem;
+    }
+
+    .option-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .option-card label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+    }
+
+    .toggle-switch-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      cursor: pointer;
+      padding: 0.4rem 0;
+      user-select: none;
+    }
+
+    .switch-ui {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background: var(--stroke);
+      border-radius: 9999px;
+      transition: background-color 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .switch-ui::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
+      background: #ffffff;
+      border-radius: 50%;
+      transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    input[type="checkbox"]:checked + .switch-ui {
+      background: var(--accent);
+    }
+
+    input[type="checkbox"]:checked + .switch-ui::after {
+      transform: translateX(20px);
+    }
+
+    .input-hidden-checkbox {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+
+    .url-preview-wrapper {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      word-break: break-all;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .url-prefix-text {
+      color: var(--text-tertiary);
+      user-select: none;
+    }
+
+    .url-slug-highlight {
+      color: var(--accent);
+      font-weight: 700;
+      background: var(--accent-glow);
+      padding: 0.15rem 0.4rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .primary-slug-display {
+      position: relative;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 4.5rem 1.25rem 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      word-break: break-all;
+    }
+
+    .primary-slug-display:empty::before {
+      content: "Your generated slug will appear here...";
+      color: var(--text-tertiary);
+      font-size: 1rem;
+      font-weight: 400;
+      font-style: italic;
+    }
+
+    .meta-badges-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .meta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.7rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+    }
+
+    .meta-badge strong {
+      color: var(--text-primary);
+    }
+
+    .meta-badge.status-good {
+      color: var(--success);
+      border-color: rgba(16, 185, 129, 0.3);
+      background: rgba(16, 185, 129, 0.08);
+    }
+
+    .meta-badge.status-warn {
+      color: var(--warning);
+      border-color: rgba(245, 158, 11, 0.3);
+      background: rgba(245, 158, 11, 0.08);
+    }
+
+    .meta-badge.status-danger {
+      color: var(--error);
+      border-color: rgba(239, 68, 68, 0.3);
+      background: rgba(239, 68, 68, 0.08);
+    }
+
+    .batch-output-textarea {
+      width: 100%;
+      min-height: 260px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    .batch-output-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .input-actions-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-tertiary);
+    }
+
+    .text-link-btn {
+      background: none;
+      border: none;
+      color: var(--accent);
+      cursor: pointer;
+      font-size: 0.85rem;
+      padding: 0;
+      text-decoration: underline;
+    }
+
+    .text-link-btn:hover {
+      color: var(--accent-light);
+    }
+
+    .seo-tips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .seo-tip-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .seo-tip-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .seo-tip-card p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,29 +310,269 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+          <span class="badge">SEO Utility</span>
+          <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: var(--success); border-color: rgba(16, 185, 129, 0.3);">Instant Client-Side</span>
+        </div>
         <h1>URL Slug Generator</h1>
-        <p class="tool-description">Create, analyze, and manage your URL Slug Generator online.</p>
+        <p class="tool-description">
+          Generate clean, human-readable, and search-engine-optimized permalink slugs. Supports customizable separators, case formatting, diacritic transliteration, stop-word purging, and batch bulk processing.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>URL Slug Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your URL Slug Generator online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, seo</div>
-            <div><strong>Category:</strong> seo</div>
-          </div>
+      <!-- Mode Selector Tabs -->
+      <div style="display: flex; justify-content: flex-start;">
+        <div class="mode-tab-bar" role="tablist">
+          <button class="mode-tab-btn active" id="tab-single" role="tab" aria-selected="true">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Single Slug Mode
+          </button>
+          <button class="mode-tab-btn" id="tab-batch" role="tab" aria-selected="false">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+            Batch Bulk Mode
+          </button>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- Main Tool Workspace -->
+      <div class="tool-workarea split-view">
+        
+        <!-- Left Panel: Input & Options -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+            <h2 class="panel-title" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+              Input & Parameters
+            </h2>
+            <button id="btn-load-sample" class="text-link-btn" title="Load sample text">Load Example</button>
+          </div>
+
+          <!-- Single Input View -->
+          <div id="view-single-input" class="form-group">
+            <label for="single-input">Article Title, Headline, or Phrase</label>
+            <input 
+              type="text" 
+              id="single-input" 
+              class="form-input" 
+              style="font-size: 1.05rem;" 
+              placeholder="e.g. 15 Best Modern Web Design Trends & Inspirations in 2026!"
+              value="15 Best Modern Web Design Trends & Inspirations in 2026!"
+            >
+            <div class="input-actions-bar">
+              <span id="single-input-stats">0 characters · 0 words</span>
+              <button id="btn-clear-single" class="text-link-btn" style="color: var(--text-tertiary);">Clear Input</button>
+            </div>
+          </div>
+
+          <!-- Batch Input View (Hidden by default) -->
+          <div id="view-batch-input" class="form-group" style="display: none;">
+            <label for="batch-input">Enter Multiple Titles (One per line)</label>
+            <textarea 
+              id="batch-input" 
+              class="form-textarea" 
+              style="min-height: 180px; font-family: var(--font-sans); font-size: 0.95rem;" 
+              placeholder="Top 10 High-Protein Breakfast Recipes&#10;Ultimate Beginner Guide to Machine Learning&#10;Why Modern CSS Grid & Flexbox Transform Layouts"
+            ></textarea>
+            <div class="input-actions-bar">
+              <span id="batch-input-stats">0 items / lines detected</span>
+              <button id="btn-clear-batch" class="text-link-btn" style="color: var(--text-tertiary);">Clear List</button>
+            </div>
+          </div>
+
+          <!-- Generator Configuration Options Grid -->
+          <div class="options-grid">
+            <!-- Separator -->
+            <div class="option-card">
+              <label for="opt-separator">Word Separator</label>
+              <select id="opt-separator" class="form-select">
+                <option value="-" selected>Hyphen (-)</option>
+                <option value="_">Underscore (_)</option>
+                <option value=".">Dot (.)</option>
+              </select>
+            </div>
+
+            <!-- Casing -->
+            <div class="option-card">
+              <label for="opt-casing">Letter Casing</label>
+              <select id="opt-casing" class="form-select">
+                <option value="lowercase" selected>lowercase</option>
+                <option value="UPPERCASE">UPPERCASE</option>
+                <option value="TitleCase">TitleCase</option>
+              </select>
+            </div>
+
+            <!-- Domain Prefix for Preview -->
+            <div class="option-card" style="grid-column: 1 / -1;">
+              <label for="opt-prefix">Site Base URL (Preview Only)</label>
+              <input type="text" id="opt-prefix" class="form-input" style="font-family: var(--font-mono); font-size: 0.85rem;" value="https://example.com/blog/">
+            </div>
+          </div>
+
+          <!-- Toggle Switches Group -->
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
+            <label class="toggle-switch-label">
+              <span>
+                <strong>Remove SEO Stop Words</strong>
+                <small style="display: block; color: var(--text-tertiary); font-size: 0.78rem;">Purges filler words (a, the, in, for, and, of, etc.)</small>
+              </span>
+              <input type="checkbox" id="opt-stop-words" class="input-hidden-checkbox" checked>
+              <span class="switch-ui"></span>
+            </label>
+
+            <label class="toggle-switch-label">
+              <span>
+                <strong>Transliterate Diacritics & Accents</strong>
+                <small style="display: block; color: var(--text-tertiary); font-size: 0.78rem;">Converts letters like &eacute; &rarr; e, &uuml; &rarr; u, &ntilde; &rarr; n, &szlig; &rarr; ss</small>
+              </span>
+              <input type="checkbox" id="opt-transliterate" class="input-hidden-checkbox" checked>
+              <span class="switch-ui"></span>
+            </label>
+
+            <label class="toggle-switch-label">
+              <span>
+                <strong>Remove Numbers & Digits</strong>
+                <small style="display: block; color: var(--text-tertiary); font-size: 0.78rem;">Strips years and number counts from the resulting slug</small>
+              </span>
+              <input type="checkbox" id="opt-remove-numbers" class="input-hidden-checkbox">
+              <span class="switch-ui"></span>
+            </label>
+
+            <label class="toggle-switch-label">
+              <span>
+                <strong>Trailing Slash</strong>
+                <small style="display: block; color: var(--text-tertiary); font-size: 0.78rem;">Appends a closing forward slash (/) to the end</small>
+              </span>
+              <input type="checkbox" id="opt-trailing-slash" class="input-hidden-checkbox">
+              <span class="switch-ui"></span>
+            </label>
+          </div>
+
+        </div>
+
+        <!-- Right Panel: Output & Actions -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+            Generated Slug Output
+          </h2>
+
+          <!-- Single Mode Output Display -->
+          <div id="output-single-container" style="display: flex; flex-direction: column; gap: 1rem;">
+            <div>
+              <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); display: block; margin-bottom: 0.4rem;">
+                Full Live URL Preview
+              </span>
+              <div class="url-preview-wrapper">
+                <span class="url-prefix-text" id="url-prefix-display">https://example.com/blog/</span><span class="url-slug-highlight" id="preview-slug-text"></span>
+              </div>
+            </div>
+
+            <div>
+              <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); display: block; margin-bottom: 0.4rem;">
+                Exact Permalink Slug
+              </span>
+              <div class="primary-slug-display" id="primary-slug-output">
+                <!-- Slug populated via JS -->
+              </div>
+            </div>
+
+            <!-- Stats row -->
+            <div class="meta-badges-row">
+              <div class="meta-badge" id="badge-length">
+                Length: <strong id="val-chars">0 chars</strong>
+              </div>
+              <div class="meta-badge" id="badge-words">
+                Words: <strong id="val-words">0 words</strong>
+              </div>
+              <div class="meta-badge" id="badge-status">
+                SEO Status: <strong id="val-status">Optimal</strong>
+              </div>
+            </div>
+
+            <div class="action-bar" style="margin-top: 1rem;">
+              <button id="btn-copy-single" class="btn btn-primary" style="flex: 1;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy Slug
+              </button>
+              <button id="btn-copy-full-url" class="btn btn-secondary">
+                Copy Full URL
+              </button>
+            </div>
+          </div>
+
+          <!-- Batch Mode Output Display (Hidden by default) -->
+          <div id="output-batch-container" style="display: none; flex-direction: column; gap: 1rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary);">
+                Bulk Generated Slugs
+              </span>
+              <span id="batch-output-stats" style="font-size: 0.8rem; color: var(--text-secondary);">0 generated</span>
+            </div>
+            
+            <textarea id="batch-output-text" class="batch-output-textarea" readonly placeholder="Bulk generated slugs will appear here..."></textarea>
+
+            <div class="action-bar">
+              <button id="btn-copy-batch" class="btn btn-primary" style="flex: 1;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy All Slugs
+              </button>
+              <button id="btn-export-txt" class="btn btn-secondary">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Export .txt File
+              </button>
+            </div>
+          </div>
+
+          <!-- SEO Best Practices Card -->
+          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.25rem; margin-top: 1.5rem;">
+            <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              Quick SEO Guidelines
+            </h3>
+            <ul style="font-size: 0.85rem; color: var(--text-secondary); padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.4rem;">
+              <li><strong>Keep it under 50 characters:</strong> Short URLs are easier to index, share, and achieve higher click-through rates.</li>
+              <li><strong>Hyphens over underscores:</strong> Google explicitly treats hyphens (-) as word separators, while underscores (_) run words together.</li>
+              <li><strong>Remove stop words:</strong> Eliminating words like "a", "the", and "of" prevents permalink bloat and focuses keyword relevance.</li>
+            </ul>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- SEO Educational Cards -->
+      <div class="seo-tips-grid">
+        <div class="seo-tip-card">
+          <h3>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            Instant Unicode Normalization
+          </h3>
+          <p>
+            Accents and special symbols like &eacute;, &ntilde;, and &uuml; are automatically transliterated into Latin characters using Unicode NFD normalization, preventing broken URL percent-encoding.
+          </p>
+        </div>
+
+        <div class="seo-tip-card">
+          <h3>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            Clean Delimiter Hygiene
+          </h3>
+          <p>
+            Consecutive separators, punctuation symbols, emoji, and leading/trailing dashes are sanitized to guarantee valid, standardized RFC 3986 URLs every time.
+          </p>
+        </div>
+
+        <div class="seo-tip-card">
+          <h3>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--warning);"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+            High-Performance Bulk Mode
+          </h3>
+          <p>
+            Process hundreds of blog titles or e-commerce SKU descriptions at once with bulk batch conversion, instant multi-line export, and 1-click text file downloading.
+          </p>
+        </div>
+      </div>
+
     </div>
   </main>
 
@@ -62,7 +586,7 @@
     "@type": "WebApplication",
     "name": "URL Slug Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/url-slug-generator/",
-    "description": "Create, analyze, and manage your URL Slug Generator online.",
+    "description": "Convert text or article titles into clean, SEO-optimized URL slugs instantly with single and batch mode.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

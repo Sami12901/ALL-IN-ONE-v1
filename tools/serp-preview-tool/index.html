@@ -3,15 +3,460 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SERP Preview Tool - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your SERP Preview Tool online.">
-  <meta name="keywords" content="marketing, digital, seo, free, online, tool, utility">
+  <title>Google SERP Preview Tool - Free Online SEO Simulator - ALL IN ONE</title>
+  <meta name="description" content="Simulate how your webpage appears on Google Desktop and Mobile search results with real-time character and pixel width analysis, rich snippets, and meta tag export.">
+  <meta name="keywords" content="serp preview tool, google search simulator, meta title preview, meta description length, pixel width calculator, seo tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/serp-preview-tool/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* SERP Tool Custom Workspace Styling */
+    .serp-layout-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+    @media (min-width: 1024px) {
+      .serp-layout-grid {
+        grid-template-columns: 480px 1fr;
+      }
+    }
+    @media (min-width: 1280px) {
+      .serp-layout-grid {
+        grid-template-columns: 520px 1fr;
+      }
+    }
+
+    .preset-pill-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .preset-pill {
+      font-size: 0.775rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .preset-pill:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .meter-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      margin-top: 0.35rem;
+    }
+    .meter-info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+    }
+    .meter-bar-track {
+      height: 6px;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+    .meter-bar-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      transition: width 0.2s ease, background-color 0.2s ease;
+      background: var(--success);
+      width: 0%;
+    }
+    .meter-bar-fill.warning {
+      background: var(--warning);
+    }
+    .meter-bar-fill.danger {
+      background: var(--error);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.725rem;
+      font-weight: 600;
+    }
+    .status-badge.safe {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .status-badge.warn {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .status-badge.danger {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--error);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    /* Device and SERP Preview Frame */
+    .preview-header-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .view-toggle-group {
+      display: inline-flex;
+      background: var(--bg-tertiary);
+      padding: 0.25rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    .view-toggle-btn {
+      padding: 0.4rem 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .view-toggle-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    .serp-theme-btn {
+      padding: 0.4rem 0.75rem;
+      font-size: 0.8rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+    .serp-theme-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+
+    /* Authentic Google Search Result Container */
+    .serp-stage {
+      background: #ffffff;
+      color: #202124;
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      border: 1px solid #dadce0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      transition: max-width 0.3s ease, background-color 0.2s ease, border-color 0.2s ease;
+      position: relative;
+      overflow: hidden;
+      font-family: Arial, Roboto, 'Helvetica Neue', sans-serif;
+    }
+    .serp-stage.dark-serp {
+      background: #202124;
+      color: #bdc1c6;
+      border-color: #3c4043;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Desktop vs Mobile Container Widths */
+    .serp-stage.mode-desktop {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .serp-stage.mode-mobile {
+      max-width: 410px;
+      margin: 0 auto;
+      border-radius: 28px;
+      padding: 1.25rem;
+      border: 2px solid #5f6368;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .mobile-notch {
+      display: none;
+      width: 120px;
+      height: 18px;
+      background: #3c4043;
+      border-radius: 0 0 12px 12px;
+      margin: -1.25rem auto 1rem auto;
+    }
+    .serp-stage.mode-mobile .mobile-notch {
+      display: block;
+    }
+
+    /* Google Result Components */
+    .google-header-row {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 0.35rem;
+    }
+    .google-favicon-box {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #f1f3f4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #5f6368;
+      flex-shrink: 0;
+      overflow: hidden;
+      border: 1px solid #dadce0;
+    }
+    .serp-stage.dark-serp .google-favicon-box {
+      background: #303134;
+      border-color: #5f6368;
+      color: #9aa0a6;
+    }
+    .google-favicon-img {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
+    }
+    .google-source-info {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.25;
+      overflow: hidden;
+    }
+    .google-site-name {
+      font-size: 14px;
+      color: #202124;
+      font-weight: 400;
+    }
+    .serp-stage.dark-serp .google-site-name {
+      color: #dadce0;
+    }
+    .google-breadcrumb-url {
+      font-size: 12px;
+      color: #4d5156;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .serp-stage.dark-serp .google-breadcrumb-url {
+      color: #bdc1c6;
+    }
+
+    /* Google Title */
+    .google-title {
+      font-size: 20px;
+      line-height: 1.3;
+      font-weight: 400;
+      color: #1a0dab;
+      text-decoration: none;
+      display: block;
+      margin-bottom: 0.35rem;
+      cursor: pointer;
+      word-break: break-word;
+    }
+    .serp-stage.dark-serp .google-title {
+      color: #8ab4f8;
+    }
+    .google-title:hover {
+      text-decoration: underline;
+    }
+    .serp-stage.mode-mobile .google-title {
+      font-size: 17px;
+      line-height: 1.35;
+    }
+
+    /* Rich Snippets Row */
+    .google-rich-snippets {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 13px;
+      color: #70757a;
+      margin-bottom: 0.35rem;
+      line-height: 1.4;
+    }
+    .serp-stage.dark-serp .google-rich-snippets {
+      color: #9aa0a6;
+    }
+    .google-star-rating {
+      color: #e37400;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .serp-stage.dark-serp .google-star-rating {
+      color: #fbbc04;
+    }
+
+    /* Google Snippet Body */
+    .google-snippet {
+      font-size: 14px;
+      line-height: 1.58;
+      color: #4d5156;
+      word-break: break-word;
+    }
+    .serp-stage.dark-serp .google-snippet {
+      color: #bdc1c6;
+    }
+    .serp-stage.mode-mobile .google-snippet {
+      font-size: 13.5px;
+      line-height: 1.5;
+    }
+    .google-date {
+      color: #70757a;
+    }
+    .serp-stage.dark-serp .google-date {
+      color: #9aa0a6;
+    }
+    .google-snippet b,
+    .google-snippet strong,
+    .google-title b,
+    .google-title strong {
+      font-weight: 700;
+      color: #202124;
+    }
+    .serp-stage.dark-serp .google-snippet b,
+    .serp-stage.dark-serp .google-snippet strong,
+    .serp-stage.dark-serp .google-title b,
+    .serp-stage.dark-serp .google-title strong {
+      color: #e8eaed;
+    }
+
+    /* Sitelinks Mini Grid */
+    .google-sitelinks-wrap {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-top: 1rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid #dadce0;
+    }
+    .serp-stage.dark-serp .google-sitelinks-wrap {
+      border-color: #3c4043;
+    }
+    .google-sitelink-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+    .google-sitelink-title {
+      font-size: 14px;
+      color: #1a0dab;
+      text-decoration: none;
+      font-weight: 400;
+    }
+    .serp-stage.dark-serp .google-sitelink-title {
+      color: #8ab4f8;
+    }
+    .google-sitelink-title:hover {
+      text-decoration: underline;
+    }
+    .google-sitelink-desc {
+      font-size: 12px;
+      color: #4d5156;
+      line-height: 1.35;
+    }
+    .serp-stage.dark-serp .google-sitelink-desc {
+      color: #9aa0a6;
+    }
+
+    /* Truncation Marker & Warning */
+    .truncation-indicator {
+      display: inline-block;
+      font-weight: bold;
+      color: var(--error);
+      background: rgba(239, 68, 68, 0.12);
+      padding: 0 0.25rem;
+      border-radius: 2px;
+    }
+
+    /* Meta Tags Export Box */
+    .code-export-panel {
+      margin-top: 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      overflow: hidden;
+    }
+    .code-export-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.65rem 1rem;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .code-export-content {
+      padding: 1rem;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.825rem;
+      line-height: 1.5;
+      color: var(--text-primary);
+      max-height: 240px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .toast-notification {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 1000;
+      background: var(--surface);
+      color: var(--text);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transform: translateY(100px);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    }
+    .toast-notification.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,30 +472,265 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>SERP Preview Tool</h1>
-        <p class="tool-description">Create, analyze, and manage your SERP Preview Tool online.</p>
+        <p class="tool-description">
+          Simulate how your webpage appears on Google Desktop and Mobile search engine results. Accurately calculate pixel & character limits, preview rich snippets, and export production-ready HTML meta tags.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>SERP Preview Tool</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your SERP Preview Tool online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, seo</div>
-            <div><strong>Category:</strong> seo</div>
+      <!-- Main Tool Workspace -->
+      <div class="serp-layout-grid">
+        
+        <!-- Controls Column -->
+        <div class="tool-panel glass-panel">
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+            <h2 class="panel-title" style="margin: 0; border: none; padding: 0;">SERP Configuration</h2>
+            <button id="btn-reset-defaults" class="btn btn-secondary" style="padding: 0.25rem 0.65rem; font-size: 0.75rem;">Reset</button>
           </div>
+
+          <!-- Quick Presets -->
+          <div class="form-group">
+            <label>Quick Presets</label>
+            <div class="preset-pill-bar">
+              <button class="preset-pill" data-preset="saas">🚀 SaaS Platform</button>
+              <button class="preset-pill" data-preset="ecommerce">🛍️ E-Commerce</button>
+              <button class="preset-pill" data-preset="blog">📝 Tech Article</button>
+              <button class="preset-pill" data-preset="agency">💼 Digital Agency</button>
+            </div>
+          </div>
+
+          <!-- Page Title Input -->
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <label for="input-title">Page Title (&lt;title&gt;)</label>
+              <span id="title-limit-badge" class="status-badge safe">Safe</span>
+            </div>
+            <input type="text" id="input-title" class="form-input" placeholder="e.g. Best SEO Tools for 2026: Boost Your Search Rankings" autocomplete="off">
+            <div class="meter-container">
+              <div class="meter-info-row">
+                <span id="title-char-metrics">Length: 0 / 60 chars</span>
+                <span id="title-px-metrics">Pixels: 0 / 600 px</span>
+              </div>
+              <div class="meter-bar-track">
+                <div id="title-meter-bar" class="meter-bar-fill"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Meta Description Input -->
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <label for="input-desc">Meta Description (&lt;meta name="description"&gt;)</label>
+              <span id="desc-limit-badge" class="status-badge safe">Safe</span>
+            </div>
+            <textarea id="input-desc" class="form-textarea" style="min-height: 95px;" placeholder="e.g. Discover the top 10 SEO tools tested by experts in 2026. Compare features, pricing, keyword research power, and technical auditing tools."></textarea>
+            <div class="meter-container">
+              <div class="meter-info-row">
+                <span id="desc-char-metrics">Length: 0 / 160 chars</span>
+                <span id="desc-px-metrics">Pixels: 0 / 960 px</span>
+              </div>
+              <div class="meter-bar-track">
+                <div id="desc-meter-bar" class="meter-bar-fill"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- URL and Breadcrumb -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <div class="form-group">
+              <label for="input-url">Page URL / Domain</label>
+              <input type="text" id="input-url" class="form-input" placeholder="https://example.com/best-seo-tools" autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label for="input-breadcrumb">Breadcrumb Path</label>
+              <input type="text" id="input-breadcrumb" class="form-input" placeholder="Tools › SEO Suite" autocomplete="off">
+            </div>
+          </div>
+
+          <!-- Focus Keyword for bolding -->
+          <div class="form-group">
+            <label for="input-focus-kw">
+              Focus Search Query / Keywords
+              <span style="font-weight: normal; font-size: 0.75rem; color: var(--text-tertiary);">(Google bolds matching terms)</span>
+            </label>
+            <input type="text" id="input-focus-kw" class="form-input" placeholder="e.g. SEO tools, 2026, rankings" autocomplete="off">
+          </div>
+
+          <!-- Favicon Selection -->
+          <div class="form-group">
+            <label for="select-favicon">Favicon Style</label>
+            <select id="select-favicon" class="form-select">
+              <option value="globe">🌐 Standard Web Globe</option>
+              <option value="tech">⚡ Lightning / Tech</option>
+              <option value="rocket">🚀 Rocket / Startup</option>
+              <option value="cart">🛍️ Shopping / Store</option>
+              <option value="star">⭐ Star / Premium</option>
+              <option value="shield">🛡️ Shield / Security</option>
+              <option value="custom">🔗 Custom Image URL...</option>
+            </select>
+            <input type="text" id="input-custom-favicon" class="form-input hidden" style="margin-top: 0.5rem;" placeholder="https://example.com/favicon.png">
+          </div>
+
+          <!-- Rich Snippets Toggles -->
+          <div class="form-group" style="border-top: 1px solid var(--border); padding-top: 0.85rem;">
+            <label style="margin-bottom: 0.25rem;">Rich Snippets & Addons</label>
+            
+            <div class="checkbox-group">
+              <!-- Date Toggle -->
+              <label class="checkbox-label">
+                <input type="checkbox" id="toggle-date" checked>
+                <span>Show Publication Date in Snippet</span>
+              </label>
+              <div id="date-config-wrap" style="display: flex; gap: 0.5rem; margin-left: 2rem;">
+                <input type="date" id="input-pub-date" class="form-input" style="padding: 0.4rem 0.6rem; font-size: 0.85rem;">
+              </div>
+
+              <!-- Rating Snippet Toggle -->
+              <label class="checkbox-label">
+                <input type="checkbox" id="toggle-rating" checked>
+                <span>Star Rating Review Snippet (AggregateRating)</span>
+              </label>
+              <div id="rating-config-wrap" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-left: 2rem;">
+                <input type="number" id="input-rating-val" class="form-input" style="padding: 0.4rem 0.6rem; font-size: 0.85rem;" min="1" max="5" step="0.1" value="4.9" placeholder="Stars (e.g. 4.9)">
+                <input type="text" id="input-rating-count" class="form-input" style="padding: 0.4rem 0.6rem; font-size: 0.85rem;" value="1,280 reviews" placeholder="e.g. 1,280 reviews">
+              </div>
+
+              <!-- Sitelinks Toggle -->
+              <label class="checkbox-label">
+                <input type="checkbox" id="toggle-sitelinks">
+                <span>Display Mini Sitelinks (Desktop SERP expansion)</span>
+              </label>
+            </div>
+          </div>
+
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Live Preview & Diagnostics Column -->
+        <div class="tool-panel glass-panel" style="display: flex; flex-direction: column; gap: 1.25rem;">
+          
+          <!-- Live Preview Control Header -->
+          <div class="preview-header-bar">
+            <div>
+              <h2 class="panel-title" style="margin: 0; border: none; padding: 0;">Live SERP Simulator</h2>
+              <span style="font-size: 0.8rem; color: var(--text-tertiary);">Simulated using Google's current typography & line metrics</span>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+              <!-- Device toggle -->
+              <div class="view-toggle-group">
+                <button id="btn-device-desktop" class="view-toggle-btn active" title="Switch to Google Desktop Search">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                  Desktop
+                </button>
+                <button id="btn-device-mobile" class="view-toggle-btn" title="Switch to Google Mobile Search">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                  Mobile
+                </button>
+              </div>
+
+              <!-- SERP Mode (Light / Dark) -->
+              <button id="btn-serp-theme" class="serp-theme-btn" title="Toggle Search Result Dark/Light Theme">
+                <span id="serp-theme-icon">🌙</span>
+                <span id="serp-theme-text">Dark Mode</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Truncation Alert Callout -->
+          <div id="truncation-alert-box" class="alert-error hidden">
+            <strong>⚠️ Truncation Notice:</strong> <span id="truncation-alert-msg">Your title or description exceeds Google's display boundary and will be truncated with an ellipsis (...)</span>
+          </div>
+
+          <!-- Authentic Google Search Result Stage -->
+          <div id="serp-stage" class="serp-stage mode-desktop">
+            <div class="mobile-notch"></div>
+            
+            <!-- Google Header (Favicon, Domain, Breadcrumb) -->
+            <div class="google-header-row">
+              <div id="serp-favicon-box" class="google-favicon-box">
+                <span id="serp-favicon-symbol">🌐</span>
+              </div>
+              <div class="google-source-info">
+                <span id="serp-site-name" class="google-site-name">example.com</span>
+                <span id="serp-breadcrumb-display" class="google-breadcrumb-url">https://example.com › tools › seo-suite</span>
+              </div>
+            </div>
+
+            <!-- Google Title -->
+            <a id="serp-title-display" class="google-title" href="javascript:void(0)" onclick="return false;">
+              Best SEO Tools for 2026: Boost Your Search Rankings
+            </a>
+
+            <!-- Star Rating Rich Snippet -->
+            <div id="serp-rating-row" class="google-rich-snippets">
+              <span class="google-star-rating">★★★★★</span>
+              <span id="serp-rating-text">4.9 · 1,280 reviews</span>
+            </div>
+
+            <!-- Snippet Body (with date and keyword highlighting) -->
+            <div id="serp-snippet-display" class="google-snippet">
+              <span id="serp-date-prefix" class="google-date">Oct 5, 2026 — </span>
+              <span id="serp-desc-text">Discover the top 10 SEO tools tested by experts in 2026. Compare features, pricing, keyword research power, and technical auditing tools.</span>
+            </div>
+
+            <!-- Desktop Sitelinks -->
+            <div id="serp-sitelinks-container" class="google-sitelinks-wrap hidden">
+              <div class="google-sitelink-item">
+                <a href="javascript:void(0)" class="google-sitelink-title">Free Keyword Generator</a>
+                <span class="google-sitelink-desc">Find thousands of high-traffic long-tail keyword ideas.</span>
+              </div>
+              <div class="google-sitelink-item">
+                <a href="javascript:void(0)" class="google-sitelink-title">SERP Simulator Tool</a>
+                <span class="google-sitelink-desc">Preview your website snippet in Google Desktop and Mobile.</span>
+              </div>
+              <div class="google-sitelink-item">
+                <a href="javascript:void(0)" class="google-sitelink-title">SEO Audit Checklist</a>
+                <span class="google-sitelink-desc">Step-by-step technical SEO guide for maximum search visibility.</span>
+              </div>
+              <div class="google-sitelink-item">
+                <a href="javascript:void(0)" class="google-sitelink-title">Pricing & Plans</a>
+                <span class="google-sitelink-desc">Transparent plans starting with our forever-free tier.</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Actions Bar -->
+          <div class="action-bar" style="margin-top: 0.5rem;">
+            <button id="btn-copy-title" class="btn btn-primary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Title
+            </button>
+            <button id="btn-copy-desc" class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Description
+            </button>
+            <button id="btn-toggle-meta-export" class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+              Export HTML Meta Tags
+            </button>
+          </div>
+
+          <!-- HTML Meta Tags Code Panel (Toggleable) -->
+          <div id="meta-export-panel" class="code-export-panel hidden">
+            <div class="code-export-header">
+              <span>Production HTML Meta &amp; Schema Tags</span>
+              <button id="btn-copy-all-meta" class="btn btn-secondary" style="padding: 0.25rem 0.65rem; font-size: 0.75rem;">Copy All Tags</button>
+            </div>
+            <pre id="meta-export-code" class="code-export-content"></pre>
+          </div>
+
+        </div>
+
       </div>
-    
     </div>
   </main>
+
+  <!-- Toast Notification Feedback -->
+  <div id="toast" class="toast-notification">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#10b981" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span id="toast-message">Copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,8 +742,8 @@
     "@type": "WebApplication",
     "name": "SERP Preview Tool",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/serp-preview-tool/",
-    "description": "Create, analyze, and manage your SERP Preview Tool online.",
-    "applicationCategory": "UtilityPage",
+    "description": "Simulate and test your search engine snippet on Google Desktop and Mobile with accurate character, pixel calculations, and rich snippet controls.",
+    "applicationCategory": "SEOApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

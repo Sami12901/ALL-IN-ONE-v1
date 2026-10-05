@@ -3,15 +3,272 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Link Extractor - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Extracts internal and external links from raw HTML.">
-  <meta name="keywords" content="link, url, extract, html, crawler, free, online, tool, utility">
+  <title>Link Extractor &amp; Anchor Text Auditor - ALL IN ONE</title>
+  <meta name="description" content="Extract internal and external links, audit anchor text quality, detect HTTP vulnerabilities, and inspect rel/target attributes.">
+  <meta name="keywords" content="link extractor, anchor text auditor, internal links, external links, nofollow checker, seo link graph, free online tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/link-extractor/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Link Extractor Custom Styles */
+    .kpi-grid-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .kpi-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1rem;
+      text-align: center;
+      transition: var(--transition);
+      position: relative;
+    }
+    .kpi-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .kpi-value {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+    .kpi-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 0.35rem;
+    }
+
+    .toolbar-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .toolbar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .btn-sm {
+      padding: 0.4rem 0.85rem;
+      font-size: 0.825rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .config-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    /* Filter Tabs */
+    .tab-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.85rem;
+    }
+    .tab-pill {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.4rem 0.9rem;
+      border-radius: var(--radius-full);
+      font-size: 0.825rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .tab-pill:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+    .tab-pill.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+    .pill-count {
+      background: rgba(0,0,0,0.25);
+      padding: 0.1rem 0.45rem;
+      border-radius: 99px;
+      font-size: 0.75rem;
+    }
+
+    /* Links Data Table */
+    .table-container {
+      max-height: 480px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+    }
+    .links-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+    .links-table th {
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      color: var(--text-secondary);
+      font-weight: 700;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      z-index: 2;
+      white-space: nowrap;
+    }
+    .links-table td {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+      vertical-align: middle;
+    }
+    .links-table tr:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    /* Tags & Badges */
+    .type-badge {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .type-internal {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    .type-external {
+      background: rgba(168, 85, 247, 0.15);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+    .type-special {
+      background: rgba(156, 163, 175, 0.15);
+      color: #9ca3af;
+      border: 1px solid rgba(156, 163, 175, 0.3);
+    }
+
+    .proto-badge {
+      display: inline-block;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      font-family: monospace;
+    }
+    .proto-https { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+    .proto-http { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.35); }
+    .proto-other { background: rgba(255, 255, 255, 0.08); color: var(--text-tertiary); }
+
+    .issue-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      margin: 1px;
+    }
+    .issue-err {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+    .issue-warn {
+      background: rgba(245, 158, 11, 0.2);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.35);
+    }
+    .issue-ok {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+    }
+
+    .url-cell {
+      max-width: 260px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-family: monospace;
+      font-size: 0.8rem;
+    }
+    .url-link {
+      color: var(--accent-light);
+      text-decoration: none;
+    }
+    .url-link:hover {
+      text-decoration: underline;
+    }
+
+    .anchor-text-wrap {
+      max-width: 200px;
+      word-break: break-word;
+      font-weight: 500;
+    }
+    .anchor-empty {
+      color: #ef4444;
+      font-style: italic;
+    }
+    .anchor-generic {
+      color: #f59e0b;
+      font-weight: 600;
+    }
+
+    .toast-msg {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      color: var(--text-primary);
+      border: 1px solid var(--accent);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      z-index: 100;
+      font-size: 0.875rem;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .toast-msg.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,31 +283,165 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Link Extractor</h1>
-        <p class="tool-description">Extracts internal and external links from raw HTML.</p>
+        <h1>Link Extractor &amp; Anchor Text Auditor</h1>
+        <p class="tool-description">
+          Extract internal and external links from HTML markup, audit anchor text quality, detect insecure HTTP protocols, and audit rel and target security attributes.
+        </p>
+      </div>
+
+      <!-- Quick KPI Cards -->
+      <div class="kpi-grid-links">
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpi-total">0</div>
+          <div class="kpi-label">Total Links</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpi-internal">0</div>
+          <div class="kpi-label">Internal Links</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpi-external">0</div>
+          <div class="kpi-label">External Links</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpi-nofollow">0</div>
+          <div class="kpi-label">Nofollow Links</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpi-issues" style="color: #f59e0b;">0</div>
+          <div class="kpi-label">Issues Found</div>
+        </div>
+      </div>
+
+      <!-- Configuration Strip: Base Domain Filter -->
+      <div class="config-strip">
+        <label for="base-domain" style="font-size: 0.875rem; font-weight: 600; color: var(--text-secondary); display: flex; align-items: center; gap: 0.5rem;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          Base Site Domain:
+        </label>
+        <input 
+          type="text" 
+          id="base-domain" 
+          class="form-input" 
+          placeholder="e.g. example.com (used to identify internal vs external links)" 
+          value="example.com"
+          style="max-width: 320px; padding: 0.45rem 0.85rem; font-size: 0.875rem;"
+        >
+        <span style="font-size: 0.78rem; color: var(--text-tertiary);">
+          Relative URLs (e.g. /about) &amp; matching host URLs are treated as Internal.
+        </span>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Link Extractor</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Extracts internal and external links from raw HTML.</div>
-            <div><strong>Inputs:</strong> link, url, extract, html, crawler</div>
-            <div><strong>Category:</strong> seo</div>
+      <div class="tool-workarea split-view">
+        <!-- Left Panel: HTML Input -->
+        <div class="tool-panel glass-panel">
+          <div class="toolbar-row">
+            <h2 class="panel-title" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
+              HTML Source / Page Snippet
+            </h2>
+            <div class="toolbar-actions">
+              <button id="btn-sample" class="btn btn-secondary btn-sm" title="Load sample HTML document">Sample HTML</button>
+              <button id="btn-paste" class="btn btn-secondary btn-sm" title="Paste HTML from clipboard">Paste</button>
+              <button id="btn-clear" class="btn btn-secondary btn-sm" title="Clear input text">Clear</button>
+            </div>
+          </div>
+
+          <div class="form-group" style="flex: 1;">
+            <textarea 
+              id="html-input" 
+              class="form-textarea" 
+              placeholder="Paste raw HTML, document markup, or web page source snippet here to extract all <a> anchor links..."
+              style="min-height: 380px; font-family: monospace; font-size: 0.825rem; line-height: 1.5;"
+            ></textarea>
+          </div>
+          
+          <div style="font-size: 0.78rem; color: var(--text-tertiary); display: flex; justify-content: space-between;">
+            <span id="char-info">0 characters</span>
+            <span>Audits: Empty anchors, generic texts, HTTP protocols &amp; noopener</span>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Panel: Links Auditor Table -->
+        <div class="tool-panel glass-panel">
+          <div class="toolbar-row">
+            <h2 class="panel-title" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
+              Extracted Link Graph
+            </h2>
+            <div class="toolbar-actions">
+              <button id="btn-copy-urls" class="btn btn-secondary btn-sm" title="Copy clean list of URLs">Copy URLs</button>
+              <button id="btn-export-csv" class="btn btn-secondary btn-sm" title="Export as CSV">Export CSV</button>
+              <button id="btn-export-json" class="btn btn-primary btn-sm" title="Export as JSON">Export JSON</button>
+            </div>
+          </div>
+
+          <!-- Tab Pills -->
+          <div class="tab-pills">
+            <button class="tab-pill active" data-tab="all">
+              <span>All Links</span>
+              <span class="pill-count" id="count-all">0</span>
+            </button>
+            <button class="tab-pill" data-tab="internal">
+              <span>Internal</span>
+              <span class="pill-count" id="count-internal">0</span>
+            </button>
+            <button class="tab-pill" data-tab="external">
+              <span>External</span>
+              <span class="pill-count" id="count-external">0</span>
+            </button>
+            <button class="tab-pill" data-tab="issues">
+              <span>Issues / Warnings</span>
+              <span class="pill-count" id="count-issues" style="color: #f59e0b;">0</span>
+            </button>
+          </div>
+
+          <!-- Search Filter -->
+          <div style="margin-bottom: 0.75rem;">
+            <input 
+              type="text" 
+              id="search-filter" 
+              class="form-input" 
+              placeholder="Search by URL, anchor text, or issue..."
+              style="padding: 0.5rem 0.85rem; font-size: 0.85rem;"
+            >
+          </div>
+
+          <!-- Links Table -->
+          <div class="table-container">
+            <table class="links-table" id="links-table">
+              <thead>
+                <tr>
+                  <th style="width: 25%;">Anchor Text</th>
+                  <th style="width: 35%;">Destination URL</th>
+                  <th style="width: 12%;">Type</th>
+                  <th style="width: 13%;">Rel / Target</th>
+                  <th style="width: 15%;">SEO / Security</th>
+                </tr>
+              </thead>
+              <tbody id="table-body">
+                <tr>
+                  <td colspan="5" style="text-align: center; padding: 3rem 1rem; color: var(--text-tertiary);">
+                    No links extracted. Paste HTML or click "Sample HTML" to inspect links.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="font-size: 0.78rem; color: var(--text-tertiary); margin-top: 0.5rem; display: flex; justify-content: space-between;">
+            <span id="table-summary">0 links shown</span>
+            <span>Click URL to copy or open</span>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
+
+  <div id="toast" class="toast-msg"></div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,8 +453,8 @@
     "@type": "WebApplication",
     "name": "Link Extractor",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/link-extractor/",
-    "description": "Extracts internal and external links from raw HTML.",
-    "applicationCategory": "UtilityPage",
+    "description": "Extracts internal and external links from HTML markup, audits anchor text quality, and verifies link security attributes.",
+    "applicationCategory": "SEOOptimizationUtility",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

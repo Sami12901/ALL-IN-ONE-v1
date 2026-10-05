@@ -3,15 +3,284 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Keyword Density Checker - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Analyzes keyword occurrences in a body of text.">
-  <meta name="keywords" content="keyword, density, seo, count, free, online, tool, utility">
+  <title>Keyword Density Checker - Free Online SEO Tool - ALL IN ONE</title>
+  <meta name="description" content="Analyze keyword frequency, n-gram phrases, and content density percentages to optimize on-page SEO and prevent keyword stuffing.">
+  <meta name="keywords" content="keyword density checker, seo content analyzer, n-gram analysis, keyword stuffing, content optimizer, free online tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/keyword-density-checker/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Custom styles for Keyword Density Checker */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .kpi-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1rem;
+      text-align: center;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .kpi-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .kpi-value {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--accent);
+      font-family: var(--font-sans);
+      line-height: 1.2;
+    }
+    .kpi-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 0.35rem;
+    }
+
+    .toolbar-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .toolbar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .btn-sm {
+      padding: 0.4rem 0.85rem;
+      font-size: 0.825rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .options-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    .option-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    /* Tabs */
+    .tab-nav {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-secondary);
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+    .tab-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+    .tab-btn.active {
+      color: #ffffff;
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* Health Badges */
+    .density-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge-optimal {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .badge-low {
+      background: rgba(78, 133, 191, 0.15);
+      color: #89aacc;
+      border: 1px solid rgba(78, 133, 191, 0.3);
+    }
+    .badge-high {
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .badge-stuffing {
+      background: rgba(239, 68, 68, 0.18);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+
+    /* Legend */
+    .density-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      background: rgba(0,0,0,0.2);
+      padding: 0.65rem 0.85rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      margin-bottom: 1rem;
+      align-items: center;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* Density Table */
+    .table-container {
+      max-height: 440px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+    }
+    .density-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      text-align: left;
+    }
+    .density-table th {
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      color: var(--text-secondary);
+      font-weight: 700;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      z-index: 2;
+    }
+    .density-table td {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+    }
+    .density-table tr:hover {
+      background: rgba(255, 255, 255, 0.03);
+      cursor: pointer;
+    }
+    .density-table tr.selected {
+      background: var(--accent-glow);
+    }
+    .kw-text {
+      font-weight: 600;
+      color: var(--accent-light);
+    }
+    .density-bar-wrap {
+      width: 70px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 99px;
+      overflow: hidden;
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 0.5rem;
+    }
+    .density-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+    }
+
+    /* Highlight View Box */
+    .highlight-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      max-height: 220px;
+      overflow-y: auto;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin-top: 1rem;
+      display: none;
+    }
+    .kw-highlight {
+      background: rgba(245, 158, 11, 0.35);
+      color: #fbbf24;
+      padding: 0.1rem 0.3rem;
+      border-radius: 3px;
+      font-weight: 700;
+      border: 1px solid rgba(245, 158, 11, 0.5);
+    }
+
+    .toast-msg {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      color: var(--text-primary);
+      border: 1px solid var(--accent);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      z-index: 100;
+      font-size: 0.875rem;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .toast-msg.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,30 +296,172 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Keyword Density Checker</h1>
-        <p class="tool-description">Analyzes keyword occurrences in a body of text.</p>
+        <p class="tool-description">
+          Analyze keyword frequency, multi-word phrases, and content density percentages to optimize on-page SEO balance and avoid over-optimization penalties.
+        </p>
+      </div>
+
+      <!-- Quick KPI Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpi-words">0</div>
+          <div class="kpi-label">Total Words</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpi-chars">0</div>
+          <div class="kpi-label">Total Characters</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpi-reading-time">0 min</div>
+          <div class="kpi-label">Reading Time</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpi-unique-words">0</div>
+          <div class="kpi-label">Unique Words</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpi-sentences">0</div>
+          <div class="kpi-label">Sentences</div>
+        </div>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Keyword Density Checker</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Analyzes keyword occurrences in a body of text.</div>
-            <div><strong>Inputs:</strong> keyword, density, seo, count</div>
-            <div><strong>Category:</strong> seo</div>
+      <div class="tool-workarea split-view">
+        <!-- Left Panel: Content Input -->
+        <div class="tool-panel glass-panel">
+          <div class="toolbar-row">
+            <h2 class="panel-title" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
+              Article / Content Input
+            </h2>
+            <div class="toolbar-actions">
+              <button id="btn-sample" class="btn btn-secondary btn-sm" title="Load sample SEO article">Sample Article</button>
+              <button id="btn-paste" class="btn btn-secondary btn-sm" title="Paste text from clipboard">Paste</button>
+              <button id="btn-clear" class="btn btn-secondary btn-sm" title="Clear all text">Clear</button>
+            </div>
+          </div>
+
+          <div class="form-group" style="flex: 1;">
+            <textarea 
+              id="content-input" 
+              class="form-textarea" 
+              placeholder="Paste or write your article or web page content here for instant SEO keyword density and n-gram phrase analysis..."
+              style="min-height: 280px; font-family: var(--font-sans); line-height: 1.6;"
+            ></textarea>
+          </div>
+
+          <!-- Controls & Filters -->
+          <div class="options-card">
+            <div class="option-item">
+              <label for="min-len" style="font-weight: 600;">Min Word Length:</label>
+              <input type="number" id="min-len" min="1" max="10" value="3" class="form-input" style="width: 65px; padding: 0.35rem 0.5rem; text-align: center;">
+            </div>
+
+            <div class="option-item">
+              <label class="checkbox-label" style="font-size: 0.875rem; margin-bottom: 0;">
+                <input type="checkbox" id="toggle-stopwords" checked>
+                <span>Filter Stop Words</span>
+              </label>
+            </div>
+
+            <div class="option-item">
+              <label class="checkbox-label" style="font-size: 0.875rem; margin-bottom: 0;">
+                <input type="checkbox" id="toggle-case">
+                <span>Case Sensitive</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Interactive Highlight Preview Box -->
+          <div id="highlight-section" class="highlight-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.35rem;">
+              <span id="highlight-title" style="font-size: 0.8rem; font-weight: 700; color: var(--accent);">Highlighting: None</span>
+              <button id="btn-close-highlight" class="btn btn-secondary btn-sm" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">Clear Highlight</button>
+            </div>
+            <div id="highlight-content"></div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Panel: Keyword Frequency & Density Table -->
+        <div class="tool-panel glass-panel">
+          <div class="toolbar-row">
+            <h2 class="panel-title" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
+              Density Analysis
+            </h2>
+            <div class="toolbar-actions">
+              <button id="btn-copy-table" class="btn btn-secondary btn-sm" title="Copy table to clipboard">Copy Table</button>
+              <button id="btn-export-csv" class="btn btn-primary btn-sm" title="Export as CSV file">Export CSV</button>
+            </div>
+          </div>
+
+          <!-- N-Gram Tabs -->
+          <div class="tab-nav">
+            <button class="tab-btn active" data-tab="1">1-Word Keywords (<span id="count-tab-1">0</span>)</button>
+            <button class="tab-btn" data-tab="2">2-Word Phrases (<span id="count-tab-2">0</span>)</button>
+            <button class="tab-btn" data-tab="3">3-Word Phrases (<span id="count-tab-3">0</span>)</button>
+          </div>
+
+          <!-- Search Filter & Status Summary -->
+          <div style="display: flex; gap: 0.75rem; margin-bottom: 0.75rem;">
+            <input 
+              type="text" 
+              id="search-filter" 
+              class="form-input" 
+              placeholder="Search keywords or phrases..." 
+              style="padding: 0.5rem 0.85rem; font-size: 0.875rem;"
+            >
+          </div>
+
+          <!-- SEO Density Range Legend -->
+          <div class="density-legend">
+            <span style="font-weight: 700; color: var(--text-secondary); margin-right: 0.25rem;">Health:</span>
+            <div class="legend-item">
+              <span class="legend-dot" style="background: #89aacc;"></span>
+              <span>Low (&lt; 1%)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot" style="background: #10b981;"></span>
+              <span>Optimal (1% - 2.5%)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot" style="background: #f59e0b;"></span>
+              <span>High (2.5% - 3.5%)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot" style="background: #ef4444;"></span>
+              <span>Stuffing (&gt; 3.5%)</span>
+            </div>
+          </div>
+
+          <!-- Density Data Table -->
+          <div class="table-container">
+            <table class="density-table" id="density-table">
+              <thead>
+                <tr>
+                  <th style="width: 40%;">Keyword / Phrase</th>
+                  <th style="width: 15%; text-align: center;">Count</th>
+                  <th style="width: 25%;">Density</th>
+                  <th style="width: 20%; text-align: right;">Health</th>
+                </tr>
+              </thead>
+              <tbody id="table-body">
+                <tr>
+                  <td colspan="4" style="text-align: center; padding: 2.5rem; color: var(--text-tertiary);">
+                    No text entered. Paste content or click "Sample Article" to begin analysis.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="font-size: 0.78rem; color: var(--text-tertiary); margin-top: 0.5rem; display: flex; justify-content: space-between;">
+            <span>Click any row to highlight occurrences in text</span>
+            <span id="row-stats">0 terms found</span>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
+
+  <div id="toast" class="toast-msg"></div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,8 +473,8 @@
     "@type": "WebApplication",
     "name": "Keyword Density Checker",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/keyword-density-checker/",
-    "description": "Analyzes keyword occurrences in a body of text.",
-    "applicationCategory": "UtilityPage",
+    "description": "Analyzes keyword occurrences, n-gram phrases, and content density percentages to optimize SEO and prevent keyword stuffing.",
+    "applicationCategory": "SEOOptimizationUtility",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

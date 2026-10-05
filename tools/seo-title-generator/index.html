@@ -3,15 +3,285 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SEO Title Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your SEO Title Generator online.">
-  <meta name="keywords" content="marketing, digital, seo, free, online, tool, utility">
+  <title>SEO Title Generator - High CTR Headline Formulas & Analyzer - ALL IN ONE</title>
+  <meta name="description" content="Generate 25+ click-through-rate optimized SEO titles using proven headline formulas. Real-time character count, pixel width estimate, emotional appeal score, and power words detector.">
+  <meta name="keywords" content="seo title generator, headline analyzer, ctr title formulas, meta title generator, power words detector, google title length">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/seo-title-generator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* SEO Title Generator Workspace Styles */
+    .title-gen-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+    @media (min-width: 1024px) {
+      .title-gen-grid {
+        grid-template-columns: 420px 1fr;
+      }
+    }
+    @media (min-width: 1280px) {
+      .title-gen-grid {
+        grid-template-columns: 460px 1fr;
+      }
+    }
+
+    /* Category Filter Nav */
+    .formula-nav-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.85rem;
+    }
+    .formula-tab-btn {
+      padding: 0.4rem 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .formula-tab-btn:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .formula-tab-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+    .formula-tab-badge {
+      font-size: 0.7rem;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 0.1rem 0.4rem;
+      border-radius: var(--radius-full);
+    }
+
+    /* Search & Stats Filter Row */
+    .results-control-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Title Card */
+    .title-cards-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-height: 820px;
+      overflow-y: auto;
+      padding-right: 0.35rem;
+    }
+    .title-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem 1.25rem;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      position: relative;
+    }
+    .title-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      transform: translateY(-1px);
+    }
+    .title-card.favorite-active {
+      border-left: 3px solid #f59e0b;
+    }
+
+    .title-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    .title-heading-text {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.4;
+      cursor: pointer;
+    }
+    .title-heading-text:hover {
+      color: var(--accent);
+    }
+
+    .title-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      flex-shrink: 0;
+    }
+    .icon-action-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    .icon-action-btn:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .icon-action-btn.fav.active {
+      color: #f59e0b;
+      border-color: #f59e0b;
+      background: rgba(245, 158, 11, 0.12);
+    }
+
+    /* Diagnostics Chips & Badges */
+    .diagnostics-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.775rem;
+    }
+    .diag-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+    }
+    .diag-chip.optimal {
+      color: var(--success);
+      border-color: rgba(16, 185, 129, 0.3);
+      background: rgba(16, 185, 129, 0.08);
+    }
+    .diag-chip.warning {
+      color: var(--warning);
+      border-color: rgba(245, 158, 11, 0.3);
+      background: rgba(245, 158, 11, 0.08);
+    }
+    .diag-chip.danger {
+      color: var(--error);
+      border-color: rgba(239, 68, 68, 0.3);
+      background: rgba(239, 68, 68, 0.08);
+    }
+
+    .power-word-chip {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border: 1px solid rgba(78, 133, 191, 0.3);
+      padding: 0.15rem 0.45rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.725rem;
+      font-weight: 600;
+    }
+
+    /* Score meter ring / bar */
+    .score-meter-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .score-progress-mini {
+      width: 44px;
+      height: 6px;
+      border-radius: var(--radius-full);
+      background: var(--border);
+      overflow: hidden;
+    }
+    .score-progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: var(--radius-full);
+    }
+
+    /* Title Analyzer Sandbox / Inspector */
+    .analyzer-sandbox {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      margin-top: 1rem;
+    }
+    .analyzer-preview-box {
+      font-family: Arial, sans-serif;
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-md);
+      background: #ffffff;
+      color: #202124;
+      border: 1px solid #dadce0;
+      margin-top: 0.75rem;
+    }
+    [data-theme="dark"] .analyzer-preview-box {
+      background: #202124;
+      color: #bdc1c6;
+      border-color: #3c4043;
+    }
+    .analyzer-preview-title {
+      font-size: 18px;
+      color: #1a0dab;
+      text-decoration: none;
+      font-weight: 400;
+      line-height: 1.3;
+      display: block;
+      word-break: break-word;
+    }
+    [data-theme="dark"] .analyzer-preview-title {
+      color: #8ab4f8;
+    }
+
+    .toast-notification {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 1000;
+      background: var(--surface);
+      color: var(--text);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transform: translateY(100px);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    }
+    .toast-notification.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,30 +297,163 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>SEO Title Generator</h1>
-        <p class="tool-description">Create, analyze, and manage your SEO Title Generator online.</p>
+        <p class="tool-description">
+          Generate 25+ click-through-rate optimized SEO titles using proven formulas. Analyze character count, Google pixel width, emotional appeal, and detected power words in real time.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>SEO Title Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your SEO Title Generator online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, seo</div>
-            <div><strong>Category:</strong> seo</div>
+      <!-- Main Tool Workspace -->
+      <div class="title-gen-grid">
+        
+        <!-- Inputs & Real-time Analyzer Sidebar -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">Generator Settings</h2>
+
+          <!-- Primary Keyword -->
+          <div class="form-group">
+            <label for="input-keyword">Primary Focus Keyword *</label>
+            <input type="text" id="input-keyword" class="form-input" placeholder="e.g. Technical SEO Audit" value="Technical SEO Audit" autocomplete="off">
           </div>
+
+          <!-- Target Topic / Industry -->
+          <div class="form-group">
+            <label for="input-topic">Target Topic / Industry</label>
+            <input type="text" id="input-topic" class="form-input" placeholder="e.g. Digital Marketing, SaaS, E-Commerce" value="Digital Marketing" autocomplete="off">
+          </div>
+
+          <!-- Brand / Audience Modifier -->
+          <div class="form-group">
+            <label for="input-modifier">Secondary Modifier / Audience (Optional)</label>
+            <input type="text" id="input-modifier" class="form-input" placeholder="e.g. for Beginners, 2026, Growth Teams" value="in 2026" autocomplete="off">
+          </div>
+
+          <!-- Formula Category Selector -->
+          <div class="form-group">
+            <label for="select-formula-intent">Formula Category</label>
+            <select id="select-formula-intent" class="form-select">
+              <option value="all">All Formulas (25+ Variations)</option>
+              <option value="howto">How-To &amp; Guides</option>
+              <option value="listicle">Listicles &amp; Numbers</option>
+              <option value="comparison">Comparison &amp; Versus</option>
+              <option value="questions">Questions &amp; Curiosity</option>
+              <option value="ultimate">Ultimate Guides</option>
+              <option value="year2026">Year 2026 &amp; Trends</option>
+              <option value="clickmagnet">Click Magnets &amp; Power Words</option>
+            </select>
+          </div>
+
+          <!-- Quick Samples Selector -->
+          <div class="form-group">
+            <label>Sample Keyword Presets</label>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
+              <button class="preset-btn" data-kw="Technical SEO Audit" data-topic="Digital Marketing" data-mod="in 2026">Technical SEO</button>
+              <button class="preset-btn" data-kw="Email Marketing Automation" data-topic="E-Commerce" data-mod="for Beginners">Email Automation</button>
+              <button class="preset-btn" data-kw="Remote Work Productivity" data-topic="SaaS & Startups" data-mod="Proven Hacks">Remote Work</button>
+              <button class="preset-btn" data-kw="Best Running Shoes" data-topic="Fitness & Marathon" data-mod="Tested & Ranked">Running Shoes</button>
+            </div>
+          </div>
+
+          <!-- Generate Action -->
+          <button id="btn-generate-titles" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            Generate SEO Titles
+          </button>
+
+          <!-- Real-Time Title Analyzer Sandbox -->
+          <div class="analyzer-sandbox">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin: 0;">Interactive Title Inspector</h3>
+              <span id="sandbox-badge" class="diag-chip optimal">52 chars</span>
+            </div>
+            <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 0.35rem 0 0.65rem 0;">
+              Click any generated title to test, tweak words, and inspect live metrics.
+            </p>
+            <input type="text" id="sandbox-title-input" class="form-input" style="font-size: 0.875rem;" value="The Ultimate Technical SEO Audit Guide in 2026">
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.65rem;">
+              <div style="background: var(--bg-secondary); padding: 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <div style="font-size: 0.7rem; color: var(--text-tertiary);">PIXEL WIDTH (MAX 600)</div>
+                <div id="sandbox-px-val" style="font-size: 1rem; font-weight: 700; color: var(--text-primary);">495 px</div>
+              </div>
+              <div style="background: var(--bg-secondary); padding: 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <div style="font-size: 0.7rem; color: var(--text-tertiary);">EMOTIONAL APPEAL</div>
+                <div id="sandbox-score-val" style="font-size: 1rem; font-weight: 700; color: var(--success);">88% High</div>
+              </div>
+            </div>
+
+            <div style="margin-top: 0.65rem;">
+              <div style="font-size: 0.7rem; color: var(--text-tertiary); margin-bottom: 0.25rem;">DETECTED POWER WORDS:</div>
+              <div id="sandbox-power-words" style="display: flex; flex-wrap: wrap; gap: 0.35rem;">
+                <span class="power-word-chip">Ultimate</span>
+                <span class="power-word-chip">Guide</span>
+              </div>
+            </div>
+
+            <!-- Mini SERP Preview -->
+            <div class="analyzer-preview-box">
+              <span style="font-size: 11px; color: #4d5156; display: block; margin-bottom: 2px;">example.com › guides</span>
+              <a id="sandbox-serp-link" class="analyzer-preview-title" href="javascript:void(0);">The Ultimate Technical SEO Audit Guide in 2026</a>
+            </div>
+
+            <button id="btn-copy-sandbox-title" class="btn btn-secondary" style="width: 100%; margin-top: 0.65rem; padding: 0.4rem; font-size: 0.8rem;">
+              Copy Inspected Title
+            </button>
+          </div>
+
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Generated Results Column -->
+        <div class="tool-panel glass-panel">
+          
+          <!-- Category Filter Tabs -->
+          <div class="formula-nav-tabs">
+            <button class="formula-tab-btn active" data-cat="all">All <span class="formula-tab-badge" id="count-all">28</span></button>
+            <button class="formula-tab-btn" data-cat="howto">How-To <span class="formula-tab-badge" id="count-howto">5</span></button>
+            <button class="formula-tab-btn" data-cat="listicle">Listicles <span class="formula-tab-badge" id="count-listicle">5</span></button>
+            <button class="formula-tab-btn" data-cat="comparison">Comparison <span class="formula-tab-badge" id="count-comparison">4</span></button>
+            <button class="formula-tab-btn" data-cat="questions">Questions <span class="formula-tab-badge" id="count-questions">4</span></button>
+            <button class="formula-tab-btn" data-cat="ultimate">Ultimate <span class="formula-tab-badge" id="count-ultimate">4</span></button>
+            <button class="formula-tab-btn" data-cat="year2026">2026 <span class="formula-tab-badge" id="count-year2026">4</span></button>
+            <button class="formula-tab-btn" data-cat="clickmagnet">Power Words <span class="formula-tab-badge" id="count-clickmagnet">5</span></button>
+            <button class="formula-tab-btn" data-cat="favorites">⭐ Saved <span class="formula-tab-badge" id="count-favorites">0</span></button>
+          </div>
+
+          <!-- Search & Action Bar -->
+          <div class="results-control-bar">
+            <div style="flex: 1; min-width: 200px; max-width: 340px;">
+              <input type="text" id="input-search-titles" class="form-input" style="padding: 0.45rem 0.85rem; font-size: 0.85rem;" placeholder="Filter titles by keyword...">
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button id="btn-copy-all-titles" class="btn btn-primary" style="padding: 0.45rem 0.85rem; font-size: 0.8rem;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy All Titles
+              </button>
+              <button id="btn-export-csv" class="btn btn-secondary" style="padding: 0.45rem 0.85rem; font-size: 0.8rem;">
+                Export CSV
+              </button>
+              <button id="btn-export-txt" class="btn btn-secondary" style="padding: 0.45rem 0.85rem; font-size: 0.8rem;">
+                Export TXT
+              </button>
+            </div>
+          </div>
+
+          <!-- Cards List -->
+          <div id="title-cards-list" class="title-cards-list">
+            <!-- Dynamically populated title cards -->
+          </div>
+
+        </div>
+
       </div>
-    
     </div>
   </main>
+
+  <!-- Toast Feedback -->
+  <div id="toast" class="toast-notification">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#10b981" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span id="toast-message">Title copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,8 +465,8 @@
     "@type": "WebApplication",
     "name": "SEO Title Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/seo-title-generator/",
-    "description": "Create, analyze, and manage your SEO Title Generator online.",
-    "applicationCategory": "UtilityPage",
+    "description": "Generate high click-through-rate SEO title tags with instant Google pixel width estimation, emotional score calculation, and power words detection.",
+    "applicationCategory": "SEOApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

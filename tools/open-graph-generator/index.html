@@ -3,15 +3,997 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Open Graph Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your Open Graph Generator online.">
-  <meta name="keywords" content="marketing, digital, seo, free, online, tool, utility">
+  <title>Open Graph Generator & Social Card Studio - ALL IN ONE</title>
+  <meta name="description" content="Generate and preview Open Graph and Twitter Card meta tags with live multi-platform previews for Facebook, Twitter / X, LinkedIn, Discord, and Slack.">
+  <meta name="keywords" content="open graph generator, og meta tags, twitter card generator, social card preview, facebook card, linkedin preview, discord embed, seo tools">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/open-graph-generator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Open Graph Studio Styles */
+    .og-studio-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      .og-studio-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Preset Toolbar */
+    .presets-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.5rem;
+    }
+
+    .preset-label {
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-right: 0.25rem;
+    }
+
+    .preset-pill {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-family: inherit;
+    }
+
+    .preset-pill:hover {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+
+    /* Form Sections */
+    .field-row-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 640px) {
+      .field-row-split {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .field-header-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.25rem;
+    }
+
+    .char-counter {
+      font-size: 0.75rem;
+      font-family: monospace;
+      color: var(--text-tertiary);
+      transition: color 0.2s ease;
+    }
+
+    .char-counter.optimal {
+      color: var(--success);
+    }
+
+    .char-counter.warning {
+      color: var(--warning);
+    }
+
+    .char-counter.danger {
+      color: var(--error);
+    }
+
+    .char-meter-track {
+      width: 100%;
+      height: 3px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-top: 0.35rem;
+    }
+
+    .char-meter-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width 0.2s ease, background-color 0.2s ease;
+    }
+
+    /* Image Validator Card */
+    .image-validator-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      margin-top: 0.75rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      position: relative;
+    }
+
+    .validator-thumb-box {
+      width: 100px;
+      height: 60px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .validator-thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .validator-details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .validator-stat-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      font-size: 0.8rem;
+    }
+
+    .validator-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-optimal {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-acceptable {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .badge-warning {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--error);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .validator-advice {
+      font-size: 0.78rem;
+      color: var(--text-tertiary);
+      line-height: 1.4;
+    }
+
+    /* Platform Preview Tabs */
+    .preview-tabs-nav {
+      display: flex;
+      gap: 0.35rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.25rem;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    .preview-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.85rem;
+      border-radius: var(--radius-md);
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+      font-family: inherit;
+    }
+
+    .preview-tab-btn:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .preview-tab-btn.active {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    .preview-tab-btn svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    /* Platform Mockup Stage */
+    .mockup-stage {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      min-height: 340px;
+    }
+
+    /* Platform: Facebook Feed Post */
+    .fb-card-wrap {
+      background: #242526;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #e4e6eb;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+
+    .fb-header {
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .fb-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1877f2, #00c6ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .fb-user-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .fb-user-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: #e4e6eb;
+    }
+
+    .fb-post-time {
+      font-size: 12px;
+      color: #b0b3b8;
+    }
+
+    .fb-caption {
+      padding: 0 16px 12px;
+      font-size: 14px;
+      color: #e4e6eb;
+      line-height: 1.4;
+    }
+
+    .fb-link-card {
+      background: #3a3b3c;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      cursor: pointer;
+      display: block;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .fb-link-card:hover {
+      background: #444547;
+    }
+
+    .fb-card-image-wrap {
+      width: 100%;
+      aspect-ratio: 1.91 / 1;
+      background: #18191a;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .fb-card-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .fb-card-content {
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .fb-card-domain {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #b0b3b8;
+      letter-spacing: 0.04em;
+    }
+
+    .fb-card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #e4e6eb;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .fb-card-desc {
+      font-size: 13px;
+      color: #b0b3b8;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .fb-reactions-bar {
+      padding: 8px 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: space-around;
+      font-size: 13px;
+      color: #b0b3b8;
+      font-weight: 600;
+    }
+
+    /* Platform: Twitter / X Card */
+    .x-card-wrap {
+      background: #000000;
+      border: 1px solid #2f3336;
+      border-radius: 16px;
+      padding: 16px;
+      color: #e7e9ea;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+
+    .x-header {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .x-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #1d9bf0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .x-user-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 15px;
+    }
+
+    .x-display-name {
+      font-weight: 700;
+      color: #e7e9ea;
+    }
+
+    .x-handle {
+      color: #71767b;
+    }
+
+    .x-caption {
+      font-size: 15px;
+      color: #e7e9ea;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    /* X Large Summary Card */
+    .x-media-card {
+      border: 1px solid #2f3336;
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .x-media-card:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .x-large-image-wrap {
+      width: 100%;
+      aspect-ratio: 1.91 / 1;
+      background: #16181c;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .x-domain-pill {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #e7e9ea;
+    }
+
+    .x-large-text-box {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .x-card-domain {
+      font-size: 13px;
+      color: #71767b;
+    }
+
+    .x-card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #e7e9ea;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .x-card-desc {
+      font-size: 14px;
+      color: #71767b;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* X Small Summary Card */
+    .x-summary-card {
+      display: flex;
+      border: 1px solid #2f3336;
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .x-summary-thumb {
+      width: 130px;
+      height: 130px;
+      flex-shrink: 0;
+      background: #16181c;
+      overflow: hidden;
+    }
+
+    .x-summary-details {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .x-actions-bar {
+      display: flex;
+      justify-content: space-between;
+      color: #71767b;
+      font-size: 13px;
+      margin-top: 12px;
+      padding: 0 8px;
+    }
+
+    /* Platform: LinkedIn Post */
+    .li-card-wrap {
+      background: #1b1f23;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+
+    .li-header {
+      padding: 12px 16px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .li-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0a66c2, #004182);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 17px;
+      flex-shrink: 0;
+    }
+
+    .li-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .li-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .li-sub {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .li-caption {
+      padding: 0 16px 12px;
+      font-size: 14px;
+      color: #ffffff;
+      line-height: 1.4;
+    }
+
+    .li-media-card {
+      background: #282d33;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      cursor: pointer;
+    }
+
+    .li-image-wrap {
+      width: 100%;
+      aspect-ratio: 1.91 / 1;
+      background: #111417;
+      overflow: hidden;
+    }
+
+    .li-details {
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .li-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .li-domain {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .li-footer {
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 600;
+    }
+
+    /* Platform: Discord Rich Embed */
+    .discord-card-wrap {
+      background: #313338;
+      border-radius: 8px;
+      padding: 16px;
+      color: #dbdee1;
+      font-family: "gg sans", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+
+    .discord-msg-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .discord-bot-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #5865f2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .discord-bot-name {
+      font-weight: 600;
+      color: #f2f3f5;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .discord-bot-badge {
+      background: #5865f2;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+
+    .discord-timestamp {
+      font-size: 12px;
+      color: #949ba4;
+    }
+
+    .discord-embed-box {
+      background: #2b2d31;
+      border-left: 4px solid #5865f2;
+      border-radius: 4px;
+      padding: 12px 16px;
+      max-width: 520px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .discord-site-name {
+      font-size: 12px;
+      color: #b5bac1;
+      font-weight: 500;
+    }
+
+    .discord-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #00a8fc;
+      text-decoration: none;
+      line-height: 1.3;
+    }
+
+    .discord-title:hover {
+      text-decoration: underline;
+    }
+
+    .discord-desc {
+      font-size: 14px;
+      color: #dbdee1;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .discord-image-wrap {
+      width: 100%;
+      aspect-ratio: 1.91 / 1;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 4px;
+      background: #1e1f22;
+    }
+
+    /* Platform: Slack Link Unfurl */
+    .slack-card-wrap {
+      background: #1a1d21;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 16px;
+      color: #d1d2d3;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+
+    .slack-msg-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .slack-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 4px;
+      background: #4a154b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .slack-bot-name {
+      font-weight: 700;
+      color: #f8f8f8;
+      font-size: 14px;
+    }
+
+    .slack-time {
+      font-size: 12px;
+      color: #868686;
+    }
+
+    .slack-unfurl-box {
+      border-left: 4px solid #36c5f0;
+      padding-left: 12px;
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-width: 520px;
+    }
+
+    .slack-site-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #868686;
+      font-weight: 600;
+    }
+
+    .slack-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #36c5f0;
+      text-decoration: none;
+      line-height: 1.3;
+    }
+
+    .slack-title:hover {
+      text-decoration: underline;
+    }
+
+    .slack-desc {
+      font-size: 13px;
+      color: #d1d2d3;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .slack-image-wrap {
+      width: 100%;
+      aspect-ratio: 1.91 / 1;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-top: 4px;
+      background: #222529;
+    }
+
+    /* Syntax Highlighting & Code Output */
+    .code-editor-box {
+      position: relative;
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .code-editor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8rem;
+    }
+
+    .code-tabs-nav {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .code-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+      font-family: inherit;
+    }
+
+    .code-tab-btn.active {
+      color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .code-content-pre {
+      padding: 1rem;
+      margin: 0;
+      overflow-x: auto;
+      font-family: "JetBrains Mono", "Fira Code", Consolas, Monaco, monospace;
+      font-size: 0.825rem;
+      line-height: 1.55;
+      color: #e6edf3;
+      max-height: 380px;
+      scrollbar-width: thin;
+    }
+
+    /* Syntax tokens */
+    .hl-tag-bracket { color: #7ee787; }
+    .hl-tag { color: #7ee787; font-weight: 600; }
+    .hl-attr { color: #79c0ff; }
+    .hl-val { color: #a5d6ff; }
+    .hl-comment { color: #8b949e; font-style: italic; }
+
+    /* Meta Health Check Bar */
+    .meta-checklist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .meta-check-item {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .check-icon-valid {
+      color: var(--success);
+    }
+
+    .check-icon-missing {
+      color: var(--error);
+      opacity: 0.5;
+    }
+
+    /* Global Toast */
+    .app-toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--accent);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 15px var(--accent-glow);
+      color: var(--text-primary);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      z-index: 9999;
+      transform: translateY(100px);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .app-toast.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Guide & FAQ Sections */
+    .guide-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .guide-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .guide-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .guide-card p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,31 +1008,541 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Open Graph Generator</h1>
-        <p class="tool-description">Create, analyze, and manage your Open Graph Generator online.</p>
+        <h1>Open Graph & Social Card Studio</h1>
+        <p class="tool-description">
+          Generate, validate, and preview Open Graph &amp; Twitter Card meta tags with live multi-platform simulations for Facebook, Twitter / X, LinkedIn, Discord, and Slack.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Open Graph Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
+      <!-- Quick Preset Selector Bar -->
+      <div class="presets-bar">
+        <span class="preset-label">Templates:</span>
+        <button id="preset-saas" class="preset-pill" type="button">
+          <span>🚀</span> SaaS Launch
+        </button>
+        <button id="preset-article" class="preset-pill" type="button">
+          <span>📰</span> Tech Article
+        </button>
+        <button id="preset-product" class="preset-pill" type="button">
+          <span>🛍️</span> E-Commerce Product
+        </button>
+        <button id="preset-portfolio" class="preset-pill" type="button">
+          <span>👤</span> Portfolio Profile
+        </button>
+        <button id="preset-reset" class="preset-pill" type="button" style="margin-left: auto;">
+          <span>🔄</span> Reset Clean
+        </button>
+      </div>
+
+      <!-- Main Studio Workspace Grid -->
+      <div class="og-studio-layout">
+        
+        <!-- Left Column: Input Form & Validation -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+            Metadata Configuration
+          </div>
+
+          <!-- Page Title Input -->
+          <div class="form-group">
+            <div class="field-header-info">
+              <label for="og-title">Page Title (og:title)</label>
+              <span id="og-title-count" class="char-counter">0 / 60 chars</span>
+            </div>
+            <input type="text" id="og-title" class="form-input" placeholder="e.g. DevFlow - Autonomous AI Engineering Platform" value="DevFlow - Autonomous AI Engineering Platform">
+            <div class="char-meter-track">
+              <div id="og-title-bar" class="char-meter-bar"></div>
+            </div>
+          </div>
+
+          <!-- Description Input -->
+          <div class="form-group">
+            <div class="field-header-info">
+              <label for="og-desc">Description (og:description)</label>
+              <span id="og-desc-count" class="char-counter">0 / 160 chars</span>
+            </div>
+            <textarea id="og-desc" class="form-textarea" style="min-height: 80px;" placeholder="Summarize your page value proposition for social feeds and search crawlers...">Supercharge software development with autonomous agentic workflows, instant web environments, and real-time observability.</textarea>
+            <div class="char-meter-track">
+              <div id="og-desc-bar" class="char-meter-bar"></div>
+            </div>
+          </div>
+
+          <!-- Canonical URL & Site Name -->
+          <div class="field-row-split">
+            <div class="form-group">
+              <label for="og-url">Canonical URL (og:url)</label>
+              <input type="url" id="og-url" class="form-input" placeholder="https://example.com/page" value="https://devflow.ai/studio">
+            </div>
+            <div class="form-group">
+              <label for="og-site-name">Site Name (og:site_name)</label>
+              <input type="text" id="og-site-name" class="form-input" placeholder="e.g. DevFlow" value="DevFlow Inc.">
+            </div>
+          </div>
+
+          <!-- Content Type Selector -->
+          <div class="field-row-split">
+            <div class="form-group">
+              <label for="og-type">Content Type (og:type)</label>
+              <select id="og-type" class="form-select">
+                <option value="website" selected>website (Default)</option>
+                <option value="article">article (Blog / News)</option>
+                <option value="product">product (E-Commerce)</option>
+                <option value="video.movie">video (Media / Streaming)</option>
+                <option value="profile">profile (Personal / Bio)</option>
+                <option value="book">book (Publication)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="og-locale">Locale (og:locale)</label>
+              <select id="og-locale" class="form-select">
+                <option value="en_US" selected>en_US (English US)</option>
+                <option value="en_GB">en_GB (English UK)</option>
+                <option value="es_ES">es_ES (Spanish)</option>
+                <option value="fr_FR">fr_FR (French)</option>
+                <option value="de_DE">de_DE (German)</option>
+                <option value="ja_JP">ja_JP (Japanese)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Conditional Article Fields -->
+          <div id="article-fields-container" style="display: none; background: var(--bg-secondary); border: 1px dashed var(--border); border-radius: var(--radius-md); padding: 1rem; margin-top: -0.25rem;">
+            <div style="font-size: 0.825rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Article Metadata</div>
+            <div class="field-row-split">
+              <div class="form-group">
+                <label for="article-author">Author (article:author)</label>
+                <input type="text" id="article-author" class="form-input" placeholder="e.g. Dr. Jane Doe" value="Sami Saif">
+              </div>
+              <div class="form-group">
+                <label for="article-published">Published Date</label>
+                <input type="date" id="article-published" class="form-input">
+              </div>
+            </div>
+          </div>
+
+          <!-- Social Image & Dimension Validator -->
+          <div class="form-group">
+            <div class="field-header-info">
+              <label for="og-image">Social Card Image URL (og:image)</label>
+              <button id="upload-local-img-btn" type="button" class="btn btn-secondary" style="padding: 0.2rem 0.6rem; font-size: 0.75rem;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                Upload File
+              </button>
+              <input type="file" id="local-img-input" accept="image/png, image/jpeg, image/webp, image/gif" style="display: none;">
+            </div>
+            <input type="url" id="og-image" class="form-input" placeholder="https://example.com/assets/social-card.png" value="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&h=630&fit=crop&q=80">
+            
+            <!-- Real-time Image Validator Box -->
+            <div class="image-validator-card" id="image-validator-box">
+              <div class="validator-thumb-box">
+                <img id="validator-thumb" class="validator-thumb-img" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&h=630&fit=crop&q=80" alt="Card Preview">
+              </div>
+              <div class="validator-details">
+                <div class="validator-stat-row">
+                  <span id="img-dim-badge" class="validator-badge badge-optimal">1200 × 630 px</span>
+                  <span id="img-ratio-badge" style="color: var(--text-secondary); font-family: monospace;">1.91:1 Ratio</span>
+                </div>
+                <p id="img-feedback-text" class="validator-advice">
+                  Optimal dimension for standard social previews across FB, X, and LinkedIn.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Twitter Card Parameters -->
+          <div style="border-top: 1px solid var(--border); padding-top: 1rem; margin-top: 0.5rem;">
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+              Twitter / X Card Parameters
+            </div>
+            
+            <div class="field-row-split">
+              <div class="form-group">
+                <label for="twitter-card-type">Card Display Type</label>
+                <select id="twitter-card-type" class="form-select">
+                  <option value="summary_large_image" selected>summary_large_image (Full Banner)</option>
+                  <option value="summary">summary (Compact Square)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="twitter-site">Site Handle (@site)</label>
+                <input type="text" id="twitter-site" class="form-input" placeholder="@yourbrand" value="@devflow_ai">
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 0.75rem;">
+              <label for="twitter-creator">Author / Creator Handle (@creator)</label>
+              <input type="text" id="twitter-creator" class="form-input" placeholder="@authorhandle" value="@lead_architect">
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Live Multi-Platform Previews & Generated Code -->
+        <div class="tool-panel glass-panel">
+          
+          <!-- Live Preview Stage with Platform Tabs -->
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <div class="panel-title" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                Live Social Card Preview
+              </div>
+              <span class="badge" style="font-size: 0.7rem;">Pixel-Accurate</span>
+            </div>
+
+            <!-- Platform Tabs -->
+            <div class="preview-tabs-nav" role="tablist">
+              <button class="preview-tab-btn active" data-platform="facebook" type="button">
+                <svg viewBox="0 0 24 24" fill="#1877F2">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+                Facebook
+              </button>
+              <button class="preview-tab-btn" data-platform="twitter" type="button">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+                Twitter / X
+              </button>
+              <button class="preview-tab-btn" data-platform="linkedin" type="button">
+                <svg viewBox="0 0 24 24" fill="#0A66C2">
+                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                </svg>
+                LinkedIn
+              </button>
+              <button class="preview-tab-btn" data-platform="discord" type="button">
+                <svg viewBox="0 0 24 24" fill="#5865F2">
+                  <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.893.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                </svg>
+                Discord
+              </button>
+              <button class="preview-tab-btn" data-platform="slack" type="button">
+                <svg viewBox="0 0 24 24" fill="#E01E5A">
+                  <path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"/>
+                </svg>
+                Slack
+              </button>
+            </div>
+
+            <!-- Previews Container -->
+            <div class="mockup-stage">
+              
+              <!-- 1. Facebook Mockup -->
+              <div id="mockup-facebook" class="fb-card-wrap">
+                <div class="fb-header">
+                  <div class="fb-avatar" id="fb-avatar-letter">D</div>
+                  <div class="fb-user-info">
+                    <span class="fb-user-name" id="fb-user-name">DevFlow Inc.</span>
+                    <span class="fb-post-time">Just now · 🌐</span>
+                  </div>
+                </div>
+                <div class="fb-caption">
+                  Explore our latest announcement and see what’s new:
+                </div>
+                <div class="fb-link-card">
+                  <div class="fb-card-image-wrap">
+                    <img id="fb-card-img" class="fb-card-image" src="" alt="Facebook Card Preview">
+                  </div>
+                  <div class="fb-card-content">
+                    <span class="fb-card-domain" id="fb-card-domain">DEVFLOW.AI</span>
+                    <span class="fb-card-title" id="fb-card-title">DevFlow - Autonomous AI Engineering Platform</span>
+                    <span class="fb-card-desc" id="fb-card-desc">Supercharge software development with autonomous agentic workflows...</span>
+                  </div>
+                </div>
+                <div class="fb-reactions-bar">
+                  <span>👍 Like</span>
+                  <span>💬 Comment</span>
+                  <span>↗️ Share</span>
+                </div>
+              </div>
+
+              <!-- 2. Twitter / X Mockup -->
+              <div id="mockup-twitter" class="x-card-wrap" style="display: none;">
+                <div class="x-header">
+                  <div class="x-avatar" id="x-avatar-letter">D</div>
+                  <div>
+                    <div class="x-user-row">
+                      <span class="x-display-name" id="x-display-name">DevFlow Inc.</span>
+                      <span class="x-handle" id="x-handle">@devflow_ai</span>
+                      <span class="x-handle">· Just now</span>
+                    </div>
+                    <div class="x-caption">
+                      Excited to announce our newest rollout! Check it out below 👇
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Twitter Large Image View -->
+                <div id="x-large-container" class="x-media-card">
+                  <div class="x-large-image-wrap">
+                    <img id="x-card-img-large" style="width: 100%; height: 100%; object-fit: cover;" src="" alt="Twitter Large Card">
+                    <div class="x-domain-pill" id="x-domain-badge">devflow.ai</div>
+                  </div>
+                  <div class="x-large-text-box">
+                    <div class="x-card-domain" id="x-card-domain">devflow.ai</div>
+                    <div class="x-card-title" id="x-card-title">DevFlow - Autonomous AI Engineering Platform</div>
+                    <div class="x-card-desc" id="x-card-desc">Supercharge software development with autonomous agentic workflows...</div>
+                  </div>
+                </div>
+
+                <!-- Twitter Small Summary View -->
+                <div id="x-summary-container" class="x-summary-card" style="display: none;">
+                  <div class="x-summary-thumb">
+                    <img id="x-card-img-small" style="width: 100%; height: 100%; object-fit: cover;" src="" alt="Twitter Summary Card">
+                  </div>
+                  <div class="x-summary-details">
+                    <div class="x-card-domain" id="x-summary-domain">devflow.ai</div>
+                    <div class="x-card-title" id="x-summary-title">DevFlow - Autonomous AI Engineering Platform</div>
+                    <div class="x-card-desc" id="x-summary-desc">Supercharge software development...</div>
+                  </div>
+                </div>
+
+                <div class="x-actions-bar">
+                  <span>💬 24</span>
+                  <span>🔄 89</span>
+                  <span>❤️ 340</span>
+                  <span>📊 12.4K</span>
+                  <span>🔖</span>
+                  <span>📤</span>
+                </div>
+              </div>
+
+              <!-- 3. LinkedIn Mockup -->
+              <div id="mockup-linkedin" class="li-card-wrap" style="display: none;">
+                <div class="li-header">
+                  <div class="li-avatar" id="li-avatar-letter">D</div>
+                  <div class="li-info">
+                    <span class="li-name" id="li-company-name">DevFlow Inc.</span>
+                    <span class="li-sub">12,500 followers • Promoted</span>
+                  </div>
+                </div>
+                <div class="li-caption">
+                  We are thrilled to unveil our latest capabilities. Explore the full breakdown:
+                </div>
+                <div class="li-media-card">
+                  <div class="li-image-wrap">
+                    <img id="li-card-img" style="width: 100%; height: 100%; object-fit: cover;" src="" alt="LinkedIn Preview">
+                  </div>
+                  <div class="li-details">
+                    <div class="li-title" id="li-card-title">DevFlow - Autonomous AI Engineering Platform</div>
+                    <div class="li-domain" id="li-card-domain">devflow.ai</div>
+                  </div>
+                </div>
+                <div class="li-footer">
+                  <span>👍 Like</span>
+                  <span>💬 Comment</span>
+                  <span>🔁 Repost</span>
+                  <span>📤 Send</span>
+                </div>
+              </div>
+
+              <!-- 4. Discord Mockup -->
+              <div id="mockup-discord" class="discord-card-wrap" style="display: none;">
+                <div class="discord-msg-header">
+                  <div class="discord-bot-avatar">🤖</div>
+                  <div>
+                    <span class="discord-bot-name">
+                      Social Link Preview <span class="discord-bot-badge">APP</span>
+                    </span>
+                    <span class="discord-timestamp">Today at 12:45 PM</span>
+                  </div>
+                </div>
+                <div class="discord-embed-box">
+                  <span class="discord-site-name" id="discord-site-name">DevFlow Inc.</span>
+                  <a href="#" class="discord-title" id="discord-card-title">DevFlow - Autonomous AI Engineering Platform</a>
+                  <p class="discord-desc" id="discord-card-desc">Supercharge software development with autonomous agentic workflows...</p>
+                  <div class="discord-image-wrap">
+                    <img id="discord-card-img" style="width: 100%; height: 100%; object-fit: cover;" src="" alt="Discord Embed">
+                  </div>
+                </div>
+              </div>
+
+              <!-- 5. Slack Mockup -->
+              <div id="mockup-slack" class="slack-card-wrap" style="display: none;">
+                <div class="slack-msg-header">
+                  <div class="slack-avatar">#</div>
+                  <div>
+                    <span class="slack-bot-name">workspace-bot</span>
+                    <span class="slack-time">12:45 PM</span>
+                  </div>
+                </div>
+                <div class="slack-unfurl-box">
+                  <div class="slack-site-row">
+                    <span>🌐</span>
+                    <span id="slack-site-name">DevFlow Inc.</span>
+                  </div>
+                  <a href="#" class="slack-title" id="slack-card-title">DevFlow - Autonomous AI Engineering Platform</a>
+                  <p class="slack-desc" id="slack-card-desc">Supercharge software development with autonomous agentic workflows...</p>
+                  <div class="slack-image-wrap">
+                    <img id="slack-card-img" style="width: 100%; height: 100%; object-fit: cover;" src="" alt="Slack Unfurl">
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Generated Meta Tags Code Stage -->
+          <div style="margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <div class="panel-title" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="16 18 22 12 16 6"></polyline>
+                  <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+                Generated Meta Tags
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button id="copy-all-tags-btn" class="btn btn-primary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;" type="button">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  Copy All
+                </button>
+                <button id="download-tags-btn" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;" type="button" title="Download HTML snippet">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Code Editor Box -->
+            <div class="code-editor-box">
+              <div class="code-editor-header">
+                <div class="code-tabs-nav">
+                  <button id="code-tab-full" class="code-tab-btn active" type="button">HTML Head Block</button>
+                  <button id="code-tab-og" class="code-tab-btn" type="button">OG Only</button>
+                  <button id="code-tab-twitter" class="code-tab-btn" type="button">Twitter Only</button>
+                  <button id="code-tab-jsonld" class="code-tab-btn" type="button">JSON-LD</button>
+                </div>
+                <span id="meta-tag-count" style="color: var(--text-tertiary); font-family: monospace;">14 tags</span>
+              </div>
+              <pre class="code-content-pre"><code id="code-output"></code></pre>
+            </div>
+
+            <!-- Meta Health Check Badges -->
+            <div class="meta-checklist-grid">
+              <div class="meta-check-item">
+                <span id="check-title" class="check-icon-valid">●</span> og:title
+              </div>
+              <div class="meta-check-item">
+                <span id="check-desc" class="check-icon-valid">●</span> og:description
+              </div>
+              <div class="meta-check-item">
+                <span id="check-image" class="check-icon-valid">●</span> og:image
+              </div>
+              <div class="meta-check-item">
+                <span id="check-url" class="check-icon-valid">●</span> og:url
+              </div>
+              <div class="meta-check-item">
+                <span id="check-twitter-card" class="check-icon-valid">●</span> twitter:card
+              </div>
+              <div class="meta-check-item">
+                <span id="check-twitter-site" class="check-icon-valid">●</span> twitter:site
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Educational & Technical Guide Cards -->
+      <div style="margin-top: 3rem;">
+        <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">
+          Open Graph &amp; Social Metadata Master Guide
+        </h2>
+        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1.5rem;">
+          Master how modern social media platforms, messaging applications, and search crawlers parse rich media cards.
         </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your Open Graph Generator online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, seo</div>
-            <div><strong>Category:</strong> seo</div>
+
+        <div class="guide-card-grid">
+          <div class="guide-card">
+            <h3>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+              Optimal Image Dimension: 1200 × 630 px
+            </h3>
+            <p>
+              Facebook, Twitter / X, and LinkedIn all standardize on a <strong>1.91:1 aspect ratio</strong>. Providing an image of exactly 1200&times;630px guarantees crisp rendering on high-DPI Retina screens without auto-cropping or blurry letterboxing.
+            </p>
+          </div>
+
+          <div class="guide-card">
+            <h3>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+              Character Limits &amp; Truncation
+            </h3>
+            <p>
+              Keep <code>og:title</code> between <strong>40 and 60 characters</strong> to prevent ellipsis truncation across mobile timelines. Aim for <strong>100 to 160 characters</strong> for <code>og:description</code> to balance descriptive clarity with concise readability.
+            </p>
+          </div>
+
+          <div class="guide-card">
+            <h3>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                <polyline points="17 6 23 6 23 12"></polyline>
+              </svg>
+              Impact on Organic CTR &amp; Engagement
+            </h3>
+            <p>
+              Pages equipped with complete Open Graph &amp; Twitter Card tags experience up to <strong>40% higher click-through rates</strong> when shared on X, LinkedIn, Discord, and Slack compared to generic raw links.
+            </p>
+          </div>
+
+          <div class="guide-card">
+            <h3>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 14 14"></polyline>
+              </svg>
+              Crawler Cache Invalidation
+            </h3>
+            <p>
+              Social platforms cache preview tags aggressively for days. When updating meta tags on existing URLs, force refresh using official crawlers: <strong>Facebook Sharing Debugger</strong>, <strong>LinkedIn Post Inspector</strong>, and <strong>Twitter Card Validator</strong>.
+            </p>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Global Toast Notification -->
+  <div id="app-toast" class="app-toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span id="toast-message">Copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -60,10 +1552,10 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Open Graph Generator",
+    "name": "Open Graph Generator & Social Card Studio",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/open-graph-generator/",
-    "description": "Create, analyze, and manage your Open Graph Generator online.",
-    "applicationCategory": "UtilityPage",
+    "description": "Generate, validate, and preview Open Graph and Twitter Card meta tags with multi-platform live previews.",
+    "applicationCategory": "SEO",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

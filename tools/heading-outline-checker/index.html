@@ -3,15 +3,252 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Heading Outline Extractor - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Lists all H1-H6 tags in order to audit page hierarchy.">
-  <meta name="keywords" content="heading, h1, outline, hierarchy, audit, free, online, tool, utility">
+  <title>Heading Outline Checker - On-Page SEO Heading Auditor - ALL IN ONE</title>
+  <meta name="description" content="Audit on-page heading structure (H1-H6), detect skipped levels, verify character length, and inspect SEO hierarchy flow.">
+  <meta name="keywords" content="heading outline checker, h1 checker, seo heading hierarchy, heading tags auditor, skipped heading levels, on-page seo audit">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/heading-outline-checker/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Heading Outline Checker Specific Styles */
+    .kpi-grid-headings {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .kpi-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1rem;
+      text-align: center;
+      transition: var(--transition);
+      position: relative;
+    }
+    .kpi-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .kpi-value {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+    .kpi-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 0.35rem;
+    }
+    .kpi-score-badge {
+      font-size: 1.85rem;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .toolbar-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .toolbar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .btn-sm {
+      padding: 0.4rem 0.85rem;
+      font-size: 0.825rem;
+      border-radius: var(--radius-sm);
+    }
+
+    /* SEO Audit Checklist */
+    .checklist-container {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      margin-top: 1.25rem;
+    }
+    .checklist-title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .checklist-items {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+    .check-icon {
+      font-weight: 800;
+      font-size: 0.95rem;
+      line-height: 1;
+      margin-top: 1px;
+    }
+    .check-pass { color: #10b981; }
+    .check-warn { color: #f59e0b; }
+    .check-fail { color: #ef4444; }
+
+    /* Visual Heading Tree */
+    .tree-scroll-container {
+      max-height: 520px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .tree-node {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: var(--transition);
+      position: relative;
+    }
+    .tree-node:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--accent);
+    }
+    .tree-node.has-issue {
+      border-left: 3px solid #f59e0b;
+      background: rgba(245, 158, 11, 0.05);
+    }
+    .tree-node.has-error {
+      border-left: 3px solid #ef4444;
+      background: rgba(239, 68, 68, 0.05);
+    }
+
+    .tree-node-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .tree-node-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .tree-node-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      word-break: break-word;
+      line-height: 1.4;
+    }
+    .tree-node-title.empty-title {
+      color: #ef4444;
+      font-style: italic;
+    }
+
+    /* Level Badges */
+    .badge-h {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      padding: 0.2rem 0.45rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+    .badge-h1 { background: rgba(99, 102, 241, 0.2); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.4); }
+    .badge-h2 { background: rgba(14, 165, 233, 0.2); color: #38bdf8; border: 1px solid rgba(14, 165, 233, 0.4); }
+    .badge-h3 { background: rgba(20, 184, 166, 0.2); color: #2dd4bf; border: 1px solid rgba(20, 184, 166, 0.4); }
+    .badge-h4 { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); }
+    .badge-h5 { background: rgba(236, 72, 153, 0.2); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.4); }
+    .badge-h6 { background: rgba(156, 163, 175, 0.2); color: #9ca3af; border: 1px solid rgba(156, 163, 175, 0.4); }
+
+    .char-badge {
+      font-size: 0.72rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-tertiary);
+    }
+    .char-badge.warning {
+      background: rgba(245, 158, 11, 0.18);
+      color: #f59e0b;
+    }
+
+    .issue-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .issue-tag.warn {
+      background: rgba(245, 158, 11, 0.18);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .issue-tag.err {
+      background: rgba(239, 68, 68, 0.18);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+
+    .toast-msg {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      color: var(--text-primary);
+      border: 1px solid var(--accent);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      z-index: 100;
+      font-size: 0.875rem;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .toast-msg.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,31 +263,112 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Heading Outline Extractor</h1>
-        <p class="tool-description">Lists all H1-H6 tags in order to audit page hierarchy.</p>
+        <h1>Heading Outline Checker</h1>
+        <p class="tool-description">
+          Audit on-page heading hierarchy, detect skipped heading levels, evaluate character lengths, and export an SEO-compliant heading tree.
+        </p>
+      </div>
+
+      <!-- Quick KPI Cards -->
+      <div class="kpi-grid-headings">
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpi-h1">0</div>
+          <div class="kpi-label">H1 Headings</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpi-h2">0</div>
+          <div class="kpi-label">H2 Headings</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpi-h3">0</div>
+          <div class="kpi-label">H3 Headings</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpi-h46">0</div>
+          <div class="kpi-label">H4 - H6 Headings</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpi-total">0</div>
+          <div class="kpi-label">Total Headings</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-score-badge" id="kpi-score" style="color: #10b981;">100%</div>
+          <div class="kpi-label">SEO Health Score</div>
+        </div>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Heading Outline Extractor</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Lists all H1-H6 tags in order to audit page hierarchy.</div>
-            <div><strong>Inputs:</strong> heading, h1, outline, hierarchy, audit</div>
-            <div><strong>Category:</strong> seo</div>
+      <div class="tool-workarea split-view">
+        <!-- Left Panel: Input & SEO Audit Checklist -->
+        <div class="tool-panel glass-panel">
+          <div class="toolbar-row">
+            <h2 class="panel-title" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
+              HTML or Markdown Source
+            </h2>
+            <div class="toolbar-actions">
+              <button id="btn-sample" class="btn btn-secondary btn-sm" title="Load sample document with headings">Sample Doc</button>
+              <button id="btn-paste" class="btn btn-secondary btn-sm" title="Paste from clipboard">Paste</button>
+              <button id="btn-clear" class="btn btn-secondary btn-sm" title="Clear input text">Clear</button>
+            </div>
+          </div>
+
+          <div class="form-group" style="flex: 1;">
+            <textarea 
+              id="html-input" 
+              class="form-textarea" 
+              placeholder="Paste HTML source code or Markdown content here. All <h1> to <h6> tags will be extracted and audited in chronological order..."
+              style="min-height: 260px; font-family: monospace; font-size: 0.85rem; line-height: 1.5;"
+            ></textarea>
+          </div>
+
+          <!-- SEO Audit Checklist Card -->
+          <div class="checklist-container">
+            <div class="checklist-title">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              <span>SEO Heading Audit Checklist</span>
+            </div>
+            <div class="checklist-items" id="checklist-items">
+              <div class="check-item">
+                <span class="check-icon check-warn">●</span>
+                <span>Enter HTML or document to run audit checklist</span>
+              </div>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Panel: Visual Heading Outline Tree -->
+        <div class="tool-panel glass-panel">
+          <div class="toolbar-row">
+            <h2 class="panel-title" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
+              Visual Heading Outline Tree
+            </h2>
+            <div class="toolbar-actions">
+              <button id="btn-copy-md" class="btn btn-secondary btn-sm" title="Copy outline in Markdown format">Copy Markdown</button>
+              <button id="btn-copy-text" class="btn btn-secondary btn-sm" title="Copy outline as indented text">Copy Text</button>
+              <button id="btn-export-json" class="btn btn-primary btn-sm" title="Export complete audit as JSON">Export JSON</button>
+            </div>
+          </div>
+
+          <!-- Tree Output Container -->
+          <div class="tree-scroll-container" id="tree-container">
+            <div style="text-align: center; padding: 3rem 1rem; color: var(--text-tertiary);">
+              No headings found. Enter HTML or click "Sample Doc" to inspect document outline.
+            </div>
+          </div>
+
+          <div style="font-size: 0.78rem; color: var(--text-tertiary); margin-top: 0.5rem; display: flex; justify-content: space-between;">
+            <span id="tree-summary">0 headings detected</span>
+            <span>Recommended heading length: 20–70 characters</span>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
+
+  <div id="toast" class="toast-msg"></div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -60,10 +378,10 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Heading Outline Extractor",
+    "name": "Heading Outline Checker",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/heading-outline-checker/",
-    "description": "Lists all H1-H6 tags in order to audit page hierarchy.",
-    "applicationCategory": "UtilityPage",
+    "description": "Lists all H1-H6 tags in chronological order to audit SEO hierarchy, detect skipped levels, and verify character lengths.",
+    "applicationCategory": "SEOOptimizationUtility",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }
