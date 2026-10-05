@@ -38,11 +38,11 @@ class AppHeader extends HTMLElement {
     applyTheme('dark'); // Force dark mode
 
     this.innerHTML = `
-      <header style="position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; justify-content: center; padding-top: 1.5rem; pointer-events: none; transition: transform 0.3s ease;" id="global-navbar">
-        <div style="pointer-events: auto; display: inline-flex; align-items: center; border-radius: 9999px; backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); background: var(--surface); padding: 0.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+      <header style="position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; justify-content: center; padding-top: max(0.85rem, env(safe-area-inset-top, 0.85rem)); pointer-events: none; transition: transform 0.3s ease;" id="global-navbar">
+        <div style="pointer-events: auto; display: inline-flex; align-items: center; border-radius: 9999px; backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); background: var(--surface); padding: 0.4rem 0.65rem; box-shadow: 0 4px 12px rgba(0,0,0,0.25); max-width: calc(100vw - 1.5rem);">
           
           <!-- Logo -->
-          <a href="${prefix}index.html" class="gradient-border-hover" style="display:flex; align-items:center; justify-content:center; width: 36px; height: 36px; border-radius: 50%; background: var(--bg); transition: transform 0.2s; text-decoration: none;">
+          <a href="${prefix}index.html" class="gradient-border-hover" style="display:flex; align-items:center; justify-content:center; width: 34px; height: 34px; border-radius: 50%; background: var(--bg); transition: transform 0.2s; text-decoration: none; flex-shrink: 0;">
             <span class="font-display italic-display" style="font-size: 16px; color: var(--text);">A</span>
           </a>
 
@@ -53,17 +53,84 @@ class AppHeader extends HTMLElement {
           <a href="${prefix}pages/about.html" style="font-size: 0.875rem; border-radius: 9999px; padding: 0.375rem 1rem; color: var(--muted); text-decoration: none;" class="hide-mobile">About</a>
           <a href="${prefix}pages/contact.html" style="font-size: 0.875rem; border-radius: 9999px; padding: 0.375rem 1rem; color: var(--muted); text-decoration: none;" class="hide-mobile">Support</a>
           
-          <button id="mobile-menu-toggle" aria-label="Menu" style="background:transparent; border:none; color:var(--text); cursor:pointer; padding: 0.375rem; display:none;" class="show-mobile-flex">
-            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          <button id="mobile-menu-toggle" aria-label="Open Navigation Menu" style="background:transparent; border:none; color:var(--text); cursor:pointer; padding: 0.4rem; min-width: 44px; min-height: 44px; align-items: center; justify-content: center;" class="show-mobile-flex">
+            ${HAMBURGER_SVG}
           </button>
         </div>
       </header>
 
-      <!-- Minimal Mobile Drawer (kept functional but simplified) -->
-      <div id="mobile-drawer" class="mobile-drawer glass-panel" style="display:none;"></div>
-      <div id="mobile-drawer-backdrop" class="mobile-drawer-backdrop" style="display:none;"></div>
-    `;
+      <!-- Luxury Mobile Drawer -->
+      <div id="mobile-drawer" class="mobile-drawer" aria-label="Mobile Navigation">
+        <div class="mobile-drawer-header">
+          <div style="display:flex; align-items:center; gap: 0.65rem;">
+            <div style="display:flex; align-items:center; justify-content:center; width: 32px; height: 32px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border);">
+              <span class="font-display italic-display" style="font-size: 15px; color: var(--text);">A</span>
+            </div>
+            <span class="mobile-drawer-title">ALL IN ONE</span>
+          </div>
+          <button id="mobile-drawer-close" class="mobile-drawer-close" aria-label="Close menu">
+            ${CLOSE_SVG}
+          </button>
+        </div>
 
+        <div class="mobile-drawer-section-title">Navigation</div>
+        <div class="mobile-drawer-links">
+          <a href="${prefix}index.html">
+            <span>Dashboard Portal</span>
+            <span style="font-size:0.75rem; color:var(--text-tertiary);">Home</span>
+          </a>
+          <a href="${prefix}pages/about.html">
+            <span>About Project</span>
+            <span style="font-size:0.75rem; color:var(--text-tertiary);">Story</span>
+          </a>
+          <a href="${prefix}pages/contact.html">
+            <span>Support & Feedback</span>
+            <span style="font-size:0.75rem; color:var(--text-tertiary);">Help</span>
+          </a>
+        </div>
+
+        <div class="mobile-drawer-section-title">Tool Suites (181 Active)</div>
+        <div class="mobile-drawer-categories">
+          <a href="${prefix}index.html?cat=pdf" style="display:flex; align-items:center; justify-content:space-between;">
+            <span>PDF Document Suite</span>
+            <span class="badge" style="font-size:0.65rem; padding: 0.15rem 0.5rem;">48 tools</span>
+          </a>
+          <a href="${prefix}index.html?cat=developer" style="display:flex; align-items:center; justify-content:space-between;">
+            <span>Developer Suite</span>
+            <span class="badge" style="font-size:0.65rem; padding: 0.15rem 0.5rem;">25 tools</span>
+          </a>
+          <a href="${prefix}index.html?cat=text" style="display:flex; align-items:center; justify-content:space-between;">
+            <span>Text Utilities</span>
+            <span class="badge" style="font-size:0.65rem; padding: 0.15rem 0.5rem;">21 tools</span>
+          </a>
+          <a href="${prefix}index.html?cat=excel" style="display:flex; align-items:center; justify-content:space-between;">
+            <span>Excel & Analytics</span>
+            <span class="badge" style="font-size:0.65rem; padding: 0.15rem 0.5rem;">20 tools</span>
+          </a>
+          <a href="${prefix}index.html?cat=seo" style="display:flex; align-items:center; justify-content:space-between;">
+            <span>SEO Optimization</span>
+            <span class="badge" style="font-size:0.65rem; padding: 0.15rem 0.5rem;">17 tools</span>
+          </a>
+          <a href="${prefix}index.html?cat=image" style="display:flex; align-items:center; justify-content:space-between;">
+            <span>Image Processing</span>
+            <span class="badge" style="font-size:0.65rem; padding: 0.15rem 0.5rem;">12 tools</span>
+          </a>
+          <a href="${prefix}index.html?cat=brand" style="display:flex; align-items:center; justify-content:space-between;">
+            <span>Luxury Brand</span>
+            <span class="badge" style="font-size:0.65rem; padding: 0.15rem 0.5rem;">10 tools</span>
+          </a>
+          <a href="${prefix}index.html?cat=marketing" style="display:flex; align-items:center; justify-content:space-between;">
+            <span>Product Marketing</span>
+            <span class="badge" style="font-size:0.65rem; padding: 0.15rem 0.5rem;">6 tools</span>
+          </a>
+          <a href="${prefix}index.html?cat=converter" style="display:flex; align-items:center; justify-content:space-between;">
+            <span>Universal Converters</span>
+            <span class="badge" style="font-size:0.65rem; padding: 0.15rem 0.5rem;">4 tools</span>
+          </a>
+        </div>
+      </div>
+      <div id="mobile-drawer-backdrop" class="mobile-drawer-backdrop"></div>
+    `;
 
     // Initialize Header Interactions
     this.setupMobileDrawer();
@@ -79,18 +146,40 @@ class AppHeader extends HTMLElement {
     if (!toggleBtn || !drawer || !closeBtn || !backdrop) return;
 
     const openDrawer = () => {
-      drawer.style.right = '0';
-      backdrop.style.display = 'block';
+      drawer.classList.add('active');
+      backdrop.classList.add('active');
+      document.body.style.overflow = 'hidden';
     };
 
     const closeDrawer = () => {
-      drawer.style.right = '-280px';
-      backdrop.style.display = 'none';
+      drawer.classList.remove('active');
+      backdrop.classList.remove('active');
+      document.body.style.overflow = '';
     };
 
-    toggleBtn.addEventListener('click', openDrawer);
-    closeBtn.addEventListener('click', closeDrawer);
+    toggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openDrawer();
+    });
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeDrawer();
+    });
     backdrop.addEventListener('click', closeDrawer);
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && drawer.classList.contains('active')) {
+        closeDrawer();
+      }
+    });
+
+    // Close drawer when clicking any category or page link
+    drawer.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        closeDrawer();
+      });
+    });
   }
 
   setupQuickSearch(prefix) {
