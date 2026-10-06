@@ -4,14 +4,379 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Inventory Management - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="End-to-end inventory tracking.">
-  <meta name="keywords" content="inventory, stock, management, free, online, tool, utility">
+  <meta name="description" content="Multi-warehouse stock tracking system with low-stock warnings, transaction logger, valuation calculations, and CSV export.">
+  <meta name="keywords" content="inventory, stock, warehouse, sku, barcode, procurement, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/inventory-management/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ALL IN ONE">
+  <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/inventory-management/">
+  <meta property="og:title" content="Inventory Management - Free Online Tool - ALL IN ONE">
+  <meta property="og:description" content="Multi-warehouse stock tracking system with low-stock warnings, transaction logger, valuation calculations, and CSV export.">
+  <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="Inventory Management - ALL IN ONE">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/inventory-management/">
+  <meta name="twitter:title" content="Inventory Management - Free Online Tool - ALL IN ONE">
+  <meta name="twitter:description" content="Multi-warehouse stock tracking system with low-stock warnings, transaction logger, valuation calculations, and CSV export.">
+  <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta name="twitter:image:alt" content="Inventory Management - ALL IN ONE">
+
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    /* Inventory Management Custom Styles */
+    .inv-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .inv-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      align-items: center;
+    }
+    .inv-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      align-items: center;
+    }
+    .inv-search-box {
+      position: relative;
+      min-width: 240px;
+    }
+    .inv-search-box input {
+      padding-left: 2.25rem;
+    }
+    .inv-search-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      pointer-events: none;
+    }
+
+    /* KPI Metrics */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+    .kpi-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    }
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent);
+    }
+    .kpi-card.kpi-value-stat::before { background: #10b981; }
+    .kpi-card.kpi-warning-stat::before { background: #f59e0b; }
+    .kpi-card.kpi-danger-stat::before { background: #ef4444; }
+    .kpi-card.kpi-units-stat::before { background: #6366f1; }
+
+    .kpi-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+    }
+    .kpi-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.2;
+      font-family: monospace;
+    }
+    .kpi-sub {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* Inventory Table */
+    .inv-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-secondary);
+    }
+    .inv-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+    .inv-table th {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 600;
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .inv-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .inv-table tr:last-child td {
+      border-bottom: none;
+    }
+    .inv-table tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Status Badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .status-in-stock {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .status-low-stock {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      animation: pulseAlert 2s infinite ease-in-out;
+    }
+    .status-out-of-stock {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    @keyframes pulseAlert {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .warehouse-badge {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    .sku-tag {
+      font-family: monospace;
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 0.85rem;
+    }
+    .barcode-sub {
+      font-family: monospace;
+      font-size: 0.72rem;
+      color: var(--text-tertiary);
+      display: block;
+    }
+
+    /* Qty Control */
+    .qty-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .qty-display {
+      font-family: monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+      min-width: 32px;
+      text-align: center;
+    }
+    .qty-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: bold;
+      transition: var(--transition);
+    }
+    .qty-btn:hover {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+    .qty-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* Modal Styling */
+    .inv-modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .inv-modal-backdrop.show {
+      display: flex;
+    }
+    .inv-modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 560px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      animation: modalFadeIn 0.2s ease;
+    }
+    .inv-modal-lg {
+      max-width: 780px;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .inv-modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .inv-modal-header h3 {
+      font-size: 1.25rem;
+      margin: 0;
+    }
+    .inv-modal-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-height: calc(85vh - 140px);
+      overflow-y: auto;
+    }
+    .inv-modal-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      background: var(--bg-tertiary);
+    }
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.75rem;
+    }
+    @media (max-width: 600px) {
+      .form-grid-2, .form-grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .table-actions {
+      display: flex;
+      gap: 0.35rem;
+    }
+    .inv-icon-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 0.35rem;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    .inv-icon-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+    .inv-icon-btn.btn-del:hover {
+      color: var(--error);
+    }
+
+    /* Transaction Log List in Modal */
+    .tx-log-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg-tertiary);
+      font-size: 0.85rem;
+    }
+    .tx-badge-in {
+      color: var(--success);
+      font-weight: 700;
+      font-family: monospace;
+    }
+    .tx-badge-out {
+      color: var(--error);
+      font-weight: 700;
+      font-family: monospace;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,31 +391,266 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Inventory Management</h1>
-        <p class="tool-description">End-to-end inventory tracking.</p>
+        <h1>Multi-Warehouse Inventory Management</h1>
+        <p class="tool-description">Real-time inventory tracking across Warehouse A, Warehouse B, and Storefront with automated low-stock warnings, instant Stock In/Out logging, valuation metrics, and CSV sync.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Inventory Management</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> End-to-end inventory tracking.</div>
-            <div><strong>Inputs:</strong> inventory, stock, management</div>
-            <div><strong>Category:</strong> business</div>
+      <!-- KPI Metrics -->
+      <div class="kpi-grid">
+        <div class="kpi-card kpi-value-stat">
+          <span class="kpi-label">Total Inventory Valuation</span>
+          <span class="kpi-value" id="kpi-total-val">$0.00</span>
+          <span class="kpi-sub" id="kpi-total-val-sub">Sum of all on-hand goods</span>
+        </div>
+        <div class="kpi-card kpi-units-stat">
+          <span class="kpi-label">Total Units on Hand</span>
+          <span class="kpi-value" id="kpi-total-units">0</span>
+          <span class="kpi-sub" id="kpi-sku-count">0 active product SKUs</span>
+        </div>
+        <div class="kpi-card kpi-warning-stat">
+          <span class="kpi-label">Low Stock Alerts</span>
+          <span class="kpi-value" id="kpi-low-stock-count">0</span>
+          <span class="kpi-sub">Items at or below reorder threshold</span>
+        </div>
+        <div class="kpi-card kpi-danger-stat">
+          <span class="kpi-label">Out of Stock</span>
+          <span class="kpi-value" id="kpi-out-stock-count">0</span>
+          <span class="kpi-sub">Immediate restocking required</span>
+        </div>
+      </div>
+
+      <!-- Main Panel & Controls -->
+      <div class="tool-panel glass-panel">
+        
+        <!-- Upper Toolbar -->
+        <div class="inv-toolbar">
+          <div class="inv-actions">
+            <button class="btn btn-primary" id="btn-add-product">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              Add Product
+            </button>
+            <button class="btn btn-secondary" id="btn-quick-log">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+              Stock Movement
+            </button>
+            <button class="btn btn-secondary" id="btn-view-logs">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              History Log
+            </button>
+            <button class="btn btn-secondary" id="btn-export-csv" title="Download inventory list as CSV">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export CSV
+            </button>
+            <button class="btn btn-secondary" id="btn-reset-data" title="Restore sample demo inventory">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+              Reset
+            </button>
+          </div>
+
+          <!-- Search and Filter Bar -->
+          <div class="inv-filters">
+            <div class="form-group" style="margin: 0; min-width: 140px;">
+              <select class="form-select" id="filter-warehouse" aria-label="Filter by warehouse location">
+                <option value="all">All Locations</option>
+                <option value="Warehouse A">Warehouse A</option>
+                <option value="Warehouse B">Warehouse B</option>
+                <option value="Storefront">Storefront</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin: 0; min-width: 130px;">
+              <select class="form-select" id="filter-category" aria-label="Filter by category">
+                <option value="all">All Categories</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin: 0; min-width: 130px;">
+              <select class="form-select" id="filter-stock-status" aria-label="Filter by stock status">
+                <option value="all">All Statuses</option>
+                <option value="in_stock">In Stock</option>
+                <option value="low_stock">Low Stock Alerts</option>
+                <option value="out_of_stock">Out of Stock</option>
+              </select>
+            </div>
+
+            <div class="inv-search-box">
+              <svg class="inv-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="inv-search-input" class="form-input" placeholder="Search SKU, Barcode, Name...">
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Inventory Data Table -->
+        <div class="inv-table-wrap">
+          <table class="inv-table" id="inv-table">
+            <thead>
+              <tr>
+                <th>Product Identifier</th>
+                <th>Product Name & Category</th>
+                <th>Location</th>
+                <th>Unit Price</th>
+                <th>Stock Level</th>
+                <th>Status</th>
+                <th>Quick Log (+ / -)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="inv-table-body">
+              <!-- Rendered via script -->
+            </tbody>
+          </table>
+        </div>
+
       </div>
-    
     </div>
   </main>
+
+  <!-- Add / Edit Product Modal -->
+  <div class="inv-modal-backdrop" id="product-modal-backdrop">
+    <div class="inv-modal">
+      <div class="inv-modal-header">
+        <h3 id="product-modal-title">Add Inventory Product</h3>
+        <button type="button" class="inv-icon-btn" id="product-modal-close" aria-label="Close modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <form id="product-form">
+        <div class="inv-modal-body">
+          <input type="hidden" id="form-product-id">
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="form-sku">SKU Code *</label>
+              <input type="text" id="form-sku" class="form-input" placeholder="e.g. SKU-10492" required>
+            </div>
+            <div class="form-group">
+              <label for="form-barcode">Barcode / EAN</label>
+              <input type="text" id="form-barcode" class="form-input" placeholder="e.g. 789123456789">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="form-name">Product Name *</label>
+            <input type="text" id="form-name" class="form-input" placeholder="e.g. Ergonomic Office Chair" required>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="form-category">Category *</label>
+              <input type="text" id="form-category" class="form-input" placeholder="e.g. Furniture" list="category-datalist" required>
+              <datalist id="category-datalist">
+                <option value="Furniture"></option>
+                <option value="Electronics"></option>
+                <option value="Office Supplies"></option>
+                <option value="Apparel"></option>
+                <option value="Hardware"></option>
+                <option value="Packaging"></option>
+              </datalist>
+            </div>
+            <div class="form-group">
+              <label for="form-warehouse">Warehouse Location *</label>
+              <select id="form-warehouse" class="form-select">
+                <option value="Warehouse A">Warehouse A</option>
+                <option value="Warehouse B">Warehouse B</option>
+                <option value="Storefront">Storefront</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label for="form-quantity">Quantity On Hand *</label>
+              <input type="number" id="form-quantity" class="form-input" min="0" step="1" placeholder="0" required>
+            </div>
+            <div class="form-group">
+              <label for="form-reorder">Reorder Point *</label>
+              <input type="number" id="form-reorder" class="form-input" min="0" step="1" placeholder="10" required>
+            </div>
+            <div class="form-group">
+              <label for="form-price">Unit Price ($ USD) *</label>
+              <input type="number" id="form-price" class="form-input" min="0" step="0.01" placeholder="0.00" required>
+            </div>
+          </div>
+
+        </div>
+        <div class="inv-modal-footer">
+          <button type="button" class="btn btn-secondary" id="product-modal-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Stock Movement Modal (Stock In / Stock Out) -->
+  <div class="inv-modal-backdrop" id="movement-modal-backdrop">
+    <div class="inv-modal">
+      <div class="inv-modal-header">
+        <h3 id="movement-modal-title">Log Stock Movement</h3>
+        <button type="button" class="inv-icon-btn" id="movement-modal-close" aria-label="Close modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <form id="movement-form">
+        <div class="inv-modal-body">
+          
+          <div class="form-group">
+            <label for="mov-product-select">Select Product *</label>
+            <select id="mov-product-select" class="form-select" required>
+              <!-- Options populated via script -->
+            </select>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="mov-type">Movement Type *</label>
+              <select id="mov-type" class="form-select">
+                <option value="IN">Stock In (+) Restock / Return</option>
+                <option value="OUT">Stock Out (-) Sale / Waste / Transfer</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="mov-quantity">Quantity *</label>
+              <input type="number" id="mov-quantity" class="form-input" min="1" step="1" value="1" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="mov-reason">Reason / Reference Note</label>
+            <input type="text" id="mov-reason" class="form-input" placeholder="e.g. PO-8492 Supplier Delivery or Storefront Sale">
+          </div>
+
+        </div>
+        <div class="inv-modal-footer">
+          <button type="button" class="btn btn-secondary" id="movement-modal-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="movement-submit-btn">Apply Movement</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Transaction History Modal -->
+  <div class="inv-modal-backdrop" id="logs-modal-backdrop">
+    <div class="inv-modal inv-modal-lg">
+      <div class="inv-modal-header">
+        <h3>Stock Movement Transaction History</h3>
+        <button type="button" class="inv-icon-btn" id="logs-modal-close" aria-label="Close modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="inv-modal-body" style="max-height: 480px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
+          <span style="font-size:0.85rem; color:var(--text-secondary);">Last 50 inventory transactions logged:</span>
+          <button class="btn btn-secondary" style="font-size:0.8rem; padding:0.35rem 0.75rem;" id="btn-export-logs-csv">Export Logs CSV</button>
+        </div>
+        <div id="tx-logs-container" style="display:flex; flex-direction:column; gap:0.5rem;">
+          <!-- Loaded via script -->
+        </div>
+      </div>
+      <div class="inv-modal-footer">
+        <button type="button" class="btn btn-secondary" id="logs-modal-ok">Close</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -60,10 +660,10 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Inventory Management",
+    "name": "Multi-Warehouse Inventory Management",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/inventory-management/",
-    "description": "End-to-end inventory tracking.",
-    "applicationCategory": "UtilityPage",
+    "description": "Multi-warehouse stock tracking system with low-stock warnings, transaction logger, valuation calculations, and CSV export.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

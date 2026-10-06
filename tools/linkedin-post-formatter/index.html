@@ -3,17 +3,355 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LinkedIn Post Formatter - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your LinkedIn Post Formatter online.">
-  <meta name="keywords" content="marketing, digital, social, free, online, tool, utility">
+  <title>LinkedIn Post Formatter &amp; Hook Enhancer - ALL IN ONE</title>
+  <meta name="description" content="Format LinkedIn posts with Unicode bold, italic, monospace, stylish bullets, hook strength analysis, and realistic mobile feed preview before the see-more fold.">
+  <meta name="keywords" content="linkedin post formatter, unicode bold linkedin, linkedin hook analyzer, linkedin text styler, social media formatter">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/linkedin-post-formatter/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ALL IN ONE">
+  <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/linkedin-post-formatter/">
+  <meta property="og:title" content="LinkedIn Post Formatter &amp; Hook Enhancer - ALL IN ONE">
+  <meta property="og:description" content="Format LinkedIn posts with Unicode bold, italic, monospace, stylish bullets, hook strength analysis, and realistic mobile feed preview before the see-more fold.">
+  <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="LinkedIn Post Formatter - ALL IN ONE">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/linkedin-post-formatter/">
+  <meta name="twitter:title" content="LinkedIn Post Formatter &amp; Hook Enhancer - ALL IN ONE">
+  <meta name="twitter:description" content="Format LinkedIn posts with Unicode bold, italic, monospace, stylish bullets, hook strength analysis, and realistic mobile feed preview before the see-more fold.">
+  <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta name="twitter:image:alt" content="LinkedIn Post Formatter - ALL IN ONE">
+
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <style>
+    .li-workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .li-workspace {
+        grid-template-columns: 1.15fr 0.85fr;
+      }
+    }
+
+    /* Toolbar for Unicode Formatting */
+    .fmt-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.35rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.5rem;
+    }
+
+    .fmt-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      padding: 0.35rem 0.65rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .fmt-btn:hover {
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+      color: var(--accent);
+    }
+
+    .fmt-separator {
+      width: 1px;
+      height: 22px;
+      background: var(--border);
+      margin: 0 0.2rem;
+    }
+
+    /* Bullet stylers */
+    .bullet-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      align-items: center;
+    }
+    .bullet-pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.25rem 0.5rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .bullet-pill:hover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    /* Hook Analysis Card */
+    .hook-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .hook-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .hook-badge {
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+    }
+    .hook-badge.viral {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+    .hook-badge.good {
+      background: rgba(56, 189, 248, 0.2);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+    .hook-badge.weak {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+
+    /* Hook Template Accordion / Pills */
+    .hook-templates-box {
+      max-height: 180px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      padding-right: 0.25rem;
+    }
+    .hook-template-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.45rem 0.75rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .hook-template-item:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+    }
+
+    /* Main Editor Area */
+    .editor-wrapper {
+      position: relative;
+    }
+    .editor-textarea {
+      width: 100%;
+      height: 380px;
+      padding: 1rem;
+      background: #0e1117;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      resize: vertical;
+      white-space: pre-wrap;
+    }
+    .editor-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    /* Realistic LinkedIn Mobile Mockup */
+    .li-mockup-card {
+      background: #1b1f23;
+      border: 1px solid #383e45;
+      border-radius: 12px;
+      padding: 1rem 1.15rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.45);
+      position: sticky;
+      top: 5rem;
+    }
+
+    .li-post-header {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
+    }
+    .li-post-avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0077b5, #00a0dc);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .li-post-author {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .li-post-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .li-post-headline {
+      font-size: 0.75rem;
+      color: #9aa0a6;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .li-post-time {
+      font-size: 0.72rem;
+      color: #9aa0a6;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      margin-top: 0.15rem;
+    }
+
+    .li-post-body {
+      font-size: 0.92rem;
+      line-height: 1.5;
+      color: #eaeaea;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .li-see-more-link {
+      color: #71b7fb;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-block;
+      margin-left: 0.25rem;
+    }
+    .li-see-more-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Fold marker line in preview */
+    .fold-notice {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px dashed rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+      border-radius: 4px;
+      margin-top: 0.5rem;
+    }
+
+    /* Engagement Stats */
+    .li-stats-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.65rem 0;
+      border-top: 1px solid #383e45;
+      border-bottom: 1px solid #383e45;
+      margin-top: 0.85rem;
+      font-size: 0.75rem;
+      color: #9aa0a6;
+    }
+    .li-reaction-icons {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    /* Action bar */
+    .li-actions-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding-top: 0.4rem;
+    }
+    .li-action-btn {
+      background: transparent;
+      border: none;
+      color: #9aa0a6;
+      font-size: 0.78rem;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.4rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .li-action-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+    }
+
+    .toast-popup {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      color: var(--text);
+      font-size: 0.875rem;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: var(--transition);
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .toast-popup.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -26,31 +364,208 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>LinkedIn Post Formatter</h1>
-        <p class="tool-description">Create, analyze, and manage your LinkedIn Post Formatter online.</p>
+        <h1>LinkedIn Post Formatter & Hook Enhancer</h1>
+        <p class="tool-description">Style your LinkedIn posts with Unicode bold, italic, and bullet stylers. Analyze your first 3 lines before the "...see more" fold with a live mobile feed simulator.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>LinkedIn Post Formatter</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your LinkedIn Post Formatter online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, social</div>
-            <div><strong>Category:</strong> digital-marketing</div>
+      <!-- Workspace -->
+      <div class="li-workspace">
+        
+        <!-- Left Column: Formatter & Editor -->
+        <div class="tool-panel glass-panel" style="gap: 1rem;">
+          
+          <!-- Formatting Toolbar -->
+          <div class="fmt-toolbar">
+            <button class="fmt-btn" id="btn-bold" title="Convert selected text to Bold (𝗕𝗼𝗹𝗱)">
+              <strong>𝗕 Bold</strong>
+            </button>
+            <button class="fmt-btn" id="btn-italic" title="Convert selected text to Italic (𝘪𝘵𝘢𝘭𝘪𝘤)">
+              <em>𝘪 Italic</em>
+            </button>
+            <button class="fmt-btn" id="btn-bold-italic" title="Convert to Bold Italic (𝙗𝙤𝙡𝙙 𝙞𝙩𝙖𝙡𝙞𝙘)">
+              <strong><em>𝙗𝙞 Bold Italic</em></strong>
+            </button>
+            <button class="fmt-btn" id="btn-sans" title="Convert to Sans-Serif (𝖲𝖺𝗇𝗌)">
+              𝖲𝖺 Sans
+            </button>
+            <button class="fmt-btn" id="btn-mono" title="Convert to Monospace (𝚖𝚘𝚗𝚘)">
+              <code>𝚖 Monospace</code>
+            </button>
+            <button class="fmt-btn" id="btn-underline" title="Underline text (u̲n̲d̲e̲r̲l̲i̲n̲e̲)">
+              <u>U̲ Underline</u>
+            </button>
+            <button class="fmt-btn" id="btn-strike" title="Strikethrough (s̶t̶r̶i̶k̶e̶)">
+              <s>S̶ Strike</s>
+            </button>
+            <div class="fmt-separator"></div>
+            <button class="fmt-btn" id="btn-clean" title="Remove formatting and return to plaintext">
+              Clear Formatting
+            </button>
+          </div>
+
+          <!-- Bullet Points Toolbar -->
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-secondary);">Insert Bullet / Symbol:</span>
+            <div class="bullet-pills">
+              <span class="bullet-pill" data-char="👉">👉 Point</span>
+              <span class="bullet-pill" data-char="•">• Bullet</span>
+              <span class="bullet-pill" data-char="✦">✦ Star</span>
+              <span class="bullet-pill" data-char="🔹">🔹 Diamond</span>
+              <span class="bullet-pill" data-char="⚡">⚡ Lightning</span>
+              <span class="bullet-pill" data-char="✔️">✔️ Check</span>
+              <span class="bullet-pill" data-char="📌">📌 Pin</span>
+              <span class="bullet-pill" data-char="💡">💡 Tip</span>
+              <span class="bullet-pill" data-char="🚀">🚀 Launch</span>
+            </div>
+          </div>
+
+          <!-- Main Text Editor -->
+          <div class="editor-wrapper">
+            <textarea id="li-editor" class="editor-textarea" placeholder="Paste or write your LinkedIn post here...
+Select text to apply Bold, Italic, or Monospace styles!
+Watch the live hook analysis and mobile preview update instantly.">I spent 10 years learning full-stack software architecture.
+
+Here is the exact framework you need to master it in 5 minutes:
+
+👉 1. Master HTTP & Clean REST APIs before jumping into microservices.
+👉 2. Database indexing will solve 80% of your performance bottlenecks.
+👉 3. Write clean, readable code over clever one-liners every single time.
+👉 4. Observability and structured logging save days during outages.
+
+Which of these rules has made the biggest impact on your engineering career?
+
+Drop your thoughts in the comments! 🚀</textarea>
+          </div>
+
+          <!-- Editor Stats -->
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-secondary); background: var(--bg-tertiary); padding: 0.6rem 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+            <div>
+              <strong id="stat-chars">0</strong> / 3,000 Chars • 
+              <strong id="stat-words">0</strong> Words • 
+              <strong id="stat-lines">0</strong> Lines
+            </div>
+            <div>
+              Hook Length: <strong id="stat-hook-chars" style="color: #38bdf8;">0</strong> chars (Fold target: &lt;210)
+            </div>
+          </div>
+
+          <!-- Hook Analyzer Section -->
+          <div class="hook-card">
+            <div class="hook-header">
+              <span style="font-size: 0.9rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 0.4rem;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color: #38bdf8;"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+                Hook Strength (First 3 Lines Before "See More")
+              </span>
+              <span id="hook-rating-badge" class="hook-badge viral">Viral Hook Potential 🔥</span>
+            </div>
+
+            <div id="hook-preview-text" style="font-size: 0.825rem; background: var(--surface); padding: 0.6rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border); font-style: italic; color: #e2e8f0;">
+              Hook text will show here...
+            </div>
+
+            <div id="hook-feedback" style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">
+              Feedback will populate here...
+            </div>
+          </div>
+
+          <!-- Viral Hook Templates Library -->
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">⚡ High-Converting Viral Hook Templates:</span>
+              <span style="font-size: 0.75rem; color: var(--text-secondary);">Click to insert at cursor</span>
+            </div>
+            <div class="hook-templates-box" id="hook-templates-list">
+              <!-- Dynamically populated hooks -->
+            </div>
+          </div>
+
+          <!-- Action bar -->
+          <div class="action-bar">
+            <button id="copy-li-btn" class="btn btn-primary" style="flex: 1;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Formatted Post
+            </button>
+            <button id="add-spacing-btn" class="btn btn-secondary" title="Fix and optimize line breaks">
+              Auto-Space Paragraphs
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Realistic LinkedIn Mobile Feed Mockup -->
+        <div>
+          <div class="li-mockup-card">
+            
+            <div class="li-post-header">
+              <div class="li-post-avatar">Y</div>
+              <div class="li-post-author">
+                <span class="li-post-name">
+                  <span>Your Profile Name</span>
+                  <span style="color: #9aa0a6; font-size: 0.75rem;">• 1st</span>
+                </span>
+                <span class="li-post-headline">Founder & Lead Engineer | Building modern tools</span>
+                <span class="li-post-time">
+                  1h • 
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                </span>
+              </div>
+            </div>
+
+            <!-- Post Text with Fold -->
+            <div class="li-post-body" id="mockup-li-body">
+              Post loading...
+            </div>
+
+            <!-- Fold Indicator -->
+            <div id="fold-indicator-box">
+              <span class="fold-notice">
+                ℹ️ The "...see more" button above is where mobile LinkedIn cuts off your hook.
+              </span>
+            </div>
+
+            <!-- Engagement row -->
+            <div class="li-stats-row">
+              <div class="li-reaction-icons">
+                <span style="font-size: 0.9rem;">👍</span>
+                <span style="font-size: 0.9rem;">👏</span>
+                <span style="font-size: 0.9rem;">💡</span>
+                <span style="margin-left: 0.35rem; color: #9aa0a6;">238</span>
+              </div>
+              <div>
+                <span>47 comments • 19 reposts</span>
+              </div>
+            </div>
+
+            <!-- Actions grid -->
+            <div class="li-actions-grid">
+              <button class="li-action-btn">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+                <span>Like</span>
+              </button>
+              <button class="li-action-btn">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                <span>Comment</span>
+              </button>
+              <button class="li-action-btn">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+                <span>Repost</span>
+              </button>
+              <button class="li-action-btn">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                <span>Send</span>
+              </button>
+            </div>
+
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Toast Notification -->
+  <div id="app-toast" class="toast-popup">Copied formatted text!</div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,8 +577,8 @@
     "@type": "WebApplication",
     "name": "LinkedIn Post Formatter",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/linkedin-post-formatter/",
-    "description": "Create, analyze, and manage your LinkedIn Post Formatter online.",
-    "applicationCategory": "UtilityPage",
+    "description": "Format LinkedIn posts with Unicode bold, italic, monospace, bullets, hook analysis, and mobile feed preview.",
+    "applicationCategory": "MarketingTool",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

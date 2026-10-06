@@ -4,13 +4,428 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lead Tracking - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Monitor sales pipeline and leads.">
-  <meta name="keywords" content="lead, sales, pipeline, free, online, tool, utility">
+  <meta name="description" content="B2B sales lead pipeline tracker with drag-and-drop Kanban stages, conversion analytics, local persistence, and CSV export.">
+  <meta name="keywords" content="lead, sales, pipeline, crm, b2b, tracker, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/lead-tracking/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ALL IN ONE">
+  <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/lead-tracking/">
+  <meta property="og:title" content="Lead Tracking - Free Online Tool - ALL IN ONE">
+  <meta property="og:description" content="B2B sales lead pipeline tracker with drag-and-drop Kanban stages, conversion analytics, local persistence, and CSV export.">
+  <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="Lead Tracking - ALL IN ONE">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/lead-tracking/">
+  <meta name="twitter:title" content="Lead Tracking - Free Online Tool - ALL IN ONE">
+  <meta name="twitter:description" content="B2B sales lead pipeline tracker with drag-and-drop Kanban stages, conversion analytics, local persistence, and CSV export.">
+  <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta name="twitter:image:alt" content="Lead Tracking - ALL IN ONE">
+
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+
+  <style>
+    /* Lead Tracking Styles */
+    .lead-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .lead-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    .lead-search-box {
+      position: relative;
+      min-width: 260px;
+    }
+    .lead-search-box input {
+      padding-left: 2.25rem;
+    }
+    .lead-search-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      pointer-events: none;
+    }
+
+    /* KPI Metrics */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+    .kpi-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    }
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent);
+    }
+    .kpi-card.kpi-won::before { background: var(--success); }
+    .kpi-card.kpi-rate::before { background: #f59e0b; }
+    .kpi-card.kpi-active::before { background: #8b5cf6; }
+    .kpi-card.kpi-avg::before { background: #06b6d4; }
+
+    .kpi-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+    }
+    .kpi-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.2;
+      font-family: monospace;
+    }
+    .kpi-sub {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* Pipeline Kanban Board */
+    .kanban-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 1rem;
+      -webkit-overflow-scrolling: touch;
+    }
+    .kanban-board {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(260px, 1fr));
+      gap: 1.25rem;
+      min-width: 1600px;
+    }
+    @media (max-width: 1680px) {
+      .kanban-board {
+        min-width: 1560px;
+      }
+    }
+    .kanban-col {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      min-height: 600px;
+      max-height: 800px;
+      transition: var(--transition);
+    }
+    .kanban-col.drag-hover {
+      border-color: var(--accent);
+      background: rgba(78, 133, 191, 0.09);
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+    .col-header {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .col-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .col-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-primary);
+    }
+    .stage-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .ind-new { background: #3b82f6; }
+    .ind-qualified { background: #6366f1; }
+    .ind-demo { background: #06b6d4; }
+    .ind-proposal { background: #f59e0b; }
+    .ind-won { background: var(--success); }
+    .ind-lost { background: var(--error); }
+
+    .col-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+    .col-total {
+      font-family: monospace;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .col-count-badge {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .col-cards {
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      overflow-y: auto;
+      flex: 1;
+      min-height: 120px;
+    }
+
+    /* Lead Card */
+    .lead-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.95rem;
+      cursor: grab;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      user-select: none;
+    }
+    .lead-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+      border-color: var(--accent);
+    }
+    .lead-card.dragging {
+      opacity: 0.4;
+      cursor: grabbing;
+      transform: scale(0.97);
+    }
+    .lead-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .lead-name {
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+    .lead-company {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .lead-val {
+      font-size: 1.15rem;
+      font-weight: 800;
+      font-family: monospace;
+      color: var(--accent);
+    }
+    .lead-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      align-items: center;
+    }
+    .source-tag {
+      font-size: 0.68rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .src-website { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .src-referral { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .src-ads { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .src-cold-outreach { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+
+    .lead-meta {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .lead-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .lead-notes {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      line-height: 1.4;
+      background: var(--bg-tertiary);
+      padding: 0.4rem 0.6rem;
+      border-radius: var(--radius-sm);
+      border-left: 2px solid var(--accent);
+    }
+
+    .lead-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+      padding-top: 0.5rem;
+      margin-top: 0.2rem;
+    }
+    .lead-stage-select {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.4rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      cursor: pointer;
+      max-width: 125px;
+    }
+    .lead-card-btns {
+      display: flex;
+      gap: 0.25rem;
+    }
+    .lead-icon-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 0.25rem;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    .lead-icon-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+    .lead-icon-btn.btn-del:hover {
+      color: var(--error);
+    }
+
+    /* Modal Backdrop & Dialog */
+    .lead-modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .lead-modal-backdrop.show {
+      display: flex;
+    }
+    .lead-modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 540px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      animation: modalFadeIn 0.2s ease;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .lead-modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .lead-modal-header h3 {
+      font-size: 1.25rem;
+      margin: 0;
+    }
+    .lead-modal-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-height: calc(85vh - 140px);
+      overflow-y: auto;
+    }
+    .lead-modal-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      background: var(--bg-tertiary);
+    }
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    @media (max-width: 540px) {
+      .form-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+    .empty-state {
+      padding: 2.5rem 1rem;
+      text-align: center;
+      color: var(--text-tertiary);
+      font-size: 0.85rem;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-md);
+      margin: auto 0;
+    }
+  </style>
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
@@ -26,31 +441,246 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Lead Tracking</h1>
-        <p class="tool-description">Monitor sales pipeline and leads.</p>
+        <h1>B2B Lead Tracking</h1>
+        <p class="tool-description">Manage your enterprise sales pipeline across every stage with live conversion metrics, value forecasting, drag-and-drop workflow, and local data persistence.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Lead Tracking</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Monitor sales pipeline and leads.</div>
-            <div><strong>Inputs:</strong> lead, sales, pipeline</div>
-            <div><strong>Category:</strong> business</div>
+      <!-- KPI Overview Bar -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-label">Active Pipeline Value</span>
+          <span class="kpi-value" id="kpi-pipeline-val">$0</span>
+          <span class="kpi-sub" id="kpi-pipeline-sub">0 open opportunities</span>
+        </div>
+        <div class="kpi-card kpi-won">
+          <span class="kpi-label">Closed Won Revenue</span>
+          <span class="kpi-value" id="kpi-won-val">$0</span>
+          <span class="kpi-sub" id="kpi-won-sub">0 closed deals</span>
+        </div>
+        <div class="kpi-card kpi-rate">
+          <span class="kpi-label">Pipeline Conversion Rate</span>
+          <span class="kpi-value" id="kpi-conversion-rate">0.0%</span>
+          <span class="kpi-sub" id="kpi-conversion-sub">Won vs Total Decided</span>
+        </div>
+        <div class="kpi-card kpi-avg">
+          <span class="kpi-label">Avg Deal Value</span>
+          <span class="kpi-value" id="kpi-avg-deal">$0</span>
+          <span class="kpi-sub" id="kpi-avg-sub">Across all leads</span>
+        </div>
+      </div>
+
+      <!-- Toolbar & Controls -->
+      <div class="tool-panel glass-panel">
+        <div class="lead-toolbar">
+          <div class="lead-actions">
+            <button class="btn btn-primary" id="btn-add-lead">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              Add New Lead
+            </button>
+            <button class="btn btn-secondary" id="btn-export-csv" title="Download Pipeline as CSV">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export CSV
+            </button>
+            <button class="btn btn-secondary" id="btn-reset-data" title="Restore sample demo leads">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+              Reset Samples
+            </button>
+          </div>
+
+          <div class="lead-actions">
+            <!-- Source Filter -->
+            <div class="form-group" style="margin: 0; min-width: 150px;">
+              <select class="form-select" id="filter-source" aria-label="Filter leads by source">
+                <option value="all">All Sources</option>
+                <option value="Website">Website</option>
+                <option value="Referral">Referral</option>
+                <option value="Ads">Ads</option>
+                <option value="Cold Outreach">Cold Outreach</option>
+              </select>
+            </div>
+            <!-- Search Box -->
+            <div class="lead-search-box">
+              <svg class="lead-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="lead-search-input" class="form-input" placeholder="Search lead or company...">
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Kanban Board Area -->
+        <div class="kanban-wrapper">
+          <div class="kanban-board" id="kanban-board">
+            
+            <!-- 1. New Lead -->
+            <div class="kanban-col" data-stage="new">
+              <div class="col-header">
+                <div class="col-title-row">
+                  <span class="col-title"><span class="stage-indicator ind-new"></span> New Lead</span>
+                  <span class="col-count-badge" id="badge-count-new">0</span>
+                </div>
+                <div class="col-meta">
+                  <span>Subtotal:</span>
+                  <span class="col-total" id="col-val-new">$0</span>
+                </div>
+              </div>
+              <div class="col-cards" id="cards-new" data-stage="new"></div>
+            </div>
+
+            <!-- 2. Qualified -->
+            <div class="kanban-col" data-stage="qualified">
+              <div class="col-header">
+                <div class="col-title-row">
+                  <span class="col-title"><span class="stage-indicator ind-qualified"></span> Qualified</span>
+                  <span class="col-count-badge" id="badge-count-qualified">0</span>
+                </div>
+                <div class="col-meta">
+                  <span>Subtotal:</span>
+                  <span class="col-total" id="col-val-qualified">$0</span>
+                </div>
+              </div>
+              <div class="col-cards" id="cards-qualified" data-stage="qualified"></div>
+            </div>
+
+            <!-- 3. Demo Scheduled -->
+            <div class="kanban-col" data-stage="demo">
+              <div class="col-header">
+                <div class="col-title-row">
+                  <span class="col-title"><span class="stage-indicator ind-demo"></span> Demo Scheduled</span>
+                  <span class="col-count-badge" id="badge-count-demo">0</span>
+                </div>
+                <div class="col-meta">
+                  <span>Subtotal:</span>
+                  <span class="col-total" id="col-val-demo">$0</span>
+                </div>
+              </div>
+              <div class="col-cards" id="cards-demo" data-stage="demo"></div>
+            </div>
+
+            <!-- 4. Proposal Sent -->
+            <div class="kanban-col" data-stage="proposal">
+              <div class="col-header">
+                <div class="col-title-row">
+                  <span class="col-title"><span class="stage-indicator ind-proposal"></span> Proposal Sent</span>
+                  <span class="col-count-badge" id="badge-count-proposal">0</span>
+                </div>
+                <div class="col-meta">
+                  <span>Subtotal:</span>
+                  <span class="col-total" id="col-val-proposal">$0</span>
+                </div>
+              </div>
+              <div class="col-cards" id="cards-proposal" data-stage="proposal"></div>
+            </div>
+
+            <!-- 5. Closed Won -->
+            <div class="kanban-col" data-stage="won">
+              <div class="col-header">
+                <div class="col-title-row">
+                  <span class="col-title"><span class="stage-indicator ind-won"></span> Closed Won</span>
+                  <span class="col-count-badge" id="badge-count-won">0</span>
+                </div>
+                <div class="col-meta">
+                  <span>Subtotal:</span>
+                  <span class="col-total" id="col-val-won">$0</span>
+                </div>
+              </div>
+              <div class="col-cards" id="cards-won" data-stage="won"></div>
+            </div>
+
+            <!-- 6. Closed Lost -->
+            <div class="kanban-col" data-stage="lost">
+              <div class="col-header">
+                <div class="col-title-row">
+                  <span class="col-title"><span class="stage-indicator ind-lost"></span> Closed Lost</span>
+                  <span class="col-count-badge" id="badge-count-lost">0</span>
+                </div>
+                <div class="col-meta">
+                  <span>Subtotal:</span>
+                  <span class="col-total" id="col-val-lost">$0</span>
+                </div>
+              </div>
+              <div class="col-cards" id="cards-lost" data-stage="lost"></div>
+            </div>
+
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
+
+  <!-- Lead Modal -->
+  <div class="lead-modal-backdrop" id="lead-modal-backdrop">
+    <div class="lead-modal">
+      <div class="lead-modal-header">
+        <h3 id="modal-title">Add New Lead</h3>
+        <button type="button" class="lead-icon-btn" id="modal-close-btn" aria-label="Close modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <form id="lead-form">
+        <div class="lead-modal-body">
+          <input type="hidden" id="form-lead-id">
+          
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="form-lead-name">Lead Contact Name *</label>
+              <input type="text" id="form-lead-name" class="form-input" placeholder="e.g. Rachel Adams" required>
+            </div>
+            <div class="form-group">
+              <label for="form-company">Company Name *</label>
+              <input type="text" id="form-company" class="form-input" placeholder="e.g. Apex Global Corp" required>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="form-value">Potential Value ($ USD) *</label>
+              <input type="number" id="form-value" class="form-input" min="0" step="100" placeholder="e.g. 25000" required>
+            </div>
+            <div class="form-group">
+              <label for="form-stage">Pipeline Stage</label>
+              <select id="form-stage" class="form-select">
+                <option value="new">New Lead</option>
+                <option value="qualified">Qualified</option>
+                <option value="demo">Demo Scheduled</option>
+                <option value="proposal">Proposal Sent</option>
+                <option value="won">Closed Won</option>
+                <option value="lost">Closed Lost</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="form-source">Lead Source</label>
+              <select id="form-source" class="form-select">
+                <option value="Website">Website</option>
+                <option value="Referral">Referral</option>
+                <option value="Ads">Ads</option>
+                <option value="Cold Outreach">Cold Outreach</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="form-email">Contact Email</label>
+              <input type="email" id="form-email" class="form-input" placeholder="e.g. rachel@apex.com">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="form-phone">Phone Number</label>
+            <input type="tel" id="form-phone" class="form-input" placeholder="e.g. +1 (555) 234-5678">
+          </div>
+
+          <div class="form-group">
+            <label for="form-notes">Deal Notes / Requirements</label>
+            <textarea id="form-notes" class="form-input" style="min-height: 80px; resize: vertical;" placeholder="Key customer objectives, timeline, decision makers..."></textarea>
+          </div>
+        </div>
+        <div class="lead-modal-footer">
+          <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="modal-save-btn">Save Lead</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -60,10 +690,10 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Lead Tracking",
+    "name": "B2B Lead Tracking",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/lead-tracking/",
-    "description": "Monitor sales pipeline and leads.",
-    "applicationCategory": "UtilityPage",
+    "description": "B2B sales lead pipeline tracker with drag-and-drop Kanban stages, conversion analytics, local persistence, and CSV export.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

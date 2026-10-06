@@ -3,15 +3,290 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Invoice Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Generate order invoices for customers.">
-  <meta name="keywords" content="invoice, billing, order, free, online, tool, utility">
+  <title>E-Commerce Invoice Generator - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Generate sleek, professional e-commerce billing invoices. Add line items, apply discounts, compute taxes and shipping, and print or export PDF receipts.">
+  <meta name="keywords" content="ecommerce invoice generator, order billing receipt, invoice maker, print invoice pdf, online invoice creator, receipt maker">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ecommerce-invoice-generator/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ALL IN ONE">
+  <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ecommerce-invoice-generator/">
+  <meta property="og:title" content="E-Commerce Invoice Generator - Free Online Tool - ALL IN ONE">
+  <meta property="og:description" content="Generate sleek, professional e-commerce billing invoices. Add line items, apply discounts, compute taxes and shipping, and print or export PDF receipts.">
+  <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="Invoice Generator - ALL IN ONE">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ecommerce-invoice-generator/">
+  <meta name="twitter:title" content="E-Commerce Invoice Generator - Free Online Tool - ALL IN ONE">
+  <meta name="twitter:description" content="Generate sleek, professional e-commerce billing invoices. Add line items, apply discounts, compute taxes and shipping, and print or export PDF receipts.">
+  <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta name="twitter:image:alt" content="Invoice Generator - ALL IN ONE">
+
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Invoice Generator Custom Styles */
+    .invoice-workarea {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 1024px) {
+      .invoice-workarea {
+        grid-template-columns: 460px 1fr;
+      }
+    }
+
+    .editor-section {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .editor-section-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+
+    .items-table-edit {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .items-table-edit th {
+      text-align: left;
+      padding: 0.5rem;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+    .items-table-edit td {
+      padding: 0.4rem 0.25rem;
+      vertical-align: middle;
+    }
+
+    /* Live Invoice Paper Preview */
+    .invoice-preview-wrapper {
+      position: sticky;
+      top: 1rem;
+    }
+    .invoice-sheet {
+      background: #ffffff;
+      color: #1f2937;
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      font-family: var(--font-sans);
+    }
+    .invoice-sheet * {
+      box-sizing: border-box;
+    }
+    .inv-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid #f3f4f6;
+      padding-bottom: 1.5rem;
+    }
+    .inv-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      max-width: 320px;
+    }
+    .inv-store-name {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #111827;
+      letter-spacing: -0.02em;
+    }
+    .inv-store-details {
+      font-size: 0.85rem;
+      color: #6b7280;
+      line-height: 1.4;
+      white-space: pre-line;
+    }
+    .inv-meta {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .inv-title-badge {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: #2563eb;
+      letter-spacing: 0.05em;
+    }
+    .inv-meta-row {
+      font-size: 0.85rem;
+      color: #4b5563;
+    }
+    .inv-meta-row strong {
+      color: #111827;
+    }
+
+    .inv-parties {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    .party-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+    .party-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 0.2rem;
+    }
+    .party-info {
+      font-size: 0.85rem;
+      color: #4b5563;
+      line-height: 1.45;
+      white-space: pre-line;
+    }
+
+    .inv-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    .inv-table th {
+      background: #f9fafb;
+      color: #374151;
+      font-weight: 700;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .inv-table th:last-child {
+      text-align: right;
+    }
+    .inv-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid #f3f4f6;
+      color: #1f2937;
+    }
+    .inv-table td:last-child {
+      text-align: right;
+      font-weight: 600;
+    }
+
+    .inv-summary-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 2rem;
+    }
+    .inv-notes {
+      flex: 1;
+      font-size: 0.85rem;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+    .inv-totals-card {
+      width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: #4b5563;
+    }
+    .total-row.grand {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #111827;
+      border-top: 2px solid #e5e7eb;
+      padding-top: 0.75rem;
+      margin-top: 0.35rem;
+    }
+    .status-stamp {
+      display: inline-block;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-weight: 800;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-top: 0.5rem;
+    }
+    .stamp-paid {
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #86efac;
+    }
+    .stamp-pending {
+      background: #fef3c7;
+      color: #b45309;
+      border: 1px solid #fde68a;
+    }
+    .stamp-overdue {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fca5a5;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      app-header, app-breadcrumbs, app-footer, .tool-header, .editor-column, .tool-actions-row {
+        display: none !important;
+      }
+      .tool-layout, .container, .tool-panel {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .invoice-workarea {
+        display: block !important;
+      }
+      .invoice-sheet {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        width: 100% !important;
+      }
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,29 +301,271 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Invoice Generator</h1>
-        <p class="tool-description">Generate order invoices for customers.</p>
+        <h1>E-Commerce Invoice Generator</h1>
+        <p class="tool-description">Create clean order billing invoices with taxes, discounts, shipping fees, multiple currencies, and 1-click printable PDF receipt layout.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Invoice Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Generate order invoices for customers.</div>
-            <div><strong>Inputs:</strong> invoice, billing, order</div>
-            <div><strong>Category:</strong> ecommerce</div>
+      <!-- Action buttons bar -->
+      <div class="tool-actions-row" style="display: flex; justify-content: flex-end; gap: 0.65rem; margin-bottom: 1rem; flex-wrap: wrap;">
+        <button type="button" class="btn btn-primary" id="btn-print-invoice">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          Print / Save PDF
+        </button>
+        <button type="button" class="btn btn-secondary" id="btn-load-sample">Load Sample</button>
+        <button type="button" class="btn btn-secondary" id="btn-export-json">Export JSON</button>
+        <button type="button" class="btn btn-secondary" id="btn-reset-invoice">Reset</button>
+      </div>
+
+      <!-- Main Split Workspace -->
+      <div class="invoice-workarea">
+
+        <!-- Editor Controls Column -->
+        <div class="editor-column" style="display: flex; flex-direction: column; gap: 1.25rem;">
+          
+          <!-- Store Details -->
+          <div class="editor-section">
+            <div class="editor-section-title">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+              Merchant & Store Details
+            </div>
+            <div class="form-group">
+              <label for="store-name">Store Name *</label>
+              <input type="text" id="store-name" class="form-input" value="Lumina Luxury Goods">
+            </div>
+            <div class="form-group">
+              <label for="store-info">Address & Contact Information</label>
+              <textarea id="store-info" class="form-textarea" style="min-height: 70px;">742 Evergreen Avenue, Suite 400
+San Francisco, CA 94107
+support@luminaluxury.com | +1 (555) 234-5678</textarea>
+            </div>
+          </div>
+
+          <!-- Customer Details -->
+          <div class="editor-section">
+            <div class="editor-section-title">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              Customer & Shipping Details
+            </div>
+            <div class="form-group">
+              <label for="cust-name">Customer Full Name *</label>
+              <input type="text" id="cust-name" class="form-input" value="Eleanor Vance">
+            </div>
+            <div class="form-group">
+              <label for="cust-email">Customer Email</label>
+              <input type="email" id="cust-email" class="form-input" value="eleanor.vance@example.com">
+            </div>
+            <div class="form-group">
+              <label for="cust-address">Shipping / Billing Address</label>
+              <textarea id="cust-address" class="form-textarea" style="min-height: 70px;">1024 Kensington Road, Apt 5B
+Brooklyn, NY 11218
+United States</textarea>
+            </div>
+          </div>
+
+          <!-- Order Metadata -->
+          <div class="editor-section">
+            <div class="editor-section-title">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              Invoice Metadata
+            </div>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="inv-number">Invoice / Order #</label>
+                <input type="text" id="inv-number" class="form-input" value="INV-2026-8942">
+              </div>
+              <div class="form-group">
+                <label for="inv-currency">Currency</label>
+                <select id="inv-currency" class="form-select">
+                  <option value="USD">USD ($)</option>
+                  <option value="EUR">EUR (€)</option>
+                  <option value="GBP">GBP (£)</option>
+                  <option value="JPY">JPY (¥)</option>
+                  <option value="CAD">CAD (C$)</option>
+                  <option value="AUD">AUD (A$)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="inv-date">Invoice Date</label>
+                <input type="date" id="inv-date" class="form-input">
+              </div>
+              <div class="form-group">
+                <label for="inv-due-date">Due Date</label>
+                <input type="date" id="inv-due-date" class="form-input">
+              </div>
+            </div>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="inv-payment-method">Payment Method</label>
+                <select id="inv-payment-method" class="form-select">
+                  <option value="Credit Card (Visa/Mastercard)">Credit Card</option>
+                  <option value="Apple Pay / Google Pay">Apple / Google Pay</option>
+                  <option value="PayPal">PayPal</option>
+                  <option value="Direct Bank Wire (ACH/SWIFT)">Bank Wire</option>
+                  <option value="Cash on Delivery (COD)">Cash on Delivery</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="inv-status">Payment Status</label>
+                <select id="inv-status" class="form-select">
+                  <option value="PAID">Paid</option>
+                  <option value="PENDING">Pending Payment</option>
+                  <option value="OVERDUE">Overdue</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Line Items Editor -->
+          <div class="editor-section">
+            <div class="editor-section-title" style="justify-content: space-between;">
+              <span style="display: flex; align-items: center; gap: 0.5rem;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                Order Line Items
+              </span>
+              <button type="button" class="btn btn-secondary" id="btn-add-line-item" style="padding: 0.3rem 0.6rem; font-size: 0.775rem;">+ Add Item</button>
+            </div>
+            
+            <div id="line-items-inputs-container" style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <!-- Dynamic line item inputs -->
+            </div>
+          </div>
+
+          <!-- Adjustments: Discount, Tax, Shipping -->
+          <div class="editor-section">
+            <div class="editor-section-title">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
+              Discounts, Tax & Shipping
+            </div>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="inv-discount-code">Discount Code / Name</label>
+                <input type="text" id="inv-discount-code" class="form-input" placeholder="e.g. VIPSPRING20" value="SPRING10">
+              </div>
+              <div class="form-group">
+                <label for="inv-discount-type">Discount Type</label>
+                <select id="inv-discount-type" class="form-select">
+                  <option value="percent">Percentage (%)</option>
+                  <option value="fixed">Fixed Amount</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="inv-discount-val">Discount Value</label>
+                <input type="number" id="inv-discount-val" class="form-input" min="0" step="0.01" value="10">
+              </div>
+              <div class="form-group">
+                <label for="inv-tax-rate">Sales Tax Rate (%)</label>
+                <input type="number" id="inv-tax-rate" class="form-input" min="0" step="0.1" value="8.5">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inv-shipping-fee">Shipping & Handling Fee</label>
+              <input type="number" id="inv-shipping-fee" class="form-input" min="0" step="0.01" value="15.00">
+            </div>
+            <div class="form-group">
+              <label for="inv-notes-input">Notes / Terms</label>
+              <textarea id="inv-notes-input" class="form-textarea" style="min-height: 60px;">Thank you for your order! All items carry a 1-year manufacturer warranty. Inquiries: support@luminaluxury.com</textarea>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Live Invoice Preview Paper -->
+        <div class="invoice-preview-wrapper">
+          <div class="invoice-sheet" id="invoice-sheet-target">
+            
+            <!-- Invoice Header -->
+            <div class="inv-header">
+              <div class="inv-brand">
+                <div class="inv-store-name" id="view-store-name">Lumina Luxury Goods</div>
+                <div class="inv-store-details" id="view-store-info">742 Evergreen Avenue, Suite 400
+San Francisco, CA 94107
+support@luminaluxury.com</div>
+              </div>
+              <div class="inv-meta">
+                <div class="inv-title-badge">INVOICE</div>
+                <div class="inv-meta-row">Order #: <strong id="view-inv-number">INV-2026-8942</strong></div>
+                <div class="inv-meta-row">Date: <strong id="view-inv-date">Oct 6, 2026</strong></div>
+                <div class="inv-meta-row">Due: <strong id="view-inv-due-date">Oct 20, 2026</strong></div>
+                <div><span class="status-stamp stamp-paid" id="view-status-stamp">PAID</span></div>
+              </div>
+            </div>
+
+            <!-- Parties (Billed To & Payment Method) -->
+            <div class="inv-parties">
+              <div>
+                <div class="party-title">Billed & Shipped To:</div>
+                <div class="party-name" id="view-cust-name">Eleanor Vance</div>
+                <div class="party-info" id="view-cust-info">eleanor.vance@example.com
+1024 Kensington Road, Apt 5B
+Brooklyn, NY 11218
+United States</div>
+              </div>
+              <div>
+                <div class="party-title">Payment Method:</div>
+                <div class="party-name" id="view-payment-method" style="font-size: 0.95rem;">Credit Card (Visa/Mastercard)</div>
+                <div class="party-info" style="margin-top: 0.5rem;">
+                  Payment Ref: <strong id="view-pay-ref">TXN-AUTHPASS</strong><br>
+                  Currency: <strong id="view-currency-code">USD ($)</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Table of Items -->
+            <div class="table-responsive" style="margin: 0;">
+              <table class="inv-table">
+                <thead>
+                  <tr>
+                    <th>Item Description</th>
+                    <th style="width: 70px; text-align: center;">Qty</th>
+                    <th style="width: 100px; text-align: right;">Unit Price</th>
+                    <th style="width: 110px; text-align: right;">Total</th>
+                  </tr>
+                </thead>
+                <tbody id="view-line-items-tbody">
+                  <!-- Dynamic rows -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Summary & Notes -->
+            <div class="inv-summary-section">
+              <div class="inv-notes">
+                <div class="party-title">Terms & Customer Notes:</div>
+                <p id="view-notes" style="color: #6b7280; font-size: 0.85rem; margin: 0; white-space: pre-line;">Thank you for your business.</p>
+              </div>
+
+              <div class="inv-totals-card">
+                <div class="total-row">
+                  <span>Subtotal</span>
+                  <span id="view-subtotal">$0.00</span>
+                </div>
+                <div class="total-row" id="view-discount-row" style="color: #16a34a;">
+                  <span id="view-discount-label">Discount</span>
+                  <span id="view-discount-amt">-$0.00</span>
+                </div>
+                <div class="total-row">
+                  <span id="view-tax-label">Tax (8.5%)</span>
+                  <span id="view-tax-amt">$0.00</span>
+                </div>
+                <div class="total-row">
+                  <span>Shipping & Handling</span>
+                  <span id="view-shipping-amt">$0.00</span>
+                </div>
+                <div class="total-row grand">
+                  <span>Grand Total</span>
+                  <span id="view-grand-total" style="color: #2563eb;">$0.00</span>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
       </div>
-    
     </div>
   </main>
 
@@ -63,7 +580,7 @@
     "name": "Invoice Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ecommerce-invoice-generator/",
     "description": "Generate order invoices for customers.",
-    "applicationCategory": "UtilityPage",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

@@ -4,16 +4,307 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Customer Analytics (Travel) - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Track total, new, and returning travel customers.">
-  <meta name="keywords" content="analytics, data, travel, customer analytics travel, free, online, tool, utility">
+  <meta name="description" content="Travel agency client segmentation, lifetime value (LTV) dashboard, and customer retention auditor. Track VIP, Corporate, Family, and Pilgrim cohorts with SVG charts and CSV export.">
+  <meta name="keywords" content="customer analytics travel, travel agency ltv, client segmentation, travel retention rate, vip travelers, pilgrimage customers, corporate travel analytics">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/customer-analytics-travel/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ALL IN ONE">
+  <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/customer-analytics-travel/">
+  <meta property="og:title" content="Customer Analytics (Travel) - Free Online Tool - ALL IN ONE">
+  <meta property="og:description" content="Travel agency client segmentation, lifetime value (LTV) dashboard, and customer retention auditor. Track VIP, Corporate, Family, and Pilgrim cohorts with SVG charts and CSV export.">
+  <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="Customer Analytics (Travel) - ALL IN ONE">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/customer-analytics-travel/">
+  <meta name="twitter:title" content="Customer Analytics (Travel) - Free Online Tool - ALL IN ONE">
+  <meta name="twitter:description" content="Travel agency client segmentation, lifetime value (LTV) dashboard, and customer retention auditor. Track VIP, Corporate, Family, and Pilgrim cohorts with SVG charts and CSV export.">
+  <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta name="twitter:image:alt" content="Customer Analytics (Travel) - ALL IN ONE">
+
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <style>
+    /* Specialized Styling for Travel Customer Analytics */
+    .analytics-grid-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1080px) {
+      .analytics-grid-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kpi-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .kpi-stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .kpi-stat-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      box-shadow: 0 4px 16px var(--accent-glow);
+    }
+
+    .kpi-stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+
+    .kpi-stat-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .kpi-stat-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+    }
+
+    .kpi-stat-sub {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Cohort Cards */
+    .cohort-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .cohort-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: relative;
+    }
+
+    .cohort-card:hover, .cohort-card.active {
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.03);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+
+    .cohort-card.active::after {
+      content: '✓ Filtered';
+      position: absolute;
+      top: 0.6rem;
+      right: 0.6rem;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.15rem 0.4rem;
+      border-radius: var(--radius-full);
+      background: var(--accent);
+      color: #0b0f19;
+    }
+
+    .cohort-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 700;
+      width: fit-content;
+    }
+
+    .badge-vip {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .badge-corporate {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .badge-family {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-pilgrim {
+      background: rgba(168, 85, 247, 0.15);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+
+    .badge-retention-loyal {
+      background: rgba(16, 185, 129, 0.12);
+      color: #34d399;
+      padding: 0.15rem 0.45rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .badge-retention-new {
+      background: rgba(148, 163, 184, 0.12);
+      color: #94a3b8;
+      padding: 0.15rem 0.45rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    /* Top 10 Table & Rankings */
+    .rank-circle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+    .rank-1 { background: #fbbf24; color: #1e1b4b; }
+    .rank-2 { background: #cbd5e1; color: #1e1b4b; }
+    .rank-3 { background: #d97706; color: #ffffff; }
+    .rank-other { background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border); }
+
+    .client-data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .client-data-table th, .client-data-table td {
+      padding: 0.75rem 0.85rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .client-data-table th {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .client-data-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .chart-box {
+      width: 100%;
+      height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      max-width: 540px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .tab-pills {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .tab-pill {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .tab-pill.active {
+      background: var(--accent);
+      color: #0b0f19;
+      border-color: var(--accent);
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,30 +318,315 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Customer Analytics (Travel)</h1>
-        <p class="tool-description">Track total, new, and returning travel customers.</p>
+        <p class="tool-description">
+          Client segmentation, lifetime value (LTV) auditor, and customer retention dashboard. Analyze cohorts across VIP High-Net-Worth, Frequent Corporate Travelers, Family Vacationers, and Pilgrims.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Customer Analytics (Travel)</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Track total, new, and returning travel customers.</div>
-            <div><strong>Inputs:</strong> analytics, data, travel, customer analytics travel</div>
-            <div><strong>Category:</strong> travel</div>
+      <!-- Toolbar: Presets & Currency -->
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.25rem;">
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+          <span style="font-size: 0.8rem; color: var(--text-tertiary);">Agency Profiles:</span>
+          <button type="button" class="btn btn-secondary" id="preset-full-agency" style="font-size: 0.78rem; padding: 0.3rem 0.7rem;">🌐 Full Agency Portfolio</button>
+          <button type="button" class="btn btn-secondary" id="preset-luxury-pilgrim" style="font-size: 0.78rem; padding: 0.3rem 0.7rem;">🕋 VIP & Pilgrimage Focus</button>
+          <button type="button" class="btn btn-secondary" id="preset-corporate-hub" style="font-size: 0.78rem; padding: 0.3rem 0.7rem;">💼 Corporate Travel Hub</button>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <label for="currency-select" style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Currency:</label>
+          <select id="currency-select" class="form-select" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+            <option value="$" selected>USD ($)</option>
+            <option value="SAR ">SAR (﷼)</option>
+            <option value="AED ">AED (د.إ)</option>
+            <option value="£">GBP (£)</option>
+            <option value="€">EUR (€)</option>
+            <option value="৳">BDT (৳)</option>
+            <option value="₹">INR (₹)</option>
+            <option value="C$">CAD ($)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- KPI Summary Cards -->
+      <div class="kpi-stat-grid">
+        <div class="kpi-stat-card">
+          <span class="kpi-stat-label">Total Lifetime Revenue</span>
+          <span class="kpi-stat-value" id="kpi-total-revenue">$0</span>
+          <span class="kpi-stat-sub" id="kpi-revenue-sub">Agency cumulative sales</span>
+        </div>
+
+        <div class="kpi-stat-card">
+          <span class="kpi-stat-label">Total Clients</span>
+          <span class="kpi-stat-value" id="kpi-total-clients">0</span>
+          <span class="kpi-stat-sub" id="kpi-clients-sub">Tracked traveler profiles</span>
+        </div>
+
+        <div class="kpi-stat-card">
+          <span class="kpi-stat-label">Avg Bookings / Client</span>
+          <span class="kpi-stat-value" id="kpi-avg-bookings">0.0</span>
+          <span class="kpi-stat-sub">Bookings frequency</span>
+        </div>
+
+        <div class="kpi-stat-card">
+          <span class="kpi-stat-label">Customer Retention Rate</span>
+          <span class="kpi-stat-value" id="kpi-retention-rate" style="color: #34d399;">0.0%</span>
+          <span class="kpi-stat-sub" id="kpi-retention-sub">Clients with 2+ bookings</span>
+        </div>
+
+        <div class="kpi-stat-card">
+          <span class="kpi-stat-label">Average Client LTV</span>
+          <span class="kpi-stat-value" id="kpi-avg-ltv">$0</span>
+          <span class="kpi-stat-sub">Lifetime value per client</span>
+        </div>
+
+        <div class="kpi-stat-card">
+          <span class="kpi-stat-label">VIP Revenue Share</span>
+          <span class="kpi-stat-value" id="kpi-vip-share" style="color: #fbbf24;">0.0%</span>
+          <span class="kpi-stat-sub">High-Net-Worth contribution</span>
+        </div>
+      </div>
+
+      <!-- Cohort Segment Overview Cards -->
+      <div style="margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary);">
+          Customer Cohorts Breakdown
+        </span>
+        <button type="button" id="btn-clear-cohort-filter" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.2rem 0.6rem; display: none;">
+          Clear Cohort Filter
+        </button>
+      </div>
+
+      <div class="cohort-cards-grid">
+        <div class="cohort-card" data-cohort="VIP High-Net-Worth" id="card-cohort-vip">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="cohort-badge badge-vip">👑 VIP High-Net-Worth</span>
+            <span style="font-size: 0.75rem; color: var(--text-tertiary);" id="vip-count">0 clients</span>
+          </div>
+          <div style="font-size: 1.25rem; font-weight: 800; color: #fbbf24;" id="vip-revenue">$0</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); display: flex; justify-content: space-between;">
+            <span>Avg Bookings: <strong id="vip-avg-bookings">0</strong></span>
+            <span>Avg LTV: <strong id="vip-avg-ltv">$0</strong></span>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="cohort-card" data-cohort="Frequent Corporate Travelers" id="card-cohort-corporate">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="cohort-badge badge-corporate">💼 Frequent Corporate</span>
+            <span style="font-size: 0.75rem; color: var(--text-tertiary);" id="corporate-count">0 clients</span>
+          </div>
+          <div style="font-size: 1.25rem; font-weight: 800; color: #60a5fa;" id="corporate-revenue">$0</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); display: flex; justify-content: space-between;">
+            <span>Avg Bookings: <strong id="corporate-avg-bookings">0</strong></span>
+            <span>Avg LTV: <strong id="corporate-avg-ltv">$0</strong></span>
+          </div>
+        </div>
+
+        <div class="cohort-card" data-cohort="Family Vacationers" id="card-cohort-family">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="cohort-badge badge-family">🌴 Family Vacationers</span>
+            <span style="font-size: 0.75rem; color: var(--text-tertiary);" id="family-count">0 clients</span>
+          </div>
+          <div style="font-size: 1.25rem; font-weight: 800; color: #34d399;" id="family-revenue">$0</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); display: flex; justify-content: space-between;">
+            <span>Avg Bookings: <strong id="family-avg-bookings">0</strong></span>
+            <span>Avg LTV: <strong id="family-avg-ltv">$0</strong></span>
+          </div>
+        </div>
+
+        <div class="cohort-card" data-cohort="Pilgrims" id="card-cohort-pilgrim">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="cohort-badge badge-pilgrim">🕋 Pilgrims (Umrah/Hajj)</span>
+            <span style="font-size: 0.75rem; color: var(--text-tertiary);" id="pilgrim-count">0 clients</span>
+          </div>
+          <div style="font-size: 1.25rem; font-weight: 800; color: #c084fc;" id="pilgrim-revenue">$0</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); display: flex; justify-content: space-between;">
+            <span>Avg Bookings: <strong id="pilgrim-avg-bookings">0</strong></span>
+            <span>Avg LTV: <strong id="pilgrim-avg-ltv">$0</strong></span>
+          </div>
+        </div>
       </div>
-    
+
+      <!-- Main Workspace: Client List & Top 10 + Visualizer -->
+      <div class="analytics-grid-layout">
+        
+        <!-- Left Column: Filterable Travelers Table -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;">
+            <div class="panel-title" style="margin: 0; padding: 0; border: none;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              Travel Agency Client Directory
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <button type="button" id="btn-add-traveler" class="btn btn-primary" style="font-size: 0.8rem; padding: 0.35rem 0.85rem;">
+                + Add Traveler
+              </button>
+            </div>
+          </div>
+
+          <!-- Filters Bar -->
+          <div style="display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; margin-top: 0.5rem;">
+            <div style="flex: 1; min-width: 180px;">
+              <input type="text" id="client-search-input" class="form-input" placeholder="Search by name, email, country, destination..." style="font-size: 0.85rem; padding: 0.4rem 0.75rem;">
+            </div>
+            <select id="select-filter-cohort" class="form-select" style="width: auto; font-size: 0.85rem; padding: 0.4rem 0.75rem;">
+              <option value="ALL">All Cohorts</option>
+              <option value="VIP High-Net-Worth">VIP High-Net-Worth</option>
+              <option value="Frequent Corporate Travelers">Frequent Corporate Travelers</option>
+              <option value="Family Vacationers">Family Vacationers</option>
+              <option value="Pilgrims">Pilgrims</option>
+            </select>
+            <select id="select-filter-retention" class="form-select" style="width: auto; font-size: 0.85rem; padding: 0.4rem 0.75rem;">
+              <option value="ALL">All Retention</option>
+              <option value="RETAINED">Retained (2+ Bookings)</option>
+              <option value="SINGLE">First-Time (1 Booking)</option>
+            </select>
+            <select id="select-sort-by" class="form-select" style="width: auto; font-size: 0.85rem; padding: 0.4rem 0.75rem;">
+              <option value="revenue-desc">LTV Spend (High to Low)</option>
+              <option value="revenue-asc">LTV Spend (Low to High)</option>
+              <option value="bookings-desc">Bookings Count (High to Low)</option>
+              <option value="name-asc">Name (A - Z)</option>
+            </select>
+            <button type="button" id="btn-export-csv" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.75rem;" title="Download customer database as CSV">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              CSV
+            </button>
+          </div>
+
+          <!-- Client Table -->
+          <div class="table-responsive" style="max-height: 520px; overflow-y: auto; margin-top: 0.5rem;">
+            <table class="client-data-table">
+              <thead>
+                <tr>
+                  <th>Client Name</th>
+                  <th>Cohort</th>
+                  <th>Bookings</th>
+                  <th>Lifetime Spend</th>
+                  <th>Avg / Trip</th>
+                  <th>Status</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="client-table-body">
+                <!-- Dynamically injected -->
+              </tbody>
+            </table>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-tertiary); margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border);">
+            <span id="filtered-clients-count">Showing 0 of 0 clients</span>
+            <button type="button" id="btn-reset-demo" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;">
+              Reset to Demo Data
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Column: Top 10 High-Value Travelers & Visual Breakdown -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Top 10 High-Value Travelers Card -->
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <div class="panel-title" style="margin: 0; padding: 0; border: none; font-size: 1.05rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#fbbf24;"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+                Top 10 High-Value Travelers
+              </div>
+              <span style="font-size: 0.75rem; color: var(--text-tertiary);">By Lifetime Value</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 380px; overflow-y: auto;" id="top-travelers-list">
+              <!-- Rendered via script.js -->
+            </div>
+          </div>
+
+          <!-- Interactive Cohort Revenue SVG Visualizer -->
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <div class="panel-title" style="margin: 0; padding: 0; border: none; font-size: 1.05rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+                Cohort Revenue Share
+              </div>
+              <span id="chart-total-label" style="font-size: 0.78rem; font-weight: 700; color: var(--accent);">$0</span>
+            </div>
+
+            <div class="chart-box" id="cohort-chart-box">
+              <svg id="cohort-donut-svg" viewBox="0 0 320 240" style="width: 100%; height: 100%;" preserveAspectRatio="xMidYMid meet">
+                <!-- Dynamically generated SVG -->
+              </svg>
+            </div>
+
+            <!-- Dynamic Chart Legend -->
+            <div id="cohort-legend-container" style="display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.78rem; margin-top: 0.5rem;">
+              <!-- Populated by script -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   </main>
+
+  <!-- Add / Edit Traveler Modal -->
+  <div class="modal-backdrop" id="traveler-modal">
+    <div class="modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+        <h3 id="modal-title" style="margin: 0; font-size: 1.2rem; font-weight: 700;">Add Traveler Profile</h3>
+        <button type="button" id="btn-close-modal" style="background: none; border: none; font-size: 1.2rem; color: var(--text-tertiary); cursor: pointer;">&times;</button>
+      </div>
+
+      <form id="traveler-form" style="display: flex; flex-direction: column; gap: 0.85rem;">
+        <input type="hidden" id="traveler-id">
+
+        <div class="form-group">
+          <label for="traveler-name">Traveler / Company Name *</label>
+          <input type="text" id="traveler-name" class="form-input" placeholder="e.g. Sheikh Tariq Al-Mansoor or Sarah Jenkins" required>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label for="traveler-email">Email Address</label>
+            <input type="email" id="traveler-email" class="form-input" placeholder="client@domain.com">
+          </div>
+          <div class="form-group">
+            <label for="traveler-country">Nationality / Country</label>
+            <input type="text" id="traveler-country" class="form-input" placeholder="e.g. United Kingdom, UAE, USA">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="traveler-cohort">Customer Cohort *</label>
+          <select id="traveler-cohort" class="form-select" required>
+            <option value="VIP High-Net-Worth">👑 VIP High-Net-Worth</option>
+            <option value="Frequent Corporate Travelers">💼 Frequent Corporate Travelers</option>
+            <option value="Family Vacationers">🌴 Family Vacationers</option>
+            <option value="Pilgrims">🕋 Pilgrims (Umrah / Hajj)</option>
+          </select>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label for="traveler-bookings">Total Bookings Count *</label>
+            <input type="number" id="traveler-bookings" class="form-input" min="1" step="1" value="1" required>
+          </div>
+          <div class="form-group">
+            <label for="traveler-revenue">Total Lifetime Spend *</label>
+            <input type="number" id="traveler-revenue" class="form-input" min="0" step="50" placeholder="e.g. 5200" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="traveler-destination">Preferred Destination / Notes</label>
+          <input type="text" id="traveler-destination" class="form-input" placeholder="e.g. Makkah VIP Suites, London Business, Maldives">
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 0.5rem;">
+          <button type="button" id="btn-cancel-modal" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Traveler</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,8 +638,8 @@
     "@type": "WebApplication",
     "name": "Customer Analytics (Travel)",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/customer-analytics-travel/",
-    "description": "Track total, new, and returning travel customers.",
-    "applicationCategory": "UtilityPage",
+    "description": "Travel agency client segmentation, lifetime value (LTV) dashboard, and customer retention auditor.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

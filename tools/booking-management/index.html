@@ -4,16 +4,189 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Booking Management - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Manage reservations and appointments.">
-  <meta name="keywords" content="booking, reservation, schedule, free, online, tool, utility">
+  <meta name="description" content="Comprehensive reservation &amp; travel booking manager. Track client reservations, travel dates, flights, hotels, visas, tours, payment statuses, and confirmation lifecycle with LocalStorage sync and CSV export.">
+  <meta name="keywords" content="booking management, travel agency reservation software, flight hotel booking manager, travel itinerary tracker, payment status auditor, tour booking crs, travel invoice and vouchers">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/booking-management/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ALL IN ONE">
+  <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/booking-management/">
+  <meta property="og:title" content="Booking Management - Free Online Tool - ALL IN ONE">
+  <meta property="og:description" content="Comprehensive reservation &amp; travel booking manager. Track client reservations, travel dates, flights, hotels, visas, tours, payment statuses, and confirmation lifecycle with LocalStorage sync and CSV export.">
+  <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="Booking Management - ALL IN ONE">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/booking-management/">
+  <meta name="twitter:title" content="Booking Management - Free Online Tool - ALL IN ONE">
+  <meta name="twitter:description" content="Comprehensive reservation &amp; travel booking manager. Track client reservations, travel dates, flights, hotels, visas, tours, payment statuses, and confirmation lifecycle with LocalStorage sync and CSV export.">
+  <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta name="twitter:image:alt" content="Booking Management - ALL IN ONE">
+
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <style>
+    /* Booking Management Custom Styling */
+    .kpi-grid-booking {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .booking-kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .booking-kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      box-shadow: 0 4px 16px var(--accent-glow);
+    }
+
+    .booking-kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+
+    .booking-kpi-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .booking-kpi-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+    }
+
+    .booking-kpi-sub {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Badges */
+    .service-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .service-flight { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .service-hotel { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .service-visa { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .service-tour { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+
+    .payment-badge {
+      display: inline-flex;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-full);
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    .payment-paid { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .payment-partial { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .payment-unpaid { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+
+    .status-badge {
+      display: inline-flex;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-full);
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    .status-confirmed { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+    .status-pending { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .status-cancelled { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
+
+    /* Table */
+    .booking-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .booking-table th, .booking-table td {
+      padding: 0.75rem 0.85rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .booking-table th {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .booking-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Modal Backdrop */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      max-width: 580px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,30 +200,275 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Booking Management</h1>
-        <p class="tool-description">Manage reservations and appointments.</p>
+        <p class="tool-description">
+          Comprehensive travel reservation and central booking manager. Manage flight bookings, hotel stays, visa applications, and tour packages with real-time payment reconciliation and LocalStorage synchronization.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Booking Management</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Manage reservations and appointments.</div>
-            <div><strong>Inputs:</strong> booking, reservation, schedule</div>
-            <div><strong>Category:</strong> business</div>
-          </div>
+      <!-- Presets & Currency Bar -->
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.25rem;">
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+          <span style="font-size: 0.8rem; color: var(--text-tertiary);">Quick Views:</span>
+          <button type="button" class="btn btn-secondary" id="preset-all-reservations" style="font-size: 0.78rem; padding: 0.3rem 0.7rem;">📋 All Reservations</button>
+          <button type="button" class="btn btn-secondary" id="preset-pending-unpaid" style="font-size: 0.78rem; padding: 0.3rem 0.7rem;">⚠️ Pending & Unpaid</button>
+          <button type="button" class="btn btn-secondary" id="preset-umrah-tours" style="font-size: 0.78rem; padding: 0.3rem 0.7rem;">🕋 Pilgrimage & Tours</button>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <label for="currency-select" style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Currency:</label>
+          <select id="currency-select" class="form-select" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+            <option value="$" selected>USD ($)</option>
+            <option value="SAR ">SAR (﷼)</option>
+            <option value="AED ">AED (د.إ)</option>
+            <option value="£">GBP (£)</option>
+            <option value="€">EUR (€)</option>
+            <option value="৳">BDT (৳)</option>
+            <option value="₹">INR (₹)</option>
+            <option value="C$">CAD ($)</option>
+          </select>
+        </div>
       </div>
-    
+
+      <!-- Hero KPI Summary Cards -->
+      <div class="kpi-grid-booking">
+        <div class="booking-kpi-card">
+          <span class="booking-kpi-label">Total Reservations</span>
+          <span class="booking-kpi-value" id="kpi-total-bookings">0</span>
+          <span class="booking-kpi-sub" id="kpi-bookings-sub">All active records</span>
+        </div>
+
+        <div class="booking-kpi-card">
+          <span class="booking-kpi-label">Total Booking Value</span>
+          <span class="booking-kpi-value" id="kpi-total-value">$0</span>
+          <span class="booking-kpi-sub">Gross reservation volume</span>
+        </div>
+
+        <div class="booking-kpi-card">
+          <span class="booking-kpi-label">Collected Payments</span>
+          <span class="booking-kpi-value" id="kpi-collected-amount" style="color: #34d399;">$0</span>
+          <span class="booking-kpi-sub" id="kpi-collection-ratio">0.0% collected</span>
+        </div>
+
+        <div class="booking-kpi-card">
+          <span class="booking-kpi-label">Outstanding Receivables</span>
+          <span class="booking-kpi-value" id="kpi-outstanding-balance" style="color: #f87171;">$0</span>
+          <span class="booking-kpi-sub" id="kpi-unpaid-count">0 unpaid balances</span>
+        </div>
+
+        <div class="booking-kpi-card">
+          <span class="booking-kpi-label">Confirmed Bookings</span>
+          <span class="booking-kpi-value" id="kpi-confirmed-count" style="color: #60a5fa;">0</span>
+          <span class="booking-kpi-sub" id="kpi-confirmed-sub">0.0% confirmation rate</span>
+        </div>
+
+        <div class="booking-kpi-card">
+          <span class="booking-kpi-label">Pending Action</span>
+          <span class="booking-kpi-value" id="kpi-pending-count" style="color: #fbbf24;">0</span>
+          <span class="booking-kpi-sub">Awaiting confirmation</span>
+        </div>
+      </div>
+
+      <!-- Main Booking Workspace Panel -->
+      <div class="tool-panel glass-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;">
+          <div class="panel-title" style="margin: 0; padding: 0; border: none;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Travel Reservations Ledger
+          </div>
+          
+          <button type="button" id="btn-add-booking" class="btn btn-primary" style="font-size: 0.8rem; padding: 0.35rem 0.85rem;">
+            + New Reservation
+          </button>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-top: 0.5rem;">
+          <div style="flex: 1; min-width: 180px;">
+            <input type="text" id="booking-search-input" class="form-input" placeholder="Search by booking ID, client name, destination..." style="font-size: 0.85rem; padding: 0.4rem 0.75rem;">
+          </div>
+
+          <select id="select-filter-service" class="form-select" style="width: auto; font-size: 0.85rem; padding: 0.4rem 0.75rem;">
+            <option value="ALL">All Services</option>
+            <option value="Flight">✈️ Flight</option>
+            <option value="Hotel">🏨 Hotel</option>
+            <option value="Visa">📑 Visa</option>
+            <option value="Tour">🌍 Tour</option>
+          </select>
+
+          <select id="select-filter-payment" class="form-select" style="width: auto; font-size: 0.85rem; padding: 0.4rem 0.75rem;">
+            <option value="ALL">All Payments</option>
+            <option value="Paid">Paid in Full</option>
+            <option value="Partial">Partial Deposit</option>
+            <option value="Unpaid">Unpaid Balance</option>
+          </select>
+
+          <select id="select-filter-status" class="form-select" style="width: auto; font-size: 0.85rem; padding: 0.4rem 0.75rem;">
+            <option value="ALL">All Status</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Pending">Pending</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+
+          <select id="select-sort-bookings" class="form-select" style="width: auto; font-size: 0.85rem; padding: 0.4rem 0.75rem;">
+            <option value="date-desc">Travel Date (Earliest)</option>
+            <option value="amount-desc">Total Amount (High to Low)</option>
+            <option value="name-asc">Client Name (A - Z)</option>
+          </select>
+
+          <button type="button" id="btn-export-csv" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.75rem;" title="Download reservations ledger as CSV">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            CSV
+          </button>
+        </div>
+
+        <!-- Reservations Table -->
+        <div class="table-responsive" style="max-height: 560px; overflow-y: auto; margin-top: 0.5rem;">
+          <table class="booking-table">
+            <thead>
+              <tr>
+                <th>Booking ID</th>
+                <th>Client Name</th>
+                <th>Service</th>
+                <th>Destination</th>
+                <th>Travel Date</th>
+                <th>Total Amount</th>
+                <th>Payment Status</th>
+                <th>Booking Status</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="booking-table-body">
+              <!-- Rendered via script.js -->
+            </tbody>
+          </table>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-tertiary); margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border);">
+          <span id="filtered-bookings-count">Showing 0 of 0 reservations</span>
+          <button type="button" id="btn-reset-demo" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;">
+            Reset to Demo Bookings
+          </button>
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- Add / Edit Booking Modal -->
+  <div class="modal-backdrop" id="booking-modal">
+    <div class="modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+        <h3 id="modal-title" style="margin: 0; font-size: 1.2rem; font-weight: 700;">Create Reservation</h3>
+        <button type="button" id="btn-close-modal" style="background: none; border: none; font-size: 1.2rem; color: var(--text-tertiary); cursor: pointer;">&times;</button>
+      </div>
+
+      <form id="booking-form" style="display: flex; flex-direction: column; gap: 0.85rem;">
+        <input type="hidden" id="entry-id">
+
+        <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label for="booking-id-input">Booking ID *</label>
+            <input type="text" id="booking-id-input" class="form-input" placeholder="e.g. BK-8402" required>
+          </div>
+          <div class="form-group">
+            <label for="client-name-input">Client Full Name *</label>
+            <input type="text" id="client-name-input" class="form-input" placeholder="e.g. Alexander Hamilton" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label for="service-type-select">Service Type *</label>
+            <select id="service-type-select" class="form-select" required>
+              <option value="Flight">✈️ Flight</option>
+              <option value="Hotel">🏨 Hotel</option>
+              <option value="Visa">📑 Visa</option>
+              <option value="Tour">🌍 Tour</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="destination-input">Destination / Route *</label>
+            <input type="text" id="destination-input" class="form-input" placeholder="e.g. Makkah & Madinah or Paris" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label for="travel-date-input">Travel Date *</label>
+            <input type="date" id="travel-date-input" class="form-input" required>
+          </div>
+
+          <div class="form-group">
+            <label for="return-date-input">Return / End Date</label>
+            <input type="date" id="return-date-input" class="form-input">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label for="total-amount-input">Total Amount *</label>
+            <input type="number" id="total-amount-input" class="form-input" min="0" step="10" placeholder="2400" required>
+          </div>
+
+          <div class="form-group">
+            <label for="paid-amount-input">Amount Received</label>
+            <input type="number" id="paid-amount-input" class="form-input" min="0" step="10" placeholder="1200">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label for="payment-status-select">Payment Status *</label>
+            <select id="payment-status-select" class="form-select" required>
+              <option value="Paid">Paid in Full</option>
+              <option value="Partial">Partial Deposit</option>
+              <option value="Unpaid">Unpaid</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="booking-status-select">Booking Status *</label>
+            <select id="booking-status-select" class="form-select" required>
+              <option value="Confirmed">Confirmed</option>
+              <option value="Pending">Pending</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="notes-input">Notes & Special Requirements</label>
+          <input type="text" id="notes-input" class="form-input" placeholder="e.g. Haram view high floor, vegetarian meals requested">
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 0.5rem;">
+          <button type="button" id="btn-cancel-modal" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Reservation</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Booking Voucher Modal -->
+  <div class="modal-backdrop" id="voucher-modal">
+    <div class="modal-card" style="max-width: 500px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1rem;">
+        <h3 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: var(--accent);">
+          🎟️ Travel Reservation Voucher
+        </h3>
+        <button type="button" id="btn-close-voucher" style="background: none; border: none; font-size: 1.2rem; color: var(--text-tertiary); cursor: pointer;">&times;</button>
+      </div>
+
+      <div id="voucher-content" style="background: var(--bg-tertiary); border: 1px dashed var(--border); border-radius: var(--radius-md); padding: 1.25rem; font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.75rem;">
+        <!-- Injected dynamically -->
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1rem;">
+        <button type="button" id="btn-print-voucher" class="btn btn-primary" style="font-size: 0.85rem;">Print / Save Voucher</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,8 +480,8 @@
     "@type": "WebApplication",
     "name": "Booking Management",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/booking-management/",
-    "description": "Manage reservations and appointments.",
-    "applicationCategory": "UtilityPage",
+    "description": "Comprehensive reservation and travel booking manager.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

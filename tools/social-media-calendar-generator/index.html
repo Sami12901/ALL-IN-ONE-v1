@@ -3,17 +3,212 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Social Media Calendar Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your Social Media Calendar Generator online.">
-  <meta name="keywords" content="marketing, digital, social, free, online, tool, utility">
+  <title>Social Media Calendar Generator - Content Plan &amp; Scheduler - ALL IN ONE</title>
+  <meta name="description" content="Generate complete weekly and monthly social media content calendars with peak posting times, content pillars, post concepts, and export to CSV or iCal (.ics).">
+  <meta name="keywords" content="social media calendar generator, content planner, marketing schedule, ics calendar export, content pillars, instagram linkedin twitter schedule">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/social-media-calendar-generator/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ALL IN ONE">
+  <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/social-media-calendar-generator/">
+  <meta property="og:title" content="Social Media Calendar Generator - Content Plan &amp; Scheduler - ALL IN ONE">
+  <meta property="og:description" content="Generate complete weekly and monthly social media content calendars with peak posting times, content pillars, post concepts, and export to CSV or iCal (.ics).">
+  <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="Social Media Calendar Generator - ALL IN ONE">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/social-media-calendar-generator/">
+  <meta name="twitter:title" content="Social Media Calendar Generator - Content Plan &amp; Scheduler - ALL IN ONE">
+  <meta name="twitter:description" content="Generate complete weekly and monthly social media content calendars with peak posting times, content pillars, post concepts, and export to CSV or iCal (.ics).">
+  <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta name="twitter:image:alt" content="Social Media Calendar Generator - ALL IN ONE">
+
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <style>
+    .cal-workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .cal-workspace {
+        grid-template-columns: 360px 1fr;
+      }
+    }
+
+    /* Platform multi-toggle cards */
+    .platform-checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.5rem;
+    }
+    .platform-toggle-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 0.65rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+      user-select: none;
+      transition: var(--transition);
+    }
+    .platform-toggle-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .platform-toggle-btn.active {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Pillar Badges */
+    .pillar-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      white-space: nowrap;
+    }
+    .pillar-educational { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+    .pillar-entertaining { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
+    .pillar-promotional { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .pillar-community { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+    /* Platform Badges */
+    .plat-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      white-space: nowrap;
+    }
+    .plat-linkedin { background: rgba(10, 102, 194, 0.2); color: #70b5f9; border: 1px solid rgba(10, 102, 194, 0.4); }
+    .plat-instagram { background: rgba(225, 48, 108, 0.2); color: #f472b6; border: 1px solid rgba(225, 48, 108, 0.4); }
+    .plat-youtube { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+    .plat-twitter { background: rgba(255, 255, 255, 0.15); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.3); }
+    .plat-tiktok { background: rgba(37, 244, 238, 0.15); color: #2dd4bf; border: 1px solid rgba(37, 244, 238, 0.3); }
+
+    /* Table styling */
+    .cal-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 0.85rem;
+      color: var(--text-primary);
+    }
+    .cal-table th {
+      background: var(--bg-tertiary);
+      padding: 0.75rem 0.85rem;
+      text-align: left;
+      font-weight: 700;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .cal-table td {
+      padding: 0.85rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .cal-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Grid view */
+    .cal-grid-view {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .cal-card-item {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      transition: var(--transition);
+      position: relative;
+    }
+    .cal-card-item:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+
+    /* Filter buttons */
+    .filter-btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      align-items: center;
+    }
+    .view-toggle-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .view-toggle-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .toast-popup {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      color: var(--text);
+      font-size: 0.875rem;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: var(--transition);
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .toast-popup.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,30 +222,208 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Social Media Calendar Generator</h1>
-        <p class="tool-description">Create, analyze, and manage your Social Media Calendar Generator online.</p>
+        <p class="tool-description">Generate strategic weekly or monthly content schedules with peak engagement times, content pillars, post concepts, and export directly to CSV or Google/Apple Calendar (.ics).</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Social Media Calendar Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your Social Media Calendar Generator online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, social</div>
-            <div><strong>Category:</strong> digital-marketing</div>
+      <!-- Workspace -->
+      <div class="cal-workspace">
+        
+        <!-- Controls Sidebar -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            Calendar Setup
           </div>
+
+          <!-- Target Platforms -->
+          <div class="form-group">
+            <label>Target Platforms (Select all that apply):</label>
+            <div class="platform-checkbox-grid" id="platform-selectors">
+              <div class="platform-toggle-btn active" data-platform="instagram">
+                <span>📸 Instagram</span>
+              </div>
+              <div class="platform-toggle-btn active" data-platform="linkedin">
+                <span>💼 LinkedIn</span>
+              </div>
+              <div class="platform-toggle-btn active" data-platform="youtube">
+                <span>▶️ YouTube</span>
+              </div>
+              <div class="platform-toggle-btn active" data-platform="twitter">
+                <span>🐦 Twitter / X</span>
+              </div>
+              <div class="platform-toggle-btn" data-platform="tiktok">
+                <span>🎵 TikTok</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Schedule Scope -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
+            <div class="form-group">
+              <label for="cal-duration">Time Duration</label>
+              <select id="cal-duration" class="form-select">
+                <option value="7" selected>1 Week (7 Days)</option>
+                <option value="14">2 Weeks (14 Days)</option>
+                <option value="30">1 Month (30 Days)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="cal-freq">Posting Cadence</label>
+              <select id="cal-freq" class="form-select">
+                <option value="3">3 Posts / Week</option>
+                <option value="5" selected>5 Posts / Week</option>
+                <option value="7">Daily (7 Posts / Wk)</option>
+                <option value="10">Aggressive (10 / Wk)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Niche / Industry -->
+          <div class="form-group">
+            <label for="cal-niche">Niche / Industry</label>
+            <select id="cal-niche" class="form-select">
+              <option value="tech" selected>Tech, SaaS & AI</option>
+              <option value="creator">Digital Creator & Coaching</option>
+              <option value="ecommerce">E-Commerce & DTC Brand</option>
+              <option value="fitness">Health, Fitness & Wellness</option>
+              <option value="finance">Business & Personal Finance</option>
+              <option value="agency">Marketing & Creative Agency</option>
+            </select>
+          </div>
+
+          <!-- Goal -->
+          <div class="form-group">
+            <label for="cal-goal">Primary Campaign Objective</label>
+            <select id="cal-goal" class="form-select">
+              <option value="growth" selected>Viral Reach & Audience Growth</option>
+              <option value="authority">Thought Leadership & Trust</option>
+              <option value="leads">Lead Gen & Conversions</option>
+              <option value="community">Community Engagement & Loyalty</option>
+            </select>
+          </div>
+
+          <!-- Start Date -->
+          <div class="form-group">
+            <label for="cal-start-date">Plan Start Date</label>
+            <input type="date" id="cal-start-date" class="form-input">
+          </div>
+
+          <!-- Action bar -->
+          <div class="action-bar" style="margin-top: 0.5rem;">
+            <button id="cal-generate-btn" class="btn btn-primary" style="flex: 1;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+              Generate Content Calendar
+            </button>
+          </div>
+
+          <!-- Content Pillars Overview -->
+          <div style="background: var(--bg-tertiary); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border); font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5; margin-top: 0.5rem;">
+            <strong style="color: var(--text-primary); display: block; margin-bottom: 0.35rem;">📊 Content Pillar Distribution (40-30-20-10 Rule):</strong>
+            • <span class="pillar-badge pillar-educational" style="font-size: 0.65rem;">Educational (40%)</span> Tutorials & frameworks<br>
+            • <span class="pillar-badge pillar-community" style="font-size: 0.65rem;">Community (30%)</span> Stories, BTS, questions<br>
+            • <span class="pillar-badge pillar-entertaining" style="font-size: 0.65rem;">Entertaining (20%)</span> Memes & relatability<br>
+            • <span class="pillar-badge pillar-promotional" style="font-size: 0.65rem;">Promotional (10%)</span> Product & CTAs
+          </div>
+
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Main Schedule Area -->
+        <div class="tool-panel glass-panel" style="gap: 1rem;">
+          
+          <!-- Top Control & Export Bar -->
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span class="panel-title" style="margin: 0; padding: 0; border: none;">
+                Scheduled Posts (<span id="total-posts-badge">0</span>)
+              </span>
+            </div>
+
+            <!-- View Toggle & Exports -->
+            <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center;">
+              <div class="filter-btn-group">
+                <button class="view-toggle-btn active" id="view-table-btn" title="Table View">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                  Table
+                </button>
+                <button class="view-toggle-btn" id="view-grid-btn" title="Grid / Card View">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                  Cards
+                </button>
+              </div>
+
+              <button id="add-post-row-btn" class="mini-btn" title="Add a custom post slot">
+                + Add Post
+              </button>
+              <button id="export-csv-btn" class="mini-btn" title="Download spreadsheet CSV">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Export CSV
+              </button>
+              <button id="export-ics-btn" class="mini-btn" title="Export to Apple / Google / Outlook Calendar">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                Export iCal (.ics)
+              </button>
+              <button id="copy-summary-btn" class="mini-btn" title="Copy markdown summary">
+                Copy Plan
+              </button>
+            </div>
+          </div>
+
+          <!-- Filters Row -->
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.5rem;">
+            <div style="display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center;">
+              <span style="font-size: 0.75rem; color: var(--text-secondary); margin-right: 0.25rem;">Filter Platform:</span>
+              <button class="filter-pill active plat-filter" data-plat="all">All</button>
+              <button class="filter-pill plat-filter" data-plat="instagram">Instagram</button>
+              <button class="filter-pill plat-filter" data-plat="linkedin">LinkedIn</button>
+              <button class="filter-pill plat-filter" data-plat="youtube">YouTube</button>
+              <button class="filter-pill plat-filter" data-plat="twitter">Twitter</button>
+              <button class="filter-pill plat-filter" data-plat="tiktok">TikTok</button>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center;">
+              <span style="font-size: 0.75rem; color: var(--text-secondary); margin-right: 0.25rem;">Pillar:</span>
+              <button class="filter-pill active pillar-filter" data-pillar="all">All</button>
+              <button class="filter-pill pillar-filter" data-pillar="educational">Educational</button>
+              <button class="filter-pill pillar-filter" data-pillar="community">Community</button>
+              <button class="filter-pill pillar-filter" data-pillar="entertaining">Entertaining</button>
+              <button class="filter-pill pillar-filter" data-pillar="promotional">Promotional</button>
+            </div>
+          </div>
+
+          <!-- Table View Container -->
+          <div id="table-view-container" class="table-responsive">
+            <table class="cal-table">
+              <thead>
+                <tr>
+                  <th style="width: 140px;">Day & Date</th>
+                  <th style="width: 90px;">Time</th>
+                  <th style="width: 110px;">Platform</th>
+                  <th style="width: 120px;">Content Pillar</th>
+                  <th style="width: 110px;">Format</th>
+                  <th>Post Headline / Concept</th>
+                  <th style="width: 80px; text-align: center;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="cal-table-body">
+                <!-- Generated rows -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Cards Grid View Container -->
+          <div id="grid-view-container" class="cal-grid-view" style="display: none;">
+            <!-- Generated cards -->
+          </div>
+
+        </div>
+
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Toast Notification -->
+  <div id="app-toast" class="toast-popup">Copied schedule to clipboard!</div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,8 +435,8 @@
     "@type": "WebApplication",
     "name": "Social Media Calendar Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/social-media-calendar-generator/",
-    "description": "Create, analyze, and manage your Social Media Calendar Generator online.",
-    "applicationCategory": "UtilityPage",
+    "description": "Weekly and monthly social media content schedule creator with optimal posting times, content pillars, and iCal / CSV export.",
+    "applicationCategory": "MarketingTool",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

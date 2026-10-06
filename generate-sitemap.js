@@ -3,7 +3,9 @@ const path = require('path');
 
 const WORKSPACE = __dirname;
 const TOOLS_DB_PATH = path.join(WORKSPACE, 'data', 'tools-db.json');
-const SITEMAP_PATH = path.join(WORKSPACE, 'seo', 'sitemap.xml');
+const ROOT_SITEMAP_PATH = path.join(WORKSPACE, 'sitemap.xml');
+const SEO_SITEMAP_DIR = path.join(WORKSPACE, 'seo');
+const SEO_SITEMAP_PATH = path.join(SEO_SITEMAP_DIR, 'sitemap.xml');
 
 if (!fs.existsSync(TOOLS_DB_PATH)) {
   console.error('tools-db.json not found!');
@@ -27,39 +29,58 @@ let xml = `<?xml version="1.0" encoding="UTF-8"?>
     <loc>https://sami12901.github.io/ALL-IN-ONE-v1/pages/about.html</loc>
     <lastmod>${today}</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://sami12901.github.io/ALL-IN-ONE-v1/pages/contact.html</loc>
     <lastmod>${today}</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://sami12901.github.io/ALL-IN-ONE-v1/pages/privacy.html</loc>
     <lastmod>${today}</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
+    <priority>0.4</priority>
   </url>
   <url>
     <loc>https://sami12901.github.io/ALL-IN-ONE-v1/pages/terms.html</loc>
     <lastmod>${today}</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
+    <priority>0.4</priority>
   </url>
 `;
 
+let activeCount = 0;
+let totalTools = tools.length;
+
 tools.forEach(tool => {
+  const isActive = tool.active !== false;
+  if (isActive) activeCount++;
+  const priority = (tool.popular || isActive) ? '0.9' : '0.8';
+  
   xml += `  <url>
     <loc>https://sami12901.github.io/ALL-IN-ONE-v1/tools/${tool.id}/</loc>
     <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>${priority}</priority>
   </url>
 `;
 });
 
-xml += `</urlset>`;
+xml += `</urlset>\n`;
 
-fs.writeFileSync(SITEMAP_PATH, xml, 'utf-8');
-console.log('Sitemap.xml generated successfully inside /seo directory.');
+// Ensure /seo directory exists
+if (!fs.existsSync(SEO_SITEMAP_DIR)) {
+  fs.mkdirSync(SEO_SITEMAP_DIR, { recursive: true });
+}
+
+// Write to root sitemap.xml
+fs.writeFileSync(ROOT_SITEMAP_PATH, xml, 'utf-8');
+console.log(`Root sitemap.xml generated successfully at ${ROOT_SITEMAP_PATH}`);
+
+// Write to /seo/sitemap.xml
+fs.writeFileSync(SEO_SITEMAP_PATH, xml, 'utf-8');
+console.log(`SEO sitemap.xml generated successfully at ${SEO_SITEMAP_PATH}`);
+
+console.log(`Total URLs indexed: ${5 + totalTools} (Homepage + 4 Core pages + ${totalTools} Tools [${activeCount} active])`);

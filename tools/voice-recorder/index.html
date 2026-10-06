@@ -3,15 +3,252 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Voice Audio Recorder - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Capture audio inputs and export local audio files.">
-  <meta name="keywords" content="voice, record, audio, mic, microphone, free, online, tool, utility">
+  <title>Voice Audio Recorder - Free Online Studio - ALL IN ONE</title>
+  <meta name="description" content="High-fidelity in-browser voice and audio recorder with live frequency waveform visualizer, audio player, trimmer, and WAV/WebM export.">
+  <meta name="keywords" content="voice recorder, audio recorder, microphone, wave visualizer, wav export, webm recorder, sound recording online">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/voice-recorder/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ALL IN ONE">
+  <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/voice-recorder/">
+  <meta property="og:title" content="Voice Audio Recorder - Free Online Studio - ALL IN ONE">
+  <meta property="og:description" content="High-fidelity in-browser voice and audio recorder with live frequency waveform visualizer, audio player, trimmer, and WAV/WebM export.">
+  <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="Voice Audio Recorder - ALL IN ONE">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/voice-recorder/">
+  <meta name="twitter:title" content="Voice Audio Recorder - Free Online Studio - ALL IN ONE">
+  <meta name="twitter:description" content="High-fidelity in-browser voice and audio recorder with live frequency waveform visualizer, audio player, trimmer, and WAV/WebM export.">
+  <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta name="twitter:image:alt" content="Voice Audio Recorder - ALL IN ONE">
+
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .recorder-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+
+    .status-badge.recording {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #ef4444;
+    }
+
+    .status-badge.paused {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: rgba(245, 158, 11, 0.4);
+      color: #f59e0b;
+    }
+
+    .status-badge.ready {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #10b981;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .status-badge.recording .status-dot {
+      animation: pulse-dot 1.2s infinite ease-in-out;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(0.8); }
+    }
+
+    .timer-display {
+      font-family: 'SF Mono', Monaco, Menlo, 'Courier New', monospace;
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--text-primary);
+      text-align: center;
+      margin: 0.75rem 0;
+      text-shadow: 0 0 20px rgba(137, 170, 204, 0.2);
+    }
+
+    .visualizer-wrapper {
+      position: relative;
+      width: 100%;
+      height: 140px;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+    }
+
+    .visualizer-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .controls-cluster {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+
+    .btn-record-main {
+      min-width: 160px;
+      font-size: 1.05rem;
+      padding: 0.85rem 1.75rem;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 18px rgba(239, 68, 68, 0.35);
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .btn-record-main:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(239, 68, 68, 0.5);
+    }
+
+    .btn-control-secondary {
+      padding: 0.8rem 1.4rem;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .settings-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      background: var(--bg-tertiary);
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      margin-top: 1rem;
+    }
+
+    .audio-playback-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .studio-audio-player {
+      width: 100%;
+      border-radius: var(--radius-sm);
+      outline: none;
+    }
+
+    .adjustments-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .recordings-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .recording-item {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      padding: 0.9rem 1.25rem;
+      border-radius: var(--radius-md);
+      transition: var(--transition);
+    }
+
+    .recording-item:hover {
+      border-color: var(--accent);
+      background: var(--surface);
+    }
+
+    .recording-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .recording-title {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+    }
+
+    .recording-info {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .recording-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-icon {
+      padding: 0.45rem 0.75rem;
+      font-size: 0.85rem;
+      border-radius: var(--radius-sm);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,42 +264,179 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Voice Audio Recorder</h1>
-        <p class="tool-description">Capture audio inputs and export local audio files.</p>
+        <p class="tool-description">High-fidelity audio recording studio with live frequency waveform visualizer, audio player, gain adjustments, trimming, and instant export.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Voice Audio Recorder</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Capture audio inputs and export local audio files.</div>
-            <div><strong>Inputs:</strong> voice, record, audio, mic, microphone</div>
-            <div><strong>Category:</strong> utility</div>
+      <div class="recorder-grid">
+        <!-- Main Recorder Studio Panel -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <h2 class="panel-title" style="margin-bottom: 0; border: none; padding: 0;">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+              Recording Studio
+            </h2>
+            <div id="recordingStatusBadge" class="status-badge ready">
+              <span class="status-dot"></span>
+              <span id="recordingStatusText">Microphone Ready</span>
+            </div>
+          </div>
+
+          <!-- Digital Timer Clock -->
+          <div class="timer-display" id="timerDisplay">00:00</div>
+
+          <!-- Frequency Visualizer Canvas -->
+          <div class="visualizer-wrapper">
+            <canvas id="visualizerCanvas" class="visualizer-canvas"></canvas>
+          </div>
+
+          <!-- Primary Controls -->
+          <div class="controls-cluster">
+            <button id="recordBtn" class="btn btn-record-main">
+              <svg id="recordIcon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8" fill="currentColor"></circle></svg>
+              <span id="recordBtnText">Start Recording</span>
+            </button>
+
+            <button id="pauseBtn" class="btn btn-secondary btn-control-secondary" disabled>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+              <span id="pauseBtnText">Pause</span>
+            </button>
+
+            <button id="stopBtn" class="btn btn-secondary btn-control-secondary" disabled>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" fill="currentColor"></rect></svg>
+              <span>Stop</span>
+            </button>
+
+            <button id="resetBtn" class="btn btn-secondary btn-control-secondary" title="Reset Session">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v6h6"></path><path d="M3 13a9 9 0 1 0 3-7.7L3 8"></path></svg>
+              <span>Reset</span>
+            </button>
+          </div>
+
+          <!-- Recording Options / Mic settings -->
+          <div class="settings-bar">
+            <div class="form-group">
+              <label for="micSelect">Audio Input Source</label>
+              <select id="micSelect" class="form-select">
+                <option value="default">Default Microphone</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="formatSelect">Recording Format</label>
+              <select id="formatSelect" class="form-select">
+                <option value="webm">WebM (Compressed Opus)</option>
+                <option value="wav" selected>WAV (Lossless 16-bit PCM)</option>
+              </select>
+            </div>
+            <div class="form-group" style="justify-content: center;">
+              <label class="checkbox-label" style="min-height: auto; margin-top: 0.5rem;">
+                <input type="checkbox" id="noiseSuppressionToggle" checked>
+                <span>Noise Suppression & Echo Cancel</span>
+              </label>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Post-Recording Studio & Trim Panel -->
+        <div id="playbackPanel" class="tool-panel glass-panel" style="display: none;">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            Playback, Trimming & Adjustments
+          </h2>
+
+          <div class="audio-playback-card">
+            <!-- HTML5 Audio Player -->
+            <audio id="audioPlayer" controls class="studio-audio-player"></audio>
+
+            <!-- Adjustments: Volume Gain & Playback Speed -->
+            <div class="adjustments-grid">
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between;">
+                  <label for="volumeSlider">Volume Boost / Gain</label>
+                  <span id="volumeValue" class="range-value" style="font-size: 0.9rem;">100%</span>
+                </div>
+                <div class="range-group">
+                  <input type="range" id="volumeSlider" class="range-slider" min="0" max="200" value="100" step="5">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="speedSelect">Playback Speed</label>
+                <select id="speedSelect" class="form-select">
+                  <option value="0.5">0.5x (Slow)</option>
+                  <option value="0.75">0.75x</option>
+                  <option value="1" selected>1.0x (Normal)</option>
+                  <option value="1.25">1.25x</option>
+                  <option value="1.5">1.5x</option>
+                  <option value="2">2.0x (Double)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Trimming Controls -->
+            <div style="padding-top: 1rem; border-top: 1px solid var(--border);">
+              <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-primary); display: block; margin-bottom: 0.75rem;">Audio Trimming (Non-destructive)</span>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; align-items: end;">
+                <div class="form-group">
+                  <label for="trimStart">Start Offset (seconds)</label>
+                  <input type="number" id="trimStart" class="form-input" min="0" step="0.1" value="0.0">
+                </div>
+                <div class="form-group">
+                  <label for="trimEnd">End Offset (seconds)</label>
+                  <input type="number" id="trimEnd" class="form-input" min="0.1" step="0.1" value="0.0">
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                  <button id="applyTrimBtn" class="btn btn-secondary" style="flex: 1;">Apply Trim</button>
+                  <button id="resetTrimBtn" class="btn btn-secondary" title="Reset Trim">Reset</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Export Buttons -->
+            <div class="action-bar" style="margin-top: 0.5rem; justify-content: flex-end;">
+              <button id="downloadWebmBtn" class="btn btn-secondary">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download (.webm)
+              </button>
+              <button id="downloadWavBtn" class="btn btn-primary">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download (.wav)
+              </button>
+              <button id="saveSessionBtn" class="btn btn-secondary">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                Save to Library
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Session Library Panel -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <h2 class="panel-title" style="margin-bottom: 0; border: none; padding: 0;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+              Session Recordings (<span id="recordingCount">0</span>)
+            </h2>
+            <button id="clearLibraryBtn" class="btn btn-secondary btn-icon" style="font-size: 0.8rem;" disabled>Clear All</button>
+          </div>
+          <div id="recordingsList" class="recordings-list">
+            <p id="emptyLibraryNotice" style="color: var(--text-secondary); font-size: 0.9rem; text-align: center; padding: 1.5rem 0;">No recordings saved yet. Click "Start Recording" above to capture audio.</p>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Voice Audio Recorder",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/voice-recorder/",
-    "description": "Capture audio inputs and export local audio files.",
+    "description": "Capture audio inputs and export local audio files in WAV and WebM formats with waveform visualizer.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

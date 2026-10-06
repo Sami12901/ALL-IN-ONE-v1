@@ -3,15 +3,247 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Math Expression Parser - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Tokenize and display math expression trees.">
-  <meta name="keywords" content="math, parse, expression, eval, trees, free, online, tool, utility">
+  <title>Math Expression Parser & AST Analyzer - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Safe client-side mathematical expression evaluator and syntax tree (AST) analyzer. Supports trigonometry, logarithms, algebra, variables with live sliders, and token inspection.">
+  <meta name="keywords" content="math parser, ast analyzer, mathematical expression evaluator, syntax tree, safe math eval, token breakdown, algebra solver">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/math-parser/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ALL IN ONE">
+  <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/math-parser/">
+  <meta property="og:title" content="Math Expression Parser & AST Analyzer - Free Online Tool - ALL IN ONE">
+  <meta property="og:description" content="Safe client-side mathematical expression evaluator and syntax tree (AST) analyzer.">
+  <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .math-hero-result {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+
+    .math-hero-result::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+
+    .math-res-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .math-res-value {
+      font-size: clamp(2.2rem, 5vw, 3.25rem);
+      font-weight: 800;
+      font-family: var(--font-sans);
+      color: var(--text-primary);
+      line-height: 1.1;
+      word-break: break-all;
+    }
+
+    .math-res-formula {
+      font-family: monospace;
+      font-size: 0.95rem;
+      color: var(--accent);
+      background: var(--bg-tertiary);
+      padding: 0.4rem 0.75rem;
+      border-radius: var(--radius-sm);
+      width: fit-content;
+      max-width: 100%;
+      overflow-x: auto;
+    }
+
+    /* Variable Slider Box */
+    .variable-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+
+    .var-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .var-badge {
+      font-family: monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+      width: 2rem;
+      text-align: center;
+    }
+
+    /* Token table and chips */
+    .tokens-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-top: 0.75rem;
+    }
+
+    .tokens-table th {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tokens-table td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      font-family: monospace;
+    }
+
+    .token-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .tag-number { background: rgba(78, 133, 191, 0.15); color: var(--accent); }
+    .tag-op { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+    .tag-func { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+    .tag-var { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
+    .tag-paren { background: rgba(107, 114, 128, 0.15); color: var(--text-secondary); }
+
+    /* AST Visual Tree */
+    .tree-view {
+      font-family: monospace;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      max-height: 400px;
+      overflow: auto;
+    }
+
+    .tree-node {
+      margin-left: 1.25rem;
+      position: relative;
+      padding: 0.2rem 0;
+    }
+
+    .tree-node-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 0.8rem;
+    }
+
+    .tree-node-badge.op-node {
+      border-color: rgba(245, 158, 11, 0.4);
+      color: #f59e0b;
+      font-weight: 700;
+    }
+
+    .tree-node-badge.num-node {
+      border-color: rgba(78, 133, 191, 0.4);
+      color: var(--accent);
+    }
+
+    .tree-node-badge.fn-node {
+      border-color: rgba(16, 185, 129, 0.4);
+      color: var(--success);
+    }
+
+    .tree-node-badge.var-node {
+      border-color: rgba(168, 85, 247, 0.4);
+      color: #c084fc;
+    }
+
+    /* Keypad grid for quick insertion */
+    .keypad-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+      gap: 0.4rem;
+      margin-top: 0.75rem;
+    }
+
+    .key-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.4rem 0.2rem;
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: monospace;
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .key-btn:hover {
+      background: var(--surface);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .nav-pills {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+
+    .nav-pill {
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-full);
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-secondary);
+      font-size: 0.825rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .nav-pill.active {
+      background: var(--bg-tertiary);
+      border-color: var(--border);
+      color: var(--text-primary);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,29 +258,142 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Math Expression Parser</h1>
-        <p class="tool-description">Tokenize and display math expression trees.</p>
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+          <div>
+            <h1>Math Expression Parser</h1>
+            <p class="tool-description">Recursive-descent mathematical parser, syntax tree (AST) generator, token inspector, and live algebraic expression evaluator.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <div style="display: flex; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-full); padding: 0.2rem;">
+              <button class="nav-pill active" id="btn-mode-rad">Radians</button>
+              <button class="nav-pill" id="btn-mode-deg">Degrees</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Presets bar -->
+      <div class="presets-bar" style="margin-bottom: 1rem;">
+        <span style="font-size: 0.75rem; color: var(--text-tertiary); font-weight: 600;">Formulas:</span>
+        <button class="preset-chip" data-formula="2 * sin(pi / 4) + sqrt(16) - 5^2">Trig &amp; Exponents</button>
+        <button class="preset-chip" data-formula="x^2 - 4*x + 4">Quadratic f(x)</button>
+        <button class="preset-chip" data-formula="ln(e^3) + log10(1000) * abs(-5)">Logarithmic &amp; Abs</button>
+        <button class="preset-chip" data-formula="5! / (3! * 2!)">Combinatorics n!</button>
+        <button class="preset-chip" data-formula="min(2^x, 50) + sqrt(abs(x))">Min/Max &amp; Variable</button>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Math Expression Parser</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Tokenize and display math expression trees.</div>
-            <div><strong>Inputs:</strong> math, parse, expression, eval, trees</div>
-            <div><strong>Category:</strong> math</div>
+      <div class="tool-workarea split-view">
+        <!-- Left Panel: Input & Controls -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            <span>Formula Input</span>
+          </div>
+
+          <div class="form-group">
+            <label for="math-input">Enter Mathematical Expression:</label>
+            <input type="text" id="math-input" class="form-input" style="font-family: monospace; font-size: 1.15rem; font-weight: 600;" value="2 * sin(pi / 4) + sqrt(16) - 5^2" placeholder="e.g. 2*sin(pi/4) + sqrt(16) - 5^2">
+          </div>
+
+          <div id="parse-error-box" class="alert-error" style="display: none; font-family: monospace; font-size: 0.85rem;"></div>
+
+          <!-- Quick Math Keypad -->
+          <div>
+            <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Quick Operators &amp; Functions:</label>
+            <div class="keypad-grid">
+              <button class="key-btn" data-insert="+">+</button>
+              <button class="key-btn" data-insert="-">-</button>
+              <button class="key-btn" data-insert="*">&times;</button>
+              <button class="key-btn" data-insert="/">&divide;</button>
+              <button class="key-btn" data-insert="^">^</button>
+              <button class="key-btn" data-insert="(">(</button>
+              <button class="key-btn" data-insert=")">)</button>
+              <button class="key-btn" data-insert="!">!</button>
+              <button class="key-btn" data-insert="sqrt(">sqrt</button>
+              <button class="key-btn" data-insert="sin(">sin</button>
+              <button class="key-btn" data-insert="cos(">cos</button>
+              <button class="key-btn" data-insert="tan(">tan</button>
+              <button class="key-btn" data-insert="ln(">ln</button>
+              <button class="key-btn" data-insert="log10(">log10</button>
+              <button class="key-btn" data-insert="abs(">abs</button>
+              <button class="key-btn" data-insert="pi">&pi;</button>
+              <button class="key-btn" data-insert="e">e</button>
+              <button class="key-btn" data-insert="x">x</button>
+            </div>
+          </div>
+
+          <!-- Variable Assignment Sliders Section -->
+          <div class="variable-card" id="variable-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">Variable Assignments</span>
+              <span style="font-size: 0.75rem; color: var(--text-tertiary);" id="var-count-tag">1 Variable Active</span>
+            </div>
+            <div id="variable-controls-list">
+              <!-- Dynamically populated per variable found in expression -->
+            </div>
+          </div>
+
+          <div class="action-bar" style="margin-top: 1rem;">
+            <button class="btn btn-primary" id="btn-eval" style="flex: 1;">Evaluate Expression</button>
+            <button class="btn btn-outline" id="btn-clear-formula">Clear</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Panel: Result, AST & Token Breakdown -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title" style="justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Evaluated Result</span>
+            </div>
+            <span id="ast-node-count" style="font-size: 0.8rem; color: var(--text-tertiary);">0 AST Nodes</span>
+          </div>
+
+          <!-- Hero Solution Card -->
+          <div class="math-hero-result">
+            <div class="math-res-label">
+              <span>Solution Output</span>
+              <button class="copy-btn" id="btn-copy-solution" style="position: static; padding: 0.25rem 0.6rem;">Copy Solution</button>
+            </div>
+            <div class="math-res-value" id="math-result-val">-19.585786</div>
+            <div class="math-res-formula" id="math-result-formula">2 * sin(pi / 4) + sqrt(16) - 5^2</div>
+          </div>
+
+          <!-- Tabs for AST Tree vs Tokens -->
+          <div class="nav-pills" id="detail-tabs">
+            <button class="nav-pill active" id="tab-btn-ast">Syntax Tree (AST)</button>
+            <button class="nav-pill" id="tab-btn-tokens">Lexical Tokens</button>
+          </div>
+
+          <!-- Syntax Tree View -->
+          <div id="ast-container">
+            <div class="tree-view" id="ast-tree-view">
+              <!-- Rendered AST tree -->
+            </div>
+          </div>
+
+          <!-- Token Breakdown View -->
+          <div id="tokens-container" style="display: none;">
+            <div style="max-height: 400px; overflow-y: auto;">
+              <table class="tokens-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Type</th>
+                    <th>Lexeme</th>
+                    <th>Position</th>
+                  </tr>
+                </thead>
+                <tbody id="tokens-table-body">
+                  <!-- Rendered tokens -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
       </div>
-    
     </div>
   </main>
 
@@ -62,7 +407,7 @@
     "@type": "WebApplication",
     "name": "Math Expression Parser",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/math-parser/",
-    "description": "Tokenize and display math expression trees.",
+    "description": "Safe client-side mathematical expression parser, syntax tree (AST) generator, and algebraic evaluator.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

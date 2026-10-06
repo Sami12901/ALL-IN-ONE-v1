@@ -3,17 +3,348 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YouTube Title Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your YouTube Title Generator online.">
-  <meta name="keywords" content="marketing, digital, social, free, online, tool, utility">
+  <title>YouTube Title Generator - High CTR Video Titles - ALL IN ONE</title>
+  <meta name="description" content="Generate high-CTR, click-worthy YouTube titles optimized for the algorithm, mobile screens, and human curiosity. Complete with CTR scoring and power word detection.">
+  <meta name="keywords" content="youtube title generator, click-worthy titles, video marketing, youtube seo, high ctr titles, content creator tools">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/youtube-title-generator/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ALL IN ONE">
+  <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/youtube-title-generator/">
+  <meta property="og:title" content="YouTube Title Generator - High CTR Video Titles - ALL IN ONE">
+  <meta property="og:description" content="Generate high-CTR, click-worthy YouTube titles optimized for the algorithm, mobile screens, and human curiosity. Complete with CTR scoring and power word detection.">
+  <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="YouTube Title Generator - ALL IN ONE">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/youtube-title-generator/">
+  <meta name="twitter:title" content="YouTube Title Generator - High CTR Video Titles - ALL IN ONE">
+  <meta name="twitter:description" content="Generate high-CTR, click-worthy YouTube titles optimized for the algorithm, mobile screens, and human curiosity. Complete with CTR scoring and power word detection.">
+  <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta name="twitter:image:alt" content="YouTube Title Generator - ALL IN ONE">
+
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <style>
+    .yt-workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .yt-workspace {
+        grid-template-columns: 380px 1fr;
+      }
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .style-chip-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 0.5rem;
+      margin-top: 0.25rem;
+    }
+
+    .style-chip {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.45rem 0.6rem;
+      font-size: 0.8rem;
+      text-align: center;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: var(--transition);
+      user-select: none;
+    }
+    .style-chip:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .style-chip.active {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Tabs */
+    .tab-nav {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      padding: 0.5rem 1rem;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+    }
+    .tab-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+    .tab-btn.active {
+      color: #ffffff;
+      background: var(--accent);
+    }
+
+    /* Title Card */
+    .title-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: var(--transition);
+      position: relative;
+    }
+    .title-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+    .title-card-main {
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.4;
+      color: var(--text-primary);
+      word-break: break-word;
+    }
+    .power-word {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      font-weight: 800;
+    }
+
+    .title-meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      font-size: 0.8rem;
+    }
+
+    .meta-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .badge-ctr {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+    .badge-ctr.high {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .badge-ctr.med {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .badge-len {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      background: var(--surface);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .badge-len.optimal {
+      color: #38bdf8;
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+    .badge-len.warning {
+      color: #f87171;
+      border-color: rgba(248, 113, 113, 0.4);
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .mini-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      padding: 0.3rem 0.65rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: var(--transition);
+    }
+    .mini-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+    }
+    .mini-btn.starred {
+      color: #fbbf24;
+      border-color: #fbbf24;
+    }
+
+    /* Mockup */
+    .yt-mockup {
+      background: #0f0f0f;
+      border: 1px solid #272727;
+      border-radius: 12px;
+      padding: 1rem;
+      display: flex;
+      gap: 0.85rem;
+      max-width: 520px;
+      font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .yt-mockup-thumb {
+      width: 140px;
+      height: 80px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #1f2937, #111827);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: #ef4444;
+      font-size: 1.5rem;
+      position: relative;
+    }
+    .yt-mockup-time {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      font-size: 0.65rem;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-weight: 600;
+    }
+    .yt-mockup-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      overflow: hidden;
+    }
+    .yt-mockup-title {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #f1f1f1;
+      line-height: 1.25;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .yt-mockup-channel {
+      font-size: 0.75rem;
+      color: #aaaaaa;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .yt-mockup-meta {
+      font-size: 0.75rem;
+      color: #aaaaaa;
+    }
+
+    /* Filter pills */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .filter-pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .filter-pill.active {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .toast-popup {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      color: var(--text);
+      font-size: 0.875rem;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: var(--transition);
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .toast-popup.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,30 +358,212 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>YouTube Title Generator</h1>
-        <p class="tool-description">Create, analyze, and manage your YouTube Title Generator online.</p>
+        <p class="tool-description">Generate viral, click-worthy YouTube titles powered by emotional power words, CTR prediction scoring, and character length optimization.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>YouTube Title Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your YouTube Title Generator online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, social</div>
-            <div><strong>Category:</strong> digital-marketing</div>
+      <div class="yt-workspace">
+        
+        <!-- Controls Column -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #ef4444;"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+            Video Configuration
+          </div>
+
+          <div class="form-group">
+            <label for="topic-input">Topic or Core Keywords *</label>
+            <input type="text" id="topic-input" class="form-input" placeholder="e.g. Learn Python in 2026, RTX 5090, Lose Belly Fat" value="Learn Python from Scratch">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="niche-select">Content Niche</label>
+              <select id="niche-select" class="form-select">
+                <option value="tech" selected>Tech & Coding</option>
+                <option value="gaming">Gaming</option>
+                <option value="vlogs">Vlogs & Lifestyle</option>
+                <option value="education">Education & Science</option>
+                <option value="business">Business & Finance</option>
+                <option value="fitness">Fitness & Health</option>
+                <option value="productivity">Productivity & AI</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="tone-select">Emotional Tone</label>
+              <select id="tone-select" class="form-select">
+                <option value="high-energy" selected>High Energy / Hype</option>
+                <option value="curiosity">Deep Curiosity</option>
+                <option value="authoritative">Authoritative / Expert</option>
+                <option value="dramatic">Dramatic Warning</option>
+                <option value="beginner">Beginner Friendly</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Title Style Preference</label>
+            <div class="style-chip-grid" id="style-selector">
+              <div class="style-chip active" data-style="all">All Styles</div>
+              <div class="style-chip" data-style="how-to">How-To</div>
+              <div class="style-chip" data-style="listicle">Listicle</div>
+              <div class="style-chip" data-style="mystery">Mystery</div>
+              <div class="style-chip" data-style="high-stakes">High Stakes</div>
+              <div class="style-chip" data-style="question">Question</div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="key-number">Key Number (Optional)</label>
+              <input type="number" id="key-number" class="form-input" placeholder="e.g. 5, 7, 30" min="1" max="1000" value="7">
+            </div>
+            <div class="form-group">
+              <label for="time-frame">Time / Metric (Optional)</label>
+              <input type="text" id="time-frame" class="form-input" placeholder="e.g. 30 Days, 10 Mins" value="30 Days">
+            </div>
+          </div>
+
+          <div class="action-bar" style="margin-top: 0.5rem;">
+            <button id="generate-btn" class="btn btn-primary" style="flex: 1;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+              Generate 15+ Titles
+            </button>
+            <button id="random-btn" class="btn btn-secondary" title="Surprise Me with random niche idea">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            </button>
+          </div>
+
+          <!-- Quick Tips Box -->
+          <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border); font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; margin-top: 0.5rem;">
+            <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">💡 YouTube CTR Best Practices:</strong>
+            • Keep under <strong>70 characters</strong> to prevent truncation on mobile screens.<br>
+            • Include <strong>1-2 power words</strong> to trigger emotional curiosity.<br>
+            • Use numbers or brackets (e.g. [Full Guide]) to boost perceived value.
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Output / Work Area -->
+        <div class="tool-panel glass-panel" style="gap: 1rem;">
+          
+          <!-- Navigation Tabs -->
+          <div class="tab-nav">
+            <button class="tab-btn active" data-tab="tab-generated">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              Generated Titles (<span id="title-count-badge">0</span>)
+            </button>
+            <button class="tab-btn" data-tab="tab-analyzer">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              Live Title Analyzer & Mockup
+            </button>
+            <button class="tab-btn" data-tab="tab-favorites">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              Saved (<span id="saved-count-badge">0</span>)
+            </button>
+          </div>
+
+          <!-- TAB 1: Generated Titles -->
+          <div id="tab-generated" class="tab-content">
+            <div class="filter-bar">
+              <div class="filter-pills" id="result-filters">
+                <span class="filter-pill active" data-filter="all">All (<span id="filter-all-count">0</span>)</span>
+                <span class="filter-pill" data-filter="high-ctr">High CTR 90%+ (<span id="filter-high-count">0</span>)</span>
+                <span class="filter-pill" data-filter="optimal-len">Under 65 Chars (<span id="filter-len-count">0</span>)</span>
+                <span class="filter-pill" data-filter="power">2+ Power Words (<span id="filter-power-count">0</span>)</span>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button id="copy-all-btn" class="mini-btn" title="Copy all titles to clipboard">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                  Copy All
+                </button>
+                <button id="export-csv-btn" class="mini-btn" title="Export titles as CSV">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                  Export CSV
+                </button>
+              </div>
+            </div>
+
+            <div id="titles-container" style="display: flex; flex-direction: column; gap: 0.85rem;">
+              <!-- Generated Cards dynamically populated -->
+            </div>
+          </div>
+
+          <!-- TAB 2: Live Title Analyzer -->
+          <div id="tab-analyzer" class="tab-content" style="display: none;">
+            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+              <div class="form-group">
+                <label for="analyzer-input">Test Custom YouTube Title:</label>
+                <input type="text" id="analyzer-input" class="form-input" style="font-size: 1.05rem;" placeholder="Type or paste any YouTube title here to analyze...">
+              </div>
+
+              <!-- Metric Grid -->
+              <div class="grid-auto">
+                <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border); text-align: center;">
+                  <span style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">Predicted CTR Score</span>
+                  <div id="metric-ctr-val" style="font-size: 1.8rem; font-weight: 800; color: #34d399; margin-top: 0.25rem;">--</div>
+                  <span id="metric-ctr-label" style="font-size: 0.75rem; color: var(--text-secondary);">Ready to analyze</span>
+                </div>
+
+                <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border); text-align: center;">
+                  <span style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">Character Length</span>
+                  <div id="metric-len-val" style="font-size: 1.8rem; font-weight: 800; color: #38bdf8; margin-top: 0.25rem;">0 / 70</div>
+                  <span id="metric-len-label" style="font-size: 0.75rem; color: var(--text-secondary);">Mobile safe cutoff</span>
+                </div>
+
+                <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border); text-align: center;">
+                  <span style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">Power Words Detected</span>
+                  <div id="metric-power-val" style="font-size: 1.8rem; font-weight: 800; color: #fbbf24; margin-top: 0.25rem;">0</div>
+                  <span id="metric-power-label" style="font-size: 0.75rem; color: var(--text-secondary);">Emotion hooks</span>
+                </div>
+              </div>
+
+              <!-- YouTube Mobile Search Mockup -->
+              <div class="form-group">
+                <label>YouTube Feed Card Simulation (Desktop & Mobile):</label>
+                <div class="yt-mockup">
+                  <div class="yt-mockup-thumb">
+                    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    <span class="yt-mockup-time">14:22</span>
+                  </div>
+                  <div class="yt-mockup-info">
+                    <div class="yt-mockup-title" id="mockup-title-preview">Enter a title to see the realistic feed preview...</div>
+                    <div class="yt-mockup-channel">
+                      <span>Creator Channel</span>
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    <div class="yt-mockup-meta">184K views • 2 days ago</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Detailed Recommendations -->
+              <div id="analyzer-recommendations" style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.25rem; font-size: 0.875rem;">
+                <!-- Dynamically filled advice -->
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: Saved Titles -->
+          <div id="tab-favorites" class="tab-content" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <span style="font-size: 0.9rem; color: var(--text-secondary);">Your saved favorite titles:</span>
+              <button id="clear-favorites-btn" class="mini-btn">Clear All Saved</button>
+            </div>
+            <div id="favorites-container" style="display: flex; flex-direction: column; gap: 0.85rem;">
+              <!-- Starred titles -->
+            </div>
+          </div>
+
+        </div>
+
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Toast Notification -->
+  <div id="app-toast" class="toast-popup">Copied to clipboard!</div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,8 +575,8 @@
     "@type": "WebApplication",
     "name": "YouTube Title Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/youtube-title-generator/",
-    "description": "Create, analyze, and manage your YouTube Title Generator online.",
-    "applicationCategory": "UtilityPage",
+    "description": "Generate high-CTR, click-worthy YouTube titles with CTR scoring, character counters, and power word highlights.",
+    "applicationCategory": "MarketingTool",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

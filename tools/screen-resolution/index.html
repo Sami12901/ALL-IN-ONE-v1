@@ -4,14 +4,274 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Screen Resolution Detector - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Reads browser viewports and density details.">
-  <meta name="keywords" content="resolution, screen, viewport, pixels, density, free, online, tool, utility">
+  <meta name="description" content="Real-time screen resolution detector, viewport dimensions auditor, device pixel ratio (Retina scaling), aspect ratio calculator, and device comparison.">
+  <meta name="keywords" content="screen resolution, viewport size, display resolution, DPR, retina scaling, aspect ratio, responsive tester, screen size">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/screen-resolution/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ALL IN ONE">
+  <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/screen-resolution/">
+  <meta property="og:title" content="Screen Resolution Detector - Free Online Tool - ALL IN ONE">
+  <meta property="og:description" content="Real-time screen resolution detector, viewport dimensions auditor, device pixel ratio (Retina scaling), aspect ratio calculator, and device comparison.">
+  <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="Screen Resolution Detector - ALL IN ONE">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/screen-resolution/">
+  <meta name="twitter:title" content="Screen Resolution Detector - Free Online Tool - ALL IN ONE">
+  <meta name="twitter:description" content="Real-time screen resolution detector, viewport dimensions auditor, device pixel ratio (Retina scaling), aspect ratio calculator, and device comparison.">
+  <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta name="twitter:image:alt" content="Screen Resolution Detector - ALL IN ONE">
+
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .res-hero {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .res-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--accent-gradient);
+    }
+
+    .res-primary-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      width: fit-content;
+    }
+
+    .res-headline-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1.5rem;
+    }
+
+    .res-giant-text {
+      font-family: 'SF Mono', Monaco, Menlo, 'Courier New', monospace;
+      font-size: clamp(2.2rem, 5.5vw, 4rem);
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .res-giant-sub {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      margin-top: 0.4rem;
+    }
+
+    .display-visualizer-box {
+      width: 100%;
+      height: 160px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-md);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .screen-outer-mock {
+      border: 2px solid var(--border);
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-sm);
+      position: relative;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .viewport-inner-mock {
+      border: 2px solid var(--accent);
+      background: rgba(78, 133, 191, 0.25);
+      border-radius: 4px;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .metrics-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .stat-pill-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+
+    .stat-pill-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .stat-pill-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .stat-pill-val {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+    }
+
+    .stat-pill-sub {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    .breakpoint-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .bp-chip {
+      padding: 0.4rem 0.8rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .bp-chip.active {
+      background: var(--accent-gradient);
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    .devices-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .device-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: var(--transition);
+    }
+
+    .device-card:hover {
+      border-color: var(--accent);
+      background: var(--surface);
+    }
+
+    .device-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .device-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+    }
+
+    .device-comparison-tag {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+    }
+
+    .tag-match {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .tag-smaller {
+      background: rgba(137, 170, 204, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(137, 170, 204, 0.3);
+    }
+
+    .tag-larger {
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .device-spec-line {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .device-spec-line strong {
+      color: var(--text-primary);
+      font-family: monospace;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,42 +287,156 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Screen Resolution Detector</h1>
-        <p class="tool-description">Reads browser viewports and density details.</p>
+        <p class="tool-description">Real-time viewport auditor, physical hardware display metrics, Retina pixel ratio scaling, aspect ratio simplifier, and responsive device matrix comparison.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Screen Resolution Detector</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Reads browser viewports and density details.</div>
-            <div><strong>Inputs:</strong> resolution, screen, viewport, pixels, density</div>
-            <div><strong>Category:</strong> utility</div>
+      <!-- Hero Viewport & Display Card -->
+      <div class="res-hero glass-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+          <div class="res-primary-badge">
+            <span style="display:inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent);"></span>
+            Live Viewport Monitor
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="toggleFullscreenBtn" class="btn btn-secondary" style="padding: 0.45rem 0.9rem; font-size: 0.85rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+              Toggle Fullscreen
+            </button>
+            <button id="copySpecsBtn" class="btn btn-secondary" style="padding: 0.45rem 0.9rem; font-size: 0.85rem;">
+              Copy Specs
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="res-headline-wrap">
+          <div>
+            <div class="res-giant-text" id="viewportHeroVal">0 × 0 px</div>
+            <div class="res-giant-sub" id="viewportPhysicalVal">Physical: 0 × 0 physical pixels (@1x)</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 1.1rem; font-weight: 700; color: var(--accent);" id="aspectRatioHeroVal">16:9 Aspect</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary);" id="orientationHeroVal">Landscape Primary</div>
+          </div>
+        </div>
+
+        <!-- Scale Visualizer Box -->
+        <div class="display-visualizer-box">
+          <div id="screenOuterMock" class="screen-outer-mock">
+            <div id="viewportInnerMock" class="viewport-inner-mock"></div>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-tertiary);">
+          <span>Gray Box: Full Display Screen</span>
+          <span style="color: var(--accent);">Blue Box: Current Browser Viewport</span>
+        </div>
       </div>
-    
+
+      <!-- Key Metrics Pill Grid -->
+      <div class="metrics-summary-grid">
+        <!-- Viewport Size -->
+        <div class="stat-pill-card">
+          <span class="stat-pill-label">Browser Viewport</span>
+          <div class="stat-pill-val" id="viewportPxVal">0 × 0</div>
+          <span class="stat-pill-sub">CSS px (window.innerWidth × innerHeight)</span>
+        </div>
+
+        <!-- Screen Resolution -->
+        <div class="stat-pill-card">
+          <span class="stat-pill-label">Hardware Screen</span>
+          <div class="stat-pill-val" id="screenResVal">0 × 0</div>
+          <span class="stat-pill-sub">Physical display pixels (screen.width × height)</span>
+        </div>
+
+        <!-- Available Screen Area -->
+        <div class="stat-pill-card">
+          <span class="stat-pill-label">Available Screen Area</span>
+          <div class="stat-pill-val" id="availResVal">0 × 0</div>
+          <span class="stat-pill-sub">Excluding OS Taskbar & Dock (availWidth × availHeight)</span>
+        </div>
+
+        <!-- Device Pixel Ratio -->
+        <div class="stat-pill-card">
+          <span class="stat-pill-label">Device Pixel Ratio</span>
+          <div class="stat-pill-val" id="dprVal">1.0×</div>
+          <span class="stat-pill-sub" id="dprSubVal">Standard Display (1 CSS px = 1 device px)</span>
+        </div>
+
+        <!-- Screen Orientation -->
+        <div class="stat-pill-card">
+          <span class="stat-pill-label">Screen Orientation</span>
+          <div class="stat-pill-val" id="orientationVal">Landscape</div>
+          <span class="stat-pill-sub" id="orientationAngleVal">Angle: 0°</span>
+        </div>
+
+        <!-- Color & Pixel Depth -->
+        <div class="stat-pill-card">
+          <span class="stat-pill-label">Color Depth</span>
+          <div class="stat-pill-val" id="colorDepthBitsVal">24-bit</div>
+          <span class="stat-pill-sub" id="pixelDepthBitsVal">16.7M Colors (24-bit Pixel Depth)</span>
+        </div>
+
+        <!-- Aspect Ratio -->
+        <div class="stat-pill-card">
+          <span class="stat-pill-label">Viewport Aspect Ratio</span>
+          <div class="stat-pill-val" id="aspectRatioVal">16:9</div>
+          <span class="stat-pill-sub" id="aspectDecimalVal">1.78 : 1</span>
+        </div>
+
+        <!-- Touch Capability -->
+        <div class="stat-pill-card">
+          <span class="stat-pill-label">Touch Input Points</span>
+          <div class="stat-pill-val" id="touchVal">None</div>
+          <span class="stat-pill-sub" id="touchSubVal">Mouse / Trackpad primary input</span>
+        </div>
+      </div>
+
+      <!-- CSS Media Query Breakpoint Auditor -->
+      <div class="tool-panel glass-panel">
+        <h2 class="panel-title">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+          Active CSS Media Query Breakpoint
+        </h2>
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">
+          Dynamic responsive indicator matching current viewport width against common CSS framework breakpoints:
+        </p>
+        <div class="breakpoint-bar">
+          <div class="bp-chip" id="bp-xs"><span>xs</span> &lt; 640px (Mobile)</div>
+          <div class="bp-chip" id="bp-sm"><span>sm</span> ≥ 640px (Phablet)</div>
+          <div class="bp-chip" id="bp-md"><span>md</span> ≥ 768px (Tablet)</div>
+          <div class="bp-chip" id="bp-lg"><span>lg</span> ≥ 1024px (Laptop)</div>
+          <div class="bp-chip" id="bp-xl"><span>xl</span> ≥ 1280px (Desktop)</div>
+          <div class="bp-chip" id="bp-2xl"><span>2xl</span> ≥ 1536px (Ultrawide / Large)</div>
+        </div>
+      </div>
+
+      <!-- Device Comparison Cards -->
+      <div class="tool-panel glass-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+          <h2 class="panel-title" style="margin-bottom: 0; border: none; padding: 0;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+            Common Device Dimension Comparison
+          </h2>
+          <span style="font-size: 0.85rem; color: var(--text-secondary);">Benchmark comparison against industry standards</span>
+        </div>
+
+        <div class="devices-grid" id="devicesGrid">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
     </div>
   </main>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Screen Resolution Detector",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/screen-resolution/",
-    "description": "Reads browser viewports and density details.",
+    "description": "Reads browser viewports, display resolution, retina DPR scaling, and aspect ratios.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

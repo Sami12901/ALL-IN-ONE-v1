@@ -4,14 +4,323 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quick Local Notepad - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Notepad text editor with LocalStorage auto-save.">
-  <meta name="keywords" content="notepad, notes, write, editor, save, free, online, tool, utility">
+  <meta name="description" content="Distraction-free scratchpad text editor with rich formatting, real-time word and character counter, reading time estimator, LocalStorage auto-save, and Markdown/TXT export.">
+  <meta name="keywords" content="quick notepad, scratchpad, rich text editor, markdown editor, auto save notes, word counter, client side notepad, print notes">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/quick-notepad/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ALL IN ONE">
+  <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/quick-notepad/">
+  <meta property="og:title" content="Quick Local Notepad - Free Online Tool - ALL IN ONE">
+  <meta property="og:description" content="Distraction-free scratchpad text editor with rich formatting, real-time word and character counter, reading time estimator, LocalStorage auto-save, and Markdown/TXT export.">
+  <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="Quick Local Notepad - ALL IN ONE">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/quick-notepad/">
+  <meta name="twitter:title" content="Quick Local Notepad - Free Online Tool - ALL IN ONE">
+  <meta name="twitter:description" content="Distraction-free scratchpad text editor with rich formatting, real-time word and character counter, reading time estimator, LocalStorage auto-save, and Markdown/TXT export.">
+  <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta name="twitter:image:alt" content="Quick Local Notepad - ALL IN ONE">
+
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .notepad-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .notepad-header-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+    }
+
+    .note-meta-cluster {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+      flex: 1;
+      min-width: 260px;
+    }
+
+    .note-title-field {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      padding: 0.35rem 0.6rem;
+      outline: none;
+      transition: var(--transition);
+      font-family: var(--font-sans);
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .note-title-field:hover, .note-title-field:focus {
+      background: var(--bg-tertiary);
+      border-color: var(--border);
+    }
+
+    .autosave-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      white-space: nowrap;
+    }
+
+    .autosave-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+
+    .autosave-pill.saving .autosave-dot {
+      background: #f59e0b;
+      animation: pulse-save 1s infinite alternate;
+    }
+
+    @keyframes pulse-save {
+      from { opacity: 0.4; }
+      to { opacity: 1; }
+    }
+
+    .format-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.35rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.5rem 0.75rem;
+    }
+
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding-right: 0.5rem;
+      margin-right: 0.25rem;
+      border-right: 1px solid var(--border);
+    }
+
+    .toolbar-group:last-child {
+      border-right: none;
+      padding-right: 0;
+      margin-right: 0;
+    }
+
+    .tool-btn {
+      min-width: 32px;
+      height: 32px;
+      padding: 0 0.4rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .tool-btn:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border-color: var(--border);
+    }
+
+    .tool-btn.active {
+      background: var(--accent-gradient);
+      color: #ffffff;
+    }
+
+    .notepad-stage {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--glass-shadow);
+      min-height: 480px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .notepad-editor {
+      flex: 1;
+      min-height: 440px;
+      padding: 1.75rem 2rem;
+      font-family: var(--font-sans);
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: var(--text-primary);
+      outline: none;
+      overflow-y: auto;
+      word-break: break-word;
+    }
+
+    .notepad-editor:empty::before {
+      content: attr(placeholder);
+      color: var(--text-tertiary);
+      pointer-events: none;
+      display: block;
+    }
+
+    .notepad-editor h1 {
+      font-size: 1.85rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+    }
+
+    .notepad-editor h2 {
+      font-size: 1.45rem;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .notepad-editor h3 {
+      font-size: 1.2rem;
+      margin-top: 0.75rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .notepad-editor ul, .notepad-editor ol {
+      padding-left: 1.75rem;
+      margin: 0.75rem 0;
+    }
+
+    .notepad-editor li {
+      margin-bottom: 0.35rem;
+    }
+
+    .notepad-editor pre {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1rem;
+      font-family: 'SF Mono', Monaco, Menlo, monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
+      margin: 0.75rem 0;
+    }
+
+    .notepad-editor blockquote {
+      border-left: 3px solid var(--accent);
+      padding-left: 1rem;
+      color: var(--text-secondary);
+      font-style: italic;
+      margin: 0.75rem 0;
+    }
+
+    .notepad-editor hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.25rem 0;
+    }
+
+    .notepad-markdown-textarea {
+      flex: 1;
+      min-height: 440px;
+      width: 100%;
+      padding: 1.75rem 2rem;
+      font-family: 'SF Mono', Monaco, Menlo, monospace;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: transparent;
+      border: none;
+      outline: none;
+      resize: vertical;
+    }
+
+    .notepad-footer-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.25rem;
+      background: var(--bg-tertiary);
+      border-top: 1px solid var(--border);
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+    }
+
+    .stats-pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .stat-metric-tag strong {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    /* Print Styles */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      app-header, app-breadcrumbs, app-footer, .format-toolbar, .notepad-header-bar, .notepad-footer-bar, .tool-header {
+        display: none !important;
+      }
+      .notepad-stage, .notepad-editor {
+        visibility: visible !important;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        border: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        color: #000000 !important;
+      }
+      .notepad-editor * {
+        visibility: visible !important;
+        color: #000000 !important;
+      }
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,42 +336,118 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Quick Local Notepad</h1>
-        <p class="tool-description">Notepad text editor with LocalStorage auto-save.</p>
+        <p class="tool-description">Distraction-free scratchpad with rich formatting, instant auto-save to LocalStorage, live word and character counters, reading time estimation, and Markdown export.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Quick Local Notepad</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Notepad text editor with LocalStorage auto-save.</div>
-            <div><strong>Inputs:</strong> notepad, notes, write, editor, save</div>
-            <div><strong>Category:</strong> utility</div>
+      <div class="notepad-container">
+        <!-- Header Controls & Note Switcher -->
+        <div class="notepad-header-bar">
+          <div class="note-meta-cluster">
+            <input type="text" id="noteTitleInput" class="note-title-field" value="Untitled Note" placeholder="Note Title...">
+            <div id="autosaveBadge" class="autosave-pill">
+              <span class="autosave-dot"></span>
+              <span id="autosaveText">Saved locally</span>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <select id="noteSelect" class="form-select" style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+              <option value="default">Note 1</option>
+            </select>
+            <button id="newNoteBtn" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" title="Create New Note">+ New</button>
+            <button id="deleteNoteBtn" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; color: var(--error);" title="Delete Current Note">Delete</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Formatting Toolbar -->
+        <div class="format-toolbar">
+          <!-- Text Styling -->
+          <div class="toolbar-group">
+            <button class="tool-btn" id="btnBold" title="Bold (Ctrl+B)"><strong>B</strong></button>
+            <button class="tool-btn" id="btnItalic" title="Italic (Ctrl+I)"><em>I</em></button>
+            <button class="tool-btn" id="btnUnderline" title="Underline (Ctrl+U)"><u>U</u></button>
+            <button class="tool-btn" id="btnStrike" title="Strikethrough"><s>S</s></button>
+          </div>
+
+          <!-- Headings -->
+          <div class="toolbar-group">
+            <button class="tool-btn" id="btnH1" title="Heading 1">H1</button>
+            <button class="tool-btn" id="btnH2" title="Heading 2">H2</button>
+            <button class="tool-btn" id="btnH3" title="Heading 3">H3</button>
+            <button class="tool-btn" id="btnParagraph" title="Paragraph">¶</button>
+          </div>
+
+          <!-- Lists & Structure -->
+          <div class="toolbar-group">
+            <button class="tool-btn" id="btnBulletList" title="Bullet List">• List</button>
+            <button class="tool-btn" id="btnNumberList" title="Numbered List">1. List</button>
+            <button class="tool-btn" id="btnQuote" title="Blockquote">” Quote</button>
+            <button class="tool-btn" id="btnCodeBlock" title="Code Block">&lt;/&gt;</button>
+            <button class="tool-btn" id="btnHr" title="Horizontal Line">―</button>
+          </div>
+
+          <!-- History & View Mode -->
+          <div class="toolbar-group">
+            <button class="tool-btn" id="btnUndo" title="Undo">↺</button>
+            <button class="tool-btn" id="btnRedo" title="Redo">↻</button>
+          </div>
+
+          <div style="margin-left: auto; display: flex; gap: 0.5rem; align-items: center;">
+            <button class="tool-btn" id="btnToggleMode" title="Toggle Markdown Raw View" style="padding: 0 0.65rem;">
+              Markdown View
+            </button>
+          </div>
+        </div>
+
+        <!-- Writing Stage -->
+        <div class="notepad-stage">
+          <!-- Rich ContentEditable View -->
+          <div id="richEditor" class="notepad-editor" contenteditable="true" spellcheck="true" placeholder="Start typing your scratchpad notes, thoughts, tasks, code snippets..."></div>
+
+          <!-- Raw Markdown View (Toggled) -->
+          <textarea id="markdownEditor" class="notepad-markdown-textarea" style="display: none;" placeholder="# Type Markdown here..."></textarea>
+
+          <!-- Analytics & Word Count Footer -->
+          <div class="notepad-footer-bar">
+            <div class="stats-pill-group">
+              <span class="stat-metric-tag"><strong id="wordCount">0</strong> words</span>
+              <span class="stat-metric-tag"><strong id="charCount">0</strong> characters</span>
+              <span class="stat-metric-tag"><strong id="lineCount">0</strong> lines</span>
+              <span class="stat-metric-tag">⏱ ~<strong id="readTime">0</strong> min read</span>
+            </div>
+
+            <!-- Export Actions -->
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <button id="copyNoteBtn" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+                Copy Text
+              </button>
+              <button id="downloadTxtBtn" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+                .txt
+              </button>
+              <button id="downloadMdBtn" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+                .md
+              </button>
+              <button id="printNoteBtn" class="btn btn-primary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+                Print
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Quick Local Notepad",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/quick-notepad/",
-    "description": "Notepad text editor with LocalStorage auto-save.",
+    "description": "Notepad text editor with rich formatting, word and character counters, and LocalStorage auto-save.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

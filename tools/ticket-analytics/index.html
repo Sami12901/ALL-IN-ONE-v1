@@ -4,16 +4,283 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ticket Analytics - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Track ticket sales, commissions, and total revenue.">
-  <meta name="keywords" content="analytics, data, travel, ticket analytics, free, online, tool, utility">
+  <meta name="description" content="Airline ticketing revenue, commission auditor, and flight route volume visualizer. Track flight tickets across Emirates, Qatar, Saudia, Biman, Singapore Airlines with interactive SVG route charts and CSV export.">
+  <meta name="keywords" content="ticket analytics, airline ticketing auditor, flight revenue calculator, airline commission tracker, flight route volume, emirates qatar saudia biman, travel agent gds analytics">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ticket-analytics/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ALL IN ONE">
+  <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ticket-analytics/">
+  <meta property="og:title" content="Ticket Analytics - Free Online Tool - ALL IN ONE">
+  <meta property="og:description" content="Airline ticketing revenue, commission auditor, and flight route volume visualizer. Track flight tickets across Emirates, Qatar, Saudia, Biman, Singapore Airlines with interactive SVG route charts and CSV export.">
+  <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="Ticket Analytics - ALL IN ONE">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ticket-analytics/">
+  <meta name="twitter:title" content="Ticket Analytics - Free Online Tool - ALL IN ONE">
+  <meta name="twitter:description" content="Airline ticketing revenue, commission auditor, and flight route volume visualizer. Track flight tickets across Emirates, Qatar, Saudia, Biman, Singapore Airlines with interactive SVG route charts and CSV export.">
+  <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta name="twitter:image:alt" content="Ticket Analytics - ALL IN ONE">
+
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <style>
+    /* Ticket Analytics Custom Styling */
+    .ticket-workspace {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1100px) {
+      .ticket-workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kpi-grid-tickets {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .ticket-kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .ticket-kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      box-shadow: 0 4px 16px var(--accent-glow);
+    }
+
+    .ticket-kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+
+    .ticket-kpi-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .ticket-kpi-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+    }
+
+    .ticket-kpi-sub {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Airline Cards Strip */
+    .airline-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .airline-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      position: relative;
+    }
+
+    .airline-card:hover, .airline-card.active {
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.03);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    .airline-card.active::after {
+      content: '✓ Filter';
+      position: absolute;
+      top: 0.4rem;
+      right: 0.4rem;
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 0.1rem 0.35rem;
+      border-radius: var(--radius-full);
+      background: var(--accent);
+      color: #0b0f19;
+    }
+
+    .airline-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .airline-stat-row {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Route Badges */
+    .route-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: monospace;
+      background: rgba(96, 165, 250, 0.12);
+      color: #60a5fa;
+      border: 1px solid rgba(96, 165, 250, 0.25);
+    }
+
+    .class-badge {
+      display: inline-flex;
+      padding: 0.12rem 0.45rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    .class-first { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .class-business { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); }
+    .class-premium { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); }
+    .class-economy { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.3); }
+
+    .status-badge {
+      display: inline-flex;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-full);
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    .status-issued { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .status-confirmed { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+    .status-refunded { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+    .status-void { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
+
+    /* Ticket Table */
+    .ticket-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .ticket-table th, .ticket-table td {
+      padding: 0.75rem 0.85rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ticket-table th {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .ticket-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Chart Styles */
+    .chart-box-container {
+      width: 100%;
+      height: 310px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .chart-tooltip-ticket {
+      position: absolute;
+      pointer-events: none;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      padding: 0.45rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      color: var(--text-primary);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      display: none;
+      z-index: 50;
+    }
+
+    /* Modal Backdrop */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      max-width: 550px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,30 +294,312 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Ticket Analytics</h1>
-        <p class="tool-description">Track ticket sales, commissions, and total revenue.</p>
+        <p class="tool-description">
+          Airline ticketing volume, base fare economics, and gross commission auditor. Monitor performance across Emirates, Qatar Airways, Saudia, Biman, Singapore Airlines, and key global flight routes.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Ticket Analytics</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Track ticket sales, commissions, and total revenue.</div>
-            <div><strong>Inputs:</strong> analytics, data, travel, ticket analytics</div>
-            <div><strong>Category:</strong> travel</div>
+      <!-- Presets & Currency Bar -->
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.25rem;">
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+          <span style="font-size: 0.8rem; color: var(--text-tertiary);">Flight Ledgers:</span>
+          <button type="button" class="btn btn-secondary" id="preset-gulf-routes" style="font-size: 0.78rem; padding: 0.3rem 0.7rem;">✈️ GCC & Middle East Hubs</button>
+          <button type="button" class="btn btn-secondary" id="preset-transatlantic" style="font-size: 0.78rem; padding: 0.3rem 0.7rem;">🌍 Transatlantic & Europe</button>
+          <button type="button" class="btn btn-secondary" id="preset-asia-pilgrim" style="font-size: 0.78rem; padding: 0.3rem 0.7rem;">🕋 Umrah & South Asia</button>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <label for="currency-select" style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Currency:</label>
+          <select id="currency-select" class="form-select" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+            <option value="$" selected>USD ($)</option>
+            <option value="SAR ">SAR (﷼)</option>
+            <option value="AED ">AED (د.إ)</option>
+            <option value="£">GBP (£)</option>
+            <option value="€">EUR (€)</option>
+            <option value="৳">BDT (৳)</option>
+            <option value="₹">INR (₹)</option>
+            <option value="C$">CAD ($)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- KPI Summary Cards -->
+      <div class="kpi-grid-tickets">
+        <div class="ticket-kpi-card">
+          <span class="ticket-kpi-label">Total Ticket Volume</span>
+          <span class="ticket-kpi-value" id="kpi-ticket-volume">0</span>
+          <span class="ticket-kpi-sub" id="kpi-ticket-volume-sub">Issued airline tickets</span>
+        </div>
+
+        <div class="ticket-kpi-card">
+          <span class="ticket-kpi-label">Gross Ticket Sales</span>
+          <span class="ticket-kpi-value" id="kpi-gross-sales">$0</span>
+          <span class="ticket-kpi-sub" id="kpi-gross-sales-sub">Base fares + markup</span>
+        </div>
+
+        <div class="ticket-kpi-card">
+          <span class="ticket-kpi-label">Gross Commission Revenue</span>
+          <span class="ticket-kpi-value" id="kpi-commission-revenue" style="color: #34d399;">$0</span>
+          <span class="ticket-kpi-sub" id="kpi-commission-margin">Avg Margin: 0.0%</span>
+        </div>
+
+        <div class="ticket-kpi-card">
+          <span class="ticket-kpi-label">Average Base Fare</span>
+          <span class="ticket-kpi-value" id="kpi-avg-fare">$0</span>
+          <span class="ticket-kpi-sub">Across all issued tickets</span>
+        </div>
+
+        <div class="ticket-kpi-card">
+          <span class="ticket-kpi-label">Most Popular Route</span>
+          <span class="ticket-kpi-value" id="kpi-top-route" style="font-size: 1.25rem;">-</span>
+          <span class="ticket-kpi-sub" id="kpi-top-route-sub">0 bookings recorded</span>
+        </div>
+
+        <div class="ticket-kpi-card">
+          <span class="ticket-kpi-label">Top Airline Volume</span>
+          <span class="ticket-kpi-value" id="kpi-top-airline" style="font-size: 1.25rem; color: #fbbf24;">-</span>
+          <span class="ticket-kpi-sub" id="kpi-top-airline-sub">0 total tickets</span>
+        </div>
+      </div>
+
+      <!-- Airline Quick Overview Strip -->
+      <div style="margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary);">
+          Carrier Performance & Volume
+        </span>
+        <button type="button" id="btn-clear-airline-filter" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.2rem 0.6rem; display: none;">
+          Clear Airline Filter
+        </button>
+      </div>
+
+      <div class="airline-strip" id="airline-strip-container">
+        <!-- Rendered via script.js -->
+      </div>
+
+      <!-- Main Workspace: Table on Left, Route Visualizer on Right -->
+      <div class="ticket-workspace">
+        
+        <!-- Left Column: Filterable Ticket Ledger -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;">
+            <div class="panel-title" style="margin: 0; padding: 0; border: none;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              Flight Ticketing Ledger
+            </div>
+            
+            <button type="button" id="btn-add-ticket" class="btn btn-primary" style="font-size: 0.8rem; padding: 0.35rem 0.85rem;">
+              + Issue Ticket
+            </button>
+          </div>
+
+          <!-- Filters Bar -->
+          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-top: 0.5rem;">
+            <div style="flex: 1; min-width: 170px;">
+              <input type="text" id="ticket-search-input" class="form-input" placeholder="Search passenger, PNR, origin, destination..." style="font-size: 0.85rem; padding: 0.4rem 0.75rem;">
+            </div>
+
+            <select id="select-filter-airline" class="form-select" style="width: auto; font-size: 0.85rem; padding: 0.4rem 0.75rem;">
+              <option value="ALL">All Airlines</option>
+              <option value="Emirates">Emirates (EK)</option>
+              <option value="Qatar Airways">Qatar Airways (QR)</option>
+              <option value="Saudia">Saudia (SV)</option>
+              <option value="Biman Bangladesh">Biman Bangladesh (BG)</option>
+              <option value="Singapore Airlines">Singapore Airlines (SQ)</option>
+              <option value="Turkish Airlines">Turkish Airlines (TK)</option>
+              <option value="British Airways">British Airways (BA)</option>
+            </select>
+
+            <select id="select-filter-class" class="form-select" style="width: auto; font-size: 0.85rem; padding: 0.4rem 0.75rem;">
+              <option value="ALL">All Classes</option>
+              <option value="First">First Class</option>
+              <option value="Business">Business Class</option>
+              <option value="Premium Economy">Premium Economy</option>
+              <option value="Economy">Economy</option>
+            </select>
+
+            <select id="select-filter-status" class="form-select" style="width: auto; font-size: 0.85rem; padding: 0.4rem 0.75rem;">
+              <option value="ALL">All Status</option>
+              <option value="Issued">Issued</option>
+              <option value="Confirmed">Confirmed</option>
+              <option value="Refunded">Refunded</option>
+              <option value="Void">Void</option>
+            </select>
+
+            <button type="button" id="btn-export-csv" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.75rem;" title="Download ticketing ledger as CSV">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              CSV
+            </button>
+          </div>
+
+          <!-- Table Container -->
+          <div class="table-responsive" style="max-height: 520px; overflow-y: auto; margin-top: 0.5rem;">
+            <table class="ticket-table">
+              <thead>
+                <tr>
+                  <th>Passenger & PNR</th>
+                  <th>Carrier</th>
+                  <th>Route</th>
+                  <th>Class</th>
+                  <th>Base Fare</th>
+                  <th>Commission</th>
+                  <th>Status</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="ticket-table-body">
+                <!-- Dynamically populated via script.js -->
+              </tbody>
+            </table>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-tertiary); margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border);">
+            <span id="filtered-tickets-count">Showing 0 of 0 tickets</span>
+            <button type="button" id="btn-reset-demo" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;">
+              Reset to Demo Tickets
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Column: Interactive SVG Route Breakdown Chart & Route Leaderboard -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Route Breakdown Chart Panel -->
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <div class="panel-title" style="margin: 0; padding: 0; border: none; font-size: 1.05rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+                Popular Routes Breakdown
+              </div>
+              <div style="display: flex; gap: 0.3rem;">
+                <button type="button" class="btn btn-secondary active" id="btn-chart-volume" style="font-size: 0.7rem; padding: 0.2rem 0.5rem;">Volume</button>
+                <button type="button" class="btn btn-secondary" id="btn-chart-comm" style="font-size: 0.7rem; padding: 0.2rem 0.5rem;">Commission</button>
+              </div>
+            </div>
+
+            <p style="font-size: 0.75rem; color: var(--text-tertiary); margin: 0 0 0.5rem 0;">
+              Interactive flight route performance & pax volume breakdown.
+            </p>
+
+            <div class="chart-box-container" id="route-chart-container">
+              <svg id="route-chart-svg" viewBox="0 0 360 260" style="width: 100%; height: 100%;" preserveAspectRatio="xMidYMid meet">
+                <!-- SVG Bars Generated by JS -->
+              </svg>
+              <div id="chart-tooltip" class="chart-tooltip-ticket"></div>
+            </div>
+          </div>
+
+          <!-- Top Routes Summary List -->
+          <div class="tool-panel glass-panel">
+            <div class="panel-title" style="margin: 0 0 0.75rem 0; padding: 0; border: none; font-size: 1.05rem;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#60a5fa;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              Top Route Economics
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 280px; overflow-y: auto;" id="top-routes-list">
+              <!-- Rendered via script.js -->
+            </div>
+          </div>
+
+        </div>
+
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Add / Edit Ticket Modal -->
+  <div class="modal-backdrop" id="ticket-modal">
+    <div class="modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+        <h3 id="modal-title" style="margin: 0; font-size: 1.2rem; font-weight: 700;">Issue New Flight Ticket</h3>
+        <button type="button" id="btn-close-modal" style="background: none; border: none; font-size: 1.2rem; color: var(--text-tertiary); cursor: pointer;">&times;</button>
+      </div>
+
+      <form id="ticket-form" style="display: flex; flex-direction: column; gap: 0.85rem;">
+        <input type="hidden" id="ticket-id">
+
+        <div style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label for="ticket-passenger">Lead Passenger Name *</label>
+            <input type="text" id="ticket-passenger" class="form-input" placeholder="e.g. Tariq Bin Ziyad" required>
+          </div>
+          <div class="form-group">
+            <label for="ticket-pnr">PNR / Ticket Ref *</label>
+            <input type="text" id="ticket-pnr" class="form-input" placeholder="e.g. EK-78401" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label for="ticket-airline">Airline Carrier *</label>
+            <select id="ticket-airline" class="form-select" required>
+              <option value="Emirates">Emirates (EK)</option>
+              <option value="Qatar Airways">Qatar Airways (QR)</option>
+              <option value="Saudia">Saudia (SV)</option>
+              <option value="Biman Bangladesh">Biman Bangladesh (BG)</option>
+              <option value="Singapore Airlines">Singapore Airlines (SQ)</option>
+              <option value="Turkish Airlines">Turkish Airlines (TK)</option>
+              <option value="British Airways">British Airways (BA)</option>
+              <option value="Other Airline">Other Carrier</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="ticket-class">Travel Class *</label>
+            <select id="ticket-class" class="form-select" required>
+              <option value="Economy">Economy</option>
+              <option value="Premium Economy">Premium Economy</option>
+              <option value="Business">Business Class</option>
+              <option value="First">First Class</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label for="ticket-origin">Origin (Airport Code/City) *</label>
+            <input type="text" id="ticket-origin" class="form-input" placeholder="e.g. DXB or LHR" required>
+          </div>
+          <div class="form-group">
+            <label for="ticket-destination">Destination *</label>
+            <input type="text" id="ticket-destination" class="form-input" placeholder="e.g. JED or DAC" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label for="ticket-base-fare">Base Fare *</label>
+            <input type="number" id="ticket-base-fare" class="form-input" min="0" step="10" placeholder="650" required>
+          </div>
+          <div class="form-group">
+            <label for="ticket-commission">Agency Commission / Markup *</label>
+            <input type="number" id="ticket-commission" class="form-input" min="0" step="5" placeholder="85" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label for="ticket-date">Travel / Issue Date</label>
+            <input type="date" id="ticket-date" class="form-input">
+          </div>
+          <div class="form-group">
+            <label for="ticket-status">Ticket Status *</label>
+            <select id="ticket-status" class="form-select" required>
+              <option value="Issued">Issued</option>
+              <option value="Confirmed">Confirmed</option>
+              <option value="Refunded">Refunded</option>
+              <option value="Void">Void</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 0.5rem;">
+          <button type="button" id="btn-cancel-modal" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Ticket</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,8 +611,8 @@
     "@type": "WebApplication",
     "name": "Ticket Analytics",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ticket-analytics/",
-    "description": "Track ticket sales, commissions, and total revenue.",
-    "applicationCategory": "UtilityPage",
+    "description": "Airline ticketing volume, base fare economics, and gross commission auditor.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

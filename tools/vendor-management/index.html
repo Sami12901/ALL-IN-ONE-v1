@@ -4,14 +4,304 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vendor Management - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Manage suppliers and vendor relationships.">
-  <meta name="keywords" content="vendor, supplier, procurement, free, online, tool, utility">
+  <meta name="description" content="Supplier and vendor relationship directory with performance scorecards, purchase order tracking, spend analytics, and CSV export.">
+  <meta name="keywords" content="vendor, supplier, procurement, purchase orders, spend, b2b, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/vendor-management/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ALL IN ONE">
+  <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/vendor-management/">
+  <meta property="og:title" content="Vendor Management - Free Online Tool - ALL IN ONE">
+  <meta property="og:description" content="Supplier and vendor relationship directory with performance scorecards, purchase order tracking, spend analytics, and CSV export.">
+  <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="Vendor Management - ALL IN ONE">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/vendor-management/">
+  <meta name="twitter:title" content="Vendor Management - Free Online Tool - ALL IN ONE">
+  <meta name="twitter:description" content="Supplier and vendor relationship directory with performance scorecards, purchase order tracking, spend analytics, and CSV export.">
+  <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta name="twitter:image:alt" content="Vendor Management - ALL IN ONE">
+
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    /* Vendor Management Custom Styles */
+    .vendor-nav-tabs {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+    .vendor-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 0.75rem 1.25rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .vendor-tab-btn:hover {
+      color: var(--text-primary);
+    }
+    .vendor-tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .vendor-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .vendor-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      align-items: center;
+    }
+    .vendor-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      align-items: center;
+    }
+    .vendor-search-box {
+      position: relative;
+      min-width: 240px;
+    }
+    .vendor-search-box input {
+      padding-left: 2.25rem;
+    }
+    .vendor-search-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      pointer-events: none;
+    }
+
+    /* Scorecard KPIs */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+    .kpi-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    }
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent);
+    }
+    .kpi-card.kpi-spend::before { background: #10b981; }
+    .kpi-card.kpi-rating::before { background: #f59e0b; }
+    .kpi-card.kpi-vendors::before { background: #6366f1; }
+    .kpi-card.kpi-top::before { background: #ec4899; }
+
+    .kpi-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+    }
+    .kpi-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.2;
+      font-family: monospace;
+    }
+    .kpi-sub {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* Category Badges */
+    .cat-badge {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .cat-raw-materials { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .cat-logistics { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .cat-it { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+    .cat-office { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+    .terms-tag {
+      font-size: 0.72rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-family: monospace;
+    }
+
+    /* Star Rating */
+    .star-rating {
+      color: #f59e0b;
+      font-size: 0.95rem;
+      letter-spacing: 1px;
+    }
+
+    /* Table styles */
+    .data-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-secondary);
+    }
+    .custom-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+    .custom-table th {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 600;
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .custom-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .custom-table tr:last-child td {
+      border-bottom: none;
+    }
+    .custom-table tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Status badges for PO */
+    .po-status {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .po-completed { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .po-approved { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .po-pending { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .po-cancelled { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+    /* Modals */
+    .vendor-modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .vendor-modal-backdrop.show {
+      display: flex;
+    }
+    .vendor-modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 560px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      animation: modalFadeIn 0.2s ease;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .vendor-modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .vendor-modal-header h3 {
+      font-size: 1.25rem;
+      margin: 0;
+    }
+    .vendor-modal-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-height: calc(85vh - 140px);
+      overflow-y: auto;
+    }
+    .vendor-modal-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      background: var(--bg-tertiary);
+    }
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    @media (max-width: 560px) {
+      .form-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,31 +316,312 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Vendor Management</h1>
-        <p class="tool-description">Manage suppliers and vendor relationships.</p>
+        <h1>Supplier &amp; Vendor Management</h1>
+        <p class="tool-description">Centralized supplier relationship directory, performance scorecards, rating evaluations, payment terms, and purchase order tracking.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Vendor Management</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Manage suppliers and vendor relationships.</div>
-            <div><strong>Inputs:</strong> vendor, supplier, procurement</div>
-            <div><strong>Category:</strong> business</div>
+      <!-- Vendor Scorecard KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi-card kpi-spend">
+          <span class="kpi-label">Total Spend (All Vendors)</span>
+          <span class="kpi-value" id="kpi-total-spend">$0.00</span>
+          <span class="kpi-sub" id="kpi-completed-pos-sub">From completed purchase orders</span>
+        </div>
+        <div class="kpi-card kpi-vendors">
+          <span class="kpi-label">Active Suppliers</span>
+          <span class="kpi-value" id="kpi-vendor-count">0</span>
+          <span class="kpi-sub" id="kpi-category-sub">Across 4 supplier categories</span>
+        </div>
+        <div class="kpi-card kpi-rating">
+          <span class="kpi-label">Avg Supplier Score</span>
+          <span class="kpi-value" id="kpi-avg-rating">0.0 / 5.0</span>
+          <span class="kpi-sub" id="kpi-rating-stars">★★★★★</span>
+        </div>
+        <div class="kpi-card kpi-top">
+          <span class="kpi-label">Top Rated Supplier</span>
+          <span class="kpi-value" id="kpi-top-vendor" style="font-size:1.3rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">None</span>
+          <span class="kpi-sub" id="kpi-top-sub">5.0 Star Performance</span>
+        </div>
+      </div>
+
+      <!-- Main Panel -->
+      <div class="tool-panel glass-panel">
+        
+        <!-- Tab Navigation -->
+        <div class="vendor-nav-tabs">
+          <button type="button" class="vendor-tab-btn active" id="tab-btn-directory">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Vendor Directory (<span id="tab-vendor-badge">0</span>)
+          </button>
+          <button type="button" class="vendor-tab-btn" id="tab-btn-pos">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M7 15h0M2 9.5h20"></path></svg>
+            Purchase Orders (<span id="tab-po-badge">0</span>)
+          </button>
+        </div>
+
+        <!-- Directory Tab Content -->
+        <div id="view-directory">
+          <div class="vendor-toolbar">
+            <div class="vendor-actions">
+              <button class="btn btn-primary" id="btn-add-vendor">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Add New Vendor
+              </button>
+              <button class="btn btn-secondary" id="btn-create-po">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                Create PO
+              </button>
+              <button class="btn btn-secondary" id="btn-export-vendors-csv" title="Export Vendors as CSV">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Export CSV
+              </button>
+              <button class="btn btn-secondary" id="btn-reset-data" title="Restore sample suppliers and POs">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+                Reset
+              </button>
+            </div>
+
+            <div class="vendor-filters">
+              <div class="form-group" style="margin: 0; min-width: 140px;">
+                <select class="form-select" id="filter-category" aria-label="Filter by vendor category">
+                  <option value="all">All Categories</option>
+                  <option value="Raw Materials">Raw Materials</option>
+                  <option value="Logistics">Logistics</option>
+                  <option value="IT">IT</option>
+                  <option value="Office">Office</option>
+                </select>
+              </div>
+
+              <div class="form-group" style="margin: 0; min-width: 130px;">
+                <select class="form-select" id="filter-terms" aria-label="Filter by payment terms">
+                  <option value="all">All Terms</option>
+                  <option value="Net 15">Net 15</option>
+                  <option value="Net 30">Net 30</option>
+                  <option value="Net 60">Net 60</option>
+                </select>
+              </div>
+
+              <div class="vendor-search-box">
+                <svg class="vendor-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="vendor-search-input" class="form-input" placeholder="Search supplier or contact...">
+              </div>
+            </div>
+          </div>
+
+          <!-- Vendor Table -->
+          <div class="data-table-wrap">
+            <table class="custom-table" id="vendor-table">
+              <thead>
+                <tr>
+                  <th>Vendor Name</th>
+                  <th>Category</th>
+                  <th>Contact Person</th>
+                  <th>Email &amp; Phone</th>
+                  <th>Terms</th>
+                  <th>Rating</th>
+                  <th>Total Spend</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="vendor-table-body">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Purchase Orders Tab Content -->
+        <div id="view-pos" style="display: none;">
+          <div class="vendor-toolbar">
+            <div class="vendor-actions">
+              <button class="btn btn-primary" id="btn-add-po-view">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                New Purchase Order
+              </button>
+              <button class="btn btn-secondary" id="btn-export-pos-csv" title="Export POs as CSV">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Export PO CSV
+              </button>
+            </div>
+
+            <div class="vendor-filters">
+              <div class="form-group" style="margin: 0; min-width: 150px;">
+                <select class="form-select" id="filter-po-status" aria-label="Filter by PO status">
+                  <option value="all">All PO Statuses</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Approved">Approved</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
+              </div>
+              <div class="vendor-search-box">
+                <svg class="vendor-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="po-search-input" class="form-input" placeholder="Search PO # or vendor...">
+              </div>
+            </div>
+          </div>
+
+          <!-- PO Table -->
+          <div class="data-table-wrap">
+            <table class="custom-table" id="po-table">
+              <thead>
+                <tr>
+                  <th>PO Number</th>
+                  <th>Order Date</th>
+                  <th>Vendor</th>
+                  <th>Items / Description</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="po-table-body">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
-    
     </div>
   </main>
+
+  <!-- Add / Edit Vendor Modal -->
+  <div class="vendor-modal-backdrop" id="vendor-modal-backdrop">
+    <div class="vendor-modal">
+      <div class="vendor-modal-header">
+        <h3 id="vendor-modal-title">Add Supplier / Vendor</h3>
+        <button type="button" class="inv-icon-btn" id="vendor-modal-close" aria-label="Close modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <form id="vendor-form">
+        <div class="vendor-modal-body">
+          <input type="hidden" id="form-vendor-id">
+
+          <div class="form-group">
+            <label for="form-vendor-name">Vendor Name *</label>
+            <input type="text" id="form-vendor-name" class="form-input" placeholder="e.g. Acme Micro Technologies" required>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="form-vendor-category">Category *</label>
+              <select id="form-vendor-category" class="form-select">
+                <option value="Raw Materials">Raw Materials</option>
+                <option value="Logistics">Logistics</option>
+                <option value="IT">IT</option>
+                <option value="Office">Office</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="form-vendor-terms">Payment Terms *</label>
+              <select id="form-vendor-terms" class="form-select">
+                <option value="Net 15">Net 15</option>
+                <option value="Net 30" selected>Net 30</option>
+                <option value="Net 60">Net 60</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="form-contact-person">Contact Person</label>
+              <input type="text" id="form-contact-person" class="form-input" placeholder="e.g. John Doe">
+            </div>
+            <div class="form-group">
+              <label for="form-vendor-email">Contact Email *</label>
+              <input type="email" id="form-vendor-email" class="form-input" placeholder="e.g. orders@acme.com" required>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="form-vendor-phone">Phone Number</label>
+              <input type="tel" id="form-vendor-phone" class="form-input" placeholder="e.g. +1 (555) 019-2834">
+            </div>
+            <div class="form-group">
+              <label for="form-vendor-rating">Performance Rating (1-5 Stars) *</label>
+              <select id="form-vendor-rating" class="form-select">
+                <option value="5">★★★★★ (5 Stars - Exceptional)</option>
+                <option value="4" selected>★★★★☆ (4 Stars - Reliable)</option>
+                <option value="3">★★★☆☆ (3 Stars - Satisfactory)</option>
+                <option value="2">★★☆☆☆ (2 Stars - Needs Improvement)</option>
+                <option value="1">★☆☆☆☆ (1 Star - Critical Issues)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="form-vendor-notes">Internal Notes &amp; Service Level Agreements</label>
+            <textarea id="form-vendor-notes" class="form-input" style="min-height: 70px; resize: vertical;" placeholder="Key contracts, lead times, escalation contacts..."></textarea>
+          </div>
+        </div>
+        <div class="vendor-modal-footer">
+          <button type="button" class="btn btn-secondary" id="vendor-modal-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Vendor</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Create Purchase Order Modal -->
+  <div class="vendor-modal-backdrop" id="po-modal-backdrop">
+    <div class="vendor-modal">
+      <div class="vendor-modal-header">
+        <h3 id="po-modal-title">Create Purchase Order</h3>
+        <button type="button" class="inv-icon-btn" id="po-modal-close" aria-label="Close modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <form id="po-form">
+        <div class="vendor-modal-body">
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="po-number-input">PO Number *</label>
+              <input type="text" id="po-number-input" class="form-input" placeholder="e.g. PO-9104" required>
+            </div>
+            <div class="form-group">
+              <label for="po-date-input">Order Date *</label>
+              <input type="date" id="po-date-input" class="form-input" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="po-vendor-select">Select Vendor *</label>
+            <select id="po-vendor-select" class="form-select" required>
+              <!-- Populated via script -->
+            </select>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="po-amount-input">Order Amount ($ USD) *</label>
+              <input type="number" id="po-amount-input" class="form-input" min="0" step="0.01" placeholder="e.g. 8500.00" required>
+            </div>
+            <div class="form-group">
+              <label for="po-status-select">Order Status</label>
+              <select id="po-status-select" class="form-select">
+                <option value="Completed">Completed (Adds to Spend)</option>
+                <option value="Approved">Approved</option>
+                <option value="Pending" selected>Pending</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="po-desc-input">Items / Deliverables Scope *</label>
+            <textarea id="po-desc-input" class="form-input" style="min-height: 70px; resize: vertical;" placeholder="Itemized list or deliverables..." required></textarea>
+          </div>
+        </div>
+        <div class="vendor-modal-footer">
+          <button type="button" class="btn btn-secondary" id="po-modal-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Purchase Order</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -60,10 +631,10 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Vendor Management",
+    "name": "Supplier & Vendor Management",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/vendor-management/",
-    "description": "Manage suppliers and vendor relationships.",
-    "applicationCategory": "UtilityPage",
+    "description": "Supplier and vendor relationship directory with performance scorecards, purchase order tracking, spend analytics, and CSV export.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

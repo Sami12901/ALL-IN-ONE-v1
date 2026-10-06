@@ -4,14 +4,435 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Habit Tracker Grid - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="LocalStorage habit calendar tracking lists.">
-  <meta name="keywords" content="habit, tracker, calendar, todo, grid, free, online, tool, utility">
+  <meta name="description" content="Daily habit building dashboard with interactive 7-day and 30-day streak grids, streak calculations, completion rates, and celebration animations.">
+  <meta name="keywords" content="habit tracker, streak tracker, habit grid, daily routine, streak celebration, personal productivity, habit calendar">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/habit-tracker/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ALL IN ONE">
+  <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/habit-tracker/">
+  <meta property="og:title" content="Habit Tracker Grid - Free Online Tool - ALL IN ONE">
+  <meta property="og:description" content="Daily habit building dashboard with interactive 7-day and 30-day streak grids, streak calculations, completion rates, and celebration animations.">
+  <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="Habit Tracker Grid - ALL IN ONE">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/habit-tracker/">
+  <meta name="twitter:title" content="Habit Tracker Grid - Free Online Tool - ALL IN ONE">
+  <meta name="twitter:description" content="Daily habit building dashboard with interactive 7-day and 30-day streak grids, streak calculations, completion rates, and celebration animations.">
+  <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
+  <meta name="twitter:image:alt" content="Habit Tracker Grid - ALL IN ONE">
+
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .habit-dashboard {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .hero-stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .stat-badge-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .stat-badge-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .stat-card-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .stat-card-num {
+      font-size: 1.85rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+    }
+
+    .stat-progress-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+
+    .stat-progress-bar-fill {
+      height: 100%;
+      background: var(--accent-gradient);
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    .toolbar-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.25rem;
+    }
+
+    .category-filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .category-pill {
+      font-size: 0.8rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .category-pill:hover, .category-pill.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--bg-secondary);
+    }
+
+    .view-toggle-wrap {
+      display: inline-flex;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 3px;
+    }
+
+    .view-btn {
+      padding: 0.35rem 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .view-btn.active {
+      background: var(--accent-gradient);
+      color: #ffffff;
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    .habit-item-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: var(--transition);
+    }
+
+    .habit-item-card:hover {
+      border-color: var(--border);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2);
+    }
+
+    .habit-card-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .habit-brand-box {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .habit-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .habit-info-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .habit-name-text {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .habit-meta-text {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .habit-metrics-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .metric-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.55rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .metric-badge.fire {
+      color: #f97316;
+      border-color: rgba(249, 115, 22, 0.3);
+      background: rgba(249, 115, 22, 0.1);
+    }
+
+    .metric-badge.trophy {
+      color: #eab308;
+      border-color: rgba(234, 179, 8, 0.3);
+      background: rgba(234, 179, 8, 0.1);
+    }
+
+    .metric-badge.rate {
+      color: #10b981;
+      border-color: rgba(16, 185, 129, 0.3);
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    /* 7-Day Grid View */
+    .week-grid-container {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.5rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem;
+    }
+
+    .day-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.5rem 0.25rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      user-select: none;
+      transition: var(--transition);
+      border: 1px solid transparent;
+    }
+
+    .day-cell:hover {
+      background: var(--surface);
+      border-color: var(--border);
+    }
+
+    .day-cell.today {
+      border-color: var(--accent);
+      background: rgba(78, 133, 191, 0.12);
+    }
+
+    .day-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+
+    .day-date-num {
+      font-size: 0.8rem;
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    .day-check-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      color: transparent;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-top: 0.25rem;
+    }
+
+    .day-cell.checked .day-check-circle {
+      background: var(--accent-gradient);
+      border-color: transparent;
+      color: #ffffff;
+      transform: scale(1.05);
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    /* 30-Day Matrix View */
+    .month-matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
+      gap: 0.35rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem;
+    }
+
+    .matrix-tile {
+      aspect-ratio: 1;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      cursor: pointer;
+      color: var(--text-tertiary);
+      transition: var(--transition);
+    }
+
+    .matrix-tile:hover {
+      border-color: var(--accent);
+      transform: scale(1.1);
+    }
+
+    .matrix-tile.checked {
+      background: var(--accent-gradient);
+      border-color: transparent;
+      color: #ffffff;
+      font-weight: 700;
+      box-shadow: 0 2px 6px var(--accent-glow);
+    }
+
+    .matrix-tile.today {
+      outline: 2px solid var(--accent);
+      outline-offset: 1px;
+    }
+
+    /* Modal Styling */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      box-shadow: var(--glass-shadow);
+      position: relative;
+    }
+
+    .color-swatches {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.25rem;
+    }
+
+    .color-swatch-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .color-swatch-btn.selected {
+      border-color: #ffffff;
+      transform: scale(1.15);
+    }
+
+    #confettiCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -22,47 +443,164 @@
   <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
+  <!-- Celebration Confetti Canvas -->
+  <canvas id="confettiCanvas"></canvas>
+
   <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Habit Tracker Grid</h1>
-        <p class="tool-description">LocalStorage habit calendar tracking lists.</p>
+        <p class="tool-description">Build disciplined habits with interactive 7-day and 30-day streak tracking, automatic streak analytics, completion percentages, and milestone celebrations.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Habit Tracker Grid</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> LocalStorage habit calendar tracking lists.</div>
-            <div><strong>Inputs:</strong> habit, tracker, calendar, todo, grid</div>
-            <div><strong>Category:</strong> utility</div>
+      <div class="habit-dashboard">
+        <!-- Overview Stats Row -->
+        <div class="hero-stats-row">
+          <!-- Today's Progress -->
+          <div class="stat-badge-card">
+            <span class="stat-card-title">Today's Progress</span>
+            <div class="stat-card-num" id="todayProgressText">0 / 0 Done</div>
+            <div class="stat-progress-bar-bg">
+              <div class="stat-progress-bar-fill" id="todayProgressBar"></div>
+            </div>
+          </div>
+
+          <!-- Active Habits -->
+          <div class="stat-badge-card">
+            <span class="stat-card-title">Active Habits</span>
+            <div class="stat-card-num" id="totalHabitsCount">0</div>
+            <span style="font-size: 0.75rem; color: var(--text-tertiary);">Tracked in LocalStorage</span>
+          </div>
+
+          <!-- Longest Active Streak -->
+          <div class="stat-badge-card">
+            <span class="stat-card-title">Best Active Streak</span>
+            <div class="stat-card-num" style="color: #f97316;" id="bestStreakCount">🔥 0 Days</div>
+            <span style="font-size: 0.75rem; color: var(--text-tertiary);">Consecutive daily check-ins</span>
+          </div>
+
+          <!-- Overall Completion Rate -->
+          <div class="stat-badge-card">
+            <span class="stat-card-title">Overall Completion</span>
+            <div class="stat-card-num" style="color: #10b981;" id="overallRateText">0%</div>
+            <span style="font-size: 0.75rem; color: var(--text-tertiary);">Total check-in consistency</span>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Filter & Control Toolbar -->
+        <div class="toolbar-bar">
+          <div class="category-filter-group" id="categoryFilters">
+            <button class="category-pill active" data-category="all">All Habits</button>
+            <button class="category-pill" data-category="health">Health 💧</button>
+            <button class="category-pill" data-category="fitness">Fitness 🏃</button>
+            <button class="category-pill" data-category="mind">Mind 🧘</button>
+            <button class="category-pill" data-category="work">Work ⚡</button>
+            <button class="category-pill" data-category="study">Study 📚</button>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div class="view-toggle-wrap">
+              <button id="view7DayBtn" class="view-btn active">7-Day View</button>
+              <button id="view30DayBtn" class="view-btn">30-Day Grid</button>
+            </div>
+            <button id="addHabitBtn" class="btn btn-primary" style="padding: 0.45rem 1rem; font-size: 0.85rem;">
+              + New Habit
+            </button>
+          </div>
+        </div>
+
+        <!-- Habits List Container -->
+        <div id="habitsContainer" style="display: flex; flex-direction: column; gap: 1rem;">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyHabitsState" class="tool-panel glass-panel" style="text-align: center; padding: 3rem 1.5rem; display: none;">
+          <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🌱</div>
+          <h3 style="margin-bottom: 0.5rem; font-family: var(--font-display); font-size: 1.5rem;">No Habits Created Yet</h3>
+          <p style="color: var(--text-secondary); max-width: 420px; margin: 0 auto 1.5rem;">
+            Start building your routine today. Click below to add your first habit or load starter suggestions.
+          </p>
+          <div style="display: flex; justify-content: center; gap: 0.75rem;">
+            <button id="addFirstHabitBtn" class="btn btn-primary">+ Create Habit</button>
+            <button id="loadDefaultsBtn" class="btn btn-secondary">Load Starter Habits</button>
+          </div>
+        </div>
+
+        <!-- Bottom Data Backup Bar -->
+        <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem;">
+          <button id="exportHabitsBtn" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Export JSON</button>
+          <button id="resetHabitsBtn" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; color: var(--error);">Reset Data</button>
+        </div>
       </div>
-    
     </div>
   </main>
+
+  <!-- Add / Edit Habit Modal -->
+  <div id="habitModal" class="modal-backdrop">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 id="modalTitle" style="font-family: var(--font-display); font-size: 1.4rem;">Add New Daily Habit</h3>
+        <button id="closeModalBtn" style="background: none; border: none; color: var(--text-secondary); font-size: 1.25rem; cursor: pointer;">✕</button>
+      </div>
+
+      <form id="habitForm" style="display: flex; flex-direction: column; gap: 1rem;">
+        <input type="hidden" id="habitIdInput">
+
+        <div class="form-group">
+          <label for="habitNameInput">Habit Name</label>
+          <input type="text" id="habitNameInput" class="form-input" placeholder="e.g. Drink 2L Water, Read 20 mins, Morning Run" required>
+        </div>
+
+        <div class="form-group">
+          <label for="habitGoalInput">Daily Goal</label>
+          <input type="text" id="habitGoalInput" class="form-input" placeholder="e.g. 1 time per day, 30 minutes, 10 pages" value="1 time per day">
+        </div>
+
+        <div class="form-group">
+          <label for="habitCategorySelect">Category & Icon</label>
+          <select id="habitCategorySelect" class="form-select">
+            <option value="health|💧">Health (💧 Water, Diet)</option>
+            <option value="fitness|🏃">Fitness (🏃 Workout, Run)</option>
+            <option value="mind|🧘">Mindfulness (🧘 Meditation, Journal)</option>
+            <option value="work|⚡">Productivity (⚡ Deep Work, Inbox Zero)</option>
+            <option value="study|📚">Learning (📚 Reading, Coding)</option>
+            <option value="routine|🌅">Routine (🌅 Wake early, Sleep)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Accent Color</label>
+          <div class="color-swatches" id="colorSwatches">
+            <button type="button" class="color-swatch-btn selected" data-color="#4e85bf" style="background: #4e85bf;"></button>
+            <button type="button" class="color-swatch-btn" data-color="#10b981" style="background: #10b981;"></button>
+            <button type="button" class="color-swatch-btn" data-color="#f59e0b" style="background: #f59e0b;"></button>
+            <button type="button" class="color-swatch-btn" data-color="#ec4899" style="background: #ec4899;"></button>
+            <button type="button" class="color-swatch-btn" data-color="#8b5cf6" style="background: #8b5cf6;"></button>
+            <button type="button" class="color-swatch-btn" data-color="#06b6d4" style="background: #06b6d4;"></button>
+          </div>
+        </div>
+
+        <div class="action-bar" style="justify-content: flex-end; margin-top: 0.5rem;">
+          <button type="button" id="cancelModalBtn" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveHabitBtn">Save Habit</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Habit Tracker Grid",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/habit-tracker/",
-    "description": "LocalStorage habit calendar tracking lists.",
+    "description": "Daily habit building dashboard with 7-day and 30-day streak grids and analytics.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
