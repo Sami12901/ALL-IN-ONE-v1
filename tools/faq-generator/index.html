@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FAQ Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your FAQ Generator online.">
-  <meta name="keywords" content="marketing, digital, content, free, online, tool, utility">
+  <title>FAQ Generator - Schema.org JSON-LD & HTML Accordion Creator - ALL IN ONE</title>
+  <meta name="description" content="Build interactive FAQ accordions and generate valid Google FAQPage Schema.org JSON-LD, clean HTML markup, and Markdown in 1 click.">
+  <meta name="keywords" content="faq generator, schema org faqpage, google faq structured data, faq accordion generator, seo json ld, ecommerce faq">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/faq-generator/">
 
@@ -14,7 +14,7 @@
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/faq-generator/">
   <meta property="og:title" content="FAQ Generator - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Create, analyze, and manage your FAQ Generator online.">
+  <meta property="og:description" content="Generate Google FAQPage Schema JSON-LD, interactive accordion previews, and clean HTML/Markdown for your website.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
@@ -26,14 +26,249 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/faq-generator/">
   <meta name="twitter:title" content="FAQ Generator - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Create, analyze, and manage your FAQ Generator online.">
+  <meta name="twitter:description" content="Generate Google FAQPage Schema JSON-LD, interactive accordion previews, and clean HTML/Markdown for your website.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="FAQ Generator - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .faq-workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .faq-workspace {
+        grid-template-columns: 390px 1fr;
+      }
+    }
+    @media (min-width: 1200px) {
+      .faq-workspace {
+        grid-template-columns: 420px 1fr;
+      }
+    }
+
+    /* Template Presets Grid */
+    .template-presets-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+      margin-top: 0.25rem;
+    }
+    .template-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.55rem 0.65rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: var(--transition);
+      text-align: left;
+    }
+    .template-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+    }
+
+    /* Tabs */
+    .faq-tab-nav {
+      display: flex;
+      gap: 0.4rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.65rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .faq-tab-nav::-webkit-scrollbar {
+      display: none;
+    }
+    .faq-tab-btn {
+      background: transparent;
+      border: none;
+      padding: 0.45rem 0.85rem;
+      color: var(--text-secondary);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      white-space: nowrap;
+    }
+    .faq-tab-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+    .faq-tab-btn.active {
+      color: #ffffff;
+      background: var(--accent);
+    }
+
+    /* Accordion Item Styles */
+    .faq-accordion-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .faq-accordion-item {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    .faq-accordion-item:hover {
+      border-color: rgba(78, 133, 191, 0.4);
+    }
+    .faq-accordion-item.open {
+      border-color: var(--accent);
+    }
+
+    .faq-item-header {
+      padding: 1rem 1.15rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      user-select: none;
+      background: transparent;
+    }
+
+    .faq-item-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .faq-order-index {
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: rgba(78, 133, 191, 0.2);
+      color: var(--accent-light);
+      padding: 2px 7px;
+      border-radius: 99px;
+      flex-shrink: 0;
+    }
+
+    .faq-item-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .faq-ctrl-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .faq-ctrl-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+    .faq-ctrl-btn.btn-del:hover {
+      color: #ef4444;
+      border-color: #ef4444;
+    }
+
+    .faq-chevron {
+      color: var(--text-secondary);
+      transition: transform 0.25s ease;
+      margin-left: 0.25rem;
+    }
+    .faq-accordion-item.open .faq-chevron {
+      transform: rotate(180deg);
+      color: var(--accent-light);
+    }
+
+    .faq-item-body {
+      padding: 0 1.15rem 1.15rem 1.15rem;
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      line-height: 1.6;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 0.85rem;
+      display: none;
+    }
+    .faq-accordion-item.open .faq-item-body {
+      display: block;
+    }
+
+    /* Code View Area */
+    .code-view-box {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.82rem;
+      color: #c9d1d9;
+      line-height: 1.6;
+      max-height: 520px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    /* Search bar */
+    .faq-search-input {
+      padding: 0.5rem 0.85rem;
+      font-size: 0.85rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      width: 100%;
+    }
+
+    /* Toast */
+    .toast-popup {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      color: var(--text-primary);
+      padding: 0.75rem 1.4rem;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 600;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: var(--transition);
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .toast-popup.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -49,30 +284,143 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>FAQ Generator</h1>
-        <p class="tool-description">Create, analyze, and manage your FAQ Generator online.</p>
+        <p class="tool-description">Build interactive Q&A accordions and generate valid Google FAQPage Schema.org JSON-LD, clean HTML markup, and Markdown format with 1 click.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>FAQ Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your FAQ Generator online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, content</div>
-            <div><strong>Category:</strong> digital-marketing</div>
+      <div class="faq-workspace">
+        
+        <!-- Builder & Templates Column -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            Add New FAQ Item
           </div>
+
+          <div class="form-group">
+            <label for="q-input">Question *</label>
+            <input type="text" id="q-input" class="form-input" placeholder="e.g. What is your refund policy?">
+          </div>
+
+          <div class="form-group">
+            <label for="a-input">Answer *</label>
+            <textarea id="a-input" class="form-textarea" style="min-height: 110px;" placeholder="e.g. We offer a 30-day no-questions-asked money-back guarantee..."></textarea>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.25rem;">
+            <button id="add-faq-btn" class="btn btn-primary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.4rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span id="add-btn-label">Add Question</span>
+            </button>
+            <button id="cancel-edit-btn" class="btn btn-secondary" style="display: none;">Cancel</button>
+          </div>
+
+          <!-- Starter Templates -->
+          <div style="margin-top: 1.25rem;">
+            <div style="font-size: 0.825rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+              Auto-Generate From Templates:
+            </div>
+            <div class="template-presets-grid">
+              <button class="template-btn" data-template="ecommerce">
+                <span>🛒</span> E-Commerce
+              </button>
+              <button class="template-btn" data-template="saas">
+                <span>⚡</span> SaaS Software
+              </button>
+              <button class="template-btn" data-template="agency">
+                <span>💼</span> Digital Agency
+              </button>
+              <button class="template-btn" data-template="course">
+                <span>🎓</span> Online Course
+              </button>
+            </div>
+          </div>
+
+          <!-- Action buttons -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+            <button id="clear-all-btn" class="mini-btn" style="color: #f87171;">Clear All FAQs</button>
+            <span style="font-size: 0.78rem; color: var(--text-secondary);"><span id="faq-count-badge">0</span> Questions Added</span>
+          </div>
+
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Preview & Export Column -->
+        <div class="tool-panel glass-panel">
+          
+          <!-- View Navigation Tabs -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.65rem; margin-bottom: 1rem;">
+            <div class="faq-tab-nav" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
+              <button class="faq-tab-btn active" data-tab="tab-accordion">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                Accordion Preview
+              </button>
+              <button class="faq-tab-btn" data-tab="tab-schema">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                Schema.org JSON-LD
+              </button>
+              <button class="faq-tab-btn" data-tab="tab-html">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                Clean HTML
+              </button>
+              <button class="faq-tab-btn" data-tab="tab-markdown">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                Markdown
+              </button>
+            </div>
+
+            <!-- Active Tab Copy Button -->
+            <button id="copy-active-btn" class="mini-btn" style="padding: 0.4rem 0.85rem; font-size: 0.82rem; font-weight: 600;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <span id="copy-btn-text">Copy JSON-LD</span>
+            </button>
+          </div>
+
+          <!-- TAB 1: Interactive Accordion Preview -->
+          <div id="tab-accordion" class="faq-view-pane">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; gap: 0.5rem;">
+              <input type="text" id="faq-search" class="faq-search-input" placeholder="Search questions or keywords...">
+              <button id="toggle-all-accordion-btn" class="mini-btn" style="white-space: nowrap;">Expand All</button>
+            </div>
+
+            <div id="accordion-container" class="faq-accordion-list">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- TAB 2: Schema.org JSON-LD -->
+          <div id="tab-schema" class="faq-view-pane" style="display: none;">
+            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+              Google FAQPage Schema Markup (paste inside <code>&lt;head&gt;</code> or <code>&lt;body&gt;</code>):
+            </div>
+            <pre id="schema-code-display" class="code-view-box"></pre>
+          </div>
+
+          <!-- TAB 3: Clean HTML Markup -->
+          <div id="tab-html" class="faq-view-pane" style="display: none;">
+            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+              Semantic HTML markup with responsive styling hooks:
+            </div>
+            <pre id="html-code-display" class="code-view-box"></pre>
+          </div>
+
+          <!-- TAB 4: Markdown Format -->
+          <div id="tab-markdown" class="faq-view-pane" style="display: none;">
+            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+              Formatted for READMEs, documentation, or blog articles:
+            </div>
+            <pre id="markdown-code-display" class="code-view-box"></pre>
+          </div>
+
+        </div>
+
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Toast Notification -->
+  <div id="app-toast" class="toast-popup">Copied to clipboard!</div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -84,8 +432,8 @@
     "@type": "WebApplication",
     "name": "FAQ Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/faq-generator/",
-    "description": "Create, analyze, and manage your FAQ Generator online.",
-    "applicationCategory": "UtilityPage",
+    "description": "Create interactive FAQ accordions and generate valid Google FAQPage Schema.org JSON-LD, clean HTML markup, and Markdown.",
+    "applicationCategory": "MarketingTool",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

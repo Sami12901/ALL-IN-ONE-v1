@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Weekly Challenge - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Enhance your skills with Weekly Challenge.">
-  <meta name="keywords" content="typing, keyboard, practice, free, online, tool, utility">
+  <meta name="description" content="Long-form endurance typing drill with curated 1,000-word passages. Features fatigue analysis, checkpoints every 200 words, pace drift tracking, and stamina score diagnostics.">
+  <meta name="keywords" content="typing, keyboard, weekly challenge, endurance typing, stamina score, fatigue analysis, 1000 words, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/weekly-challenge/">
 
@@ -14,7 +14,7 @@
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/weekly-challenge/">
   <meta property="og:title" content="Weekly Challenge - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Enhance your skills with Weekly Challenge.">
+  <meta property="og:description" content="1,000-word endurance typing drill with fatigue analysis, 200-word checkpoints, pace drift, and stamina scoring.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
@@ -26,7 +26,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/weekly-challenge/">
   <meta name="twitter:title" content="Weekly Challenge - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Enhance your skills with Weekly Challenge.">
+  <meta name="twitter:description" content="1,000-word endurance typing drill with fatigue analysis, 200-word checkpoints, pace drift, and stamina scoring.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="Weekly Challenge - ALL IN ONE">
 
@@ -34,6 +34,268 @@
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Specific styling for Weekly Challenge */
+    .wc-controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .wc-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .wc-stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+    .wc-stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+    .wc-stat-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .wc-stat-val {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      line-height: 1.1;
+    }
+    .wc-stat-sub {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Checkpoint Progress Track */
+    .wc-checkpoints-wrapper {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .wc-cp-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      margin-bottom: 0.85rem;
+    }
+    .wc-cp-track {
+      position: relative;
+      height: 8px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      margin: 1.25rem 0.5rem;
+    }
+    .wc-cp-fill {
+      height: 100%;
+      background: var(--accent-gradient);
+      border-radius: var(--radius-full);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .wc-cp-nodes {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+    }
+    .wc-cp-node {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      transform: translateY(-7px);
+      transition: all 0.3s ease;
+    }
+    .wc-cp-node.completed {
+      background: var(--accent);
+      border-color: #ffffff;
+      color: #ffffff;
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+    .wc-cp-node.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+      color: var(--accent);
+    }
+
+    /* Checkpoint Notification Toast */
+    .wc-cp-toast {
+      background: rgba(78, 133, 191, 0.15);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      animation: wcSlideDown 0.3s ease;
+    }
+    @keyframes wcSlideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Typing Display */
+    .wc-display-panel {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      min-height: 220px;
+      max-height: 280px;
+      overflow: hidden;
+      cursor: text;
+      user-select: none;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .wc-display-panel.focused {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow), inset 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    .wc-words-wrapper {
+      font-family: 'SF Mono', Monaco, Consolas, 'Liberation Mono', Menlo, monospace;
+      font-size: 1.35rem;
+      line-height: 2.1;
+      letter-spacing: 0.02em;
+      position: relative;
+      transition: transform 0.2s ease-out;
+    }
+    .wc-word {
+      display: inline-block;
+      margin-right: 0.6em;
+      white-space: nowrap;
+    }
+    .wc-char {
+      position: relative;
+      color: var(--text-tertiary);
+      transition: color 0.08s;
+    }
+    .wc-char.correct {
+      color: var(--text-primary);
+    }
+    .wc-char.incorrect {
+      color: var(--error);
+      background: rgba(239, 68, 68, 0.2);
+      border-radius: 2px;
+    }
+    .wc-char.extra {
+      color: #f87171;
+      opacity: 0.85;
+      text-decoration: underline;
+    }
+    .wc-char.current::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 2px;
+      height: 1.15em;
+      background: var(--accent);
+      animation: wc-blink 1s infinite;
+    }
+    @keyframes wc-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .wc-hidden-input {
+      position: absolute;
+      opacity: 0;
+      left: -9999px;
+      top: -9999px;
+      pointer-events: none;
+    }
+    .wc-focus-hint {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(10, 10, 10, 0.75);
+      backdrop-filter: blur(4px);
+      border-radius: inherit;
+      color: var(--text-primary);
+      font-size: 1.05rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      z-index: 5;
+    }
+    .wc-focus-hint.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Modal */
+    .wc-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .wc-modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .wc-modal-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      max-width: 680px;
+      width: 100%;
+      box-shadow: var(--glass-shadow);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -49,30 +311,174 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Weekly Challenge</h1>
-        <p class="tool-description">Enhance your skills with Weekly Challenge.</p>
+        <p class="tool-description">Long-form endurance typing drill. Test sustained focus across full 1,000-word passages with fatigue analysis, 200-word milestones, pace drift tracking, and stamina indices.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Weekly Challenge</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Enhance your skills with Weekly Challenge.</div>
-            <div><strong>Inputs:</strong> typing, keyboard, practice</div>
-            <div><strong>Category:</strong> typing</div>
+      <!-- Controls & Topic Bar -->
+      <div class="tool-panel glass-panel">
+        <div class="wc-controls-bar">
+          <!-- Text selection -->
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Endurance Text:</span>
+            <select class="form-select" id="passageSelect" style="width: auto; padding: 0.4rem 1rem; font-size: 0.85rem; border-radius: var(--radius-full);">
+              <option value="literature">Classic Literature: Melville & Shelley (1,000 Words)</option>
+              <option value="historical">Historical Oratory: Churchill & Lincoln (1,000 Words)</option>
+              <option value="software">Software Philosophy: Clean Architecture (1,000 Words)</option>
+            </select>
+          </div>
+
+          <!-- Sound & Reset -->
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <button class="btn btn-secondary" id="soundToggleBtn" style="padding: 0.45rem 0.85rem; font-size: 0.85rem;">Sound: ON</button>
+            <button class="btn btn-secondary" id="resetBtn" style="padding: 0.45rem 0.85rem; font-size: 0.85rem;">Restart Marathon (Esc)</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- 1,000-Word Checkpoints Track -->
+        <div class="wc-checkpoints-wrapper">
+          <div class="wc-cp-header">
+            <strong style="color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+              Marathon Checkpoints (200-Word Intervals)
+            </strong>
+            <span style="color: var(--accent); font-weight: 700; font-family: monospace;" id="checkpointWordCount">0 / 1000 Words</span>
+          </div>
+
+          <div class="wc-cp-track">
+            <div class="wc-cp-fill" id="checkpointFill"></div>
+            <div class="wc-cp-nodes">
+              <div class="wc-cp-node active" id="node_0">0</div>
+              <div class="wc-cp-node" id="node_200">200</div>
+              <div class="wc-cp-node" id="node_400">400</div>
+              <div class="wc-cp-node" id="node_600">600</div>
+              <div class="wc-cp-node" id="node_800">800</div>
+              <div class="wc-cp-node" id="node_1000">1k</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Checkpoint Notification Banner -->
+        <div class="wc-cp-toast" id="checkpointToast" style="display: none;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="font-size: 1.5rem;">🏁</div>
+            <div>
+              <strong style="color: var(--text-primary); font-size: 0.9rem;" id="toastTitle">Checkpoint 1 Completed!</strong>
+              <div style="font-size: 0.8rem; color: var(--text-secondary);" id="toastDetails">Segment WPM: 72 | Pace Drift: Baseline | Stamina: 100/100</div>
+            </div>
+          </div>
+          <button class="btn btn-secondary" id="toastDismissBtn" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Dismiss</button>
+        </div>
+
+        <!-- Real-time Stats Grid -->
+        <div class="wc-stats-grid">
+          <div class="wc-stat-card">
+            <span class="wc-stat-label">Endurance Pace</span>
+            <span class="wc-stat-val" id="netWpmVal" style="color: var(--accent);">0</span>
+            <span class="wc-stat-sub">Overall Net WPM</span>
+          </div>
+
+          <div class="wc-stat-card">
+            <span class="wc-stat-label">Stamina Index</span>
+            <span class="wc-stat-val" id="staminaVal" style="color: #10b981;">100%</span>
+            <span class="wc-stat-sub">Fatigue resistance</span>
+          </div>
+
+          <div class="wc-stat-card">
+            <span class="wc-stat-label">Pace Drift</span>
+            <span class="wc-stat-val" id="paceDriftVal">0.0%</span>
+            <span class="wc-stat-sub">Decay vs segment 1</span>
+          </div>
+
+          <div class="wc-stat-card">
+            <span class="wc-stat-label">Elapsed Time</span>
+            <span class="wc-stat-val" id="timerVal">00:00</span>
+            <span class="wc-stat-sub">Marathon duration</span>
+          </div>
+
+          <div class="wc-stat-card">
+            <span class="wc-stat-label">Accuracy</span>
+            <span class="wc-stat-val" id="accuracyVal" style="color: var(--success);">100%</span>
+            <span class="wc-stat-sub" id="errorsSub">0 errors</span>
+          </div>
+        </div>
+
+        <!-- Live Typing Area -->
+        <div class="wc-display-panel" id="displayPanel">
+          <div class="wc-focus-hint" id="focusHint">
+            <span>Click here or press any key to start the 1,000-word marathon</span>
+          </div>
+          <div class="wc-words-wrapper" id="wordsContainer">
+            <!-- Words injected dynamically -->
+          </div>
+          <input type="text" class="wc-hidden-input" id="hiddenInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Endurance typing input">
+        </div>
+
+        <!-- Segment Breakdown Table -->
+        <div style="margin-top: 1.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem;">
+          <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Segment Fatigue Telemetry (Every 200 Words)
+          </h3>
+          <div class="table-responsive">
+            <table class="leaderboard-table" style="font-size: 0.85rem;">
+              <thead>
+                <tr>
+                  <th>Segment</th>
+                  <th>Words Range</th>
+                  <th>Segment WPM</th>
+                  <th>Segment Accuracy</th>
+                  <th>Pace Drift</th>
+                  <th>Segment Status</th>
+                </tr>
+              </thead>
+              <tbody id="telemetryTbody">
+                <tr><td colspan="6" style="text-align: center; color: var(--text-tertiary); padding: 1rem;">No segments completed yet. Begin typing to log checkpoint data.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
+
+  <!-- Endurance Report Modal -->
+  <div class="wc-modal-backdrop" id="completionModal" role="dialog" aria-modal="true">
+    <div class="wc-modal-card">
+      <div style="font-size: 3rem; margin-bottom: 0.5rem; text-align: center;">🏆</div>
+      <h2 style="font-family: var(--font-display); font-size: 2rem; font-weight: 700; text-align: center; margin-bottom: 0.25rem;">1,000-Word Marathon Complete!</h2>
+      <p style="color: var(--text-secondary); font-size: 0.9rem; text-align: center; margin-bottom: 1.5rem;">
+        You conquered the full long-form endurance challenge. Here is your biometric typing stamina breakdown:
+      </p>
+
+      <div class="wc-stats-grid" style="margin-bottom: 1.5rem;">
+        <div class="wc-stat-card">
+          <span class="wc-stat-label">Final Stamina Index</span>
+          <span class="wc-stat-val" id="modalFinalStamina" style="color: #10b981;">94 / 100</span>
+          <span class="wc-stat-sub" id="modalStaminaRank">Iron Fingers</span>
+        </div>
+        <div class="wc-stat-card">
+          <span class="wc-stat-label">Overall Net Pace</span>
+          <span class="wc-stat-val" id="modalFinalWpm" style="color: var(--accent);">0</span>
+          <span class="wc-stat-sub">Words / Minute</span>
+        </div>
+        <div class="wc-stat-card">
+          <span class="wc-stat-label">Total Duration</span>
+          <span class="wc-stat-val" id="modalFinalTime">00:00</span>
+          <span class="wc-stat-sub">Elapsed</span>
+        </div>
+        <div class="wc-stat-card">
+          <span class="wc-stat-label">Pace Decay</span>
+          <span class="wc-stat-val" id="modalPaceDecay">-3.2%</span>
+          <span class="wc-stat-sub">First vs Last</span>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+        <button class="btn btn-secondary" id="modalCloseBtn">Close Report</button>
+        <button class="btn btn-primary" id="modalRestartBtn">Attempt Another Passage</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -84,7 +490,7 @@
     "@type": "WebApplication",
     "name": "Weekly Challenge",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/weekly-challenge/",
-    "description": "Enhance your skills with Weekly Challenge.",
+    "description": "Long-form endurance typing drill with fatigue analysis.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

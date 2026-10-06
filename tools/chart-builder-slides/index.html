@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chart Builder (Slides) - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Generate Bar, Pie, Line, and Area charts directly in your slides.">
-  <meta name="keywords" content="slide, presentation, pitch, deck, chart builder slides, free, online, tool, utility">
+  <title>Chart Builder for Slides - Instant Presentation Slide Chart Generator - ALL IN ONE</title>
+  <meta name="description" content="Instant presentation slide chart generator. Build Bar, Line, Donut charts and Metric KPI slides with luxury palettes and 1-click SVG/PNG export.">
+  <meta name="keywords" content="slide chart builder, presentation charts, pitch deck kpi, svg bar chart, presentation donut chart, data visualization deck">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/chart-builder-slides/">
 
@@ -13,79 +13,451 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/chart-builder-slides/">
-  <meta property="og:title" content="Chart Builder (Slides) - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Generate Bar, Pie, Line, and Area charts directly in your slides.">
+  <meta property="og:title" content="Chart Builder for Slides - Instant Presentation Chart Generator">
+  <meta property="og:description" content="Generate Bar, Line, Donut charts and Metric KPI slides with luxury palettes and instant SVG/PNG export.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="Chart Builder (Slides) - ALL IN ONE">
-  <meta property="og:locale" content="en_US">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/chart-builder-slides/">
-  <meta name="twitter:title" content="Chart Builder (Slides) - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Generate Bar, Pie, Line, and Area charts directly in your slides.">
+  <meta name="twitter:title" content="Chart Builder for Slides - ALL IN ONE">
+  <meta name="twitter:description" content="Generate high-resolution vector presentation charts and KPI cards for pitch decks.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="Chart Builder (Slides) - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .chart-studio-layout {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+    @media (max-width: 1100px) {
+      .chart-studio-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Mode Selector Tabs */
+    .mode-tab-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .mode-tab-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.65rem 0.25rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .mode-tab-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .mode-tab-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+    .mode-tab-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Data Table Styling */
+    .data-table-container {
+      max-height: 240px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .data-table th {
+      position: sticky;
+      top: 0;
+      background: var(--bg-secondary);
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+      z-index: 2;
+    }
+    .data-table td {
+      padding: 0.4rem 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table input {
+      width: 100%;
+      padding: 0.35rem 0.5rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+    }
+    .data-table input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .btn-row-delete {
+      background: none;
+      border: none;
+      color: var(--error);
+      cursor: pointer;
+      padding: 0.25rem;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .btn-row-delete:hover {
+      opacity: 1;
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    /* Palette Selectors */
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 0.5rem;
+    }
+    .palette-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.5rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .palette-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .palette-card.active {
+      border-color: var(--accent);
+      background: rgba(78, 133, 191, 0.1);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+    .palette-name {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .palette-swatches {
+      display: flex;
+      height: 12px;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .palette-swatches span {
+      flex: 1;
+      height: 100%;
+    }
+
+    /* Slide Stage Canvas */
+    .slide-preview-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .slide-viewport {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 ratio */
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.5), 0 0 0 1px var(--border);
+      background: #090d16;
+    }
+    .slide-svg-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .action-button-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
+    <div class="container tool-container" style="max-width: 1440px;">
       <div class="tool-header">
-        <h1>Chart Builder (Slides)</h1>
-        <p class="tool-description">Generate Bar, Pie, Line, and Area charts directly in your slides.</p>
-      </div>
-
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Chart Builder (Slides)</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Generate Bar, Pie, Line, and Area charts directly in your slides.</div>
-            <div><strong>Inputs:</strong> slide, presentation, pitch, deck, chart builder slides</div>
-            <div><strong>Category:</strong> slide</div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800; font-size: 2.75rem;">Chart Builder for Slides</h1>
+            <p class="tool-description">Instant presentation slide chart generator. Design high-impact Bar, Line, Donut charts and Executive KPI cards with 1-click SVG/PNG export.</p>
+          </div>
+          <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+            <button id="btn-export-svg" class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download SVG
+            </button>
+            <button id="btn-export-png" class="btn btn-primary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              Download PNG (1080p)
+            </button>
+            <button id="btn-copy-svg-code" class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy SVG Code
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- Studio Workarea -->
+      <div class="chart-studio-layout">
+        
+        <!-- Left Panel: Controls, Data & Settings -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          
+          <!-- Chart Mode Selector -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <div class="panel-title" style="margin-bottom: 0.75rem;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+              Chart Mode
+            </div>
+            <div class="mode-tab-grid">
+              <button class="mode-tab-btn active" data-mode="bar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="20" x2="6" y2="12"/><line x1="12" y1="20" x2="12" y2="6"/><line x1="18" y1="20" x2="18" y2="10"/></svg>
+                Bar Chart
+              </button>
+              <button class="mode-tab-btn" data-mode="line">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                Line Chart
+              </button>
+              <button class="mode-tab-btn" data-mode="donut">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10h-6a4 4 0 0 0-4-4z"/></svg>
+                Donut / Pie
+              </button>
+              <button class="mode-tab-btn" data-mode="kpi">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M12 8v8"/></svg>
+                KPI Card
+              </button>
+            </div>
+
+            <!-- Slide Titles -->
+            <div class="form-group" style="margin-bottom: 0.75rem;">
+              <label for="inp-slide-title">Slide Title</label>
+              <input type="text" id="inp-slide-title" class="form-input" value="Q4 FY2026 Revenue & Expansion Traction">
+            </div>
+            <div class="form-group" style="margin-bottom: 0.75rem;">
+              <label for="inp-slide-subtitle">Subtitle / Strategic Takeaway</label>
+              <input type="text" id="inp-slide-subtitle" class="form-input" value="Demonstrating accelerated enterprise adoption and record recurring performance.">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <label for="inp-slide-category">Badge / Category</label>
+                <input type="text" id="inp-slide-category" class="form-input" value="FINANCIAL BENCHMARKS">
+              </div>
+              <div class="form-group">
+                <label for="inp-unit-prefix">Unit Symbol</label>
+                <select id="inp-unit-prefix" class="form-select">
+                  <option value="$" selected>USD ($)</option>
+                  <option value="€">EUR (€)</option>
+                  <option value="£">GBP (£)</option>
+                  <option value="%">Percent (%)</option>
+                  <option value="#">Count (#)</option>
+                  <option value="">None</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Data Table Input -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <div class="panel-title" style="margin: 0; padding: 0; border: none;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+                Chart Dataset
+              </div>
+              <div style="display: flex; gap: 0.4rem;">
+                <button id="btn-import-csv" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">Import CSV</button>
+                <button id="btn-add-row" class="btn btn-primary" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;">+ Add Row</button>
+              </div>
+            </div>
+
+            <!-- Preset Data Pills -->
+            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
+              <button class="preset-chip active" data-preset="revenue">Revenue</button>
+              <button class="preset-chip" data-preset="market">Market Share</button>
+              <button class="preset-chip" data-preset="conversion">Funnel</button>
+              <button class="preset-chip" data-preset="users">User Growth</button>
+            </div>
+
+            <!-- Table -->
+            <div class="data-table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th style="width: 55%;">Label</th>
+                    <th style="width: 35%;">Value</th>
+                    <th style="width: 10%;"></th>
+                  </tr>
+                </thead>
+                <tbody id="data-table-body">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Hidden File Input for CSV -->
+            <input type="file" id="csv-file-input" accept=".csv,text/csv" style="display: none;">
+          </div>
+
+          <!-- Visual Palettes & Appearance -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <div class="panel-title" style="margin-bottom: 0.75rem;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"></circle><circle cx="17.5" cy="10.5" r=".5"></circle><circle cx="8.5" cy="7.5" r=".5"></circle><circle cx="6.5" cy="12.5" r=".5"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.563-2.512 5.563-5.563C22 6.5 17.5 2 12 2z"></path></svg>
+              Color Palette &amp; Styling
+            </div>
+
+            <div class="palette-grid" id="palette-grid">
+              <!-- Rendered by JS -->
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 1rem;">
+              <div class="form-group">
+                <label for="select-chart-theme">Slide Canvas Theme</label>
+                <select id="select-chart-theme" class="form-select">
+                  <option value="dark-glass" selected>Dark Glass (Executive)</option>
+                  <option value="midnight-navy">Midnight Navy</option>
+                  <option value="obsidian-gold">Obsidian Gold</option>
+                  <option value="clean-light">Clean Studio Light</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="inp-suffix">Value Suffix</label>
+                <select id="inp-suffix" class="form-select">
+                  <option value="M" selected>Millions (M)</option>
+                  <option value="K">Thousands (K)</option>
+                  <option value="B">Billions (B)</option>
+                  <option value="%">Percent (%)</option>
+                  <option value="">None</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Toggles -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.75rem;">
+              <label class="checkbox-label">
+                <input type="checkbox" id="toggle-legend" checked>
+                <span>Show Legend</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="toggle-val-labels" checked>
+                <span>Value Badges</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="toggle-gridlines" checked>
+                <span>Gridlines</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="toggle-animated" checked>
+                <span>Animated Render</span>
+              </label>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Right Panel: Live 16:9 Slide Presentation Frame -->
+        <div class="slide-preview-box">
+          
+          <div class="action-button-bar">
+            <div>
+              <span style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">Vector 16:9 Slide Preview</span>
+              <span style="font-size: 0.8rem; color: var(--text-secondary); margin-left: 0.5rem;">(Scales automatically to 1920x1080 Full HD presentation resolution)</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button id="btn-export-csv-data" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;">Export CSV</button>
+            </div>
+          </div>
+
+          <!-- 16:9 Presentation Slide Canvas -->
+          <div class="slide-viewport" id="slide-viewport">
+            <!-- Dynamic SVG injected here -->
+            <svg id="slide-svg-element" class="slide-svg-canvas" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+              <!-- Rendered via script.js -->
+            </svg>
+          </div>
+
+          <!-- Bottom quick stats / presentation note bar -->
+          <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <div style="display: flex; gap: 1.5rem; font-size: 0.825rem;">
+              <div><span style="color: var(--text-secondary);">Total Sum: </span><strong id="stat-total-val" style="color: var(--text-primary);">$0</strong></div>
+              <div><span style="color: var(--text-secondary);">Average: </span><strong id="stat-avg-val" style="color: var(--text-primary);">$0</strong></div>
+              <div><span style="color: var(--text-secondary);">Peak Entry: </span><strong id="stat-peak-val" style="color: var(--text-primary);">-</strong></div>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary);">
+              Slide Size: 1920 &times; 1080 px &bull; Ready for Keynote / PowerPoint
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   </main>
 
-  <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Chart Builder (Slides)",
+    "name": "Chart Builder for Slides",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/chart-builder-slides/",
-    "description": "Generate Bar, Pie, Line, and Area charts directly in your slides.",
-    "applicationCategory": "UtilityPage",
+    "description": "Generate Bar, Pie, Line, and KPI presentation charts directly in your slides with 1-click SVG/PNG export.",
+    "applicationCategory": "DesignApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

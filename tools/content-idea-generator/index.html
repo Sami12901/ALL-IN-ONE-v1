@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Content Idea Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your Content Idea Generator online.">
-  <meta name="keywords" content="marketing, digital, content, free, online, tool, utility">
+  <title>Content Idea Generator - Viral Angles & Editorial Topic Engine - ALL IN ONE</title>
+  <meta name="description" content="Generate 20+ viral content ideas across 5 core pillars for Blog, LinkedIn, YouTube, Twitter/X, and TikTok with 1-click CSV export and favorites.">
+  <meta name="keywords" content="content idea generator, topic generator, viral hook generator, editorial calendar, linkedin post ideas, youtube video ideas">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/content-idea-generator/">
 
@@ -14,7 +14,7 @@
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/content-idea-generator/">
   <meta property="og:title" content="Content Idea Generator - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Create, analyze, and manage your Content Idea Generator online.">
+  <meta property="og:description" content="Generate 20+ viral content ideas across 5 core pillars with platform-tailored hooks and CSV export.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
@@ -26,14 +26,228 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/content-idea-generator/">
   <meta name="twitter:title" content="Content Idea Generator - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Create, analyze, and manage your Content Idea Generator online.">
+  <meta name="twitter:description" content="Generate 20+ viral content ideas across 5 core pillars with platform-tailored hooks and CSV export.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="Content Idea Generator - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .cig-workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .cig-workspace {
+        grid-template-columns: 380px 1fr;
+      }
+    }
+    @media (min-width: 1200px) {
+      .cig-workspace {
+        grid-template-columns: 410px 1fr;
+      }
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    /* Platform Selector Tabs */
+    .platform-chips {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+      gap: 0.45rem;
+      margin-top: 0.25rem;
+    }
+    .platform-chip {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 0.6rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      text-align: center;
+      transition: var(--transition);
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+    }
+    .platform-chip:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .platform-chip.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+    }
+
+    /* Pillar Nav Filter */
+    .pillar-tabs-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+    .pillar-tab-btn {
+      padding: 0.35rem 0.8rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .pillar-tab-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .pillar-tab-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    /* Idea Card Styles */
+    .ideas-list-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .idea-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      transition: var(--transition);
+    }
+    .idea-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.16);
+    }
+
+    .idea-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .idea-title-text {
+      font-size: 1.02rem;
+      font-weight: 700;
+      line-height: 1.45;
+      color: var(--text-primary);
+      word-break: break-word;
+    }
+
+    .idea-meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.78rem;
+    }
+
+    .pillar-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .pillar-badge.educational {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    .pillar-badge.contrarian {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    .pillar-badge.case-study {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .pillar-badge.listicle {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .pillar-badge.future-trends {
+      background: rgba(168, 85, 247, 0.15);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+
+    .format-hint-tag {
+      color: var(--text-secondary);
+      font-size: 0.78rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    /* Stats bar */
+    .stat-pill {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.6rem;
+      border-radius: var(--radius-full);
+    }
+
+    /* Toast */
+    .toast-popup {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      color: var(--text-primary);
+      padding: 0.75rem 1.4rem;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 600;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: var(--transition);
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .toast-popup.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -49,30 +263,141 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Content Idea Generator</h1>
-        <p class="tool-description">Create, analyze, and manage your Content Idea Generator online.</p>
+        <p class="tool-description">Generate 20+ viral topics and creative angles categorized across 5 core content pillars with platform-specific execution tips, LocalStorage favorites, and CSV export.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Content Idea Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your Content Idea Generator online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, content</div>
-            <div><strong>Category:</strong> digital-marketing</div>
+      <div class="cig-workspace">
+        
+        <!-- Controls Column -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            Audience & Angle Setup
+          </div>
+
+          <div class="form-group">
+            <label for="niche-input">Niche or Industry *</label>
+            <input type="text" id="niche-input" class="form-input" placeholder="e.g. Artificial Intelligence, B2B SaaS, Personal Finance, Fitness" value="AI & Productivity">
+          </div>
+
+          <div class="form-group">
+            <label>Target Distribution Platform</label>
+            <div class="platform-chips" id="platform-selector">
+              <div class="platform-chip active" data-platform="Blog">📝 Blog</div>
+              <div class="platform-chip" data-platform="LinkedIn">💼 LinkedIn</div>
+              <div class="platform-chip" data-platform="YouTube">▶ YouTube</div>
+              <div class="platform-chip" data-platform="Twitter">𝕏 Twitter/X</div>
+              <div class="platform-chip" data-platform="TikTok">📱 TikTok/Shorts</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="subtopic-input">Specific Focus Keyword (Optional)</label>
+            <input type="text" id="subtopic-input" class="form-input" placeholder="e.g. Prompt Engineering, Remote Work, High-Protein Diet" value="Autonomous AI Agents">
+          </div>
+
+          <div class="action-bar" style="margin-top: 0.5rem;">
+            <button id="generate-btn" class="btn btn-primary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+              Generate 20+ Ideas
+            </button>
+            <button id="random-btn" class="btn btn-secondary" title="Load sample inspiration">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+              Random
+            </button>
+          </div>
+
+          <!-- Strategy Breakdown Card -->
+          <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem; margin-top: 1rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">
+            <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.4rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              The 5 High-Conversion Content Pillars:
+            </div>
+            <ul style="padding-left: 1.1rem; margin: 0; display: flex; flex-direction: column; gap: 0.3rem;">
+              <li><strong style="color:#38bdf8;">Educational:</strong> Build trust and establish tactical authority.</li>
+              <li><strong style="color:#f87171;">Contrarian:</strong> Spark viral debate and stop endless scrolling.</li>
+              <li><strong style="color:#34d399;">Case Study:</strong> Provide undeniable social proof and ROI.</li>
+              <li><strong style="color:#fbbf24;">Listicle:</strong> Drive massive saves, bookmarks, and shares.</li>
+              <li><strong style="color:#c084fc;">Future Trends:</strong> Position yourself as a visionary industry leader.</li>
+            </ul>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Output Ideas Column -->
+        <div class="tool-panel glass-panel">
+          
+          <!-- Top Tab Navigation -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.65rem; margin-bottom: 1rem;">
+            <div class="tab-nav" style="border-bottom: none; padding-bottom: 0;">
+              <button class="tab-btn active" data-tab="tab-generated">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                Generated Ideas (<span id="count-badge">0</span>)
+              </button>
+              <button class="tab-btn" data-tab="tab-favorites">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                Saved (<span id="fav-count-badge">0</span>)
+              </button>
+            </div>
+
+            <!-- Export Buttons -->
+            <div style="display: flex; gap: 0.5rem;">
+              <button id="copy-all-btn" class="mini-btn" title="Copy all visible ideas to clipboard">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy All
+              </button>
+              <button id="export-csv-btn" class="mini-btn" title="Download as CSV spreadsheet">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Export CSV
+              </button>
+            </div>
+          </div>
+
+          <!-- TAB 1: Generated Ideas -->
+          <div id="tab-generated" class="tab-view">
+            
+            <!-- Pillar Filter Tabs -->
+            <div class="pillar-tabs-bar" id="pillar-filter-bar">
+              <button class="pillar-tab-btn active" data-pillar="all">All Pillars</button>
+              <button class="pillar-tab-btn" data-pillar="educational">Educational</button>
+              <button class="pillar-tab-btn" data-pillar="contrarian">Contrarian</button>
+              <button class="pillar-tab-btn" data-pillar="case-study">Case Study</button>
+              <button class="pillar-tab-btn" data-pillar="listicle">Listicle</button>
+              <button class="pillar-tab-btn" data-pillar="future-trends">Future Trends</button>
+            </div>
+
+            <!-- Search input -->
+            <div style="margin-bottom: 1rem;">
+              <input type="text" id="filter-search" class="form-input" placeholder="Search keywords across generated ideas..." style="padding: 0.45rem 0.85rem; font-size: 0.85rem;">
+            </div>
+
+            <!-- Ideas Container -->
+            <div id="ideas-container" class="ideas-list-container">
+              <!-- Rendered via JavaScript -->
+            </div>
+
+          </div>
+
+          <!-- TAB 2: Favorites View -->
+          <div id="tab-favorites" class="tab-view" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <span style="font-size: 0.9rem; color: var(--text-secondary);">Your bookmarked ideas:</span>
+              <button id="clear-favorites-btn" class="mini-btn">Clear Saved Ideas</button>
+            </div>
+            <div id="favorites-container" class="ideas-list-container">
+              <!-- Rendered via JavaScript -->
+            </div>
+          </div>
+
+        </div>
+
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Toast Notification -->
+  <div id="app-toast" class="toast-popup">Copied idea to clipboard!</div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -84,8 +409,8 @@
     "@type": "WebApplication",
     "name": "Content Idea Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/content-idea-generator/",
-    "description": "Create, analyze, and manage your Content Idea Generator online.",
-    "applicationCategory": "UtilityPage",
+    "description": "Generate viral topic ideas across 5 core content pillars with platform-specific execution angles and CSV export.",
+    "applicationCategory": "MarketingTool",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

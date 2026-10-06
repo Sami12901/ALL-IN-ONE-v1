@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Daily Challenge - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Enhance your skills with Daily Challenge.">
-  <meta name="keywords" content="typing, keyboard, practice, free, online, tool, utility">
+  <meta name="description" content="Calendar-driven daily typing drill. Daily seed-generated passages across Easy, Medium, and Hard difficulties, tracking daily completion streaks and unlocking consistency badges.">
+  <meta name="keywords" content="typing, keyboard, daily challenge, streak, calendar, consistency badges, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/daily-challenge/">
 
@@ -14,7 +14,7 @@
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/daily-challenge/">
   <meta property="og:title" content="Daily Challenge - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Enhance your skills with Daily Challenge.">
+  <meta property="og:description" content="Build consistent typing mastery with UTC date-seeded daily typing challenges, streak calendar tracking, and unlockable achievement badges.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
@@ -26,7 +26,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/daily-challenge/">
   <meta name="twitter:title" content="Daily Challenge - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Enhance your skills with Daily Challenge.">
+  <meta name="twitter:description" content="Build consistent typing mastery with UTC date-seeded daily typing challenges, streak calendar tracking, and unlockable achievement badges.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="Daily Challenge - ALL IN ONE">
 
@@ -34,6 +34,316 @@
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Specific styling for Daily Challenge */
+    .dc-controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .dc-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .dc-stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+    .dc-stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+    .dc-stat-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .dc-stat-val {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      line-height: 1.1;
+    }
+    .dc-stat-sub {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Typing Board */
+    .dc-display-panel {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      min-height: 190px;
+      max-height: 240px;
+      overflow: hidden;
+      cursor: text;
+      user-select: none;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .dc-display-panel.focused {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow), inset 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    .dc-words-wrapper {
+      font-family: 'SF Mono', Monaco, Consolas, 'Liberation Mono', Menlo, monospace;
+      font-size: 1.35rem;
+      line-height: 2.1;
+      letter-spacing: 0.02em;
+      position: relative;
+      transition: transform 0.2s ease-out;
+    }
+    .dc-word {
+      display: inline-block;
+      margin-right: 0.6em;
+      white-space: nowrap;
+    }
+    .dc-char {
+      position: relative;
+      color: var(--text-tertiary);
+      transition: color 0.08s;
+    }
+    .dc-char.correct {
+      color: var(--text-primary);
+    }
+    .dc-char.incorrect {
+      color: var(--error);
+      background: rgba(239, 68, 68, 0.2);
+      border-radius: 2px;
+    }
+    .dc-char.extra {
+      color: #f87171;
+      opacity: 0.85;
+      text-decoration: underline;
+    }
+    .dc-char.current::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 2px;
+      height: 1.15em;
+      background: var(--accent);
+      animation: dc-blink 1s infinite;
+    }
+    @keyframes dc-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .dc-hidden-input {
+      position: absolute;
+      opacity: 0;
+      left: -9999px;
+      top: -9999px;
+      pointer-events: none;
+    }
+    .dc-focus-hint {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(10, 10, 10, 0.75);
+      backdrop-filter: blur(4px);
+      border-radius: inherit;
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      z-index: 5;
+    }
+    .dc-focus-hint.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Interactive Calendar Widget */
+    .dc-bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    @media (min-width: 900px) {
+      .dc-bottom-grid {
+        grid-template-columns: 340px 1fr;
+      }
+    }
+
+    .dc-calendar-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .dc-cal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .dc-cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      text-align: center;
+      font-size: 0.8rem;
+    }
+    .dc-cal-dayname {
+      color: var(--text-tertiary);
+      font-weight: 600;
+      padding: 0.35rem 0;
+    }
+    .dc-cal-cell {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      position: relative;
+      cursor: default;
+      transition: all 0.2s;
+    }
+    .dc-cal-cell.empty {
+      background: transparent;
+      pointer-events: none;
+    }
+    .dc-cal-cell.today {
+      border: 2px solid var(--accent);
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .dc-cal-cell.completed {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      font-weight: 700;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+    .dc-cal-cell.completed::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+
+    /* Badges Showcase */
+    .dc-badges-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .dc-badges-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 0.75rem;
+    }
+    .dc-badge-item {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      opacity: 0.45;
+      transition: all 0.2s ease;
+    }
+    .dc-badge-item.unlocked {
+      opacity: 1;
+      border-color: rgba(245, 158, 11, 0.4);
+      background: rgba(245, 158, 11, 0.08);
+      box-shadow: 0 2px 10px rgba(245, 158, 11, 0.1);
+    }
+    .dc-badge-icon {
+      font-size: 1.5rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .dc-badge-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .dc-badge-title {
+      font-size: 0.825rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .dc-badge-desc {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      line-height: 1.25;
+    }
+
+    /* Modal */
+    .dc-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .dc-modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .dc-modal-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      max-width: 560px;
+      width: 100%;
+      box-shadow: var(--glass-shadow);
+      text-align: center;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -49,30 +359,158 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Daily Challenge</h1>
-        <p class="tool-description">Enhance your skills with Daily Challenge.</p>
+        <p class="tool-description">Calendar-driven daily typing drill. Deterministic UTC seed ensures all typists worldwide receive the exact same passage each calendar day. Maintain your streak and unlock consistency badges.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Daily Challenge</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Enhance your skills with Daily Challenge.</div>
-            <div><strong>Inputs:</strong> typing, keyboard, practice</div>
-            <div><strong>Category:</strong> typing</div>
+      <!-- Controls & Difficulty Bar -->
+      <div class="tool-panel glass-panel">
+        <div class="dc-controls-bar">
+          <!-- Difficulty Selector -->
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Difficulty Tier:</span>
+            <div class="tst-pill-group" id="difficultySelector">
+              <button class="tst-pill-btn active" data-difficulty="easy">Easy (~35 Words)</button>
+              <button class="tst-pill-btn" data-difficulty="medium">Medium (~70 Words)</button>
+              <button class="tst-pill-btn" data-difficulty="hard">Hard (~110 Words)</button>
+            </div>
+          </div>
+
+          <!-- UTC Date Badge -->
+          <div style="font-family: monospace; font-size: 0.85rem; background: var(--bg-tertiary); padding: 0.35rem 0.85rem; border-radius: var(--radius-full); border: 1px solid var(--border); color: var(--accent);" id="utcDateDisplay">
+            UTC: 2026-10-06
+          </div>
+
+          <!-- Action buttons -->
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <button class="btn btn-secondary" id="soundToggleBtn" style="padding: 0.45rem 0.85rem; font-size: 0.85rem;">Sound: ON</button>
+            <button class="btn btn-secondary" id="resetBtn" style="padding: 0.45rem 0.85rem; font-size: 0.85rem;">Reset (Esc)</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Real-time Stats Grid -->
+        <div class="dc-stats-grid">
+          <div class="dc-stat-card">
+            <span class="dc-stat-label">Current Streak</span>
+            <span class="dc-stat-val" id="currentStreakVal" style="color: #f59e0b;">0 🔥</span>
+            <span class="dc-stat-sub" id="streakSub">Consecutive Days</span>
+          </div>
+
+          <div class="dc-stat-card">
+            <span class="dc-stat-label">Net WPM</span>
+            <span class="dc-stat-val" id="netWpmVal" style="color: var(--accent);">0</span>
+            <span class="dc-stat-sub">Words / Minute</span>
+          </div>
+
+          <div class="dc-stat-card">
+            <span class="dc-stat-label">Accuracy</span>
+            <span class="dc-stat-val" id="accuracyVal" style="color: var(--success);">100%</span>
+            <span class="dc-stat-sub">Precision Rate</span>
+          </div>
+
+          <div class="dc-stat-card">
+            <span class="dc-stat-label">Elapsed Time</span>
+            <span class="dc-stat-val" id="timerVal">00:00</span>
+            <span class="dc-stat-sub">Drill Duration</span>
+          </div>
+
+          <div class="dc-stat-card">
+            <span class="dc-stat-label">Today's Status</span>
+            <span class="dc-stat-val" id="todayStatusVal" style="font-size: 1.15rem; color: var(--text-secondary);">Pending</span>
+            <span class="dc-stat-sub" id="todayScoreSub">Not completed yet</span>
+          </div>
+        </div>
+
+        <!-- Live Typing Display -->
+        <div class="dc-display-panel" id="displayPanel">
+          <div class="dc-focus-hint" id="focusHint">
+            <span>Click here or press any key to start today's challenge</span>
+          </div>
+          <div class="dc-words-wrapper" id="wordsContainer">
+            <!-- Words injected dynamically -->
+          </div>
+          <input type="text" class="dc-hidden-input" id="hiddenInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Daily challenge typing input">
+        </div>
+
+        <!-- Bottom Grid: Historical Calendar + Achievement Badges -->
+        <div class="dc-bottom-grid">
+          <!-- Calendar Streak Card -->
+          <div class="dc-calendar-card">
+            <div class="dc-cal-header">
+              <strong style="font-size: 0.95rem; color: var(--text-primary);" id="calMonthTitle">October 2026</strong>
+              <div style="display: flex; gap: 0.25rem;">
+                <button class="btn btn-secondary" id="prevMonthBtn" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">&larr;</button>
+                <button class="btn btn-secondary" id="nextMonthBtn" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">&rarr;</button>
+              </div>
+            </div>
+            <div class="dc-cal-grid" id="calendarGrid">
+              <!-- Calendar cells rendered dynamically -->
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary); border-top: 1px solid var(--border); padding-top: 0.5rem;">
+              <span>Total Days: <strong id="totalDaysCount">0</strong></span>
+              <span>Longest: <strong id="longestStreakVal">0 days</strong></span>
+            </div>
+          </div>
+
+          <!-- Consistency Badges Showcase -->
+          <div class="dc-badges-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+              <strong style="font-size: 0.95rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                Consistency Achievement Badges
+              </strong>
+              <span style="font-size: 0.75rem; color: var(--text-tertiary);" id="badgesUnlockedCount">0 / 6 Unlocked</span>
+            </div>
+
+            <div class="dc-badges-grid" id="badgesContainer">
+              <!-- Dynamically populated badge cards -->
+            </div>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
+
+  <!-- Daily Completion Modal -->
+  <div class="dc-modal-backdrop" id="completionModal" role="dialog" aria-modal="true">
+    <div class="dc-modal-card">
+      <div style="font-size: 3rem; margin-bottom: 0.5rem;">🎉</div>
+      <h2 style="font-family: var(--font-display); font-size: 2rem; font-weight: 700; margin-bottom: 0.25rem;">Daily Challenge Complete!</h2>
+      <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;" id="modalDateSub">
+        Completed on 2026-10-06
+      </p>
+
+      <div class="dc-stats-grid" style="margin-bottom: 1.5rem;">
+        <div class="dc-stat-card">
+          <span class="dc-stat-label">Net Speed</span>
+          <span class="dc-stat-val" id="modalNetWpm" style="color: var(--accent);">0</span>
+          <span class="dc-stat-sub">WPM</span>
+        </div>
+        <div class="dc-stat-card">
+          <span class="dc-stat-label">Accuracy</span>
+          <span class="dc-stat-val" id="modalAccuracy" style="color: var(--success);">100%</span>
+          <span class="dc-stat-sub" id="modalMistakes">0 mistakes</span>
+        </div>
+        <div class="dc-stat-card">
+          <span class="dc-stat-label">Streak Status</span>
+          <span class="dc-stat-val" id="modalStreak" style="color: #f59e0b;">1 Day 🔥</span>
+          <span class="dc-stat-sub">Active Streak</span>
+        </div>
+        <div class="dc-stat-card">
+          <span class="dc-stat-label">Duration</span>
+          <span class="dc-stat-val" id="modalDuration">00:45</span>
+          <span class="dc-stat-sub">Time taken</span>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap;">
+        <button class="btn btn-secondary" id="shareDailyBtn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Share Score
+        </button>
+        <button class="btn btn-primary" id="modalCloseBtn">View Calendar & Badges</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -84,7 +522,7 @@
     "@type": "WebApplication",
     "name": "Daily Challenge",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/daily-challenge/",
-    "description": "Enhance your skills with Daily Challenge.",
+    "description": "Calendar-driven daily typing drill with streak tracking.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Grammar Checker (Basic) - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your Grammar Checker (Basic) online.">
-  <meta name="keywords" content="marketing, digital, content, free, online, tool, utility">
+  <title>Grammar & Style Auditor - Free Client-Side Proofreader - ALL IN ONE</title>
+  <meta name="description" content="Free client-side grammar, punctuation, and writing style auditor. Detect confused words, redundant repetitions, passive voice, wordy phrases, and excessive adverbs with 1-click auto-fix.">
+  <meta name="keywords" content="grammar checker, writing style auditor, proofreader, passive voice detector, confused words, wordiness fixer, punctuation checker">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/grammar-checker-basic/">
 
@@ -13,27 +13,199 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/grammar-checker-basic/">
-  <meta property="og:title" content="Grammar Checker (Basic) - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Create, analyze, and manage your Grammar Checker (Basic) online.">
+  <meta property="og:title" content="Grammar & Style Auditor - Client-Side Proofreader - ALL IN ONE">
+  <meta property="og:description" content="Detect confused words, repeated words, passive voice, wordiness, and excessive adverbs with one-click fixes.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="Grammar Checker (Basic) - ALL IN ONE">
   <meta property="og:locale" content="en_US">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/grammar-checker-basic/">
-  <meta name="twitter:title" content="Grammar Checker (Basic) - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Create, analyze, and manage your Grammar Checker (Basic) online.">
+  <meta name="twitter:title" content="Grammar & Style Auditor - ALL IN ONE">
+  <meta name="twitter:description" content="Free heuristic client-side grammar, punctuation, and writing style auditor.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="Grammar Checker (Basic) - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .grammar-workspace {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 1024px) {
+      .grammar-workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+    .score-banner-compact {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 1.5rem;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.12) 0%, rgba(137, 170, 204, 0.05) 100%);
+      border: 1px solid rgba(137, 170, 204, 0.25);
+    }
+    .score-grade-badge {
+      font-size: 2.25rem;
+      font-weight: 800;
+      line-height: 1;
+      font-family: var(--font-sans);
+    }
+    .issue-filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .filter-chip {
+      font-size: 0.775rem;
+      padding: 0.3rem 0.65rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+    .filter-chip:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .filter-chip.active {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-color: rgba(137, 170, 204, 0.4);
+      font-weight: 600;
+    }
+    .issue-count-pill {
+      font-size: 0.7rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: var(--radius-full);
+      background: var(--surface);
+      font-weight: 700;
+    }
+    .issues-list-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      max-height: 520px;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+    .issue-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.95rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: var(--transition);
+      position: relative;
+    }
+    .issue-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .issue-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .issue-type-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+    }
+    .badge-confused {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    .badge-repeated {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .badge-wordiness {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    .badge-passive {
+      background: rgba(168, 85, 247, 0.15);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+    .badge-adverb {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .badge-punctuation {
+      background: rgba(236, 72, 153, 0.15);
+      color: #f472b6;
+      border: 1px solid rgba(236, 72, 153, 0.3);
+    }
+    .issue-context {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .issue-highlight-match {
+      color: #f87171;
+      text-decoration: line-through;
+      font-weight: 700;
+      background: rgba(239, 68, 68, 0.1);
+      padding: 0 0.2rem;
+      border-radius: 2px;
+    }
+    .suggestion-btn {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: var(--transition);
+      width: fit-content;
+    }
+    .suggestion-btn:hover {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .empty-state-card {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      color: var(--text-secondary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -48,27 +220,110 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Grammar Checker (Basic)</h1>
-        <p class="tool-description">Create, analyze, and manage your Grammar Checker (Basic) online.</p>
+        <h1>Grammar &amp; Style Auditor</h1>
+        <p class="tool-description">Client-side heuristic proofreader and style optimizer. Detect commonly confused words, duplicate words, passive voice, wordy phrases, and punctuation mistakes with 1-click auto-fixes.</p>
+      </div>
+
+      <!-- Presets & Sample Bar -->
+      <div class="action-bar" style="margin-bottom: 0.5rem; align-items: center;">
+        <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">Load Demo Draft:</span>
+        <button class="preset-chip" data-sample="marketing" style="cursor: pointer;">Marketing Pitch (with Errors)</button>
+        <button class="preset-chip" data-sample="email" style="cursor: pointer;">Sales Outreach Email</button>
+        <button class="preset-chip" data-sample="blog" style="cursor: pointer;">Wordy Blog Post</button>
+        <button class="preset-chip" id="btn-fix-all" style="margin-left: auto; background: var(--accent-glow); color: var(--accent); border-color: rgba(137, 170, 204, 0.4); font-weight: 600; cursor: pointer;">
+          &#10004; Auto-Fix All Safe Issues
+        </button>
+        <button class="preset-chip" id="btn-clear" style="color: var(--error); border-color: rgba(239, 68, 68, 0.3); cursor: pointer;">Clear</button>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Grammar Checker (Basic)</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your Grammar Checker (Basic) online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, content</div>
-            <div><strong>Category:</strong> digital-marketing</div>
+      <div class="grammar-workspace">
+        
+        <!-- Left: Text Editor -->
+        <div class="tool-panel glass-panel" style="gap: 1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;">
+            <div style="display: flex; gap: 0.75rem; font-size: 0.825rem; color: var(--text-secondary);">
+              <span>Words: <strong id="editor-words" style="color: var(--text-primary);">0</strong></span>
+              <span>Characters: <strong id="editor-chars" style="color: var(--text-primary);">0</strong></span>
+              <span>Sentences: <strong id="editor-sentences" style="color: var(--text-primary);">0</strong></span>
+            </div>
+            <span id="clean-status" style="font-size: 0.775rem; color: var(--success); display: none;">&#10003; Clean &amp; Polished</span>
+          </div>
+
+          <textarea id="grammar-editor" class="form-textarea" style="min-height: 380px; line-height: 1.7; font-size: 1rem; font-family: var(--font-sans);" placeholder="Paste or type your draft here to scan for grammar, punctuation, wordiness, and style improvements in real time..."></textarea>
+
+          <div class="action-bar" style="margin-top: 0;">
+            <button class="btn btn-secondary" id="btn-paste">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+              Paste
+            </button>
+            <button class="btn btn-primary" id="btn-copy">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Clean Draft
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right: Audit Results & Click-to-Fix Cards -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          
+          <!-- Quality Score Card -->
+          <div class="score-banner-compact">
+            <div>
+              <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); font-weight: 700; display: block;">Clarity &amp; Grammar Score</span>
+              <span class="score-grade-badge" id="quality-score">100</span>
+              <span id="quality-desc" style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-top: 0.2rem;">Flawless readability &amp; structure</span>
+            </div>
+            <div style="text-align: right;">
+              <span id="total-issues-badge" class="badge" style="font-size: 0.85rem; padding: 0.4rem 0.85rem; background: var(--bg-tertiary); border: 1px solid var(--border);">0 Issues Found</span>
+            </div>
+          </div>
+
+          <!-- Category Filter Bar -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem; gap: 0.85rem;">
+            <div class="issue-filter-chips">
+              <button class="filter-chip active" data-category="all">
+                All <span class="issue-count-pill" id="cnt-all">0</span>
+              </button>
+              <button class="filter-chip" data-category="confused">
+                Confused Words <span class="issue-count-pill" id="cnt-confused">0</span>
+              </button>
+              <button class="filter-chip" data-category="repeated">
+                Repeated <span class="issue-count-pill" id="cnt-repeated">0</span>
+              </button>
+              <button class="filter-chip" data-category="wordiness">
+                Wordiness <span class="issue-count-pill" id="cnt-wordiness">0</span>
+              </button>
+              <button class="filter-chip" data-category="passive">
+                Passive Voice <span class="issue-count-pill" id="cnt-passive">0</span>
+              </button>
+              <button class="filter-chip" data-category="adverb">
+                Adverbs (-ly) <span class="issue-count-pill" id="cnt-adverb">0</span>
+              </button>
+              <button class="filter-chip" data-category="punctuation">
+                Punctuation <span class="issue-count-pill" id="cnt-punctuation">0</span>
+              </button>
+            </div>
+
+            <!-- Issues Feed -->
+            <div class="issues-list-container" id="issues-list">
+              <!-- Dynamically rendered issue cards -->
+            </div>
+          </div>
+
+          <!-- Guidelines Box -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem; font-size: 0.825rem; color: var(--text-secondary); line-height: 1.6;">
+            <span style="font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 0.35rem;">Client-Side Heuristic Rules:</span>
+            <ul style="padding-left: 1.25rem; margin: 0; display: flex; flex-direction: column; gap: 0.25rem;">
+              <li><strong>Confused Words:</strong> Flags phonetic traps like <em>their/there/they're</em> and <em>your/you're</em>.</li>
+              <li><strong>Wordiness:</strong> Replaces bloated corporate phrases (e.g. <em>in order to</em> &rarr; <em>to</em>).</li>
+              <li><strong>Passive Voice:</strong> Encourages direct active verbs for stronger marketing conversion.</li>
+              <li><strong>Repeated Words:</strong> Catches inadvertent double typing like <em>"in the the morning"</em>.</li>
+            </ul>
+          </div>
+
+        </div>
+
       </div>
     
     </div>
@@ -82,9 +337,9 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Grammar Checker (Basic)",
+    "name": "Grammar & Style Auditor",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/grammar-checker-basic/",
-    "description": "Create, analyze, and manage your Grammar Checker (Basic) online.",
+    "description": "Heuristic grammar, punctuation, and writing style auditor with click-to-fix suggestions.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

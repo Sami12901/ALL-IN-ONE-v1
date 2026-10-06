@@ -1,4 +1,4 @@
-const CACHE_NAME = 'all-in-one-cache-v70';
+const CACHE_NAME = 'all-in-one-cache-v71';
 
 // Only pre-cache the core shell. Individual tools are cached at runtime
 // via the network-first strategy in the fetch handler below.

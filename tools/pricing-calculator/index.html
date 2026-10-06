@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pricing Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your Pricing Calculator online.">
-  <meta name="keywords" content="marketing, digital, e-commerce, free, online, tool, utility">
+  <title>Strategic Pricing Calculator - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Calculate optimal retail prices with Cost-Plus, Value-Based, and Competitor pricing models, break-even unit analysis, and discount margin erosion simulations.">
+  <meta name="keywords" content="pricing calculator, cost plus pricing, value based pricing, competitor pricing, break even calculator, gross margin, discount margin erosion">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/pricing-calculator/">
 
@@ -13,8 +13,8 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/pricing-calculator/">
-  <meta property="og:title" content="Pricing Calculator - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Create, analyze, and manage your Pricing Calculator online.">
+  <meta property="og:title" content="Strategic Pricing Calculator - Free Online Tool - ALL IN ONE">
+  <meta property="og:description" content="Calculate optimal retail prices with Cost-Plus, Value-Based, and Competitor pricing models, break-even unit analysis, and discount margin erosion simulations.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
@@ -25,15 +25,294 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/pricing-calculator/">
-  <meta name="twitter:title" content="Pricing Calculator - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Create, analyze, and manage your Pricing Calculator online.">
+  <meta name="twitter:title" content="Strategic Pricing Calculator - Free Online Tool - ALL IN ONE">
+  <meta name="twitter:description" content="Calculate optimal retail prices with Cost-Plus, Value-Based, and Competitor pricing models, break-even unit analysis, and discount margin erosion simulations.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="Pricing Calculator - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .pricing-workspace {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+    @media (max-width: 1024px) {
+      .pricing-workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Mode Navigation Tabs */
+    .pricing-mode-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+      background: var(--bg-tertiary);
+      padding: 0.35rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    .mode-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 0.65rem 0.5rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2rem;
+      text-align: center;
+    }
+    .mode-tab-btn:hover {
+      color: var(--text-primary);
+    }
+    .mode-tab-btn.active {
+      background: var(--surface);
+      color: var(--text-primary);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      border: 1px solid var(--border);
+    }
+    .mode-tab-btn.active span.tab-icon {
+      color: var(--accent);
+    }
+
+    .preset-chips-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .preset-chip-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.8rem;
+      font-size: 0.775rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .preset-chip-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .preset-chip-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+    @media (max-width: 500px) {
+      .field-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .input-icon-group {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-affix-left {
+      position: absolute;
+      left: 0.85rem;
+      color: var(--text-tertiary);
+      font-weight: 600;
+      font-size: 0.9rem;
+      pointer-events: none;
+    }
+    .input-affix-right {
+      position: absolute;
+      right: 0.85rem;
+      color: var(--text-tertiary);
+      font-weight: 600;
+      font-size: 0.85rem;
+      pointer-events: none;
+    }
+    .input-icon-group input {
+      padding-left: 2rem;
+    }
+    .input-icon-group.suffix input {
+      padding-left: 1rem;
+      padding-right: 2.25rem;
+    }
+
+    .input-section-header {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      margin: 0.85rem 0 0.5rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .input-section-header::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* KPI Deck */
+    .kpi-deck {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    @media (max-width: 500px) {
+      .kpi-deck {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kpi-tile {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    .kpi-tile.featured {
+      background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.14) 0%, var(--bg-tertiary) 100%);
+      border-color: var(--accent);
+      grid-column: span 2;
+    }
+    @media (max-width: 500px) {
+      .kpi-tile.featured {
+        grid-column: span 1;
+      }
+    }
+    .kpi-tile-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .kpi-tile-value {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+    .kpi-tile.featured .kpi-tile-value {
+      font-size: 2.25rem;
+      color: var(--accent);
+    }
+    .kpi-tile-sub {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Discount Sensitivity Card */
+    .discount-simulator-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-top: 1.25rem;
+    }
+    .discount-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.85rem;
+    }
+    .erosion-callout {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 0.85rem;
+      margin-top: 0.85rem;
+      font-size: 0.8rem;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Sensitivity Table */
+    .sensitivity-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      margin-top: 0.85rem;
+    }
+    .sensitivity-table th {
+      padding: 0.5rem 0.6rem;
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      text-align: right;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .sensitivity-table th:first-child {
+      text-align: left;
+    }
+    .sensitivity-table td {
+      padding: 0.5rem 0.6rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      text-align: right;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+    .sensitivity-table td:first-child {
+      text-align: left;
+      font-weight: 600;
+    }
+    .sensitivity-table tr.active-discount-row {
+      background: rgba(var(--accent-rgb), 0.12);
+      font-weight: 700;
+    }
+
+    .badge-pill {
+      font-size: 0.725rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge-pill.success {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .badge-pill.danger {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -48,29 +327,254 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Pricing Calculator</h1>
-        <p class="tool-description">Create, analyze, and manage your Pricing Calculator online.</p>
+        <h1>Strategic Pricing Calculator</h1>
+        <p class="tool-description">
+          Engineered for product leaders and entrepreneurs. Model pricing strategies with Cost-Plus, Value-Based, and Competitor frameworks, analyze break-even volume, and simulate discount margin erosion.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Pricing Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your Pricing Calculator online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, e-commerce</div>
-            <div><strong>Category:</strong> digital-marketing</div>
+      <!-- Presets -->
+      <div class="preset-chips-wrap">
+        <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); display: inline-flex; align-items: center; margin-right: 0.25rem;">PRESETS:</span>
+        <button type="button" class="preset-chip-btn active" data-preset="physical">📦 Physical Consumer Good</button>
+        <button type="button" class="preset-chip-btn" data-preset="saas">⚡ SaaS Subscription Tier</button>
+        <button type="button" class="preset-chip-btn" data-preset="consulting">💼 B2B Retainer / Consulting</button>
+        <button type="button" class="preset-chip-btn" data-preset="wholesale">🏬 Wholesale / Distribution</button>
+      </div>
+
+      <!-- Main Workspace -->
+      <div class="pricing-workspace">
+        
+        <!-- Controls Panel -->
+        <div class="tool-panel glass-panel">
+          
+          <!-- Mode Tabs -->
+          <div class="pricing-mode-tabs">
+            <button type="button" class="mode-tab-btn active" data-mode="costplus">
+              <span class="tab-icon">📊</span>
+              <span>Cost-Plus</span>
+            </button>
+            <button type="button" class="mode-tab-btn" data-mode="valuebased">
+              <span class="tab-icon">💎</span>
+              <span>Value-Based</span>
+            </button>
+            <button type="button" class="mode-tab-btn" data-mode="competitor">
+              <span class="tab-icon">🎯</span>
+              <span>Market / Comp</span>
+            </button>
+          </div>
+
+          <!-- Mode 1: Cost Plus Fields -->
+          <div id="section-costplus" class="mode-fields-group">
+            <div class="input-section-header">Cost-Plus Unit Modeling</div>
+            <div class="field-row">
+              <div class="form-group">
+                <label for="input-cp-cogs">Unit Cost (COGS)</label>
+                <div class="input-icon-group">
+                  <span class="input-affix-left">$</span>
+                  <input type="number" id="input-cp-cogs" class="form-input" min="0" step="1" value="35.00">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="input-cp-markup">Target Markup (%)</label>
+                <div class="input-icon-group suffix">
+                  <input type="number" id="input-cp-markup" class="form-input" min="0" max="1000" step="5" value="150.0">
+                  <span class="input-affix-right">%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mode 2: Value Based Fields -->
+          <div id="section-valuebased" class="mode-fields-group" style="display: none;">
+            <div class="input-section-header">Customer Economic Value & ROI</div>
+            <div class="form-group">
+              <label for="input-vb-value">Perceived Economic Value Created ($)</label>
+              <div class="input-icon-group">
+                <span class="input-affix-left">$</span>
+                <input type="number" id="input-vb-value" class="form-input" min="0" step="100" value="5000">
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="form-group">
+                <label for="input-vb-capture">Value Captured (%)</label>
+                <div class="input-icon-group suffix">
+                  <input type="number" id="input-vb-capture" class="form-input" min="1" max="100" step="1" value="20.0">
+                  <span class="input-affix-right">%</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="input-vb-cogs">Unit Delivery Cost (COGS)</label>
+                <div class="input-icon-group">
+                  <span class="input-affix-left">$</span>
+                  <input type="number" id="input-vb-cogs" class="form-input" min="0" step="10" value="150">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mode 3: Competitor Fields -->
+          <div id="section-competitor" class="mode-fields-group" style="display: none;">
+            <div class="input-section-header">Competitive Benchmarking</div>
+            <div class="field-row">
+              <div class="form-group">
+                <label for="input-comp-base">Competitor Base Price ($)</label>
+                <div class="input-icon-group">
+                  <span class="input-affix-left">$</span>
+                  <input type="number" id="input-comp-base" class="form-input" min="0" step="5" value="80.00">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="select-comp-position">Market Positioning</label>
+                <select id="select-comp-position" class="form-select">
+                  <option value="-0.15">Budget Disrupter (-15%)</option>
+                  <option value="0.0" selected>Price Parity (0% match)</option>
+                  <option value="0.25">Quality Premium (+25%)</option>
+                  <option value="0.60">Luxury / Prestige (+60%)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="input-comp-cogs">Unit Cost of Production (COGS)</label>
+              <div class="input-icon-group">
+                <span class="input-affix-left">$</span>
+                <input type="number" id="input-comp-cogs" class="form-input" min="0" step="1" value="28.00">
+              </div>
+            </div>
+          </div>
+
+          <!-- Section: Fixed Costs & Break-Even Modeling -->
+          <div class="input-section-header">Overhead & Break-Even Engine</div>
+          <div class="field-row">
+            <div class="form-group">
+              <label for="input-fixed-costs">Monthly Fixed Costs ($)</label>
+              <div class="input-icon-group">
+                <span class="input-affix-left">$</span>
+                <input type="number" id="input-fixed-costs" class="form-input" min="0" step="500" value="12000">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="input-target-units">Expected Monthly Sales (Units)</label>
+              <input type="number" id="input-target-units" class="form-input" min="1" step="10" value="350">
+            </div>
+          </div>
+
+          <div class="action-bar" style="margin-top: 1rem;">
+            <button type="button" id="btn-copy-summary" class="btn btn-secondary" style="flex: 1;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy Summary
+            </button>
+            <button type="button" id="btn-export-csv" class="btn btn-secondary" style="flex: 1;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Export CSV
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Output Analytics & Discount Sensitivity Deck -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="6" x2="12" y2="12"></line>
+              <line x1="12" y1="12" x2="16" y2="16"></line>
+            </svg>
+            <span>Strategic Price & Unit Economics</span>
+          </div>
+
+          <!-- Highlight KPI Tiles -->
+          <div class="kpi-deck">
+            <div class="kpi-tile featured" id="card-price">
+              <div class="kpi-tile-label">
+                <span>Recommended Retail Price</span>
+                <span id="badge-margin" class="badge-pill success">60.0% Gross Margin</span>
+              </div>
+              <div class="kpi-tile-value" id="val-retail-price">$87.50</div>
+              <div class="kpi-tile-sub" id="val-price-sub">Contribution Margin: +$52.50 per unit</div>
+            </div>
+
+            <div class="kpi-tile">
+              <div class="kpi-tile-label">Gross Margin %</div>
+              <div class="kpi-tile-value" id="val-gross-margin">60.0%</div>
+              <div class="kpi-tile-sub" id="val-cogs-sub">Unit COGS: $35.00</div>
+            </div>
+
+            <div class="kpi-tile">
+              <div class="kpi-tile-label">Break-Even Units</div>
+              <div class="kpi-tile-value" id="val-be-units">229 Units</div>
+              <div class="kpi-tile-sub" id="val-be-rev">Break-Even Sales: $20,000</div>
+            </div>
+
+            <div class="kpi-tile">
+              <div class="kpi-tile-label">Projected Net Monthly Profit</div>
+              <div class="kpi-tile-value" id="val-net-profit" style="color: #10b981;">+$6,375</div>
+              <div class="kpi-tile-sub" id="val-volume-sub">At 350 monthly units</div>
+            </div>
+
+            <div class="kpi-tile">
+              <div class="kpi-tile-label">Unit Contribution Ratio</div>
+              <div class="kpi-tile-value" id="val-cm-ratio">60.0%</div>
+              <div class="kpi-tile-sub">Fixed Cost Coverage Velocity</div>
+            </div>
+          </div>
+
+          <!-- Discount Sensitivity Slider & Margin Erosion Simulator -->
+          <div class="discount-simulator-card">
+            <div class="discount-header">
+              <div style="font-weight: 700; font-size: 0.875rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.4rem;">
+                <span>Discount Sensitivity & Margin Erosion</span>
+              </div>
+              <span id="lbl-discount-val" style="font-weight: 800; color: var(--accent); font-size: 1rem;">15% Discount</span>
+            </div>
+
+            <div class="range-group">
+              <input type="range" id="slider-discount" class="range-slider" min="0" max="50" step="1" value="15">
+            </div>
+
+            <div id="erosion-alert" class="erosion-callout">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#ef4444" stroke-width="2" style="flex-shrink:0;">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+              <div>
+                Offering a <strong><span id="txt-erosion-disc">15%</span> discount</strong> reduces unit profit to <strong><span id="txt-discount-unit-profit">$39.38</span></strong>. You must sell <strong><span id="txt-more-units-needed">+33.3%</span> more units</strong> just to make the same profit!
+              </div>
+            </div>
+
+            <!-- Sensitivity Matrix Table -->
+            <table class="sensitivity-table" id="sensitivity-table">
+              <thead>
+                <tr>
+                  <th>Discount</th>
+                  <th>Selling Price</th>
+                  <th>Unit Profit</th>
+                  <th>Gross Margin</th>
+                  <th>Break-Even Units</th>
+                  <th>Units Needed for Profit</th>
+                </tr>
+              </thead>
+              <tbody id="sensitivity-table-body">
+                <!-- Dynamically rendered rows -->
+              </tbody>
+            </table>
+          </div>
+
+        </div>
       </div>
-    
     </div>
   </main>
 
@@ -82,10 +586,10 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Pricing Calculator",
+    "name": "Strategic Pricing Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/pricing-calculator/",
-    "description": "Create, analyze, and manage your Pricing Calculator online.",
-    "applicationCategory": "UtilityPage",
+    "description": "Calculate optimal retail prices with Cost-Plus, Value-Based, and Competitor pricing models, break-even unit analysis, and discount margin erosion simulations.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

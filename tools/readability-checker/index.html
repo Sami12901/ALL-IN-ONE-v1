@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Readability Checker - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your Readability Checker online.">
-  <meta name="keywords" content="marketing, digital, content, free, online, tool, utility">
+  <title>Readability Checker - Flesch Kincaid & Scoring Suite - ALL IN ONE</title>
+  <meta name="description" content="Free online content readability scoring suite. Calculate Flesch Reading Ease, Flesch-Kincaid Grade Level, Gunning Fog, Coleman-Liau, and ARI with live complex word and sentence highlighting.">
+  <meta name="keywords" content="readability checker, flesch reading ease, flesch kincaid, gunning fog index, coleman liau, automated readability index, writing analyzer, text complexity">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/readability-checker/">
 
@@ -13,27 +13,306 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/readability-checker/">
-  <meta property="og:title" content="Readability Checker - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Create, analyze, and manage your Readability Checker online.">
+  <meta property="og:title" content="Readability Checker - Flesch Kincaid & Content Scoring Suite - ALL IN ONE">
+  <meta property="og:description" content="Calculate Flesch Reading Ease, Flesch-Kincaid Grade Level, Gunning Fog, Coleman-Liau, and ARI with live complex word and sentence highlighting.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="Readability Checker - ALL IN ONE">
   <meta property="og:locale" content="en_US">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/readability-checker/">
-  <meta name="twitter:title" content="Readability Checker - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Create, analyze, and manage your Readability Checker online.">
+  <meta name="twitter:title" content="Readability Checker - Content Scoring Suite - ALL IN ONE">
+  <meta name="twitter:description" content="Calculate Flesch Reading Ease, Flesch-Kincaid, Gunning Fog, and ARI with live text highlighting.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="Readability Checker - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .readability-workspace {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 1024px) {
+      .readability-workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+    .editor-card {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .editor-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .pill-stats-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .stat-pill {
+      font-size: 0.75rem;
+      font-family: var(--font-sans);
+      font-weight: 500;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .stat-pill strong {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+    .editor-tabs {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+    .editor-tab-btn {
+      padding: 0.4rem 0.85rem;
+      font-size: 0.825rem;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .editor-tab-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+    .editor-tab-btn.active {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-color: rgba(137, 170, 204, 0.3);
+    }
+    .text-input-wrapper {
+      position: relative;
+    }
+    .text-input-area {
+      min-height: 280px;
+      line-height: 1.7;
+      font-family: var(--font-sans);
+      font-size: 0.975rem;
+    }
+    .highlight-viewer {
+      min-height: 280px;
+      max-height: 480px;
+      overflow-y: auto;
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      line-height: 1.8;
+      font-size: 0.975rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .hl-complex {
+      background: rgba(245, 158, 11, 0.22);
+      border-bottom: 2px solid #f59e0b;
+      padding: 0.1rem 0.25rem;
+      border-radius: 3px;
+      font-weight: 600;
+      color: #fbbf24;
+    }
+    .hl-long-sentence {
+      background: rgba(239, 68, 68, 0.12);
+      border-left: 3px solid #ef4444;
+      padding: 0.15rem 0.4rem;
+      margin: 0.15rem 0;
+      display: inline;
+      border-radius: 3px;
+    }
+    .hl-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.775rem;
+      color: var(--text-secondary);
+      padding: 0.5rem 0.75rem;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      align-items: center;
+    }
+    .hl-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+    }
+    .hero-score-banner {
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.12) 0%, rgba(137, 170, 204, 0.05) 100%);
+      border: 1px solid rgba(137, 170, 204, 0.25);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .score-main-flex {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .score-number-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .score-big {
+      font-size: 3.25rem;
+      font-weight: 800;
+      line-height: 1;
+      font-family: var(--font-sans);
+      letter-spacing: -0.02em;
+    }
+    .score-rating-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      font-size: 0.825rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      width: fit-content;
+    }
+    .badge-excellent {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .badge-good {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    .badge-moderate {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .badge-difficult {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    .progress-bar-track {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent-gradient);
+      border-radius: var(--radius-full);
+      transition: width 0.4s ease;
+    }
+    .scores-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.85rem;
+    }
+    .metric-card-sm {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.95rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      transition: var(--transition);
+    }
+    .metric-card-sm:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .metric-card-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .metric-card-val {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .metric-card-sub {
+      font-size: 0.725rem;
+      color: var(--text-tertiary);
+    }
+    .data-table-sm {
+      width: 100%;
+      font-size: 0.825rem;
+      border-collapse: collapse;
+    }
+    .data-table-sm tr {
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table-sm td {
+      padding: 0.5rem 0.25rem;
+    }
+    .data-table-sm td:last-child {
+      text-align: right;
+      font-family: monospace;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .preset-btn-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      align-items: center;
+    }
+    .preset-chip-btn {
+      font-size: 0.775rem;
+      padding: 0.3rem 0.65rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .preset-chip-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -48,27 +327,201 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Readability Checker</h1>
-        <p class="tool-description">Create, analyze, and manage your Readability Checker online.</p>
+        <h1>Readability Checker & Scoring Suite</h1>
+        <p class="tool-description">Analyze text readability across 5 industry-standard algorithms: Flesch Reading Ease, Flesch-Kincaid Grade Level, Gunning Fog, Coleman-Liau, and ARI with live syllable and sentence complexity highlighting.</p>
+      </div>
+
+      <!-- Presets & Sample Bar -->
+      <div class="preset-btn-bar" style="margin-bottom: 0.5rem;">
+        <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-right: 0.25rem;">Sample Texts:</span>
+        <button class="preset-chip-btn" data-preset="marketing">E-commerce Landing Copy</button>
+        <button class="preset-chip-btn" data-preset="technical">Technical SaaS Guide</button>
+        <button class="preset-chip-btn" data-preset="story">Children's Adventure Tale</button>
+        <button class="preset-chip-btn" data-preset="academic">Academic Research Abstract</button>
+        <button class="preset-chip-btn" id="btn-clear" style="margin-left: auto; color: var(--error); border-color: rgba(239, 68, 68, 0.3);">Clear Editor</button>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Readability Checker</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your Readability Checker online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, content</div>
-            <div><strong>Category:</strong> digital-marketing</div>
+      <div class="readability-workspace">
+        
+        <!-- Left Column: Live Text Editor & Highlighter -->
+        <div class="tool-panel glass-panel editor-card">
+          <div class="editor-toolbar">
+            <div class="pill-stats-row">
+              <span class="stat-pill">Words: <strong id="pill-words">0</strong></span>
+              <span class="stat-pill">Sentences: <strong id="pill-sentences">0</strong></span>
+              <span class="stat-pill">Characters: <strong id="pill-chars">0</strong></span>
+              <span class="stat-pill">Avg W/S: <strong id="pill-asl">0</strong></span>
+            </div>
+            
+            <div class="editor-tabs">
+              <button class="editor-tab-btn active" id="tab-btn-edit">Editor</button>
+              <button class="editor-tab-btn" id="tab-btn-highlight">Highlighted Analysis</button>
+            </div>
+          </div>
+
+          <!-- Highlight Legend (Visible in highlighted mode) -->
+          <div class="hl-legend" id="hl-legend" style="display: none;">
+            <span style="font-weight: 600; color: var(--text-primary);">Highlight Keys:</span>
+            <span class="hl-legend-item">
+              <span class="legend-dot" style="background: #fbbf24;"></span>
+              Complex Word (&ge;3 Syllables)
+            </span>
+            <span class="hl-legend-item">
+              <span class="legend-dot" style="background: #ef4444;"></span>
+              Long Sentence (&gt;22 Words)
+            </span>
+            <label class="checkbox-label" style="min-height: auto; margin-left: auto; font-size: 0.775rem;">
+              <input type="checkbox" id="chk-hl-complex" checked style="width: 14px; height: 14px;">
+              Highlight Complex Words
+            </label>
+            <label class="checkbox-label" style="min-height: auto; font-size: 0.775rem;">
+              <input type="checkbox" id="chk-hl-sentences" checked style="width: 14px; height: 14px;">
+              Highlight Long Sentences
+            </label>
+          </div>
+
+          <!-- Editor Panes -->
+          <div class="text-input-wrapper">
+            <textarea id="text-input" class="form-textarea text-input-area" placeholder="Paste or draft your article, marketing email, blog post, or copy here to analyze readability in real time..."></textarea>
+            
+            <div id="highlight-view" class="highlight-viewer" style="display: none;" aria-live="polite"></div>
+          </div>
+
+          <!-- Editor Action Buttons -->
+          <div class="action-bar" style="margin-top: 0.25rem;">
+            <button class="btn btn-secondary" id="btn-paste">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+              Paste Clipboard
+            </button>
+            <button class="btn btn-secondary" id="btn-copy">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Text
+            </button>
+            <button class="btn btn-secondary" id="btn-export-txt" style="margin-left: auto;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export Report
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Column: Scores & Metrics Suite -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          
+          <!-- Hero Score Banner: Flesch Reading Ease -->
+          <div class="hero-score-banner">
+            <div class="score-main-flex">
+              <div class="score-number-wrap">
+                <span style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); font-weight: 700;">Flesch Reading Ease</span>
+                <span class="score-big" id="score-fre">0.0</span>
+                <span id="score-fre-grade" style="font-size: 0.85rem; color: var(--text-secondary);">Awaiting text input...</span>
+              </div>
+              <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
+                <span class="score-rating-badge badge-good" id="score-fre-badge">Ready</span>
+                <span style="font-size: 0.725rem; color: var(--text-tertiary);">Scale: 0 - 100</span>
+              </div>
+            </div>
+            
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" id="progress-fre-fill" style="width: 0%;"></div>
+            </div>
+            <p id="fre-guidance" style="font-size: 0.8rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">
+              Paste or type your content to assess clarity, educational grade level, and reader accessibility.
+            </p>
+          </div>
+
+          <!-- Secondary Readability Formula Indices -->
+          <div class="scores-grid">
+            <div class="metric-card-sm">
+              <span class="metric-card-label">Flesch-Kincaid</span>
+              <span class="metric-card-val" id="metric-fkgl">-</span>
+              <span class="metric-card-sub" id="metric-fkgl-sub">US School Grade Level</span>
+            </div>
+            <div class="metric-card-sm">
+              <span class="metric-card-label">Gunning Fog</span>
+              <span class="metric-card-val" id="metric-fog">-</span>
+              <span class="metric-card-sub" id="metric-fog-sub">Years Formal Education</span>
+            </div>
+            <div class="metric-card-sm">
+              <span class="metric-card-label">Coleman-Liau</span>
+              <span class="metric-card-val" id="metric-cl">-</span>
+              <span class="metric-card-sub" id="metric-cl-sub">Letter-based Grade</span>
+            </div>
+            <div class="metric-card-sm">
+              <span class="metric-card-label">Automated Readability (ARI)</span>
+              <span class="metric-card-val" id="metric-ari">-</span>
+              <span class="metric-card-sub" id="metric-ari-sub">Reader Age Index</span>
+            </div>
+          </div>
+
+          <!-- Reading Times & Audience Suitability -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-primary); display: flex; align-items: center; justify-content: space-between;">
+              <span>Reading Time &amp; Audience</span>
+              <span id="target-audience-pill" class="badge" style="font-size: 0.7rem; padding: 0.15rem 0.5rem; background: var(--bg-tertiary); border: 1px solid var(--border);">Audience: General</span>
+            </h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+              <div style="background: var(--bg-tertiary); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <span style="font-size: 0.7rem; color: var(--text-tertiary); text-transform: uppercase;">Silent Read Time</span>
+                <div style="font-size: 1.15rem; font-weight: 700; color: var(--accent);" id="time-reading">0s</div>
+                <span style="font-size: 0.675rem; color: var(--text-tertiary);">@ 200 words / min</span>
+              </div>
+              <div style="background: var(--bg-tertiary); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <span style="font-size: 0.7rem; color: var(--text-tertiary); text-transform: uppercase;">Speaking Time</span>
+                <div style="font-size: 1.15rem; font-weight: 700; color: var(--accent-light);" id="time-speaking">0s</div>
+                <span style="font-size: 0.675rem; color: var(--text-tertiary);">@ 130 words / min</span>
+              </div>
+            </div>
+            <p id="recommendation-text" style="font-size: 0.775rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">
+              Target 60–70 Flesch Reading Ease for general consumer marketing emails and web articles.
+            </p>
+          </div>
+
+          <!-- Comprehensive Statistical Breakdown Table -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary);">
+              Detailed Text Metrics
+            </h3>
+            <table class="data-table-sm">
+              <tbody>
+                <tr>
+                  <td>Total Words</td>
+                  <td id="stat-words">0</td>
+                </tr>
+                <tr>
+                  <td>Total Sentences</td>
+                  <td id="stat-sentences">0</td>
+                </tr>
+                <tr>
+                  <td>Total Syllables</td>
+                  <td id="stat-syllables">0</td>
+                </tr>
+                <tr>
+                  <td>Complex Words (3+ Syllables)</td>
+                  <td id="stat-complex-words">0 (0.0%)</td>
+                </tr>
+                <tr>
+                  <td>Average Sentence Length</td>
+                  <td id="stat-avg-sentence-len">0.0 words</td>
+                </tr>
+                <tr>
+                  <td>Average Syllables Per Word</td>
+                  <td id="stat-avg-syllables-word">0.0</td>
+                </tr>
+                <tr>
+                  <td>Characters (no spaces)</td>
+                  <td id="stat-chars-no-space">0</td>
+                </tr>
+                <tr>
+                  <td>Characters (with spaces)</td>
+                  <td id="stat-chars-spaces">0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
       </div>
     
     </div>
@@ -82,9 +535,9 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Readability Checker",
+    "name": "Readability Checker & Scoring Suite",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/readability-checker/",
-    "description": "Create, analyze, and manage your Readability Checker online.",
+    "description": "Calculate Flesch Reading Ease, Flesch-Kincaid Grade Level, Gunning Fog, Coleman-Liau, and ARI readability scores online.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

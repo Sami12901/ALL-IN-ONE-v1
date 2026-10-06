@@ -3,198 +3,360 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Unicode Emoji Picker &amp; Search Suite - ALL IN ONE</title>
-  <meta name="description" content="Free online Unicode emoji picker and search engine. Browse categorized emojis (Smileys, People, Animals, Food, Travel, Objects, Symbols, Flags) with real-time keyword search, skin tone modifiers, and 1-click clipboard copy.">
-  <meta name="keywords" content="emoji picker, search emoji, unicode emojis, copy emoji, smileys, copy and paste emojis, online emoji keyboard, skin tone modifier">
+  <title>Emoji Picker - Search & Copy Unicode Emojis - ALL IN ONE</title>
+  <meta name="description" content="Explore and copy 1,800+ Unicode emojis organized by category with real-time search, skin tone selector, recent history, favorites, and text scratchpad.">
+  <meta name="keywords" content="emoji picker, copy emojis, unicode emojis, emoji keyboard, skin tone emoji, emoji search">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/emoji-picker/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <script type="module" src="../../js/components.js"></script>
+  <script type="module" src="./script.js" defer></script>
+  
   <style>
-    .emoji-picker-container {
-      display: flex;
-      flex-direction: column;
+    .emoji-workspace {
+      display: grid;
+      grid-template-columns: 1fr;
       gap: 1.5rem;
     }
-    .emoji-search-bar {
+    @media (min-width: 992px) {
+      .emoji-workspace {
+        grid-template-columns: 1fr 340px;
+      }
+    }
+
+    /* Category Nav Bar */
+    .cat-nav-bar {
       display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 0.6rem 1rem;
-      transition: var(--transition);
+      gap: 0.35rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      scrollbar-width: none;
     }
-    .emoji-search-bar:focus-within {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 2px var(--accent-glow);
+    .cat-nav-bar::-webkit-scrollbar {
+      display: none;
     }
-    .emoji-search-input {
-      background: transparent;
-      border: none;
-      font-size: 1rem;
-      color: var(--text-primary);
-      width: 100%;
-      outline: none;
-    }
-    .category-pills-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-    .category-pill {
+
+    .cat-tab-btn {
       background: var(--bg-tertiary);
       border: 1px solid var(--border);
-      border-radius: var(--radius-full);
-      padding: 0.35rem 0.85rem;
-      font-size: 0.825rem;
-      font-weight: 600;
+      border-radius: var(--radius-sm);
+      padding: 0.45rem 0.75rem;
+      font-size: 0.85rem;
       color: var(--text-secondary);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
+      white-space: nowrap;
       transition: var(--transition);
+      user-select: none;
     }
-    .category-pill:hover, .category-pill.active {
+    .cat-tab-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+    .cat-tab-btn.active {
       background: var(--accent);
       border-color: var(--accent);
       color: #ffffff;
+      font-weight: 600;
     }
-    .emoji-grid-card {
-      background: var(--surface);
+
+    /* Skin Tone Selector */
+    .tone-selector-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--bg-tertiary);
       border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 1.5rem;
-      min-height: 420px;
+      border-radius: var(--radius-full);
+      padding: 0.25rem 0.5rem;
     }
-    .emoji-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
-      gap: 0.5rem;
-      max-height: 520px;
-      overflow-y: auto;
-      padding: 0.25rem;
-    }
-    .emoji-btn {
-      width: 44px;
-      height: 44px;
+    .tone-swatch {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.6rem;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      transition: transform 0.15s ease, background 0.15s ease;
+      font-size: 0.95rem;
+      transition: transform 0.15s ease, border-color 0.15s ease;
       user-select: none;
     }
-    .emoji-btn:hover {
-      transform: scale(1.2);
-      background: var(--accent-glow);
+    .tone-swatch:hover {
+      transform: scale(1.15);
+    }
+    .tone-swatch.active {
       border-color: var(--accent);
-      z-index: 2;
+      transform: scale(1.2);
     }
-    .recents-strip {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      align-items: center;
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 0.75rem 1rem;
+
+    /* Emoji Grid */
+    .emoji-scroll-area {
+      max-height: 540px;
+      overflow-y: auto;
+      padding-right: 0.35rem;
     }
-    .emoji-preview-inspector {
+
+    .emoji-category-section {
+      margin-bottom: 1.5rem;
+    }
+    .emoji-section-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.65rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
-      background: var(--bg-secondary);
+    }
+
+    .emoji-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+      gap: 0.35rem;
+    }
+
+    .emoji-cell {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.55rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+      user-select: none;
+      position: relative;
+    }
+    .emoji-cell:hover {
+      transform: scale(1.18);
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      z-index: 5;
+    }
+    .emoji-cell:active {
+      transform: scale(0.95);
+    }
+
+    /* Scratchpad Composer */
+    .scratchpad-area {
+      width: 100%;
+      height: 220px;
+      padding: 0.85rem;
+      border-radius: var(--radius-md);
+      background: #0e1117;
+      border: 1px solid var(--border);
+      color: #f3f4f6;
+      font-family: var(--font-sans);
+      font-size: 1.1rem;
+      line-height: 1.6;
+      resize: vertical;
+    }
+    .scratchpad-area:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    /* Selected Emoji Detail Card */
+    .detail-card {
+      background: var(--bg-tertiary);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
-      padding: 1rem 1.25rem;
-      margin-top: 1rem;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      text-align: center;
+    }
+    .detail-glyph {
+      font-size: 3.5rem;
+      line-height: 1;
+    }
+    .detail-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      text-transform: capitalize;
+    }
+    .detail-code {
+      font-size: 0.75rem;
+      font-family: monospace;
+      color: var(--text-secondary);
+    }
+
+    .toast-popup {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      color: var(--text);
+      font-size: 0.875rem;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: var(--transition);
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .toast-popup.show {
+      opacity: 1;
+      transform: translateY(0);
     }
   </style>
-
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
 </head>
 <body>
+  <!-- Header Web Component -->
   <app-header></app-header>
+  
+  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
+  <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Unicode Emoji Picker &amp; Search</h1>
-        <p class="tool-description">Browse 1800+ standard Unicode emojis organized by category. Real-time keyword search, recently used memory, and 1-click clipboard copy for social media and messaging.</p>
+        <h1>Emoji Picker & Clipboard Suite</h1>
+        <p class="tool-description">Explore and copy 1,800+ Unicode emojis. Search by keywords, select skin tone variants, track recent emojis, and compose messages on your clipboard scratchpad.</p>
       </div>
 
-      <div class="emoji-picker-container">
-        <!-- Search and Tone Filter -->
-        <div class="emoji-search-bar">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <input type="text" id="emoji-search-input" class="emoji-search-input" placeholder="Search emojis by name, tag, or keyword (e.g. fire, happy, rocket, cat)..." autocomplete="off" spellcheck="false">
-          <button type="button" id="btn-clear-search" style="background: none; border: none; color: var(--text-tertiary); cursor: pointer; font-size: 1.1rem;">&times;</button>
-        </div>
+      <!-- Workspace -->
+      <div class="emoji-workspace">
+        
+        <!-- Left: Search, Tone, Categories & Grid -->
+        <div class="tool-panel glass-panel" style="gap: 1rem;">
+          
+          <!-- Search & Tone Bar -->
+          <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: space-between; align-items: center;">
+            <div style="flex: 1; min-width: 220px; position: relative;">
+              <input type="text" id="emoji-search-input" class="form-input" style="padding-left: 2.2rem;" placeholder="Search 1,800+ emojis (e.g. fire, smile, heart, flag)...">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--text-secondary);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
 
-        <!-- Category Filter Pills -->
-        <div class="category-pills-row" id="category-pills">
-          <button type="button" class="category-pill active" data-cat="all">🌟 All Emojis</button>
-          <button type="button" class="category-pill" data-cat="smileys">😀 Smileys &amp; Emotion</button>
-          <button type="button" class="category-pill" data-cat="people">👋 People &amp; Body</button>
-          <button type="button" class="category-pill" data-cat="animals">🐶 Animals &amp; Nature</button>
-          <button type="button" class="category-pill" data-cat="food">🍔 Food &amp; Drink</button>
-          <button type="button" class="category-pill" data-cat="travel">✈️ Travel &amp; Places</button>
-          <button type="button" class="category-pill" data-cat="activities">⚽ Activities &amp; Sports</button>
-          <button type="button" class="category-pill" data-cat="objects">💡 Objects &amp; Tech</button>
-          <button type="button" class="category-pill" data-cat="symbols">❤️ Symbols &amp; Math</button>
-          <button type="button" class="category-pill" data-cat="flags">🚩 Flags</button>
-        </div>
-
-        <!-- Recent Emojis Strip -->
-        <div class="recents-strip" id="recents-container">
-          <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;">Recent:</span>
-          <div id="recents-list" style="display: flex; gap: 0.4rem; flex-wrap: wrap;"></div>
-        </div>
-
-        <!-- Main Emoji Grid Stage -->
-        <div class="emoji-grid-card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;">
-            <span id="category-heading" style="font-weight: 700; color: var(--text-primary); font-size: 1.1rem;">All Emojis</span>
-            <span id="emoji-count-badge" style="font-size: 0.8rem; color: var(--text-tertiary);">Showing emojis</span>
-          </div>
-
-          <div class="emoji-grid" id="emoji-grid">
-            <!-- Dynamically populated emoji buttons -->
-          </div>
-
-          <!-- Bottom Active Inspector -->
-          <div class="emoji-preview-inspector" id="emoji-inspector">
-            <div style="display: flex; align-items: center; gap: 1rem;">
-              <span id="inspect-glyph" style="font-size: 2.8rem; line-height: 1;">✨</span>
-              <div>
-                <strong id="inspect-name" style="font-size: 1.1rem; color: var(--text-primary); display: block;">Sparkles</strong>
-                <span id="inspect-code" style="font-family: monospace; font-size: 0.85rem; color: var(--accent);">U+2728</span>
+            <!-- Skin Tone Selector -->
+            <div style="display: flex; align-items: center; gap: 0.4rem;">
+              <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600;">Skin Tone:</span>
+              <div class="tone-selector-bar" id="tone-selector">
+                <div class="tone-swatch active" data-tone="0" title="Default Yellow">🟡</div>
+                <div class="tone-swatch" data-tone="1" title="Light Skin Tone">🏻</div>
+                <div class="tone-swatch" data-tone="2" title="Medium-Light Skin Tone">🏼</div>
+                <div class="tone-swatch" data-tone="3" title="Medium Skin Tone">🏽</div>
+                <div class="tone-swatch" data-tone="4" title="Medium-Dark Skin Tone">🏾</div>
+                <div class="tone-swatch" data-tone="5" title="Dark Skin Tone">🏿</div>
               </div>
             </div>
-            <button type="button" class="btn btn-primary" id="btn-copy-inspected">
-              📋 Copy Emoji to Clipboard
+          </div>
+
+          <!-- Category Nav Tabs -->
+          <div class="cat-nav-bar" id="category-tabs">
+            <button class="cat-tab-btn active" data-cat="all">All Emojis</button>
+            <button class="cat-tab-btn" data-cat="recent">🕒 Recent</button>
+            <button class="cat-tab-btn" data-cat="favorites">⭐ Favorites</button>
+            <button class="cat-tab-btn" data-cat="Smileys & Emotion">😀 Smileys</button>
+            <button class="cat-tab-btn" data-cat="People & Body">👋 People</button>
+            <button class="cat-tab-btn" data-cat="Animals & Nature">🐶 Nature</button>
+            <button class="cat-tab-btn" data-cat="Food & Drink">🍔 Food</button>
+            <button class="cat-tab-btn" data-cat="Travel & Places">🚗 Travel</button>
+            <button class="cat-tab-btn" data-cat="Activities">⚽ Activities</button>
+            <button class="cat-tab-btn" data-cat="Objects">💡 Objects</button>
+            <button class="cat-tab-btn" data-cat="Symbols">❤️ Symbols</button>
+            <button class="cat-tab-btn" data-cat="Flags">🚩 Flags</button>
+          </div>
+
+          <!-- Emoji Display Area -->
+          <div class="emoji-scroll-area" id="emoji-scroll-area">
+            <!-- Dynamically populated categories & grids -->
+          </div>
+
+        </div>
+
+        <!-- Right: Inspector & Clipboard Scratchpad -->
+        <div class="tool-panel glass-panel" style="gap: 1rem;">
+          
+          <div class="panel-title" style="margin-bottom: 0; border: none; padding: 0;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+            Selected Emoji
+          </div>
+
+          <!-- Active Detail Card -->
+          <div class="detail-card" id="detail-card">
+            <div class="detail-glyph" id="detail-glyph">✨</div>
+            <div class="detail-name" id="detail-name">Sparkles</div>
+            <div class="detail-code" id="detail-code">U+2728 • Group: Activities / Symbols</div>
+            <div style="display: flex; gap: 0.4rem; width: 100%; margin-top: 0.4rem;">
+              <button id="copy-selected-btn" class="btn btn-primary" style="flex: 1; min-height: 38px; font-size: 0.85rem;">
+                Copy Emoji
+              </button>
+              <button id="star-selected-btn" class="mini-btn" title="Add to Favorites">
+                ⭐ Star
+              </button>
+            </div>
+          </div>
+
+          <!-- Text Scratchpad -->
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label for="scratchpad" style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">
+              Message Scratchpad:
+            </label>
+            <span id="scratch-metrics" style="font-size: 0.75rem; color: var(--text-secondary);">0 chars</span>
+          </div>
+
+          <textarea id="scratchpad" class="scratchpad-area" placeholder="Click any emoji above to insert it here, or paste your text to customize with emojis..."></textarea>
+
+          <div class="action-bar" style="margin-top: -0.25rem;">
+            <button id="copy-scratchpad-btn" class="btn btn-primary" style="flex: 1;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Text
+            </button>
+            <button id="clear-scratchpad-btn" class="btn btn-secondary">
+              Clear
             </button>
           </div>
+
+          <!-- Quick Tips -->
+          <div style="background: var(--bg-tertiary); padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid var(--border); font-size: 0.75rem; color: var(--text-secondary); line-height: 1.5;">
+            💡 <strong>Pro-Tip:</strong> Clicking any emoji copies it directly to your clipboard and inserts it into the scratchpad. Right-click or use the Star button to save to your Favorites.
+          </div>
+
         </div>
 
       </div>
+
     </div>
   </main>
 
+  <!-- Toast Notification -->
+  <div id="app-toast" class="toast-popup">Copied emoji to clipboard!</div>
+
+  <!-- Footer Web Component -->
   <app-footer></app-footer>
+
+  <!-- Structured schema for search engine rich snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Emoji Picker",
+    "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/emoji-picker/",
+    "description": "Comprehensive categorized Unicode emoji search, skin tone selector, and clipboard scratchpad.",
+    "applicationCategory": "UtilityPage",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5."
+  }
+  </script>
 </body>
 </html>

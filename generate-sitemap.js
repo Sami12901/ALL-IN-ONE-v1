@@ -55,7 +55,7 @@ let activeCount = 0;
 let totalTools = tools.length;
 
 tools.forEach(tool => {
-  const isActive = tool.active !== false;
+  const isActive = tool.active === true;
   if (isActive) activeCount++;
   const priority = (tool.popular || isActive) ? '0.9' : '0.8';
   

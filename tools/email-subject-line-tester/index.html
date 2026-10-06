@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Email Subject Line Tester - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your Email Subject Line Tester online.">
-  <meta name="keywords" content="marketing, digital, email, free, online, tool, utility">
+  <title>Email Subject Line Tester & Grader - ALL IN ONE</title>
+  <meta name="description" content="Test, score, and optimize email subject lines. Check mobile truncation previews (iPhone & Android), scan 100+ spam trigger words, assess urgency, power words, and sentiment.">
+  <meta name="keywords" content="email subject line tester, subject line grader, spam word checker, mobile email preview, open rate optimizer, email marketing tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/email-subject-line-tester/">
 
@@ -13,27 +13,219 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/email-subject-line-tester/">
-  <meta property="og:title" content="Email Subject Line Tester - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Create, analyze, and manage your Email Subject Line Tester online.">
+  <meta property="og:title" content="Email Subject Line Tester & Performance Grader - ALL IN ONE">
+  <meta property="og:description" content="Calculate subject line score (0-100), grade (A+ to F), mobile truncation preview, spam trigger detection, and power words.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="Email Subject Line Tester - ALL IN ONE">
   <meta property="og:locale" content="en_US">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/email-subject-line-tester/">
-  <meta name="twitter:title" content="Email Subject Line Tester - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Create, analyze, and manage your Email Subject Line Tester online.">
+  <meta name="twitter:title" content="Email Subject Line Tester - ALL IN ONE">
+  <meta name="twitter:description" content="Test and optimize email subject lines with spam word scanning and mobile previews.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="Email Subject Line Tester - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .subject-tester-workspace {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 1024px) {
+      .subject-tester-workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+    .score-hero {
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.12) 0%, rgba(137, 170, 204, 0.05) 100%);
+      border: 1px solid rgba(137, 170, 204, 0.25);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+    .score-circle-badge {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: var(--bg-tertiary);
+      border: 3px solid var(--accent);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px var(--accent-glow);
+      flex-shrink: 0;
+    }
+    .score-circle-num {
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1;
+      font-family: var(--font-sans);
+      color: var(--text-primary);
+    }
+    .score-circle-letter {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .preview-device-card {
+      background: #0f1117;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    }
+    .device-title-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.725rem;
+      color: var(--text-tertiary);
+      margin-bottom: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 0.4rem;
+    }
+    .ios-notification {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .ios-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+    .ios-subject {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ios-preheader {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .android-notification {
+      background: #1e222d;
+      border-radius: 8px;
+      padding: 0.85rem;
+      border-left: 3px solid #4285f4;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .desktop-inbox-row {
+      display: grid;
+      grid-template-columns: 140px 1fr 60px;
+      gap: 0.75rem;
+      align-items: center;
+      padding: 0.6rem 0.75rem;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      border: 1px solid var(--border);
+    }
+    .desktop-sender {
+      font-weight: 700;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .desktop-snippet {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text-secondary);
+    }
+    .desktop-snippet strong {
+      color: var(--text-primary);
+    }
+    .checklist-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 0.5rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+    .checklist-row:last-child {
+      border-bottom: none;
+    }
+    .status-pill {
+      font-size: 0.725rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .status-pass {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .status-warn {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .status-fail {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    .tag-bubble {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-size: 0.775rem;
+      font-weight: 600;
+      margin: 0.2rem;
+    }
+    .tag-spam {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    .tag-power {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    .tag-urgency {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -48,27 +240,215 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Email Subject Line Tester</h1>
-        <p class="tool-description">Create, analyze, and manage your Email Subject Line Tester online.</p>
+        <h1>Email Subject Line Tester &amp; Grader</h1>
+        <p class="tool-description">Score email subject lines (0–100, A+ to F). Test mobile cutoffs on iPhone and Android, scan 100+ spam filter triggers, and detect urgency, power words, and sentiment.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Email Subject Line Tester</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your Email Subject Line Tester online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, email</div>
-            <div><strong>Category:</strong> digital-marketing</div>
+      <!-- Quick Preset Inspirations -->
+      <div class="action-bar" style="margin-bottom: 0.5rem; align-items: center;">
+        <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">Sample Presets:</span>
+        <button class="preset-chip" data-preset="ecommerce" style="cursor: pointer;">Flash Sale (eCommerce)</button>
+        <button class="preset-chip" data-preset="b2b" style="cursor: pointer;">B2B Product Launch</button>
+        <button class="preset-chip" data-preset="newsletter" style="cursor: pointer;">Weekly Digest</button>
+        <button class="preset-chip" data-preset="reengage" style="cursor: pointer;">Re-engagement</button>
+        <button class="preset-chip" data-preset="spammy" style="cursor: pointer; color: var(--error); border-color: rgba(239, 68, 68, 0.3);">High Spam Risk Demo</button>
+      </div>
+
+      <!-- Main Workspace -->
+      <div class="subject-tester-workspace">
+        
+        <!-- Left Column: Input and Device Previews -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          
+          <!-- Subject Input Panel -->
+          <div class="tool-panel glass-panel" style="gap: 1rem;">
+            <div class="form-group">
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <label for="input-subject" style="font-weight: 700;">Subject Line</label>
+                <span id="char-word-indicator" style="font-size: 0.8rem; font-family: monospace; color: var(--text-secondary);">0 chars | 0 words</span>
+              </div>
+              <input type="text" id="input-subject" class="form-input" style="font-size: 1.1rem; padding: 0.85rem 1rem;" placeholder="e.g. Unlock 30% off your next workspace today 🚀">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <label for="input-sender" style="font-size: 0.8rem;">Sender Name</label>
+                <input type="text" id="input-sender" class="form-input" value="ALL IN ONE Team" style="font-size: 0.875rem;">
+              </div>
+              <div class="form-group">
+                <label for="input-preheader" style="font-size: 0.8rem;">Preview / Preheader Text</label>
+                <input type="text" id="input-preheader" class="form-input" value="Exclusive access ends midnight tonight..." style="font-size: 0.875rem;">
+              </div>
+            </div>
           </div>
+
+          <!-- Device Mockup Previews -->
+          <div class="tool-panel glass-panel" style="gap: 1.25rem;">
+            <h2 class="panel-title" style="margin-bottom: 0;">Inbox Truncation Simulator</h2>
+            
+            <!-- iPhone Notification Preview -->
+            <div class="preview-device-card">
+              <div class="device-title-bar">
+                <span>Apple iOS Mail Notification</span>
+                <span>Max ~38 Chars</span>
+              </div>
+              <div class="ios-notification">
+                <div class="ios-meta">
+                  <span id="prev-ios-sender" style="font-weight: 700;">ALL IN ONE Team</span>
+                  <span>now</span>
+                </div>
+                <div class="ios-subject" id="prev-ios-subject">Your Subject Line...</div>
+                <div class="ios-preheader" id="prev-ios-preheader">Preview text...</div>
+              </div>
+            </div>
+
+            <!-- Android Gmail Notification Preview -->
+            <div class="preview-device-card">
+              <div class="device-title-bar">
+                <span>Google Android Gmail Notification</span>
+                <span>Max ~45 Chars</span>
+              </div>
+              <div class="android-notification">
+                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #9ca3af;">
+                  <span id="prev-android-sender" style="font-weight: 700; color: #ffffff;">ALL IN ONE Team</span>
+                  <span>10:42 AM</span>
+                </div>
+                <div style="font-size: 0.875rem; font-weight: 600; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="prev-android-subject">Your Subject Line...</div>
+                <div style="font-size: 0.8rem; color: #9ca3af; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="prev-android-preheader">Preview snippet...</div>
+              </div>
+            </div>
+
+            <!-- Desktop Inbox Preview -->
+            <div class="preview-device-card">
+              <div class="device-title-bar">
+                <span>Desktop Inbox (Gmail / Apple Mail)</span>
+                <span>Full Width</span>
+              </div>
+              <div class="desktop-inbox-row">
+                <div class="desktop-sender" id="prev-desktop-sender">ALL IN ONE Team</div>
+                <div class="desktop-snippet">
+                  <strong id="prev-desktop-subject">Subject Line</strong> — <span id="prev-desktop-preheader" style="color: var(--text-tertiary);">Preview text snippet</span>
+                </div>
+                <div style="font-size: 0.75rem; color: var(--text-tertiary); text-align: right;">10:42 AM</div>
+              </div>
+            </div>
+
+          </div>
+
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Column: Scores, Spam Scanner & Checklist -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          
+          <!-- Hero Score Banner -->
+          <div class="score-hero">
+            <div class="score-circle-badge">
+              <span class="score-circle-num" id="grade-score">0</span>
+              <span class="score-circle-letter" id="grade-letter">F</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.25rem; flex: 1;">
+              <span style="font-size: 0.775rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); font-weight: 700;">Overall Effectiveness Grade</span>
+              <div style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary);" id="grade-summary">Awaiting input...</div>
+              <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0; line-height: 1.4;" id="grade-advice">Type a subject line to compute performance scores.</p>
+            </div>
+          </div>
+
+          <!-- Detected Tokens Breakdown (Spam, Urgency, Power Words) -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem; gap: 0.75rem;">
+            <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.25rem; color: var(--text-primary);">
+              Trigger Words &amp; Sentiment
+            </h3>
+
+            <!-- Spam words found -->
+            <div>
+              <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; display: block; margin-bottom: 0.25rem;">Spam Filter Triggers (Penalty):</span>
+              <div id="box-spam-words" style="min-height: 28px;">
+                <span style="font-size: 0.8rem; color: var(--success);">&#10004; No spam triggers detected</span>
+              </div>
+            </div>
+
+            <!-- Urgency words found -->
+            <div style="border-top: 1px solid var(--border); padding-top: 0.5rem;">
+              <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; display: block; margin-bottom: 0.25rem;">Urgency Triggers:</span>
+              <div id="box-urgency-words" style="min-height: 28px;">
+                <span style="font-size: 0.8rem; color: var(--text-tertiary);">None detected</span>
+              </div>
+            </div>
+
+            <!-- Power words found -->
+            <div style="border-top: 1px solid var(--border); padding-top: 0.5rem;">
+              <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; display: block; margin-bottom: 0.25rem;">Power &amp; Emotion Words:</span>
+              <div id="box-power-words" style="min-height: 28px;">
+                <span style="font-size: 0.8rem; color: var(--text-tertiary);">None detected</span>
+              </div>
+            </div>
+
+            <!-- Sentiment & Emoji Stats -->
+            <div style="border-top: 1px solid var(--border); padding-top: 0.5rem; display: flex; justify-content: space-between; font-size: 0.8rem;">
+              <span>Sentiment: <strong id="val-sentiment" style="color: var(--accent);">Neutral</strong></span>
+              <span>Emoji Count: <strong id="val-emojis">0</strong></span>
+              <span>Numbers: <strong id="val-numbers">None</strong></span>
+            </div>
+          </div>
+
+          <!-- Audit Checklist -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem; gap: 0.25rem;">
+            <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary);">
+              Optimization Checklist
+            </h3>
+
+            <div class="checklist-row">
+              <div>
+                <span style="font-weight: 600; display: block;">Character Length (30-50 chars)</span>
+                <span style="font-size: 0.75rem; color: var(--text-secondary);" id="desc-char-len">Current: 0 chars</span>
+              </div>
+              <span class="status-pill status-warn" id="pill-char-len">Too Short</span>
+            </div>
+
+            <div class="checklist-row">
+              <div>
+                <span style="font-weight: 600; display: block;">Word Count (4-7 words)</span>
+                <span style="font-size: 0.75rem; color: var(--text-secondary);" id="desc-word-cnt">Current: 0 words</span>
+              </div>
+              <span class="status-pill status-warn" id="pill-word-cnt">Too Short</span>
+            </div>
+
+            <div class="checklist-row">
+              <div>
+                <span style="font-weight: 600; display: block;">Spam Trigger Filters</span>
+                <span style="font-size: 0.75rem; color: var(--text-secondary);" id="desc-spam-filter">Zero spam triggers found</span>
+              </div>
+              <span class="status-pill status-pass" id="pill-spam-filter">Pass</span>
+            </div>
+
+            <div class="checklist-row">
+              <div>
+                <span style="font-weight: 600; display: block;">Case &amp; Capitalization</span>
+                <span style="font-size: 0.75rem; color: var(--text-secondary);" id="desc-caps-filter">Normal sentence or title casing</span>
+              </div>
+              <span class="status-pill status-pass" id="pill-caps-filter">Pass</span>
+            </div>
+
+            <div class="checklist-row">
+              <div>
+                <span style="font-weight: 600; display: block;">Urgency or Power Words</span>
+                <span style="font-size: 0.75rem; color: var(--text-secondary);" id="desc-urgency-filter">Adds psychological pull</span>
+              </div>
+              <span class="status-pill status-warn" id="pill-urgency-filter">Neutral</span>
+            </div>
+
+            <div class="checklist-row">
+              <div>
+                <span style="font-weight: 600; display: block;">Punctuation &amp; Symbols</span>
+                <span style="font-size: 0.75rem; color: var(--text-secondary);" id="desc-punct-filter">Avoid excessive exclamation marks</span>
+              </div>
+              <span class="status-pill status-pass" id="pill-punct-filter">Pass</span>
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
     
     </div>
@@ -82,9 +462,9 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Email Subject Line Tester",
+    "name": "Email Subject Line Tester & Grader",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/email-subject-line-tester/",
-    "description": "Create, analyze, and manage your Email Subject Line Tester online.",
+    "description": "Test, score, and optimize email subject lines with spam word detection and mobile previews.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

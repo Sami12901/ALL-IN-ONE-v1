@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="ar" dir="rtl" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Arabic Typing - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Enhance your skills with Arabic Typing.">
-  <meta name="keywords" content="typing, keyboard, practice, free, online, tool, utility">
+  <title>Arabic Typing Trainer - مدرب الطباعة باللغة العربية - ALL IN ONE</title>
+  <meta name="description" content="تدرب على سرعة الطباعة باللغة العربية مع لوحة مفاتيح تفاعلية من اليمين لليسار (RTL). تدريبات الحروف الهجائية، التشكيل والحركات، والأمثال والعبارات الشائعة مع حساب WPM ومعدل الدقة.">
+  <meta name="keywords" content="طباعة عربية, مدرب الطباعة, سرعة الكتابة, لوحة مفاتيح عربية, كيبورد عربي, تشكيل, الحروف الهجائية, arabic typing test">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/arabic-typing/">
 
@@ -13,29 +13,414 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/arabic-typing/">
-  <meta property="og:title" content="Arabic Typing - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Enhance your skills with Arabic Typing.">
+  <meta property="og:title" content="Arabic Typing Trainer - مدرب الطباعة باللغة العربية - ALL IN ONE">
+  <meta property="og:description" content="مدرب الطباعة العربية التفاعلي مع لوحة مفاتيح بصرية وحساب السرعة والدقة في الوقت الفعلي.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta property="og:image:alt" content="Arabic Typing - ALL IN ONE">
-  <meta property="og:locale" content="en_US">
+  <meta property="og:locale" content="ar_SA">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/arabic-typing/">
-  <meta name="twitter:title" content="Arabic Typing - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Enhance your skills with Arabic Typing.">
+  <meta name="twitter:title" content="Arabic Typing Trainer - مدرب الطباعة باللغة العربية - ALL IN ONE">
+  <meta name="twitter:description" content="تدرب على الطباعة السريعة باللغة العربية مع لوحة مفاتيح تفاعلية وتدريبات الحركات والحروف.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="Arabic Typing - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;600;700;800&display=swap');
+
+    .arabic-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+      font-family: 'Cairo', var(--font-sans);
+      direction: rtl;
+      text-align: right;
+    }
+
+    /* Drill Levels Bar */
+    .levels-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.85rem;
+    }
+
+    .level-card-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.1rem;
+      text-align: right;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      position: relative;
+    }
+
+    .level-card-btn:hover {
+      border-color: var(--accent);
+      background: var(--bg-tertiary);
+      transform: translateY(-2px);
+    }
+
+    .level-card-btn.active {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.18) 0%, rgba(137, 170, 204, 0.08) 100%);
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    .level-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+
+    .level-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .level-info {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* Toolbar Options */
+    .toolbar-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.25rem;
+    }
+
+    .tags-list {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .tags-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    .tag-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.85rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: 'Cairo', sans-serif;
+    }
+
+    .tag-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    .tag-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* Live Stats */
+    .arabic-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.85rem;
+    }
+
+    .stat-pill {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .stat-pill.highlight {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.15) 0%, rgba(137, 170, 204, 0.05) 100%);
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    .stat-pill-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 0.35rem;
+    }
+
+    .stat-pill-num {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .stat-pill-sub {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      margin-top: 0.25rem;
+    }
+
+    /* RTL Typing Arena */
+    .arena-rtl {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      position: relative;
+      min-height: 220px;
+      cursor: text;
+      transition: var(--transition);
+      direction: rtl;
+      text-align: right;
+    }
+
+    .arena-rtl:focus-within, .arena-rtl.active {
+      border-color: var(--accent);
+      box-shadow: 0 8px 30px var(--accent-glow);
+    }
+
+    .arabic-text-flow {
+      font-family: 'Amiri', 'Cairo', serif;
+      font-size: 1.85rem;
+      line-height: 3.25rem;
+      color: var(--text-secondary);
+      user-select: none;
+      word-break: break-word;
+      white-space: pre-wrap;
+      max-height: 260px;
+      overflow-y: auto;
+      direction: rtl;
+      text-align: right;
+    }
+
+    .ar-char {
+      position: relative;
+      padding: 0 1px;
+      transition: color 0.08s ease, background-color 0.08s ease;
+      border-radius: 2px;
+    }
+
+    .ar-char.current {
+      color: var(--text-primary);
+      background: rgba(78, 133, 191, 0.25);
+      border-bottom: 2px solid var(--accent);
+      animation: pulse-ar 1s infinite alternate;
+    }
+
+    .ar-char.correct {
+      color: var(--success);
+    }
+
+    .ar-char.incorrect {
+      color: var(--error);
+      background: rgba(239, 68, 68, 0.18);
+      text-decoration: underline;
+    }
+
+    @keyframes pulse-ar {
+      0% { opacity: 0.6; }
+      100% { opacity: 1; }
+    }
+
+    .hidden-input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      left: -9999px;
+      top: -9999px;
+    }
+
+    .click-prompt {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(4px);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      z-index: 10;
+      transition: opacity 0.2s ease;
+    }
+
+    .click-prompt.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-top: 1.25rem;
+    }
+
+    .progress-track-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--accent-gradient);
+      transition: width 0.15s ease-out;
+    }
+
+    /* Interactive On-Screen Visual Keyboard */
+    .keyboard-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      direction: ltr; /* Render keyboard standard physical key order */
+      user-select: none;
+    }
+
+    .keyboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      direction: rtl;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .kb-row {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .kb-key {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      min-width: 44px;
+      height: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cairo', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      transition: all 0.1s ease;
+      position: relative;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .kb-key .kb-sub {
+      font-size: 0.65rem;
+      color: var(--text-tertiary);
+      position: absolute;
+      top: 3px;
+      left: 4px;
+      font-family: monospace;
+    }
+
+    .kb-key.wide {
+      min-width: 70px;
+    }
+
+    .kb-key.space {
+      min-width: 280px;
+    }
+
+    .kb-key.active-press {
+      background: var(--accent);
+      color: #fff;
+      transform: translateY(2px);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .kb-key.target-hint {
+      border-color: var(--accent);
+      background: rgba(78, 133, 191, 0.25);
+      animation: pulse-target 0.8s infinite alternate;
+    }
+
+    @keyframes pulse-target {
+      0% { box-shadow: 0 0 4px var(--accent); }
+      100% { box-shadow: 0 0 12px var(--accent); }
+    }
+
+    /* Modal Backdrop */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      max-width: 580px;
+      width: 100%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      direction: rtl;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -47,48 +432,192 @@
   <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
-      <div class="tool-header">
-        <h1>Arabic Typing</h1>
-        <p class="tool-description">Enhance your skills with Arabic Typing.</p>
+      <div class="tool-header" style="direction: rtl; text-align: right;">
+        <h1>مدرب الطباعة باللغة العربية (Arabic Typing)</h1>
+        <p class="tool-description">تدرب على الطباعة السريعة باللغة العربية من اليمين لليسار مع لوحة مفاتيح تفاعلية وتدريبات الحروف الهجائية، التشكيل، والحكم المأثورة.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Arabic Typing</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Enhance your skills with Arabic Typing.</div>
-            <div><strong>Inputs:</strong> typing, keyboard, practice</div>
-            <div><strong>Category:</strong> typing</div>
+      <!-- Workspace -->
+      <div class="arabic-workspace">
+        
+        <!-- Drill Levels -->
+        <div class="levels-bar">
+          <button type="button" class="level-card-btn active" data-mode="alphabet">
+            <span class="level-tag">المستوى الأول</span>
+            <span class="level-name">الحروف الهجائية (الأبجدية)</span>
+            <span class="level-info">من الألف إلى الياء لتثبيت مواقع الأصابع.</span>
+          </button>
+
+          <button type="button" class="level-card-btn" data-mode="harakat">
+            <span class="level-tag">المستوى الثاني</span>
+            <span class="level-name">التشكيل والحركات (Harakat)</span>
+            <span class="level-info">الفتحة، الضمة، الكسرة، السكون، التنوين والشدة.</span>
+          </button>
+
+          <button type="button" class="level-card-btn" data-mode="phrases">
+            <span class="level-tag">المستوى الثالث</span>
+            <span class="level-name">الأمثال والعبارات الشائعة</span>
+            <span class="level-info">أقوال مأثورة وحكم عربية رصينة ومتوازنة.</span>
+          </button>
+        </div>
+
+        <!-- Sub-options & Timer Toolbar -->
+        <div class="toolbar-bar">
+          <div class="tags-list" id="subLevelList">
+            <span class="tags-label">المجموعة:</span>
+            <!-- Dynamically populated -->
+          </div>
+
+          <div class="tags-list">
+            <span class="tags-label">الوقت:</span>
+            <button type="button" class="tag-btn active" data-time="30">٣٠ ثانية</button>
+            <button type="button" class="tag-btn" data-time="60">٦٠ ثانية</button>
+            <button type="button" class="tag-btn" data-time="120">١٢٠ ثانية</button>
+            <button type="button" class="tag-btn" data-time="0">النص كاملاً</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Live Arabic Stats -->
+        <div class="arabic-stats">
+          <div class="stat-pill highlight">
+            <div class="stat-pill-label">السرعة (WPM)</div>
+            <div class="stat-pill-num" id="statWpm">٠</div>
+            <div class="stat-pill-sub">كلمة / دقيقة</div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-pill-label">الدقة (Accuracy)</div>
+            <div class="stat-pill-num" id="statAccuracy">١٠٠٪</div>
+            <div class="stat-pill-sub">نسبة صحيحة</div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-pill-label">الضربات (CPM)</div>
+            <div class="stat-pill-num" id="statCpm">٠</div>
+            <div class="stat-pill-sub">حرف / دقيقة</div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-pill-label">الوقت المتبقي</div>
+            <div class="stat-pill-num" id="statTimer">٣٠ ث</div>
+            <div class="stat-pill-sub">تنازلي</div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-pill-label">الأخطاء</div>
+            <div class="stat-pill-num" id="statErrors" style="color: var(--error);">٠</div>
+            <div class="stat-pill-sub">أخطاء مطبعية</div>
+          </div>
+        </div>
+
+        <!-- Typing Arena RTL -->
+        <div class="arena-rtl" id="arenaRtl" tabindex="0">
+          <div class="click-prompt" id="clickPrompt">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"></path></svg>
+            انقر هنا أو اضغط أي مفتاح للبدء في الطباعة
+          </div>
+
+          <div class="arabic-text-flow" id="arabicTextFlow"></div>
+          <input type="text" id="hiddenInput" class="hidden-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+
+          <div class="progress-track">
+            <div class="progress-track-bar" id="progressTrackBar"></div>
+          </div>
+        </div>
+
+        <!-- Controls Row -->
+        <div class="toolbar-bar">
+          <div class="tags-list">
+            <button type="button" class="btn btn-primary" id="btnRestart">
+              🔄 إعادة المحاولة (Tab)
+            </button>
+            <button type="button" class="btn btn-secondary" id="btnNextDrill">
+              التمرين التالي &larr;
+            </button>
+          </div>
+
+          <div class="tags-list">
+            <button type="button" class="btn btn-outline" id="btnSound">
+              <span id="soundIcon">🔊</span> <span id="soundLabel">الصوت: مفعّل</span>
+            </button>
+            <a href="../achievement-badges/" class="btn btn-outline" style="text-decoration: none;">
+              🏆 غرفة الجوائز والإنجازات
+            </a>
+          </div>
+        </div>
+
+        <!-- Interactive Visual Arabic Keyboard -->
+        <div class="keyboard-card">
+          <div class="keyboard-header">
+            <span>لوحة المفاتيح التفاعلية (Arabic 101/102 Layout)</span>
+            <span style="font-size: 0.8rem; color: var(--accent);">المفتاح المضاء يوضح الحرف المستهدف</span>
+          </div>
+
+          <!-- Keyboard Rows -->
+          <div class="kb-row" id="kbRow1"></div>
+          <div class="kb-row" id="kbRow2"></div>
+          <div class="kb-row" id="kbRow3"></div>
+          <div class="kb-row" id="kbRow4"></div>
+          <div class="kb-row" id="kbRow5"></div>
+        </div>
+
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Modal -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal-card">
+      <div style="font-size: 2.5rem;">🎉</div>
+      <div>
+        <h2 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 0.25rem;">تم إكمال الاختبار بنجاح!</h2>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">إليك تفاصيل أدائك وسرعتك في الطباعة.</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.85rem;">
+        <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem;">
+          <div style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary);" id="modalWpm">٠</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary);">السرعة (WPM)</div>
+        </div>
+        <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem;">
+          <div style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary);" id="modalAcc">١٠٠٪</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary);">نسبة الدقة</div>
+        </div>
+        <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem;">
+          <div style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary);" id="modalWords">٠</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary);">الكلمات المنجزة</div>
+        </div>
+        <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem;">
+          <div style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary);" id="modalMistakes">٠</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary);">الأخطاء</div>
+        </div>
+      </div>
+
+      <div id="modalBadgesBox"></div>
+
+      <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 0.5rem;">
+        <button type="button" class="btn btn-primary" id="modalRetry">إعادة التدريب</button>
+        <button type="button" class="btn btn-secondary" id="modalNext">التمرين التالي</button>
+        <a href="../achievement-badges/" class="btn btn-outline" style="text-decoration: none;">عرض الإنجازات</a>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Arabic Typing",
+    "name": "Arabic Typing Trainer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/arabic-typing/",
-    "description": "Enhance your skills with Arabic Typing.",
-    "applicationCategory": "UtilityPage",
+    "description": "Arabic Right-to-Left typing tutor with interactive on-screen keyboard, Harakat accents, alphabet, and phrases.",
+    "applicationCategory": "EducationalApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }
   </script>
+
+  <script type="module" src="../../js/components.js"></script>
+  <script type="module" src="./script.js" defer></script>
 </body>
 </html>

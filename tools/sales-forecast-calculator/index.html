@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sales Forecast Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your Sales Forecast Calculator online.">
-  <meta name="keywords" content="marketing, digital, e-commerce, free, online, tool, utility">
+  <meta name="description" content="Project 3, 6, and 12-month future revenue, new customer count, and ARR with interactive SVG trajectory charts and exportable forecast tables.">
+  <meta name="keywords" content="sales forecast calculator, revenue projection, arr calculator, mrr growth, churn rate forecasting, interactive chart">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/sales-forecast-calculator/">
 
@@ -14,7 +14,7 @@
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/sales-forecast-calculator/">
   <meta property="og:title" content="Sales Forecast Calculator - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Create, analyze, and manage your Sales Forecast Calculator online.">
+  <meta property="og:description" content="Project 3, 6, and 12-month future revenue, new customer count, and ARR with interactive SVG trajectory charts and exportable forecast tables.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
@@ -26,14 +26,310 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/sales-forecast-calculator/">
   <meta name="twitter:title" content="Sales Forecast Calculator - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Create, analyze, and manage your Sales Forecast Calculator online.">
+  <meta name="twitter:description" content="Project 3, 6, and 12-month future revenue, new customer count, and ARR with interactive SVG trajectory charts and exportable forecast tables.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="Sales Forecast Calculator - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .forecast-workspace {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+    @media (max-width: 1080px) {
+      .forecast-workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .preset-chips-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .preset-chip-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-full);
+      padding: 0.4rem 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .preset-chip-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+    .preset-chip-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+    @media (max-width: 500px) {
+      .field-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .input-icon-group {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-affix-left {
+      position: absolute;
+      left: 0.85rem;
+      color: var(--text-tertiary);
+      font-weight: 600;
+      font-size: 0.9rem;
+      pointer-events: none;
+    }
+    .input-affix-right {
+      position: absolute;
+      right: 0.85rem;
+      color: var(--text-tertiary);
+      font-weight: 600;
+      font-size: 0.85rem;
+      pointer-events: none;
+    }
+    .input-icon-group input {
+      padding-left: 2rem;
+    }
+    .input-icon-group.suffix input {
+      padding-left: 1rem;
+      padding-right: 2.25rem;
+    }
+
+    /* Milestone Cards */
+    .milestones-deck {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    @media (max-width: 768px) {
+      .milestones-deck {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .milestone-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+    .milestone-card:hover {
+      border-color: rgba(var(--accent-rgb), 0.4);
+      transform: translateY(-2px);
+    }
+    .milestone-card.highlight {
+      background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.14) 0%, var(--bg-tertiary) 100%);
+      border-color: var(--accent);
+      box-shadow: 0 4px 16px var(--accent-glow);
+    }
+    .milestone-badge {
+      font-size: 0.725rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+    }
+    .milestone-value {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .milestone-arr {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .milestone-cust {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Interactive SVG Chart Container */
+    .chart-panel-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    .chart-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .chart-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .chart-legend-box {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.775rem;
+      color: var(--text-secondary);
+    }
+    .legend-bullet {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .svg-chart-container {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      user-select: none;
+    }
+    .svg-chart-container svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .chart-tooltip {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 0.85rem;
+      font-size: 0.8rem;
+      color: #ffffff;
+      pointer-events: none;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+      z-index: 30;
+      display: none;
+      white-space: nowrap;
+      transform: translate(-50%, -125%);
+    }
+
+    /* Projection Data Table */
+    .table-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .table-card-header {
+      padding: 1rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .table-scroll-wrap {
+      max-height: 380px;
+      overflow-y: auto;
+      overflow-x: auto;
+    }
+    .forecast-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.825rem;
+    }
+    .forecast-table th {
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      font-weight: 700;
+      padding: 0.75rem 0.85rem;
+      text-align: right;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .forecast-table th:first-child {
+      text-align: left;
+    }
+    .forecast-table td {
+      padding: 0.65rem 0.85rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      text-align: right;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+    .forecast-table td:first-child {
+      text-align: left;
+      font-weight: 600;
+    }
+    .forecast-table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .forecast-table tbody tr.row-m3,
+    .forecast-table tbody tr.row-m6,
+    .forecast-table tbody tr.row-m12 {
+      background: rgba(var(--accent-rgb), 0.08);
+      font-weight: 700;
+    }
+    .tag-milestone {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: var(--radius-full);
+      background: var(--accent);
+      color: #ffffff;
+      margin-left: 0.35rem;
+    }
+
+    .summary-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      padding: 0.85rem 1.25rem;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    .summary-strip strong {
+      color: var(--text-primary);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -49,28 +345,198 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Sales Forecast Calculator</h1>
-        <p class="tool-description">Create, analyze, and manage your Sales Forecast Calculator online.</p>
+        <p class="tool-description">
+          Project 3, 6, and 12-month revenue growth trajectories, annualized run rates (ARR), and customer acquisition volumes with churn and seasonality dynamics.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Sales Forecast Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your Sales Forecast Calculator online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, e-commerce</div>
-            <div><strong>Category:</strong> digital-marketing</div>
+      <!-- Preset Scenarios -->
+      <div class="preset-chips-wrap">
+        <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); display: inline-flex; align-items: center; margin-right: 0.25rem;">SCENARIOS:</span>
+        <button type="button" class="preset-chip-btn active" data-scenario="steady">🚀 Steady SaaS (8% Growth)</button>
+        <button type="button" class="preset-chip-btn" data-scenario="aggressive">⚡ Aggressive Scale (15% Growth)</button>
+        <button type="button" class="preset-chip-btn" data-scenario="organic">🌱 Conservative Organic (4% Growth)</button>
+        <button type="button" class="preset-chip-btn" data-scenario="turnaround">🛡️ High Churn Turnaround</button>
+      </div>
+
+      <!-- Main Workspace Layout -->
+      <div class="forecast-workspace">
+        
+        <!-- Controls Panel -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+            <span>Growth Drivers</span>
+          </div>
+
+          <div class="form-group">
+            <label for="input-base-mrr">Starting Monthly Revenue ($)</label>
+            <div class="input-icon-group">
+              <span class="input-affix-left">$</span>
+              <input type="number" id="input-base-mrr" class="form-input" min="0" step="500" value="25000">
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="form-group">
+              <label for="input-growth-rate">Monthly Growth Rate (%)</label>
+              <div class="input-icon-group suffix">
+                <input type="number" id="input-growth-rate" class="form-input" min="0" max="100" step="0.5" value="8.0">
+                <span class="input-affix-right">%</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="input-churn-rate">Monthly Churn Rate (%)</label>
+              <div class="input-icon-group suffix">
+                <input type="number" id="input-churn-rate" class="form-input" min="0" max="50" step="0.25" value="1.5">
+                <span class="input-affix-right">%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="form-group">
+              <label for="input-sales-cycle">Sales Cycle Length</label>
+              <div class="input-icon-group suffix">
+                <input type="number" id="input-sales-cycle" class="form-input" min="1" max="365" step="1" value="30">
+                <span class="input-affix-right">days</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="input-arpu">Avg. Customer Value / ARPU</label>
+              <div class="input-icon-group">
+                <span class="input-affix-left">$</span>
+                <input type="number" id="input-arpu" class="form-input" min="1" step="25" value="250">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="select-seasonality">Seasonality Profile</label>
+            <select id="select-seasonality" class="form-select">
+              <option value="flat">Standard / Flat (Constant MoM)</option>
+              <option value="q4surge" selected>Q4 Holiday / E-Commerce Surge (+25% Q4)</option>
+              <option value="b2bcycle">B2B Fiscal Year-End (Q2/Q4 Push, Summer Slowdown)</option>
+              <option value="springpeak">Spring Peak (Q2 Surge)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="range-timeline">Projection Horizon: <strong id="lbl-horizon">12 Months</strong></label>
+            <input type="range" id="range-timeline" class="range-slider" min="6" max="24" step="3" value="12">
+          </div>
+
+          <div class="action-bar" style="margin-top: 1rem;">
+            <button type="button" id="btn-copy-forecast" class="btn btn-secondary" style="flex: 1;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy Summary
+            </button>
+            <button type="button" id="btn-export-csv" class="btn btn-secondary" style="flex: 1;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Export CSV
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Output Forecast & Visualization Deck -->
+        <div class="tool-panel glass-panel">
+          
+          <!-- Milestones Deck (3M, 6M, 12M) -->
+          <div class="milestones-deck">
+            <div class="milestone-card" id="card-m3">
+              <div class="milestone-badge">Month 3 Projected</div>
+              <div class="milestone-value" id="val-m3-rev">$30,248</div>
+              <div class="milestone-arr" id="val-m3-arr">ARR Run Rate: $362,976</div>
+              <div class="milestone-cust" id="val-m3-cust">121 Active Customers (+21 new)</div>
+            </div>
+
+            <div class="milestone-card" id="card-m6">
+              <div class="milestone-badge">Month 6 Projected</div>
+              <div class="milestone-value" id="val-m6-rev">$36,598</div>
+              <div class="milestone-arr" id="val-m6-arr">ARR Run Rate: $439,176</div>
+              <div class="milestone-cust" id="val-m6-cust">146 Active Customers (+46 new)</div>
+            </div>
+
+            <div class="milestone-card highlight" id="card-m12">
+              <div class="milestone-badge">Month 12 Milestone ⭐</div>
+              <div class="milestone-value" id="val-m12-rev">$55,142</div>
+              <div class="milestone-arr" id="val-m12-arr">ARR Run Rate: $661,704</div>
+              <div class="milestone-cust" id="val-m12-cust">221 Active Customers (+121 new)</div>
+            </div>
+          </div>
+
+          <!-- Interactive SVG Line Chart -->
+          <div class="chart-panel-card">
+            <div class="chart-panel-header">
+              <div class="chart-title">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                <span>Revenue Growth Trajectory Curve</span>
+              </div>
+              <div class="chart-legend-box">
+                <div><span class="legend-bullet" style="background: var(--accent);"></span> Monthly Revenue</div>
+                <div><span class="legend-bullet" style="background: rgba(255,255,255,0.3);"></span> Base Baseline</div>
+              </div>
+            </div>
+
+            <div class="svg-chart-container" id="svg-chart-box">
+              <svg id="forecast-svg" preserveAspectRatio="none" viewBox="0 0 650 260">
+                <!-- SVG dynamically injected -->
+              </svg>
+              <div id="chart-tooltip" class="chart-tooltip"></div>
+            </div>
+          </div>
+
+          <!-- Month-by-Month Projection Data Table -->
+          <div class="table-card">
+            <div class="table-card-header">
+              <span style="font-weight: 700; font-size: 0.9rem; color: var(--text-primary);">Detailed Trajectory Projection Table</span>
+              <button type="button" id="btn-copy-table" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.775rem;">
+                Copy Table
+              </button>
+            </div>
+            <div class="table-scroll-wrap">
+              <table class="forecast-table" id="forecast-table">
+                <thead>
+                  <tr>
+                    <th>Month</th>
+                    <th>Net Revenue</th>
+                    <th>Annualized Run Rate (ARR)</th>
+                    <th>Active Customers</th>
+                    <th>New Customers</th>
+                    <th>MoM Growth</th>
+                  </tr>
+                </thead>
+                <tbody id="table-body">
+                  <!-- Dynamically rendered rows -->
+                </tbody>
+              </table>
+            </div>
+            <div class="summary-strip" id="table-summary-strip">
+              <div>Cumulative Projected Revenue: <strong id="lbl-total-cum">$486,210</strong></div>
+              <div>Net Expansion: <strong id="lbl-net-expansion">+120.5%</strong></div>
+              <div>Customer Net Growth: <strong id="lbl-net-cust">+121 customers</strong></div>
+            </div>
+          </div>
+
+        </div>
       </div>
-    
     </div>
   </main>
 
@@ -84,8 +550,8 @@
     "@type": "WebApplication",
     "name": "Sales Forecast Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/sales-forecast-calculator/",
-    "description": "Create, analyze, and manage your Sales Forecast Calculator online.",
-    "applicationCategory": "UtilityPage",
+    "description": "Project 3, 6, and 12-month future revenue, new customer count, and ARR with interactive SVG trajectory charts and exportable forecast tables.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Achievement Badges - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Enhance your skills with Achievement Badges.">
-  <meta name="keywords" content="typing, keyboard, practice, free, online, tool, utility">
+  <title>Achievement Badges & Trophy Room - Gamified Typing Showcase - ALL IN ONE</title>
+  <meta name="description" content="Gamified typing trophy room and achievement tracker. Track 24 collectible badges across Speed, Accuracy, Consistency, Polyglot, and Endurance. Level up and download your verified Trophy Card.">
+  <meta name="keywords" content="typing achievements, typing badges, gamified typing, typing speed trophy, polyglot typist, typing level, typing certificate card">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/achievement-badges/">
 
@@ -13,8 +13,8 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/achievement-badges/">
-  <meta property="og:title" content="Achievement Badges - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Enhance your skills with Achievement Badges.">
+  <meta property="og:title" content="Achievement Badges & Trophy Room - ALL IN ONE">
+  <meta property="og:description" content="Track 24 collectible typing badges across 5 categories. Calculate player level, XP, and download your luxury trophy passport card.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
@@ -25,17 +25,376 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/achievement-badges/">
-  <meta name="twitter:title" content="Achievement Badges - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Enhance your skills with Achievement Badges.">
+  <meta name="twitter:title" content="Achievement Badges & Trophy Room - ALL IN ONE">
+  <meta name="twitter:description" content="Gamified typing trophy room, XP, levels, and 1-click trophy card export.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="Achievement Badges - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+
+  <style>
+    /* Trophy Room Luxury Design */
+    .trophy-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Player Profile Hero Banner */
+    .player-banner {
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.15) 0%, rgba(20, 25, 35, 0.95) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 2rem;
+      align-items: center;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+    }
+
+    @media (max-width: 850px) {
+      .player-banner {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
+
+    .player-avatar-circle {
+      width: 90px;
+      height: 90px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--accent) 0%, #1e3a8a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.8rem;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 25px var(--accent-glow);
+      margin: 0 auto;
+    }
+
+    .player-info-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .player-rank-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 850px) {
+      .player-rank-title {
+        justify-content: center;
+      }
+    }
+
+    .level-chip {
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 0.2rem 0.75rem;
+      border-radius: var(--radius-full);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .xp-bar-container {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .xp-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.35rem;
+    }
+
+    .xp-track {
+      width: 100%;
+      height: 10px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .xp-fill {
+      height: 100%;
+      width: 25%;
+      background: linear-gradient(90deg, #3b82f6, #10b981);
+      transition: width 0.4s ease-out;
+    }
+
+    .banner-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    /* Stats Quick Overview */
+    .stats-overview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+    }
+
+    .metric-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .metric-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .metric-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-secondary);
+      letter-spacing: 0.05em;
+      margin-bottom: 0.4rem;
+    }
+
+    .metric-value {
+      font-size: 2.1rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .metric-sub {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      margin-top: 0.3rem;
+    }
+
+    /* Category Filter Nav */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.25rem;
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .cat-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.4rem 1rem;
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .cat-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    .cat-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* Badges Showcase Grid */
+    .badges-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .badge-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      position: relative;
+      cursor: pointer;
+      transition: var(--transition);
+      overflow: hidden;
+    }
+
+    .badge-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .badge-card.unlocked {
+      border-color: rgba(245, 158, 11, 0.4);
+      background: linear-gradient(145deg, rgba(245, 158, 11, 0.05) 0%, var(--bg-secondary) 100%);
+    }
+
+    .badge-card.unlocked:hover {
+      border-color: #f59e0b;
+      box-shadow: 0 8px 30px rgba(245, 158, 11, 0.15);
+    }
+
+    .badge-card.locked {
+      opacity: 0.65;
+      filter: grayscale(0.85);
+    }
+
+    .badge-card.locked:hover {
+      opacity: 0.9;
+      filter: grayscale(0.3);
+    }
+
+    .badge-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .badge-icon-box {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .badge-card.unlocked .badge-icon-box {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(217, 119, 6, 0.1) 100%);
+      border-color: rgba(245, 158, 11, 0.5);
+    }
+
+    .badge-status-pill {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.25rem 0.6rem;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-card.unlocked .badge-status-pill {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-card.locked .badge-status-pill {
+      background: var(--bg-tertiary);
+      color: var(--text-tertiary);
+      border: 1px solid var(--border);
+    }
+
+    .badge-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.2rem;
+    }
+
+    .badge-desc {
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    .badge-footer-meta {
+      font-size: 0.725rem;
+      color: var(--text-tertiary);
+      border-top: 1px solid var(--border);
+      padding-top: 0.6rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .badge-category-tag {
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    /* Modal Backdrop */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Hidden Canvas for Trophy Card Generation */
+    #trophyCanvas {
+      display: none;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -48,47 +407,154 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Achievement Badges</h1>
-        <p class="tool-description">Enhance your skills with Achievement Badges.</p>
+        <h1>Typing Trophy Room & Achievements</h1>
+        <p class="tool-description">Track your typing mastery across English, Bangla, Arabic, and Hindi. Unlock 24 collectible badges, level up your typist rank, and download your verified trophy passport card.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Achievement Badges</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Enhance your skills with Achievement Badges.</div>
-            <div><strong>Inputs:</strong> typing, keyboard, practice</div>
-            <div><strong>Category:</strong> typing</div>
+      <!-- Workspace -->
+      <div class="trophy-workspace">
+
+        <!-- Player Profile Banner -->
+        <div class="player-banner">
+          <div class="player-avatar-circle" id="playerAvatar">👑</div>
+
+          <div class="player-info-meta">
+            <div class="player-rank-title">
+              <span id="playerTitle">Novice Typist</span>
+              <span class="level-chip" id="playerLevelChip">Level 1</span>
+            </div>
+            <div class="xp-bar-container">
+              <div class="xp-label-row">
+                <span id="playerXpText">0 / 100 XP</span>
+                <span id="nextLevelText">Next: Level 2</span>
+              </div>
+              <div class="xp-track">
+                <div class="xp-fill" id="xpFill"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="banner-actions">
+            <button type="button" class="btn btn-primary" id="btnDownloadCard">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.35rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download Trophy Card
+            </button>
+            <button type="button" class="btn btn-outline" id="btnSimulateStats">
+              ⚡ Demo Data
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Stats Overview -->
+        <div class="stats-overview">
+          <div class="metric-card">
+            <div class="metric-title">Badges Unlocked</div>
+            <div class="metric-value" id="statBadgesCount">0 / 24</div>
+            <div class="metric-sub" id="statBadgesPercent">0% Completed</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">Highest Speed</div>
+            <div class="metric-value" id="statMaxWpm">0</div>
+            <div class="metric-sub">Peak WPM</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">Best Accuracy</div>
+            <div class="metric-value" id="statBestAcc">0%</div>
+            <div class="metric-sub">Precision Record</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">Total Words</div>
+            <div class="metric-value" id="statTotalWords">0</div>
+            <div class="metric-sub">Words Completed</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">Active Streak</div>
+            <div class="metric-value" id="statStreak">1</div>
+            <div class="metric-sub">Consecutive Days</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">Languages</div>
+            <div class="metric-value" id="statLangCount">0 / 4</div>
+            <div class="metric-sub">Practiced</div>
+          </div>
+        </div>
+
+        <!-- Category Filter Bar -->
+        <div class="filter-bar">
+          <div class="filter-buttons" id="categoryFilters">
+            <button type="button" class="cat-btn active" data-filter="all">All (24)</button>
+            <button type="button" class="cat-btn" data-filter="Speed">Speed</button>
+            <button type="button" class="cat-btn" data-filter="Accuracy">Accuracy</button>
+            <button type="button" class="cat-btn" data-filter="Polyglot">Polyglot</button>
+            <button type="button" class="cat-btn" data-filter="Consistency">Consistency</button>
+            <button type="button" class="cat-btn" data-filter="Endurance">Endurance</button>
+            <button type="button" class="cat-btn" data-filter="unlocked">Unlocked</button>
+            <button type="button" class="cat-btn" data-filter="locked">Locked</button>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="button" class="btn btn-outline" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;" id="btnResetData">
+              Reset Progress
+            </button>
+          </div>
+        </div>
+
+        <!-- Badges Showcase Grid -->
+        <div class="badges-grid" id="badgesGrid">
+          <!-- Dynamically populated 24 collectible badges -->
+        </div>
+
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Detailed Badge Modal -->
+  <div class="modal-backdrop" id="badgeModalBackdrop">
+    <div class="modal-card">
+      <div style="font-size: 3.5rem;" id="modalBadgeIcon">🏆</div>
+      <div>
+        <h2 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 0.35rem;" id="modalBadgeTitle">Badge Name</h2>
+        <div style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1rem;">
+          <span class="level-chip" id="modalBadgeCategory">Speed</span>
+          <span class="badge-status-pill" id="modalBadgeStatus">Unlocked</span>
+        </div>
+        <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;" id="modalBadgeDesc">Description of achievement.</p>
+      </div>
+
+      <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem; font-size: 0.85rem; text-align: left;">
+        <div style="color: var(--text-primary); font-weight: 700; margin-bottom: 0.35rem;">Unlock Criteria:</div>
+        <div style="color: var(--text-secondary);" id="modalBadgeCriteria">Requirements to earn this collectible badge.</div>
+        <div style="margin-top: 0.65rem; color: var(--accent); font-weight: 600;" id="modalBadgeDate">Date Unlocked: N/A</div>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem; justify-content: center;">
+        <button type="button" class="btn btn-primary" id="modalCloseBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden Canvas for Trophy Card Generation -->
+  <canvas id="trophyCanvas" width="1200" height="630"></canvas>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Achievement Badges",
+    "name": "Typing Achievement Badges & Trophy Room",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/achievement-badges/",
-    "description": "Enhance your skills with Achievement Badges.",
-    "applicationCategory": "UtilityPage",
+    "description": "Gamified typing trophy room, XP, levels, and 24 collectible badges across 5 categories.",
+    "applicationCategory": "EducationalApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }
   </script>
+
+  <script type="module" src="../../js/components.js"></script>
+  <script type="module" src="./script.js" defer></script>
 </body>
 </html>

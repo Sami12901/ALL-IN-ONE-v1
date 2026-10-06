@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UTM Analyzer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your UTM Analyzer online.">
-  <meta name="keywords" content="marketing, digital, analytics, free, online, tool, utility">
+  <title>UTM Analyzer & Campaign Link Auditor - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Validate, parse, and audit marketing campaign URLs with UTM parameter syntax checks, health score grading, auto-fix sanitization, and QR code generation.">
+  <meta name="keywords" content="utm analyzer, utm builder, campaign link validator, utm parameter checker, google analytics utm auditor, qr code generator">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/utm-analyzer/">
 
@@ -13,8 +13,8 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/utm-analyzer/">
-  <meta property="og:title" content="UTM Analyzer - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Create, analyze, and manage your UTM Analyzer online.">
+  <meta property="og:title" content="UTM Analyzer & Campaign Link Auditor - Free Online Tool - ALL IN ONE">
+  <meta property="og:description" content="Validate, parse, and audit marketing campaign URLs with UTM parameter syntax checks, health score grading, auto-fix sanitization, and QR code generation.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
@@ -25,15 +25,242 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/utm-analyzer/">
-  <meta name="twitter:title" content="UTM Analyzer - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Create, analyze, and manage your UTM Analyzer online.">
+  <meta name="twitter:title" content="UTM Analyzer & Campaign Link Auditor - Free Online Tool - ALL IN ONE">
+  <meta name="twitter:description" content="Validate, parse, and audit marketing campaign URLs with UTM parameter syntax checks, health score grading, auto-fix sanitization, and QR code generation.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="UTM Analyzer - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .utm-workspace {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+    @media (max-width: 1024px) {
+      .utm-workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .sample-links-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .sample-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.8rem;
+      font-size: 0.775rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .sample-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    /* URL Input Area */
+    .url-input-box {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+    .url-textarea {
+      width: 100%;
+      min-height: 85px;
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-family: monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      resize: vertical;
+      transition: var(--transition);
+    }
+    .url-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    /* Health Grade Card */
+    .health-summary-banner {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .health-score-circle {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+    .score-badge-large {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      font-weight: 800;
+      background: rgba(16, 185, 129, 0.15);
+      border: 2px solid #10b981;
+      color: #10b981;
+      flex-shrink: 0;
+    }
+    .score-badge-large.warning {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: #f59e0b;
+      color: #f59e0b;
+    }
+    .score-badge-large.danger {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+    .health-text-meta h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+    .health-text-meta p {
+      font-size: 0.775rem;
+      color: var(--text-secondary);
+    }
+
+    /* Parameters Table */
+    .param-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.825rem;
+      margin-top: 0.5rem;
+    }
+    .param-table th {
+      padding: 0.6rem 0.75rem;
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      text-align: left;
+      font-weight: 700;
+      border-bottom: 1px solid var(--border);
+    }
+    .param-table td {
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      vertical-align: top;
+    }
+    .param-key-tag {
+      font-family: monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .param-val-text {
+      font-family: monospace;
+      font-size: 0.8rem;
+      word-break: break-all;
+      color: var(--text-primary);
+    }
+
+    /* Diagnostics Checklist */
+    .audit-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    .audit-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 0.85rem;
+      font-size: 0.8rem;
+      line-height: 1.4;
+    }
+    .audit-item.pass {
+      border-left: 3px solid #10b981;
+    }
+    .audit-item.warn {
+      border-left: 3px solid #f59e0b;
+    }
+    .audit-item.fail {
+      border-left: 3px solid #ef4444;
+    }
+    .audit-icon {
+      font-size: 0.95rem;
+      line-height: 1;
+      margin-top: 1px;
+    }
+
+    /* QR Code & Canvas Card */
+    .qr-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 1rem;
+    }
+    .canvas-wrap {
+      background: #ffffff;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      display: inline-flex;
+    }
+    #qr-canvas {
+      width: 170px;
+      height: 170px;
+      display: block;
+    }
+
+    .sanitized-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      font-family: monospace;
+      font-size: 0.775rem;
+      word-break: break-all;
+      color: var(--text-primary);
+      margin-top: 0.75rem;
+      position: relative;
+    }
+  </style>
+
+  <script src="../../assets/lib/qrious.min.js"></script>
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -48,29 +275,131 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>UTM Analyzer</h1>
-        <p class="tool-description">Create, analyze, and manage your UTM Analyzer online.</p>
+        <h1>UTM Analyzer & Campaign Link Auditor</h1>
+        <p class="tool-description">
+          Parse, validate, and debug marketing tracking URLs. Detect syntax bugs, inconsistent casing, spaces, and missing parameters. Automatically sanitize URLs and generate high-res QR codes.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>UTM Analyzer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your UTM Analyzer online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, analytics</div>
-            <div><strong>Category:</strong> digital-marketing</div>
+      <!-- Quick Samples Bar -->
+      <div class="sample-links-bar">
+        <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); display: inline-flex; align-items: center; margin-right: 0.25rem;">TRY SAMPLES:</span>
+        <button type="button" class="sample-btn" data-sample="google">🔍 Google Search Ads</button>
+        <button type="button" class="sample-btn" data-sample="facebook">📱 Facebook Retargeting</button>
+        <button type="button" class="sample-btn" data-sample="newsletter">✉️ Email Newsletter</button>
+        <button type="button" class="sample-btn" data-sample="flawed" style="border-color: rgba(239, 68, 68, 0.4);">⚠️ Buggy Link (Spaces & Mixed Case)</button>
+      </div>
+
+      <!-- Main Workspace -->
+      <div class="utm-workspace">
+        
+        <!-- Left: URL Input & Parsed Parameters Panel -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+            <span>Marketing Campaign URL</span>
+          </div>
+
+          <div class="form-group">
+            <label for="input-url">Paste Target URL with UTM Parameters</label>
+            <div class="url-input-box">
+              <textarea id="input-url" class="url-textarea" placeholder="https://yourdomain.com/landing?utm_source=google&utm_medium=cpc&utm_campaign=summer_sale&utm_term=shoes&utm_content=banner_v1">https://yourdomain.com/pricing?utm_source=google&utm_medium=cpc&utm_campaign=summer_sale_2026&utm_term=saas+pricing&utm_content=hero_cta</textarea>
+            </div>
+          </div>
+
+          <div class="action-bar" style="margin-bottom: 1.25rem;">
+            <button type="button" id="btn-autofix" class="btn btn-primary" style="flex: 1;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+              </svg>
+              Auto-Fix & Sanitize URL
+            </button>
+            <button type="button" id="btn-copy-clean" class="btn btn-secondary" style="flex: 1;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy Clean URL
+            </button>
+          </div>
+
+          <!-- Parsed Parameters Table -->
+          <div style="font-weight: 700; font-size: 0.85rem; color: var(--text-primary); margin-bottom: 0.35rem; display: flex; justify-content: space-between;">
+            <span>Detected Query Parameters (<span id="param-count">5</span>)</span>
+            <span id="param-security-tag" style="color: #10b981; font-size: 0.75rem;">🔒 HTTPS Secure</span>
+          </div>
+
+          <table class="param-table">
+            <thead>
+              <tr>
+                <th style="width: 32%;">Parameter</th>
+                <th>Decoded Value</th>
+                <th style="width: 20%; text-align: right;">Status</th>
+              </tr>
+            </thead>
+            <tbody id="params-table-body">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+
+          <!-- Base URL details -->
+          <div style="margin-top: 1rem; padding: 0.75rem; background: var(--bg-secondary); border-radius: var(--radius-sm); border: 1px solid var(--border); font-size: 0.775rem;">
+            <div style="color: var(--text-secondary); margin-bottom: 0.25rem;"><strong>Base Destination:</strong> <span id="lbl-base-url" style="color: var(--text-primary); font-family: monospace;">https://yourdomain.com/pricing</span></div>
+            <div style="color: var(--text-secondary);"><strong>Target Path:</strong> <span id="lbl-path" style="color: var(--text-primary); font-family: monospace;">/pricing</span></div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right: Audit Health Score, Checklist & QR Code Deck -->
+        <div class="tool-panel glass-panel">
+          
+          <!-- Health Summary Banner -->
+          <div class="health-summary-banner">
+            <div class="health-score-circle">
+              <div class="score-badge-large" id="badge-score">100</div>
+              <div class="health-text-meta">
+                <h3 id="lbl-score-verdict" style="color: #10b981;">Clean & Ready</h3>
+                <p id="lbl-score-sub">All recommended GA4 tracking standards satisfied.</p>
+              </div>
+            </div>
+            <button type="button" id="btn-copy-report" class="btn btn-secondary" style="font-size: 0.775rem; padding: 0.4rem 0.85rem;">
+              Copy Audit Report
+            </button>
+          </div>
+
+          <!-- Audit Diagnostics Findings Checklist -->
+          <div style="font-weight: 700; font-size: 0.85rem; color: var(--text-primary);">
+            Syntax & Attribution Quality Audit
+          </div>
+
+          <div class="audit-list" id="audit-list">
+            <!-- Dynamically populated checklist -->
+          </div>
+
+          <!-- Scannable QR Code Canvas Box -->
+          <div class="qr-card" style="margin-top: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+              <span style="font-weight: 700; font-size: 0.85rem; color: var(--text-primary);">
+                📱 Instant Scannable QR Code
+              </span>
+              <button type="button" id="btn-download-qr" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.35rem 0.75rem;">
+                Download PNG
+              </button>
+            </div>
+
+            <div class="canvas-wrap">
+              <canvas id="qr-canvas" width="180" height="180"></canvas>
+            </div>
+
+            <p style="font-size: 0.75rem; color: var(--text-secondary); max-width: 320px; line-height: 1.4;">
+              Scan with your smartphone camera to test mobile UTM campaign routing, app deep-linking, and analytics attribution.
+            </p>
+          </div>
+
+        </div>
       </div>
-    
     </div>
   </main>
 
@@ -82,10 +411,10 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "UTM Analyzer",
+    "name": "UTM Analyzer & Campaign Link Auditor",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/utm-analyzer/",
-    "description": "Create, analyze, and manage your UTM Analyzer online.",
-    "applicationCategory": "UtilityPage",
+    "description": "Validate, parse, and audit marketing campaign URLs with UTM parameter syntax checks, health score grading, auto-fix sanitization, and QR code generation.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

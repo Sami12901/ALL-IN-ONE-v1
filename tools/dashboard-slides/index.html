@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Slides - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create Revenue, Sales, and Business KPI dashboard slides.">
-  <meta name="keywords" content="slide, presentation, pitch, deck, dashboard slides, free, online, tool, utility">
+  <title>Dashboard Slides - Executive KPI Slide Presentation Builder - ALL IN ONE</title>
+  <meta name="description" content="Executive KPI slide presentation builder. Design 2x2, Hero 1+2, and multi-column KPI dashboard slides with interactive themes and SVG/HTML/PNG export.">
+  <meta name="keywords" content="dashboard slides, executive kpi slides, pitch deck metrics, sparkline presentation cards, business slide builder, svg slide export">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/dashboard-slides/">
 
@@ -13,79 +13,497 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/dashboard-slides/">
-  <meta property="og:title" content="Dashboard Slides - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Create Revenue, Sales, and Business KPI dashboard slides.">
+  <meta property="og:title" content="Dashboard Slides - Executive KPI Slide Builder">
+  <meta property="og:description" content="Build executive KPI presentation slides with flexible grids, sparklines, and 1-click HTML/SVG/PNG export.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="Dashboard Slides - ALL IN ONE">
-  <meta property="og:locale" content="en_US">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/dashboard-slides/">
-  <meta name="twitter:title" content="Dashboard Slides - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Create Revenue, Sales, and Business KPI dashboard slides.">
+  <meta name="twitter:title" content="Dashboard Slides - ALL IN ONE">
+  <meta name="twitter:description" content="Build and present executive KPI dashboard slides with interactive themes and vector exports.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="Dashboard Slides - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .dash-layout-grid {
+      display: grid;
+      grid-template-columns: 410px 1fr;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+    @media (max-width: 1100px) {
+      .dash-layout-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Layout Preset Chips */
+    .layout-picker-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .layout-picker-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.65rem 0.25rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+    }
+    .layout-picker-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .layout-picker-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+    .layout-picker-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Cards Manager Accordion / List */
+    .card-list-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      max-height: 380px;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+    .kpi-config-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      position: relative;
+    }
+    .kpi-config-card.active-editing {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+    .kpi-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .kpi-card-num-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* 16:9 Presentation Stage */
+    .slide-preview-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .slide-viewport-outer {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 ratio */
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border);
+      background: #090d16;
+    }
+    .slide-viewport-inner {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 5% 6%;
+      box-sizing: border-box;
+      transition: background 0.3s ease, color 0.3s ease;
+      user-select: text;
+    }
+
+    /* Slide Themes */
+    .theme-dark-glass {
+      background: radial-gradient(circle at 10% 20%, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98)),
+                  linear-gradient(135deg, #090d16 0%, #0f172a 100%);
+      color: #f8fafc;
+    }
+    .theme-midnight-navy {
+      background: radial-gradient(circle at 80% 10%, rgba(59, 130, 246, 0.15), transparent 50%),
+                  linear-gradient(135deg, #081226 0%, #030814 100%);
+      color: #f0f9ff;
+    }
+    .theme-obsidian-gold {
+      background: radial-gradient(circle at 90% 20%, rgba(212, 175, 55, 0.15), transparent 50%),
+                  linear-gradient(135deg, #0d0d0d 0%, #191610 100%);
+      color: #fdfbf7;
+    }
+    .theme-clean-light {
+      background: radial-gradient(circle at 50% 0%, #ffffff, #f1f5f9 100%);
+      color: #0f172a;
+    }
+
+    /* KPI Grid Layout Variations inside Slide Canvas */
+    .slide-grid-container {
+      display: grid;
+      gap: 1.25rem;
+      width: 100%;
+      flex: 1;
+      margin: 1.25rem 0;
+      align-items: stretch;
+    }
+
+    /* 2x2 Grid */
+    .grid-mode-2x2 {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+    }
+
+    /* 1+2 Hero Layout */
+    .grid-mode-1plus2 {
+      grid-template-columns: 1.2fr 1fr;
+      grid-template-rows: 1fr 1fr;
+    }
+    .grid-mode-1plus2 .slide-card-item:first-child {
+      grid-row: span 2;
+    }
+
+    /* 3-Column Metrics */
+    .grid-mode-3col {
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: 1fr;
+    }
+
+    /* 4-Column Metric Bar */
+    .grid-mode-4col {
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: 1fr;
+    }
+
+    /* Slide KPI Card Element */
+    .slide-card-item {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border-radius: var(--radius-md);
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .theme-clean-light .slide-card-item {
+      background: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    }
+    .theme-obsidian-gold .slide-card-item {
+      border-color: rgba(212, 175, 55, 0.2);
+    }
+
+    .slide-card-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      opacity: 0.75;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.4rem;
+    }
+
+    .slide-card-main-val {
+      font-family: 'Instrument Serif', serif, Inter;
+      font-size: 2.5rem;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    .grid-mode-1plus2 .slide-card-item:first-child .slide-card-main-val {
+      font-size: 3.5rem;
+    }
+
+    .slide-trend-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 9999px;
+      width: fit-content;
+    }
+    .trend-pos {
+      background: rgba(16, 185, 129, 0.18);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .trend-neg {
+      background: rgba(239, 68, 68, 0.18);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    .trend-neutral {
+      background: rgba(148, 163, 184, 0.18);
+      color: #94a3b8;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    .sparkline-svg {
+      width: 100%;
+      height: 38px;
+      margin: 0.5rem 0;
+      overflow: visible;
+    }
+
+    .slide-card-subtext {
+      font-size: 0.75rem;
+      opacity: 0.65;
+    }
+
+    /* Fullscreen Modal Preview Mode */
+    .fullscreen-overlay {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .fullscreen-overlay .slide-viewport-outer {
+      max-width: 1600px;
+      width: 100%;
+    }
+    .fullscreen-exit-btn {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      z-index: 100000;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
+    <div class="container tool-container" style="max-width: 1440px;">
       <div class="tool-header">
-        <h1>Dashboard Slides</h1>
-        <p class="tool-description">Create Revenue, Sales, and Business KPI dashboard slides.</p>
-      </div>
-
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Dashboard Slides</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create Revenue, Sales, and Business KPI dashboard slides.</div>
-            <div><strong>Inputs:</strong> slide, presentation, pitch, deck, dashboard slides</div>
-            <div><strong>Category:</strong> slide</div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800; font-size: 2.75rem;">Dashboard Slides</h1>
+            <p class="tool-description">Executive KPI slide presentation builder. Design 2x2, Hero 1+2, and multi-column KPI slides with live sparklines and presentation mode.</p>
+          </div>
+          <div style="display: flex; gap: 0.65rem; align-items: center; flex-wrap: wrap;">
+            <button id="btn-fullscreen-mode" class="btn btn-secondary" title="Fullscreen Presentation Mode (F11)">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+              Presentation Mode
+            </button>
+            <button id="btn-export-html" class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+              Export HTML Slide
+            </button>
+            <button id="btn-export-svg" class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download SVG
+            </button>
+            <button id="btn-export-png" class="btn btn-primary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              Download PNG
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- Studio Layout -->
+      <div class="dash-layout-grid">
+        
+        <!-- Left Panel: Grid builder & KPI Card Settings -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          
+          <!-- Layout Grid Selector -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <div class="panel-title" style="margin-bottom: 0.75rem;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+              Slide Grid Architecture
+            </div>
+            
+            <div class="layout-picker-grid">
+              <button class="layout-picker-btn active" data-layout="2x2">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                2 &times; 2 Grid
+              </button>
+              <button class="layout-picker-btn" data-layout="1plus2">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="18"/><rect x="13" y="3" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/></svg>
+                Hero (1+2)
+              </button>
+              <button class="layout-picker-btn" data-layout="3col">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="5" height="18"/><rect x="10" y="3" width="5" height="18"/><rect x="17" y="3" width="5" height="18"/></svg>
+                3 Columns
+              </button>
+              <button class="layout-picker-btn" data-layout="4col">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="4" height="18"/><rect x="7.5" y="3" width="4" height="18"/><rect x="13" y="3" width="4" height="18"/><rect x="18.5" y="3" width="4" height="18"/></svg>
+                4 Columns
+              </button>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0.75rem;">
+              <label for="inp-dash-title">Slide Header</label>
+              <input type="text" id="inp-dash-title" class="form-input" value="Executive Performance &amp; KPI Overview">
+            </div>
+            <div class="form-group" style="margin-bottom: 0.75rem;">
+              <label for="inp-dash-subtitle">Slide Subtitle / Context</label>
+              <input type="text" id="inp-dash-subtitle" class="form-input" value="Q4 FY2026 Board of Directors Briefing &bull; Key operational milestones achieved.">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <label for="select-dash-theme">Interactive Theme</label>
+                <select id="select-dash-theme" class="form-select">
+                  <option value="theme-dark-glass" selected>Dark Glass (Obsidian)</option>
+                  <option value="theme-midnight-navy">Midnight Navy</option>
+                  <option value="theme-obsidian-gold">Obsidian Gold</option>
+                  <option value="theme-clean-light">Clean Light</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="inp-dash-tag">Tag Badge</label>
+                <input type="text" id="inp-dash-tag" class="form-input" value="EXECUTIVE METRICS">
+              </div>
+            </div>
+          </div>
+
+          <!-- KPI Cards List & Customizer -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <div class="panel-title" style="margin: 0; padding: 0; border: none;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                Custom KPI Cards
+              </div>
+              <button id="btn-add-kpi-card" class="btn btn-primary" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;">+ Add Metric</button>
+            </div>
+
+            <div class="card-list-container" id="kpi-config-list">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Panel: Live 16:9 Presentation Slide Canvas -->
+        <div class="slide-preview-panel">
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <div>
+              <span style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">Live Executive Slide Canvas</span>
+              <span style="font-size: 0.8rem; color: var(--text-secondary); margin-left: 0.5rem;">(16:9 Widescreen Aspect Ratio)</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button id="btn-reset-kpis" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;">Reset Default KPIs</button>
+            </div>
+          </div>
+
+          <!-- 16:9 Slide Canvas -->
+          <div class="slide-viewport-outer" id="slide-stage-wrapper">
+            <div class="slide-viewport-inner theme-dark-glass" id="slide-stage-element">
+              
+              <!-- Slide Header -->
+              <div>
+                <div style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.25rem 0.75rem; border-radius: 9999px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.6rem;" id="slide-tag-badge">
+                  <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--accent);"></span>
+                  <span id="slide-tag-text">EXECUTIVE METRICS</span>
+                </div>
+                <h2 id="slide-title-heading" style="font-family: var(--font-display); font-size: 2.25rem; font-weight: 700; line-height: 1.15; margin-bottom: 0.25rem;">
+                  Executive Performance &amp; KPI Overview
+                </h2>
+                <p id="slide-subtitle-heading" style="font-size: 0.95rem; opacity: 0.75; margin: 0;">
+                  Q4 FY2026 Board of Directors Briefing &bull; Key operational milestones achieved.
+                </p>
+              </div>
+
+              <!-- Interactive KPI Grid -->
+              <div class="slide-grid-container grid-mode-2x2" id="slide-grid-content">
+                <!-- Injected via script.js -->
+              </div>
+
+              <!-- Slide Footer -->
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; opacity: 0.7; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.6rem;">
+                <div>BOARD REVIEW &bull; RESTRICTED DISTRIBUTION</div>
+                <div>SLIDE 07 OF 24</div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Helper Banner -->
+          <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; font-size: 0.825rem;">
+            <div style="color: var(--text-secondary);">
+              💡 <strong>Pro Tip:</strong> Click <em>Presentation Mode</em> or press <strong>F11</strong> for an uninterrupted executive pitch experience.
+            </div>
+            <div style="color: var(--text-primary); font-weight: 600;">
+              High-DPI Vector Export Ready
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   </main>
 
-  <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Dashboard Slides",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/dashboard-slides/",
-    "description": "Create Revenue, Sales, and Business KPI dashboard slides.",
-    "applicationCategory": "UtilityPage",
+    "description": "Create Revenue, Sales, and Business KPI dashboard slides with interactive themes and instant export.",
+    "applicationCategory": "DesignApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

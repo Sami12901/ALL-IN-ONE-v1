@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="hi" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hindi Typing - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Enhance your skills with Hindi Typing.">
-  <meta name="keywords" content="typing, keyboard, practice, free, online, tool, utility">
+  <title>Hindi Typing Trainer - हिंदी टाइपिंग ट्यूटर व इनस्क्रिप्ट कीबोर्ड - ALL IN ONE</title>
+  <meta name="description" content="हिंदी देवनागरी टाइपिंग ट्यूटर। स्वर, व्यंजन, मात्राएँ और कबीर के दोहे व हिंदी साहित्य अभ्यास। इनस्क्रिप्ट व फोनेटिक कीबोर्ड लेआउट और लाइव WPM स्पीड कैलकुलेटर।">
+  <meta name="keywords" content="hindi typing tutor, devanagari keyboard trainer, inscript layout, swar vyanjan matra, hindi wpm calculator, हिंदी टाइपिंग सीखें">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/hindi-typing/">
 
@@ -13,29 +13,404 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/hindi-typing/">
-  <meta property="og:title" content="Hindi Typing - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Enhance your skills with Hindi Typing.">
+  <meta property="og:title" content="Hindi Typing Trainer - हिंदी टाइपिंग ट्यूटर - ALL IN ONE">
+  <meta property="og:description" content="स्वर, व्यंजन, मात्राएँ और साहित्य अनुच्छेदों के साथ हिंदी देवनागरी टाइपिंग सीखें।">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta property="og:image:alt" content="Hindi Typing - ALL IN ONE">
-  <meta property="og:locale" content="en_US">
+  <meta property="og:locale" content="hi_IN">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/hindi-typing/">
-  <meta name="twitter:title" content="Hindi Typing - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Enhance your skills with Hindi Typing.">
+  <meta name="twitter:title" content="Hindi Typing Trainer - हिंदी टाइपिंग ट्यूटर - ALL IN ONE">
+  <meta name="twitter:description" content="इंटरैक्टिव हिंदी टाइपिंग ट्यूटर, देवनागरी विजुअल कीबोर्ड व रियल-टाइम WPM ट्रैकर।">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="Hindi Typing - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap');
+
+    .hindi-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+      font-family: 'Noto Sans Devanagari', var(--font-sans);
+    }
+
+    /* Modes Bar */
+    .modes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.85rem;
+    }
+
+    .mode-card-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.1rem;
+      text-align: left;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      position: relative;
+    }
+
+    .mode-card-btn:hover {
+      border-color: var(--accent);
+      background: var(--bg-tertiary);
+      transform: translateY(-2px);
+    }
+
+    .mode-card-btn.active {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.18) 0%, rgba(137, 170, 204, 0.08) 100%);
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    .mode-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .mode-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .mode-info {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* Toolbar: Sub-drill & Timer */
+    .toolbar-box {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.25rem;
+    }
+
+    .pill-wrap {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .pill-heading {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+
+    .filter-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: 'Noto Sans Devanagari', sans-serif;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    .filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* Live Stats Row */
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.85rem;
+    }
+
+    .stat-tile {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .stat-tile.featured {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.15) 0%, rgba(137, 170, 204, 0.05) 100%);
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    .stat-tile-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 0.35rem;
+    }
+
+    .stat-tile-val {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .stat-tile-sub {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      margin-top: 0.25rem;
+    }
+
+    /* Typing Arena */
+    .arena-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      position: relative;
+      min-height: 220px;
+      cursor: text;
+      transition: var(--transition);
+    }
+
+    .arena-box:focus-within, .arena-box.active {
+      border-color: var(--accent);
+      box-shadow: 0 8px 30px var(--accent-glow);
+    }
+
+    .hindi-text-display {
+      font-family: 'Noto Sans Devanagari', 'Tiro Devanagari Hindi', sans-serif;
+      font-size: 1.65rem;
+      line-height: 2.75rem;
+      color: var(--text-secondary);
+      word-break: break-word;
+      user-select: none;
+      white-space: pre-wrap;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    .hi-char {
+      position: relative;
+      padding: 0 1px;
+      transition: color 0.08s ease, background-color 0.08s ease;
+      border-radius: 2px;
+    }
+
+    .hi-char.current {
+      color: var(--text-primary);
+      background: rgba(78, 133, 191, 0.25);
+      border-bottom: 2px solid var(--accent);
+      animation: pulse-hi 1s infinite alternate;
+    }
+
+    .hi-char.correct {
+      color: var(--success);
+    }
+
+    .hi-char.incorrect {
+      color: var(--error);
+      background: rgba(239, 68, 68, 0.18);
+      text-decoration: underline;
+    }
+
+    @keyframes pulse-hi {
+      0% { opacity: 0.6; }
+      100% { opacity: 1; }
+    }
+
+    .hidden-input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      left: -9999px;
+      top: -9999px;
+    }
+
+    .arena-prompt {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(4px);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      z-index: 10;
+      transition: opacity 0.2s ease;
+    }
+
+    .arena-prompt.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .gauge-wrap {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-top: 1.25rem;
+    }
+
+    .gauge-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent-gradient);
+      transition: width 0.15s ease-out;
+    }
+
+    /* On-Screen Devanagari Keyboard Layout */
+    .keyboard-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      user-select: none;
+    }
+
+    .keyboard-bar-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .hi-kb-row {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .hi-kb-key {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      min-width: 44px;
+      height: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      transition: all 0.1s ease;
+      position: relative;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .hi-kb-key .latin-sub {
+      font-size: 0.65rem;
+      color: var(--text-tertiary);
+      position: absolute;
+      top: 3px;
+      left: 4px;
+      font-family: monospace;
+    }
+
+    .hi-kb-key.space {
+      min-width: 280px;
+    }
+
+    .hi-kb-key.active-press {
+      background: var(--accent);
+      color: #fff;
+      transform: translateY(2px);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .hi-kb-key.target-hint {
+      border-color: var(--accent);
+      background: rgba(78, 133, 191, 0.25);
+      animation: pulse-target-hi 0.8s infinite alternate;
+    }
+
+    @keyframes pulse-target-hi {
+      0% { box-shadow: 0 0 4px var(--accent); }
+      100% { box-shadow: 0 0 12px var(--accent); }
+    }
+
+    /* Modal Backdrop */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      max-width: 580px;
+      width: 100%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -48,47 +423,196 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Hindi Typing</h1>
-        <p class="tool-description">Enhance your skills with Hindi Typing.</p>
+        <h1>Hindi Typing Trainer (हिंदी टाइपिंग ट्यूटर)</h1>
+        <p class="tool-description">देवनागरी लिपि में स्वर, व्यंजन, मात्राएँ व साहित्य अनुच्छेदों का इंटरैक्टिव अभ्यास। इनस्क्रिप्ट विजुअल कीबोर्ड और रियल-टाइम WPM कैलकुलेटर।</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Hindi Typing</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Enhance your skills with Hindi Typing.</div>
-            <div><strong>Inputs:</strong> typing, keyboard, practice</div>
-            <div><strong>Category:</strong> typing</div>
+      <!-- Workspace -->
+      <div class="hindi-workspace">
+        
+        <!-- Practice Modes -->
+        <div class="modes-grid">
+          <button type="button" class="mode-card-btn active" data-mode="swar">
+            <span class="mode-badge">स्तर १</span>
+            <span class="mode-name">स्वर अभ्यास (Swar)</span>
+            <span class="mode-info">अ, आ, इ, ई, उ, ऊ, ऋ, ए, ऐ, ओ, औ वर्णमाला।</span>
+          </button>
+
+          <button type="button" class="mode-card-btn" data-mode="vyanjan">
+            <span class="mode-badge">स्तर २</span>
+            <span class="mode-name">व्यंजन अभ्यास (Vyanjan)</span>
+            <span class="mode-info">क से ज्ञ तक सभी ३३ मूल व संयुक्त व्यंजन।</span>
+          </button>
+
+          <button type="button" class="mode-card-btn" data-mode="matras">
+            <span class="mode-badge">स्तर ३</span>
+            <span class="mode-name">मात्राएँ (Matras)</span>
+            <span class="mode-info">ा, ि, ी, ु, ू, े, ै, ो, ौ एवं हलंत व अनुस्वार।</span>
+          </button>
+
+          <button type="button" class="mode-card-btn" data-mode="literature">
+            <span class="mode-badge">स्तर ४</span>
+            <span class="mode-name">हिंदी साहित्य व दोहे</span>
+            <span class="mode-info">कबीर के दोहे, प्रेमचंद व हरिवंशराय बच्चन की पंक्तियाँ।</span>
+          </button>
+        </div>
+
+        <!-- Sub-drill & Timer Toolbar -->
+        <div class="toolbar-box">
+          <div class="pill-wrap" id="subDrillWrap">
+            <span class="pill-heading">अभ्यास वर्ग:</span>
+            <!-- Injected by script -->
+          </div>
+
+          <div class="pill-wrap">
+            <span class="pill-heading">समय सीमा:</span>
+            <button type="button" class="filter-btn active" data-time="30">३० सेकंड</button>
+            <button type="button" class="filter-btn" data-time="60">६० सेकंड</button>
+            <button type="button" class="filter-btn" data-time="120">१२० सेकंड</button>
+            <button type="button" class="filter-btn" data-time="0">संपूर्ण पाठ</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Live Hindi Stats -->
+        <div class="stats-container">
+          <div class="stat-tile featured">
+            <div class="stat-tile-title">गति (WPM)</div>
+            <div class="stat-tile-val" id="statWpm">०</div>
+            <div class="stat-tile-sub">शब्द / मिनट</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-title">सटीकता (Accuracy)</div>
+            <div class="stat-tile-val" id="statAccuracy">१००%</div>
+            <div class="stat-tile-sub">शुद्धता प्रतिशत</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-title">अक्षर गति (CPM)</div>
+            <div class="stat-tile-val" id="statCpm">०</div>
+            <div class="stat-tile-sub">की-स्ट्रोक / मिनट</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-title">शेष समय</div>
+            <div class="stat-tile-val" id="statTimer">३० से.</div>
+            <div class="stat-tile-sub">काउंटडाउन</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-title">गलतियाँ (Errors)</div>
+            <div class="stat-tile-val" id="statErrors" style="color: var(--error);">०</div>
+            <div class="stat-tile-sub">त्रुटि संख्या</div>
+          </div>
+        </div>
+
+        <!-- Arena Box -->
+        <div class="arena-box" id="arenaBox" tabindex="0">
+          <div class="arena-prompt" id="arenaPrompt">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"></path></svg>
+            टाइपिंग शुरू करने के लिए यहाँ क्लिक करें या कोई कुंजी दबाएँ
+          </div>
+
+          <div class="hindi-text-display" id="hindiTextDisplay"></div>
+          <input type="text" id="hiddenInput" class="hidden-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+
+          <div class="gauge-wrap">
+            <div class="gauge-fill" id="gaugeFill"></div>
+          </div>
+        </div>
+
+        <!-- Toolbar Actions -->
+        <div class="toolbar-box">
+          <div class="pill-wrap">
+            <button type="button" class="btn btn-primary" id="btnRestart">
+              🔄 पुनः प्रारंभ (Tab)
+            </button>
+            <button type="button" class="btn btn-secondary" id="btnNextDrill">
+              अगला अभ्यास &rarr;
+            </button>
+          </div>
+
+          <div class="pill-wrap">
+            <button type="button" class="btn btn-outline" id="btnSound">
+              <span id="soundIcon">🔊</span> <span id="soundLabel">ध्वनि: चालू</span>
+            </button>
+            <a href="../achievement-badges/" class="btn btn-outline" style="text-decoration: none;">
+              🏆 ट्रॉफी रूम व बैज
+            </a>
+          </div>
+        </div>
+
+        <!-- On-Screen Visual Devanagari Keyboard -->
+        <div class="keyboard-panel">
+          <div class="keyboard-bar-top">
+            <span>देवनागरी इनस्क्रिप्ट कीबोर्ड लेआउट (Inscript Layout)</span>
+            <span style="font-size: 0.8rem; color: var(--accent);">प्रकाशित कुंजी अपेक्षित अक्षर दर्शाती है</span>
+          </div>
+
+          <div class="hi-kb-row" id="hiKbRow1"></div>
+          <div class="hi-kb-row" id="hiKbRow2"></div>
+          <div class="hi-kb-row" id="hiKbRow3"></div>
+          <div class="hi-kb-row" id="hiKbRow4"></div>
+          <div class="hi-kb-row" id="hiKbRow5"></div>
+        </div>
+
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Modal -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal-card">
+      <div style="font-size: 2.5rem;">🎉</div>
+      <div>
+        <h2 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 0.25rem;">अभ्यास सफलतापूर्वक पूर्ण!</h2>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">यहाँ आपका टाइपिंग प्रदर्शन विवरण प्रस्तुत है।</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.85rem;">
+        <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem;">
+          <div style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary);" id="modalWpm">०</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary);">गति (WPM)</div>
+        </div>
+        <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem;">
+          <div style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary);" id="modalAcc">१००%</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary);">शुद्धता</div>
+        </div>
+        <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem;">
+          <div style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary);" id="modalWords">०</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary);">टाइप किए गए शब्द</div>
+        </div>
+        <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem;">
+          <div style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary);" id="modalMistakes">०</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary);">त्रुटियाँ</div>
+        </div>
+      </div>
+
+      <div id="modalBadgesBox"></div>
+
+      <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 0.5rem;">
+        <button type="button" class="btn btn-primary" id="modalRetry">पुनः प्रयास करें</button>
+        <button type="button" class="btn btn-secondary" id="modalNext">अगला अभ्यास</button>
+        <a href="../achievement-badges/" class="btn btn-outline" style="text-decoration: none;">बैज देखें</a>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Hindi Typing",
+    "name": "Hindi Typing Trainer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/hindi-typing/",
-    "description": "Enhance your skills with Hindi Typing.",
-    "applicationCategory": "UtilityPage",
+    "description": "Devanagari Hindi typing tutor with Inscript keyboard layout, Swar, Vyanjan, Matras, and Hindi literature passages.",
+    "applicationCategory": "EducationalApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }
   </script>
+
+  <script type="module" src="../../js/components.js"></script>
+  <script type="module" src="./script.js" defer></script>
 </body>
 </html>

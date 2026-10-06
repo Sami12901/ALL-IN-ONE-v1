@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Newsletter Builder - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your Newsletter Builder online.">
-  <meta name="keywords" content="marketing, digital, email, free, online, tool, utility">
+  <title>Newsletter Builder & Markdown Publisher - ALL IN ONE</title>
+  <meta name="description" content="Clean markdown and structured drafting suite for modern email newsletters. Write curated digests with editorial notes, top links of the week, sponsors, and quotes. Export to HTML & Markdown.">
+  <meta name="keywords" content="newsletter builder, markdown newsletter, substack editor, beehiiv formatter, email digest creator, newsletter generator">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/newsletter-builder/">
 
@@ -13,27 +13,181 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/newsletter-builder/">
-  <meta property="og:title" content="Newsletter Builder - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Create, analyze, and manage your Newsletter Builder online.">
+  <meta property="og:title" content="Newsletter Builder & Markdown Publisher - ALL IN ONE">
+  <meta property="og:description" content="Structured newsletter drafting suite. Write curated stories, sponsor sections, and quotes. Export to HTML & Markdown.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="Newsletter Builder - ALL IN ONE">
   <meta property="og:locale" content="en_US">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/newsletter-builder/">
-  <meta name="twitter:title" content="Newsletter Builder - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Create, analyze, and manage your Newsletter Builder online.">
+  <meta name="twitter:title" content="Newsletter Builder - ALL IN ONE">
+  <meta name="twitter:description" content="Draft and publish elegant curated newsletters with instant HTML & Markdown export.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="Newsletter Builder - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .newsletter-workspace {
+      display: grid;
+      grid-template-columns: 480px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 1050px) {
+      .newsletter-workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+    .accordion-item-nl {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      overflow: hidden;
+      margin-bottom: 0.75rem;
+    }
+    .accordion-header-nl {
+      padding: 0.85rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      user-select: none;
+      transition: background 0.2s;
+    }
+    .accordion-header-nl:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .accordion-body-nl {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .accordion-item-nl.collapsed .accordion-body-nl {
+      display: none;
+    }
+    .story-entry-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: relative;
+    }
+    .story-entry-card .remove-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: transparent;
+      border: none;
+      color: var(--error);
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 0.2rem 0.5rem;
+      line-height: 1;
+    }
+    .preview-header-control {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      border: 1px solid var(--border);
+      border-bottom: none;
+    }
+    .nl-theme-toggle {
+      display: inline-flex;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 2px;
+    }
+    .nl-theme-btn {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.775rem;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .nl-theme-btn.active {
+      background: var(--accent-gradient);
+      color: #ffffff;
+    }
+    .nl-rendered-sheet {
+      border: 1px solid var(--border);
+      border-radius: 0 0 var(--radius-md) var(--radius-md);
+      padding: 2.5rem;
+      min-height: 700px;
+      line-height: 1.7;
+      font-family: var(--font-sans);
+      transition: background 0.3s, color 0.3s;
+      max-height: 850px;
+      overflow-y: auto;
+    }
+    .theme-paper {
+      background: #fbfbfd;
+      color: #1a1a1a;
+      border-color: #e5e7eb;
+    }
+    .theme-paper a { color: #2563eb; }
+    .theme-paper hr { border-color: #e5e7eb; }
+    .theme-paper .nl-box { background: #f3f4f6; border-color: #e5e7eb; color: #1f2937; }
+    .theme-paper .nl-tag { background: #e0e7ff; color: #3730a3; }
+    .theme-paper .nl-quote { border-left-color: #2563eb; background: #f8fafc; color: #334155; }
+
+    .theme-dark {
+      background: #0f1117;
+      color: #e2e8f0;
+      border-color: var(--border);
+    }
+    .theme-dark a { color: #89aacc; }
+    .theme-dark hr { border-color: rgba(255, 255, 255, 0.1); }
+    .theme-dark .nl-box { background: #161a23; border-color: rgba(255, 255, 255, 0.08); color: #cbd5e1; }
+    .theme-dark .nl-tag { background: rgba(137, 170, 204, 0.15); color: #89aacc; }
+    .theme-dark .nl-quote { border-left-color: var(--accent); background: #161a23; color: #cbd5e1; }
+
+    .nl-box {
+      border: 1px solid;
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .nl-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-full);
+      display: inline-block;
+      margin-bottom: 0.35rem;
+    }
+    .nl-quote {
+      border-left: 4px solid;
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-style: italic;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -48,27 +202,200 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Newsletter Builder</h1>
-        <p class="tool-description">Create, analyze, and manage your Newsletter Builder online.</p>
+        <h1>Newsletter Builder &amp; Markdown Publisher</h1>
+        <p class="tool-description">Draft structured weekly digests with editorial notes, top links, sponsor highlights, and quotes of the week. Export ready-to-send HTML and Markdown.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Newsletter Builder</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your Newsletter Builder online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, email</div>
-            <div><strong>Category:</strong> digital-marketing</div>
-          </div>
+      <!-- Quick Metrics Bar -->
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.75rem;">
+        <div style="display: flex; gap: 0.6rem;">
+          <span class="stat-pill">Words: <strong id="nl-stat-words">0</strong></span>
+          <span class="stat-pill">Read Time: <strong id="nl-stat-read-time">0 min</strong></span>
+          <span class="stat-pill">Chars: <strong id="nl-stat-chars">0</strong></span>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="preset-chip" data-sample="tech" style="cursor: pointer;">Tech Digest Preset</button>
+          <button class="preset-chip" data-sample="creator" style="cursor: pointer;">Creator Weekly</button>
+          <button class="preset-chip" id="btn-nl-clear" style="color: var(--error); border-color: rgba(239, 68, 68, 0.3); cursor: pointer;">Clear</button>
+        </div>
+      </div>
+
+      <!-- Main Workspace -->
+      <div class="newsletter-workspace">
+        
+        <!-- Left: Newsletter Section Inputs -->
+        <div class="tool-panel glass-panel" style="padding: 1.25rem; max-height: 850px; overflow-y: auto;">
+          <h2 class="panel-title" style="margin-bottom: 0.75rem;">Newsletter Sections</h2>
+
+          <!-- 1. Header & Meta -->
+          <div class="accordion-item-nl" id="acc-meta">
+            <div class="accordion-header-nl">
+              <span>📰 Header &amp; Issue Details</span>
+              <span class="chevron">&#9662;</span>
+            </div>
+            <div class="accordion-body-nl">
+              <div class="form-group">
+                <label for="nl-title">Publication Name</label>
+                <input type="text" id="nl-title" class="form-input" value="THE WEEKLY SYNC">
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                <div class="form-group">
+                  <label for="nl-issue">Issue Number</label>
+                  <input type="text" id="nl-issue" class="form-input" value="Issue #42">
+                </div>
+                <div class="form-group">
+                  <label for="nl-date">Publication Date</label>
+                  <input type="text" id="nl-date" class="form-input" value="October 6, 2026">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="nl-tagline">Tagline / Subtitle</label>
+                <input type="text" id="nl-tagline" class="form-input" value="Curated signals on technology, system architecture, and modern workflows.">
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Editorial Note -->
+          <div class="accordion-item-nl" id="acc-editorial">
+            <div class="accordion-header-nl">
+              <span>✍️ Editorial Note</span>
+              <span class="chevron">&#9662;</span>
+            </div>
+            <div class="accordion-body-nl">
+              <div class="form-group">
+                <label for="nl-editorial-author">Editor Name / Sign-off Title</label>
+                <input type="text" id="nl-editorial-author" class="form-input" value="From the Editor">
+              </div>
+              <div class="form-group">
+                <label for="nl-editorial-body">Editorial Intro Text</label>
+                <textarea id="nl-editorial-body" class="form-textarea" style="min-height: 120px;">Welcome back to another edition of The Weekly Sync! This week we are diving deep into the rapid rise of local-first software and how decentralized caching is simplifying edge systems. Grab a warm cup of coffee and let's jump in.</textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Top Stories / Links of the Week -->
+          <div class="accordion-item-nl" id="acc-stories">
+            <div class="accordion-header-nl">
+              <span>🔥 Top Stories &amp; Links of the Week</span>
+              <span class="chevron">&#9662;</span>
+            </div>
+            <div class="accordion-body-nl">
+              <div id="stories-container" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <!-- Dynamically rendered story item cards -->
+              </div>
+              <button class="btn btn-secondary" id="btn-add-story" style="width: 100%; margin-top: 0.25rem;">
+                + Add Another Story / Link
+              </button>
+            </div>
+          </div>
+
+          <!-- 4. Sponsor Section -->
+          <div class="accordion-item-nl" id="acc-sponsor">
+            <div class="accordion-header-nl">
+              <span>⭐ Sponsor Spotlight (Optional)</span>
+              <span class="chevron">&#9662;</span>
+            </div>
+            <div class="accordion-body-nl">
+              <label class="checkbox-label" style="font-size: 0.85rem; min-height: auto;">
+                <input type="checkbox" id="nl-enable-sponsor" checked>
+                Enable Sponsor Section
+              </label>
+              <div class="form-group">
+                <label for="nl-sponsor-name">Sponsor Name</label>
+                <input type="text" id="nl-sponsor-name" class="form-input" value="HyperScale Cloud">
+              </div>
+              <div class="form-group">
+                <label for="nl-sponsor-tagline">Sponsor Tagline</label>
+                <input type="text" id="nl-sponsor-tagline" class="form-input" value="Deploy global edge functions in under 50ms.">
+              </div>
+              <div class="form-group">
+                <label for="nl-sponsor-copy">Sponsor Message / Pitch</label>
+                <textarea id="nl-sponsor-copy" class="form-textarea" style="min-height: 80px;">Tired of complex Kubernetes setups? HyperScale gives you instantaneous global serverless compute with zero configuration. Get $200 in free credits today.</textarea>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                <div class="form-group">
+                  <label for="nl-sponsor-btn">Button Text</label>
+                  <input type="text" id="nl-sponsor-btn" class="form-input" value="Claim $200 Credits &rarr;">
+                </div>
+                <div class="form-group">
+                  <label for="nl-sponsor-url">Target Link</label>
+                  <input type="text" id="nl-sponsor-url" class="form-input" value="https://example.com/sponsor">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Quote of the Week -->
+          <div class="accordion-item-nl" id="acc-quote">
+            <div class="accordion-header-nl">
+              <span>💬 Quote of the Week</span>
+              <span class="chevron">&#9662;</span>
+            </div>
+            <div class="accordion-body-nl">
+              <label class="checkbox-label" style="font-size: 0.85rem; min-height: auto;">
+                <input type="checkbox" id="nl-enable-quote" checked>
+                Include Quote of the Week
+              </label>
+              <div class="form-group">
+                <label for="nl-quote-text">Quote</label>
+                <textarea id="nl-quote-text" class="form-textarea" style="min-height: 70px;">"Simplicity is prerequisite for reliability."</textarea>
+              </div>
+              <div class="form-group">
+                <label for="nl-quote-author">Author / Attribution</label>
+                <input type="text" id="nl-quote-author" class="form-input" value="Edsger W. Dijkstra">
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. Outro & Socials -->
+          <div class="accordion-item-nl" id="acc-outro">
+            <div class="accordion-header-nl">
+              <span>👋 Outro &amp; Sign-off</span>
+              <span class="chevron">&#9662;</span>
+            </div>
+            <div class="accordion-body-nl">
+              <div class="form-group">
+                <label for="nl-outro-text">Sign-off Message</label>
+                <textarea id="nl-outro-text" class="form-textarea" style="min-height: 70px;">Thanks for reading! If you enjoyed this issue, please share it with a friend or colleague. Until next Tuesday!</textarea>
+              </div>
+              <div class="form-group">
+                <label for="nl-author-sig">Author Signature</label>
+                <input type="text" id="nl-author-sig" class="form-input" value="— The Editorial Team">
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: Live Formatted Preview & Export -->
+        <div style="display: flex; flex-direction: column;">
+          
+          <div class="preview-header-control">
+            <div class="nl-theme-toggle">
+              <button class="nl-theme-btn active" id="btn-theme-dark">Dark Theme</button>
+              <button class="nl-theme-btn" id="btn-theme-paper">Paper / Light</button>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
+              <button class="btn btn-secondary" id="btn-copy-md" style="padding: 0.35rem 0.75rem; font-size: 0.775rem;">
+                Copy Markdown
+              </button>
+              <button class="btn btn-secondary" id="btn-copy-html" style="padding: 0.35rem 0.75rem; font-size: 0.775rem;">
+                Copy HTML
+              </button>
+              <button class="btn btn-primary" id="btn-export-file" style="padding: 0.35rem 0.75rem; font-size: 0.775rem;">
+                Export File &darr;
+              </button>
+            </div>
+          </div>
+
+          <!-- Formatted Document Stage -->
+          <div class="nl-rendered-sheet theme-dark" id="preview-sheet" aria-live="polite">
+            <!-- Rendered content injected via JS -->
+          </div>
+
+        </div>
+
       </div>
     
     </div>
@@ -82,9 +409,9 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Newsletter Builder",
+    "name": "Newsletter Builder & Markdown Publisher",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/newsletter-builder/",
-    "description": "Create, analyze, and manage your Newsletter Builder online.",
+    "description": "Draft, preview, and export clean newsletters in HTML and Markdown with structured sections.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

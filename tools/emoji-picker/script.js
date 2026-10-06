@@ -1,508 +1,298 @@
-// Unicode Emoji Picker & Search Suite Logic
+// Unicode 15.1 Emoji Picker Data & Logic
+const EMOJI_DATA = [{"c":"😀","n":"grinning face","g":"Smileys & Emotion"},{"c":"😃","n":"grinning face with big eyes","g":"Smileys & Emotion"},{"c":"😄","n":"grinning face with smiling eyes","g":"Smileys & Emotion"},{"c":"😁","n":"beaming face with smiling eyes","g":"Smileys & Emotion"},{"c":"😆","n":"grinning squinting face","g":"Smileys & Emotion"},{"c":"😅","n":"grinning face with sweat","g":"Smileys & Emotion"},{"c":"🤣","n":"rolling on the floor laughing","g":"Smileys & Emotion"},{"c":"😂","n":"face with tears of joy","g":"Smileys & Emotion"},{"c":"🙂","n":"slightly smiling face","g":"Smileys & Emotion"},{"c":"🙃","n":"upside-down face","g":"Smileys & Emotion"},{"c":"🫠","n":"melting face","g":"Smileys & Emotion"},{"c":"😉","n":"winking face","g":"Smileys & Emotion"},{"c":"😊","n":"smiling face with smiling eyes","g":"Smileys & Emotion"},{"c":"😇","n":"smiling face with halo","g":"Smileys & Emotion"},{"c":"🥰","n":"smiling face with hearts","g":"Smileys & Emotion"},{"c":"😍","n":"smiling face with heart-eyes","g":"Smileys & Emotion"},{"c":"🤩","n":"star-struck","g":"Smileys & Emotion"},{"c":"😘","n":"face blowing a kiss","g":"Smileys & Emotion"},{"c":"😗","n":"kissing face","g":"Smileys & Emotion"},{"c":"☺️","n":"smiling face","g":"Smileys & Emotion"},{"c":"😚","n":"kissing face with closed eyes","g":"Smileys & Emotion"},{"c":"😙","n":"kissing face with smiling eyes","g":"Smileys & Emotion"},{"c":"🥲","n":"smiling face with tear","g":"Smileys & Emotion"},{"c":"😋","n":"face savoring food","g":"Smileys & Emotion"},{"c":"😛","n":"face with tongue","g":"Smileys & Emotion"},{"c":"😜","n":"winking face with tongue","g":"Smileys & Emotion"},{"c":"🤪","n":"zany face","g":"Smileys & Emotion"},{"c":"😝","n":"squinting face with tongue","g":"Smileys & Emotion"},{"c":"🤑","n":"money-mouth face","g":"Smileys & Emotion"},{"c":"🤗","n":"smiling face with open hands","g":"Smileys & Emotion"},{"c":"🤭","n":"face with hand over mouth","g":"Smileys & Emotion"},{"c":"🫢","n":"face with open eyes and hand over mouth","g":"Smileys & Emotion"},{"c":"🫣","n":"face with peeking eye","g":"Smileys & Emotion"},{"c":"🤫","n":"shushing face","g":"Smileys & Emotion"},{"c":"🤔","n":"thinking face","g":"Smileys & Emotion"},{"c":"🫡","n":"saluting face","g":"Smileys & Emotion"},{"c":"🤐","n":"zipper-mouth face","g":"Smileys & Emotion"},{"c":"🤨","n":"face with raised eyebrow","g":"Smileys & Emotion"},{"c":"😐","n":"neutral face","g":"Smileys & Emotion"},{"c":"😑","n":"expressionless face","g":"Smileys & Emotion"},{"c":"😶","n":"face without mouth","g":"Smileys & Emotion"},{"c":"🫥","n":"dotted line face","g":"Smileys & Emotion"},{"c":"😶‍🌫️","n":"face in clouds","g":"Smileys & Emotion"},{"c":"😏","n":"smirking face","g":"Smileys & Emotion"},{"c":"😒","n":"unamused face","g":"Smileys & Emotion"},{"c":"🙄","n":"face with rolling eyes","g":"Smileys & Emotion"},{"c":"😬","n":"grimacing face","g":"Smileys & Emotion"},{"c":"😮‍💨","n":"face exhaling","g":"Smileys & Emotion"},{"c":"🤥","n":"lying face","g":"Smileys & Emotion"},{"c":"🫨","n":"shaking face","g":"Smileys & Emotion"},{"c":"🙂‍↔️","n":"head shaking horizontally","g":"Smileys & Emotion"},{"c":"🙂‍↕️","n":"head shaking vertically","g":"Smileys & Emotion"},{"c":"😌","n":"relieved face","g":"Smileys & Emotion"},{"c":"😔","n":"pensive face","g":"Smileys & Emotion"},{"c":"😪","n":"sleepy face","g":"Smileys & Emotion"},{"c":"🤤","n":"drooling face","g":"Smileys & Emotion"},{"c":"😴","n":"sleeping face","g":"Smileys & Emotion"},{"c":"😷","n":"face with medical mask","g":"Smileys & Emotion"},{"c":"🤒","n":"face with thermometer","g":"Smileys & Emotion"},{"c":"🤕","n":"face with head-bandage","g":"Smileys & Emotion"},{"c":"🤢","n":"nauseated face","g":"Smileys & Emotion"},{"c":"🤮","n":"face vomiting","g":"Smileys & Emotion"},{"c":"🤧","n":"sneezing face","g":"Smileys & Emotion"},{"c":"🥵","n":"hot face","g":"Smileys & Emotion"},{"c":"🥶","n":"cold face","g":"Smileys & Emotion"},{"c":"🥴","n":"woozy face","g":"Smileys & Emotion"},{"c":"😵","n":"face with crossed-out eyes","g":"Smileys & Emotion"},{"c":"😵‍💫","n":"face with spiral eyes","g":"Smileys & Emotion"},{"c":"🤯","n":"exploding head","g":"Smileys & Emotion"},{"c":"🤠","n":"cowboy hat face","g":"Smileys & Emotion"},{"c":"🥳","n":"partying face","g":"Smileys & Emotion"},{"c":"🥸","n":"disguised face","g":"Smileys & Emotion"},{"c":"😎","n":"smiling face with sunglasses","g":"Smileys & Emotion"},{"c":"🤓","n":"nerd face","g":"Smileys & Emotion"},{"c":"🧐","n":"face with monocle","g":"Smileys & Emotion"},{"c":"😕","n":"confused face","g":"Smileys & Emotion"},{"c":"🫤","n":"face with diagonal mouth","g":"Smileys & Emotion"},{"c":"😟","n":"worried face","g":"Smileys & Emotion"},{"c":"🙁","n":"slightly frowning face","g":"Smileys & Emotion"},{"c":"☹️","n":"frowning face","g":"Smileys & Emotion"},{"c":"😮","n":"face with open mouth","g":"Smileys & Emotion"},{"c":"😯","n":"hushed face","g":"Smileys & Emotion"},{"c":"😲","n":"astonished face","g":"Smileys & Emotion"},{"c":"😳","n":"flushed face","g":"Smileys & Emotion"},{"c":"🥺","n":"pleading face","g":"Smileys & Emotion"},{"c":"🥹","n":"face holding back tears","g":"Smileys & Emotion"},{"c":"😦","n":"frowning face with open mouth","g":"Smileys & Emotion"},{"c":"😧","n":"anguished face","g":"Smileys & Emotion"},{"c":"😨","n":"fearful face","g":"Smileys & Emotion"},{"c":"😰","n":"anxious face with sweat","g":"Smileys & Emotion"},{"c":"😥","n":"sad but relieved face","g":"Smileys & Emotion"},{"c":"😢","n":"crying face","g":"Smileys & Emotion"},{"c":"😭","n":"loudly crying face","g":"Smileys & Emotion"},{"c":"😱","n":"face screaming in fear","g":"Smileys & Emotion"},{"c":"😖","n":"confounded face","g":"Smileys & Emotion"},{"c":"😣","n":"persevering face","g":"Smileys & Emotion"},{"c":"😞","n":"disappointed face","g":"Smileys & Emotion"},{"c":"😓","n":"downcast face with sweat","g":"Smileys & Emotion"},{"c":"😩","n":"weary face","g":"Smileys & Emotion"},{"c":"😫","n":"tired face","g":"Smileys & Emotion"},{"c":"🥱","n":"yawning face","g":"Smileys & Emotion"},{"c":"😤","n":"face with steam from nose","g":"Smileys & Emotion"},{"c":"😡","n":"enraged face","g":"Smileys & Emotion"},{"c":"😠","n":"angry face","g":"Smileys & Emotion"},{"c":"🤬","n":"face with symbols on mouth","g":"Smileys & Emotion"},{"c":"😈","n":"smiling face with horns","g":"Smileys & Emotion"},{"c":"👿","n":"angry face with horns","g":"Smileys & Emotion"},{"c":"💀","n":"skull","g":"Smileys & Emotion"},{"c":"☠️","n":"skull and crossbones","g":"Smileys & Emotion"},{"c":"💩","n":"pile of poo","g":"Smileys & Emotion"},{"c":"🤡","n":"clown face","g":"Smileys & Emotion"},{"c":"👹","n":"ogre","g":"Smileys & Emotion"},{"c":"👺","n":"goblin","g":"Smileys & Emotion"},{"c":"👻","n":"ghost","g":"Smileys & Emotion"},{"c":"👽","n":"alien","g":"Smileys & Emotion"},{"c":"👾","n":"alien monster","g":"Smileys & Emotion"},{"c":"🤖","n":"robot","g":"Smileys & Emotion"},{"c":"😺","n":"grinning cat","g":"Smileys & Emotion"},{"c":"😸","n":"grinning cat with smiling eyes","g":"Smileys & Emotion"},{"c":"😹","n":"cat with tears of joy","g":"Smileys & Emotion"},{"c":"😻","n":"smiling cat with heart-eyes","g":"Smileys & Emotion"},{"c":"😼","n":"cat with wry smile","g":"Smileys & Emotion"},{"c":"😽","n":"kissing cat","g":"Smileys & Emotion"},{"c":"🙀","n":"weary cat","g":"Smileys & Emotion"},{"c":"😿","n":"crying cat","g":"Smileys & Emotion"},{"c":"😾","n":"pouting cat","g":"Smileys & Emotion"},{"c":"🙈","n":"see-no-evil monkey","g":"Smileys & Emotion"},{"c":"🙉","n":"hear-no-evil monkey","g":"Smileys & Emotion"},{"c":"🙊","n":"speak-no-evil monkey","g":"Smileys & Emotion"},{"c":"💌","n":"love letter","g":"Smileys & Emotion"},{"c":"💘","n":"heart with arrow","g":"Smileys & Emotion"},{"c":"💝","n":"heart with ribbon","g":"Smileys & Emotion"},{"c":"💖","n":"sparkling heart","g":"Smileys & Emotion"},{"c":"💗","n":"growing heart","g":"Smileys & Emotion"},{"c":"💓","n":"beating heart","g":"Smileys & Emotion"},{"c":"💞","n":"revolving hearts","g":"Smileys & Emotion"},{"c":"💕","n":"two hearts","g":"Smileys & Emotion"},{"c":"💟","n":"heart decoration","g":"Smileys & Emotion"},{"c":"❣️","n":"heart exclamation","g":"Smileys & Emotion"},{"c":"💔","n":"broken heart","g":"Smileys & Emotion"},{"c":"❤️‍🔥","n":"heart on fire","g":"Smileys & Emotion"},{"c":"❤️‍🩹","n":"mending heart","g":"Smileys & Emotion"},{"c":"❤️","n":"red heart","g":"Smileys & Emotion"},{"c":"🩷","n":"pink heart","g":"Smileys & Emotion"},{"c":"🧡","n":"orange heart","g":"Smileys & Emotion"},{"c":"💛","n":"yellow heart","g":"Smileys & Emotion"},{"c":"💚","n":"green heart","g":"Smileys & Emotion"},{"c":"💙","n":"blue heart","g":"Smileys & Emotion"},{"c":"🩵","n":"light blue heart","g":"Smileys & Emotion"},{"c":"💜","n":"purple heart","g":"Smileys & Emotion"},{"c":"🤎","n":"brown heart","g":"Smileys & Emotion"},{"c":"🖤","n":"black heart","g":"Smileys & Emotion"},{"c":"🩶","n":"grey heart","g":"Smileys & Emotion"},{"c":"🤍","n":"white heart","g":"Smileys & Emotion"},{"c":"💋","n":"kiss mark","g":"Smileys & Emotion"},{"c":"💯","n":"hundred points","g":"Smileys & Emotion"},{"c":"💢","n":"anger symbol","g":"Smileys & Emotion"},{"c":"💥","n":"collision","g":"Smileys & Emotion"},{"c":"💫","n":"dizzy","g":"Smileys & Emotion"},{"c":"💦","n":"sweat droplets","g":"Smileys & Emotion"},{"c":"💨","n":"dashing away","g":"Smileys & Emotion"},{"c":"🕳️","n":"hole","g":"Smileys & Emotion"},{"c":"💬","n":"speech balloon","g":"Smileys & Emotion"},{"c":"👁️‍🗨️","n":"eye in speech bubble","g":"Smileys & Emotion"},{"c":"🗨️","n":"left speech bubble","g":"Smileys & Emotion"},{"c":"🗯️","n":"right anger bubble","g":"Smileys & Emotion"},{"c":"💭","n":"thought balloon","g":"Smileys & Emotion"},{"c":"💤","n":"ZZZ","g":"Smileys & Emotion"},{"c":"👋","n":"waving hand","g":"People & Body","t":["👋🏻","👋🏼","👋🏽","👋🏾","👋🏿"]},{"c":"🤚","n":"raised back of hand","g":"People & Body","t":["🤚🏻","🤚🏼","🤚🏽","🤚🏾","🤚🏿"]},{"c":"🖐️","n":"hand with fingers splayed","g":"People & Body","t":["🖐🏻","🖐🏼","🖐🏽","🖐🏾","🖐🏿"]},{"c":"✋","n":"raised hand","g":"People & Body","t":["✋🏻","✋🏼","✋🏽","✋🏾","✋🏿"]},{"c":"🖖","n":"vulcan salute","g":"People & Body","t":["🖖🏻","🖖🏼","🖖🏽","🖖🏾","🖖🏿"]},{"c":"🫱","n":"rightwards hand","g":"People & Body","t":["🫱🏻","🫱🏼","🫱🏽","🫱🏾","🫱🏿"]},{"c":"🫲","n":"leftwards hand","g":"People & Body","t":["🫲🏻","🫲🏼","🫲🏽","🫲🏾","🫲🏿"]},{"c":"🫳","n":"palm down hand","g":"People & Body","t":["🫳🏻","🫳🏼","🫳🏽","🫳🏾","🫳🏿"]},{"c":"🫴","n":"palm up hand","g":"People & Body","t":["🫴🏻","🫴🏼","🫴🏽","🫴🏾","🫴🏿"]},{"c":"🫷","n":"leftwards pushing hand","g":"People & Body","t":["🫷🏻","🫷🏼","🫷🏽","🫷🏾","🫷🏿"]},{"c":"🫸","n":"rightwards pushing hand","g":"People & Body","t":["🫸🏻","🫸🏼","🫸🏽","🫸🏾","🫸🏿"]},{"c":"👌","n":"OK hand","g":"People & Body","t":["👌🏻","👌🏼","👌🏽","👌🏾","👌🏿"]},{"c":"🤌","n":"pinched fingers","g":"People & Body","t":["🤌🏻","🤌🏼","🤌🏽","🤌🏾","🤌🏿"]},{"c":"🤏","n":"pinching hand","g":"People & Body","t":["🤏🏻","🤏🏼","🤏🏽","🤏🏾","🤏🏿"]},{"c":"✌️","n":"victory hand","g":"People & Body","t":["✌🏻","✌🏼","✌🏽","✌🏾","✌🏿"]},{"c":"🤞","n":"crossed fingers","g":"People & Body","t":["🤞🏻","🤞🏼","🤞🏽","🤞🏾","🤞🏿"]},{"c":"🫰","n":"hand with index finger and thumb crossed","g":"People & Body","t":["🫰🏻","🫰🏼","🫰🏽","🫰🏾","🫰🏿"]},{"c":"🤟","n":"love-you gesture","g":"People & Body","t":["🤟🏻","🤟🏼","🤟🏽","🤟🏾","🤟🏿"]},{"c":"🤘","n":"sign of the horns","g":"People & Body","t":["🤘🏻","🤘🏼","🤘🏽","🤘🏾","🤘🏿"]},{"c":"🤙","n":"call me hand","g":"People & Body","t":["🤙🏻","🤙🏼","🤙🏽","🤙🏾","🤙🏿"]},{"c":"👈","n":"backhand index pointing left","g":"People & Body","t":["👈🏻","👈🏼","👈🏽","👈🏾","👈🏿"]},{"c":"👉","n":"backhand index pointing right","g":"People & Body","t":["👉🏻","👉🏼","👉🏽","👉🏾","👉🏿"]},{"c":"👆","n":"backhand index pointing up","g":"People & Body","t":["👆🏻","👆🏼","👆🏽","👆🏾","👆🏿"]},{"c":"🖕","n":"middle finger","g":"People & Body","t":["🖕🏻","🖕🏼","🖕🏽","🖕🏾","🖕🏿"]},{"c":"👇","n":"backhand index pointing down","g":"People & Body","t":["👇🏻","👇🏼","👇🏽","👇🏾","👇🏿"]},{"c":"☝️","n":"index pointing up","g":"People & Body","t":["☝🏻","☝🏼","☝🏽","☝🏾","☝🏿"]},{"c":"🫵","n":"index pointing at the viewer","g":"People & Body","t":["🫵🏻","🫵🏼","🫵🏽","🫵🏾","🫵🏿"]},{"c":"👍","n":"thumbs up","g":"People & Body","t":["👍🏻","👍🏼","👍🏽","👍🏾","👍🏿"]},{"c":"👎","n":"thumbs down","g":"People & Body","t":["👎🏻","👎🏼","👎🏽","👎🏾","👎🏿"]},{"c":"✊","n":"raised fist","g":"People & Body","t":["✊🏻","✊🏼","✊🏽","✊🏾","✊🏿"]},{"c":"👊","n":"oncoming fist","g":"People & Body","t":["👊🏻","👊🏼","👊🏽","👊🏾","👊🏿"]},{"c":"🤛","n":"left-facing fist","g":"People & Body","t":["🤛🏻","🤛🏼","🤛🏽","🤛🏾","🤛🏿"]},{"c":"🤜","n":"right-facing fist","g":"People & Body","t":["🤜🏻","🤜🏼","🤜🏽","🤜🏾","🤜🏿"]},{"c":"👏","n":"clapping hands","g":"People & Body","t":["👏🏻","👏🏼","👏🏽","👏🏾","👏🏿"]},{"c":"🙌","n":"raising hands","g":"People & Body","t":["🙌🏻","🙌🏼","🙌🏽","🙌🏾","🙌🏿"]},{"c":"🫶","n":"heart hands","g":"People & Body","t":["🫶🏻","🫶🏼","🫶🏽","🫶🏾","🫶🏿"]},{"c":"👐","n":"open hands","g":"People & Body","t":["👐🏻","👐🏼","👐🏽","👐🏾","👐🏿"]},{"c":"🤲","n":"palms up together","g":"People & Body","t":["🤲🏻","🤲🏼","🤲🏽","🤲🏾","🤲🏿"]},{"c":"🤝","n":"handshake","g":"People & Body","t":["🤝🏻","🤝🏼","🤝🏽","🤝🏾","🤝🏿"]},{"c":"🙏","n":"folded hands","g":"People & Body","t":["🙏🏻","🙏🏼","🙏🏽","🙏🏾","🙏🏿"]},{"c":"✍️","n":"writing hand","g":"People & Body","t":["✍🏻","✍🏼","✍🏽","✍🏾","✍🏿"]},{"c":"💅","n":"nail polish","g":"People & Body","t":["💅🏻","💅🏼","💅🏽","💅🏾","💅🏿"]},{"c":"🤳","n":"selfie","g":"People & Body","t":["🤳🏻","🤳🏼","🤳🏽","🤳🏾","🤳🏿"]},{"c":"💪","n":"flexed biceps","g":"People & Body","t":["💪🏻","💪🏼","💪🏽","💪🏾","💪🏿"]},{"c":"🦾","n":"mechanical arm","g":"People & Body"},{"c":"🦿","n":"mechanical leg","g":"People & Body"},{"c":"🦵","n":"leg","g":"People & Body","t":["🦵🏻","🦵🏼","🦵🏽","🦵🏾","🦵🏿"]},{"c":"🦶","n":"foot","g":"People & Body","t":["🦶🏻","🦶🏼","🦶🏽","🦶🏾","🦶🏿"]},{"c":"👂","n":"ear","g":"People & Body","t":["👂🏻","👂🏼","👂🏽","👂🏾","👂🏿"]},{"c":"🦻","n":"ear with hearing aid","g":"People & Body","t":["🦻🏻","🦻🏼","🦻🏽","🦻🏾","🦻🏿"]},{"c":"👃","n":"nose","g":"People & Body","t":["👃🏻","👃🏼","👃🏽","👃🏾","👃🏿"]},{"c":"🧠","n":"brain","g":"People & Body"},{"c":"🫀","n":"anatomical heart","g":"People & Body"},{"c":"🫁","n":"lungs","g":"People & Body"},{"c":"🦷","n":"tooth","g":"People & Body"},{"c":"🦴","n":"bone","g":"People & Body"},{"c":"👀","n":"eyes","g":"People & Body"},{"c":"👁️","n":"eye","g":"People & Body"},{"c":"👅","n":"tongue","g":"People & Body"},{"c":"👄","n":"mouth","g":"People & Body"},{"c":"🫦","n":"biting lip","g":"People & Body"},{"c":"👶","n":"baby","g":"People & Body","t":["👶🏻","👶🏼","👶🏽","👶🏾","👶🏿"]},{"c":"🧒","n":"child","g":"People & Body","t":["🧒🏻","🧒🏼","🧒🏽","🧒🏾","🧒🏿"]},{"c":"👦","n":"boy","g":"People & Body","t":["👦🏻","👦🏼","👦🏽","👦🏾","👦🏿"]},{"c":"👧","n":"girl","g":"People & Body","t":["👧🏻","👧🏼","👧🏽","👧🏾","👧🏿"]},{"c":"🧑","n":"person","g":"People & Body","t":["🧑🏻","🧑🏼","🧑🏽","🧑🏾","🧑🏿"]},{"c":"👱","n":"person: blond hair","g":"People & Body"},{"c":"👨","n":"man","g":"People & Body","t":["👨🏻","👨🏼","👨🏽","👨🏾","👨🏿"]},{"c":"🧔","n":"person: beard","g":"People & Body"},{"c":"🧔‍♂️","n":"man: beard","g":"People & Body"},{"c":"🧔‍♀️","n":"woman: beard","g":"People & Body"},{"c":"👨‍🦰","n":"man: red hair","g":"People & Body"},{"c":"👨‍🦱","n":"man: curly hair","g":"People & Body"},{"c":"👨‍🦳","n":"man: white hair","g":"People & Body"},{"c":"👨‍🦲","n":"man: bald","g":"People & Body"},{"c":"👩","n":"woman","g":"People & Body","t":["🧔🏻‍♀️","🧔🏼‍♀️","🧔🏽‍♀️","🧔🏾‍♀️","🧔🏿‍♀️"]},{"c":"👩‍🦰","n":"woman: red hair","g":"People & Body"},{"c":"🧑‍🦰","n":"person: red hair","g":"People & Body"},{"c":"👩‍🦱","n":"woman: curly hair","g":"People & Body"},{"c":"🧑‍🦱","n":"person: curly hair","g":"People & Body"},{"c":"👩‍🦳","n":"woman: white hair","g":"People & Body"},{"c":"🧑‍🦳","n":"person: white hair","g":"People & Body"},{"c":"👩‍🦲","n":"woman: bald","g":"People & Body"},{"c":"🧑‍🦲","n":"person: bald","g":"People & Body"},{"c":"👱‍♀️","n":"woman: blond hair","g":"People & Body"},{"c":"👱‍♂️","n":"man: blond hair","g":"People & Body"},{"c":"🧓","n":"older person","g":"People & Body","t":["🧓🏻","🧓🏼","🧓🏽","🧓🏾","🧓🏿"]},{"c":"👴","n":"old man","g":"People & Body","t":["👴🏻","👴🏼","👴🏽","👴🏾","👴🏿"]},{"c":"👵","n":"old woman","g":"People & Body","t":["👵🏻","👵🏼","👵🏽","👵🏾","👵🏿"]},{"c":"🙍","n":"person frowning","g":"People & Body","t":["🙍🏻","🙍🏼","🙍🏽","🙍🏾","🙍🏿"]},{"c":"🙍‍♂️","n":"man frowning","g":"People & Body","t":["🙍🏻‍♂️","🙍🏼‍♂️","🙍🏽‍♂️","🙍🏾‍♂️","🙍🏿‍♂️"]},{"c":"🙍‍♀️","n":"woman frowning","g":"People & Body","t":["🙍🏻‍♀️","🙍🏼‍♀️","🙍🏽‍♀️","🙍🏾‍♀️","🙍🏿‍♀️"]},{"c":"🙎","n":"person pouting","g":"People & Body","t":["🙎🏻","🙎🏼","🙎🏽","🙎🏾","🙎🏿"]},{"c":"🙎‍♂️","n":"man pouting","g":"People & Body","t":["🙎🏻‍♂️","🙎🏼‍♂️","🙎🏽‍♂️","🙎🏾‍♂️","🙎🏿‍♂️"]},{"c":"🙎‍♀️","n":"woman pouting","g":"People & Body","t":["🙎🏻‍♀️","🙎🏼‍♀️","🙎🏽‍♀️","🙎🏾‍♀️","🙎🏿‍♀️"]},{"c":"🙅","n":"person gesturing NO","g":"People & Body","t":["🙅🏻","🙅🏼","🙅🏽","🙅🏾","🙅🏿"]},{"c":"🙅‍♂️","n":"man gesturing NO","g":"People & Body","t":["🙅🏻‍♂️","🙅🏼‍♂️","🙅🏽‍♂️","🙅🏾‍♂️","🙅🏿‍♂️"]},{"c":"🙅‍♀️","n":"woman gesturing NO","g":"People & Body","t":["🙅🏻‍♀️","🙅🏼‍♀️","🙅🏽‍♀️","🙅🏾‍♀️","🙅🏿‍♀️"]},{"c":"🙆","n":"person gesturing OK","g":"People & Body","t":["🙆🏻","🙆🏼","🙆🏽","🙆🏾","🙆🏿"]},{"c":"🙆‍♂️","n":"man gesturing OK","g":"People & Body","t":["🙆🏻‍♂️","🙆🏼‍♂️","🙆🏽‍♂️","🙆🏾‍♂️","🙆🏿‍♂️"]},{"c":"🙆‍♀️","n":"woman gesturing OK","g":"People & Body","t":["🙆🏻‍♀️","🙆🏼‍♀️","🙆🏽‍♀️","🙆🏾‍♀️","🙆🏿‍♀️"]},{"c":"💁","n":"person tipping hand","g":"People & Body","t":["💁🏻","💁🏼","💁🏽","💁🏾","💁🏿"]},{"c":"💁‍♂️","n":"man tipping hand","g":"People & Body","t":["💁🏻‍♂️","💁🏼‍♂️","💁🏽‍♂️","💁🏾‍♂️","💁🏿‍♂️"]},{"c":"💁‍♀️","n":"woman tipping hand","g":"People & Body","t":["💁🏻‍♀️","💁🏼‍♀️","💁🏽‍♀️","💁🏾‍♀️","💁🏿‍♀️"]},{"c":"🙋","n":"person raising hand","g":"People & Body","t":["🙋🏻","🙋🏼","🙋🏽","🙋🏾","🙋🏿"]},{"c":"🙋‍♂️","n":"man raising hand","g":"People & Body","t":["🙋🏻‍♂️","🙋🏼‍♂️","🙋🏽‍♂️","🙋🏾‍♂️","🙋🏿‍♂️"]},{"c":"🙋‍♀️","n":"woman raising hand","g":"People & Body","t":["🙋🏻‍♀️","🙋🏼‍♀️","🙋🏽‍♀️","🙋🏾‍♀️","🙋🏿‍♀️"]},{"c":"🧏","n":"deaf person","g":"People & Body","t":["🧏🏻","🧏🏼","🧏🏽","🧏🏾","🧏🏿"]},{"c":"🧏‍♂️","n":"deaf man","g":"People & Body","t":["🧏🏻‍♂️","🧏🏼‍♂️","🧏🏽‍♂️","🧏🏾‍♂️","🧏🏿‍♂️"]},{"c":"🧏‍♀️","n":"deaf woman","g":"People & Body","t":["🧏🏻‍♀️","🧏🏼‍♀️","🧏🏽‍♀️","🧏🏾‍♀️","🧏🏿‍♀️"]},{"c":"🙇","n":"person bowing","g":"People & Body","t":["🙇🏻","🙇🏼","🙇🏽","🙇🏾","🙇🏿"]},{"c":"🙇‍♂️","n":"man bowing","g":"People & Body","t":["🙇🏻‍♂️","🙇🏼‍♂️","🙇🏽‍♂️","🙇🏾‍♂️","🙇🏿‍♂️"]},{"c":"🙇‍♀️","n":"woman bowing","g":"People & Body","t":["🙇🏻‍♀️","🙇🏼‍♀️","🙇🏽‍♀️","🙇🏾‍♀️","🙇🏿‍♀️"]},{"c":"🤦","n":"person facepalming","g":"People & Body","t":["🤦🏻","🤦🏼","🤦🏽","🤦🏾","🤦🏿"]},{"c":"🤦‍♂️","n":"man facepalming","g":"People & Body","t":["🤦🏻‍♂️","🤦🏼‍♂️","🤦🏽‍♂️","🤦🏾‍♂️","🤦🏿‍♂️"]},{"c":"🤦‍♀️","n":"woman facepalming","g":"People & Body","t":["🤦🏻‍♀️","🤦🏼‍♀️","🤦🏽‍♀️","🤦🏾‍♀️","🤦🏿‍♀️"]},{"c":"🤷","n":"person shrugging","g":"People & Body","t":["🤷🏻","🤷🏼","🤷🏽","🤷🏾","🤷🏿"]},{"c":"🤷‍♂️","n":"man shrugging","g":"People & Body","t":["🤷🏻‍♂️","🤷🏼‍♂️","🤷🏽‍♂️","🤷🏾‍♂️","🤷🏿‍♂️"]},{"c":"🤷‍♀️","n":"woman shrugging","g":"People & Body","t":["🤷🏻‍♀️","🤷🏼‍♀️","🤷🏽‍♀️","🤷🏾‍♀️","🤷🏿‍♀️"]},{"c":"🧑‍⚕️","n":"health worker","g":"People & Body","t":["🧑🏻‍⚕️","🧑🏼‍⚕️","🧑🏽‍⚕️","🧑🏾‍⚕️","🧑🏿‍⚕️"]},{"c":"👨‍⚕️","n":"man health worker","g":"People & Body","t":["👨🏻‍⚕️","👨🏼‍⚕️","👨🏽‍⚕️","👨🏾‍⚕️","👨🏿‍⚕️"]},{"c":"👩‍⚕️","n":"woman health worker","g":"People & Body","t":["👩🏻‍⚕️","👩🏼‍⚕️","👩🏽‍⚕️","👩🏾‍⚕️","👩🏿‍⚕️"]},{"c":"🧑‍🎓","n":"student","g":"People & Body","t":["🧑🏻‍🎓","🧑🏼‍🎓","🧑🏽‍🎓","🧑🏾‍🎓","🧑🏿‍🎓"]},{"c":"👨‍🎓","n":"man student","g":"People & Body","t":["👨🏻‍🎓","👨🏼‍🎓","👨🏽‍🎓","👨🏾‍🎓","👨🏿‍🎓"]},{"c":"👩‍🎓","n":"woman student","g":"People & Body","t":["👩🏻‍🎓","👩🏼‍🎓","👩🏽‍🎓","👩🏾‍🎓","👩🏿‍🎓"]},{"c":"🧑‍🏫","n":"teacher","g":"People & Body","t":["🧑🏻‍🏫","🧑🏼‍🏫","🧑🏽‍🏫","🧑🏾‍🏫","🧑🏿‍🏫"]},{"c":"👨‍🏫","n":"man teacher","g":"People & Body","t":["👨🏻‍🏫","👨🏼‍🏫","👨🏽‍🏫","👨🏾‍🏫","👨🏿‍🏫"]},{"c":"👩‍🏫","n":"woman teacher","g":"People & Body","t":["👩🏻‍🏫","👩🏼‍🏫","👩🏽‍🏫","👩🏾‍🏫","👩🏿‍🏫"]},{"c":"🧑‍⚖️","n":"judge","g":"People & Body","t":["🧑🏻‍⚖️","🧑🏼‍⚖️","🧑🏽‍⚖️","🧑🏾‍⚖️","🧑🏿‍⚖️"]},{"c":"👨‍⚖️","n":"man judge","g":"People & Body","t":["👨🏻‍⚖️","👨🏼‍⚖️","👨🏽‍⚖️","👨🏾‍⚖️","👨🏿‍⚖️"]},{"c":"👩‍⚖️","n":"woman judge","g":"People & Body","t":["👩🏻‍⚖️","👩🏼‍⚖️","👩🏽‍⚖️","👩🏾‍⚖️","👩🏿‍⚖️"]},{"c":"🧑‍🌾","n":"farmer","g":"People & Body","t":["🧑🏻‍🌾","🧑🏼‍🌾","🧑🏽‍🌾","🧑🏾‍🌾","🧑🏿‍🌾"]},{"c":"👨‍🌾","n":"man farmer","g":"People & Body","t":["👨🏻‍🌾","👨🏼‍🌾","👨🏽‍🌾","👨🏾‍🌾","👨🏿‍🌾"]},{"c":"👩‍🌾","n":"woman farmer","g":"People & Body","t":["👩🏻‍🌾","👩🏼‍🌾","👩🏽‍🌾","👩🏾‍🌾","👩🏿‍🌾"]},{"c":"🧑‍🍳","n":"cook","g":"People & Body","t":["🧑🏻‍🍳","🧑🏼‍🍳","🧑🏽‍🍳","🧑🏾‍🍳","🧑🏿‍🍳"]},{"c":"👨‍🍳","n":"man cook","g":"People & Body","t":["👨🏻‍🍳","👨🏼‍🍳","👨🏽‍🍳","👨🏾‍🍳","👨🏿‍🍳"]},{"c":"👩‍🍳","n":"woman cook","g":"People & Body","t":["👩🏻‍🍳","👩🏼‍🍳","👩🏽‍🍳","👩🏾‍🍳","👩🏿‍🍳"]},{"c":"🧑‍🔧","n":"mechanic","g":"People & Body","t":["🧑🏻‍🔧","🧑🏼‍🔧","🧑🏽‍🔧","🧑🏾‍🔧","🧑🏿‍🔧"]},{"c":"👨‍🔧","n":"man mechanic","g":"People & Body","t":["👨🏻‍🔧","👨🏼‍🔧","👨🏽‍🔧","👨🏾‍🔧","👨🏿‍🔧"]},{"c":"👩‍🔧","n":"woman mechanic","g":"People & Body","t":["👩🏻‍🔧","👩🏼‍🔧","👩🏽‍🔧","👩🏾‍🔧","👩🏿‍🔧"]},{"c":"🧑‍🏭","n":"factory worker","g":"People & Body","t":["🧑🏻‍🏭","🧑🏼‍🏭","🧑🏽‍🏭","🧑🏾‍🏭","🧑🏿‍🏭"]},{"c":"👨‍🏭","n":"man factory worker","g":"People & Body","t":["👨🏻‍🏭","👨🏼‍🏭","👨🏽‍🏭","👨🏾‍🏭","👨🏿‍🏭"]},{"c":"👩‍🏭","n":"woman factory worker","g":"People & Body","t":["👩🏻‍🏭","👩🏼‍🏭","👩🏽‍🏭","👩🏾‍🏭","👩🏿‍🏭"]},{"c":"🧑‍💼","n":"office worker","g":"People & Body","t":["🧑🏻‍💼","🧑🏼‍💼","🧑🏽‍💼","🧑🏾‍💼","🧑🏿‍💼"]},{"c":"👨‍💼","n":"man office worker","g":"People & Body","t":["👨🏻‍💼","👨🏼‍💼","👨🏽‍💼","👨🏾‍💼","👨🏿‍💼"]},{"c":"👩‍💼","n":"woman office worker","g":"People & Body","t":["👩🏻‍💼","👩🏼‍💼","👩🏽‍💼","👩🏾‍💼","👩🏿‍💼"]},{"c":"🧑‍🔬","n":"scientist","g":"People & Body","t":["🧑🏻‍🔬","🧑🏼‍🔬","🧑🏽‍🔬","🧑🏾‍🔬","🧑🏿‍🔬"]},{"c":"👨‍🔬","n":"man scientist","g":"People & Body","t":["👨🏻‍🔬","👨🏼‍🔬","👨🏽‍🔬","👨🏾‍🔬","👨🏿‍🔬"]},{"c":"👩‍🔬","n":"woman scientist","g":"People & Body","t":["👩🏻‍🔬","👩🏼‍🔬","👩🏽‍🔬","👩🏾‍🔬","👩🏿‍🔬"]},{"c":"🧑‍💻","n":"technologist","g":"People & Body","t":["🧑🏻‍💻","🧑🏼‍💻","🧑🏽‍💻","🧑🏾‍💻","🧑🏿‍💻"]},{"c":"👨‍💻","n":"man technologist","g":"People & Body","t":["👨🏻‍💻","👨🏼‍💻","👨🏽‍💻","👨🏾‍💻","👨🏿‍💻"]},{"c":"👩‍💻","n":"woman technologist","g":"People & Body","t":["👩🏻‍💻","👩🏼‍💻","👩🏽‍💻","👩🏾‍💻","👩🏿‍💻"]},{"c":"🧑‍🎤","n":"singer","g":"People & Body","t":["🧑🏻‍🎤","🧑🏼‍🎤","🧑🏽‍🎤","🧑🏾‍🎤","🧑🏿‍🎤"]},{"c":"👨‍🎤","n":"man singer","g":"People & Body","t":["👨🏻‍🎤","👨🏼‍🎤","👨🏽‍🎤","👨🏾‍🎤","👨🏿‍🎤"]},{"c":"👩‍🎤","n":"woman singer","g":"People & Body","t":["👩🏻‍🎤","👩🏼‍🎤","👩🏽‍🎤","👩🏾‍🎤","👩🏿‍🎤"]},{"c":"🧑‍🎨","n":"artist","g":"People & Body","t":["🧑🏻‍🎨","🧑🏼‍🎨","🧑🏽‍🎨","🧑🏾‍🎨","🧑🏿‍🎨"]},{"c":"👨‍🎨","n":"man artist","g":"People & Body","t":["👨🏻‍🎨","👨🏼‍🎨","👨🏽‍🎨","👨🏾‍🎨","👨🏿‍🎨"]},{"c":"👩‍🎨","n":"woman artist","g":"People & Body","t":["👩🏻‍🎨","👩🏼‍🎨","👩🏽‍🎨","👩🏾‍🎨","👩🏿‍🎨"]},{"c":"🧑‍✈️","n":"pilot","g":"People & Body","t":["🧑🏻‍✈️","🧑🏼‍✈️","🧑🏽‍✈️","🧑🏾‍✈️","🧑🏿‍✈️"]},{"c":"👨‍✈️","n":"man pilot","g":"People & Body","t":["👨🏻‍✈️","👨🏼‍✈️","👨🏽‍✈️","👨🏾‍✈️","👨🏿‍✈️"]},{"c":"👩‍✈️","n":"woman pilot","g":"People & Body","t":["👩🏻‍✈️","👩🏼‍✈️","👩🏽‍✈️","👩🏾‍✈️","👩🏿‍✈️"]},{"c":"🧑‍🚀","n":"astronaut","g":"People & Body","t":["🧑🏻‍🚀","🧑🏼‍🚀","🧑🏽‍🚀","🧑🏾‍🚀","🧑🏿‍🚀"]},{"c":"👨‍🚀","n":"man astronaut","g":"People & Body","t":["👨🏻‍🚀","👨🏼‍🚀","👨🏽‍🚀","👨🏾‍🚀","👨🏿‍🚀"]},{"c":"👩‍🚀","n":"woman astronaut","g":"People & Body","t":["👩🏻‍🚀","👩🏼‍🚀","👩🏽‍🚀","👩🏾‍🚀","👩🏿‍🚀"]},{"c":"🧑‍🚒","n":"firefighter","g":"People & Body","t":["🧑🏻‍🚒","🧑🏼‍🚒","🧑🏽‍🚒","🧑🏾‍🚒","🧑🏿‍🚒"]},{"c":"👨‍🚒","n":"man firefighter","g":"People & Body","t":["👨🏻‍🚒","👨🏼‍🚒","👨🏽‍🚒","👨🏾‍🚒","👨🏿‍🚒"]},{"c":"👩‍🚒","n":"woman firefighter","g":"People & Body","t":["👩🏻‍🚒","👩🏼‍🚒","👩🏽‍🚒","👩🏾‍🚒","👩🏿‍🚒"]},{"c":"👮","n":"police officer","g":"People & Body","t":["👮🏻","👮🏼","👮🏽","👮🏾","👮🏿"]},{"c":"👮‍♂️","n":"man police officer","g":"People & Body","t":["👮🏻‍♂️","👮🏼‍♂️","👮🏽‍♂️","👮🏾‍♂️","👮🏿‍♂️"]},{"c":"👮‍♀️","n":"woman police officer","g":"People & Body","t":["👮🏻‍♀️","👮🏼‍♀️","👮🏽‍♀️","👮🏾‍♀️","👮🏿‍♀️"]},{"c":"🕵️","n":"detective","g":"People & Body","t":["🕵🏻","🕵🏼","🕵🏽","🕵🏾","🕵🏿"]},{"c":"🕵️‍♂️","n":"man detective","g":"People & Body","t":["🕵🏻‍♂️","🕵🏼‍♂️","🕵🏽‍♂️","🕵🏾‍♂️","🕵🏿‍♂️"]},{"c":"🕵️‍♀️","n":"woman detective","g":"People & Body","t":["🕵🏻‍♀️","🕵🏼‍♀️","🕵🏽‍♀️","🕵🏾‍♀️","🕵🏿‍♀️"]},{"c":"💂","n":"guard","g":"People & Body","t":["💂🏻","💂🏼","💂🏽","💂🏾","💂🏿"]},{"c":"💂‍♂️","n":"man guard","g":"People & Body","t":["💂🏻‍♂️","💂🏼‍♂️","💂🏽‍♂️","💂🏾‍♂️","💂🏿‍♂️"]},{"c":"💂‍♀️","n":"woman guard","g":"People & Body","t":["💂🏻‍♀️","💂🏼‍♀️","💂🏽‍♀️","💂🏾‍♀️","💂🏿‍♀️"]},{"c":"🥷","n":"ninja","g":"People & Body","t":["🥷🏻","🥷🏼","🥷🏽","🥷🏾","🥷🏿"]},{"c":"👷","n":"construction worker","g":"People & Body","t":["👷🏻","👷🏼","👷🏽","👷🏾","👷🏿"]},{"c":"👷‍♂️","n":"man construction worker","g":"People & Body","t":["👷🏻‍♂️","👷🏼‍♂️","👷🏽‍♂️","👷🏾‍♂️","👷🏿‍♂️"]},{"c":"👷‍♀️","n":"woman construction worker","g":"People & Body","t":["👷🏻‍♀️","👷🏼‍♀️","👷🏽‍♀️","👷🏾‍♀️","👷🏿‍♀️"]},{"c":"🫅","n":"person with crown","g":"People & Body","t":["🫅🏻","🫅🏼","🫅🏽","🫅🏾","🫅🏿"]},{"c":"🤴","n":"prince","g":"People & Body","t":["🤴🏻","🤴🏼","🤴🏽","🤴🏾","🤴🏿"]},{"c":"👸","n":"princess","g":"People & Body","t":["👸🏻","👸🏼","👸🏽","👸🏾","👸🏿"]},{"c":"👳","n":"person wearing turban","g":"People & Body","t":["👳🏻","👳🏼","👳🏽","👳🏾","👳🏿"]},{"c":"👳‍♂️","n":"man wearing turban","g":"People & Body","t":["👳🏻‍♂️","👳🏼‍♂️","👳🏽‍♂️","👳🏾‍♂️","👳🏿‍♂️"]},{"c":"👳‍♀️","n":"woman wearing turban","g":"People & Body","t":["👳🏻‍♀️","👳🏼‍♀️","👳🏽‍♀️","👳🏾‍♀️","👳🏿‍♀️"]},{"c":"👲","n":"person with skullcap","g":"People & Body","t":["👲🏻","👲🏼","👲🏽","👲🏾","👲🏿"]},{"c":"🧕","n":"woman with headscarf","g":"People & Body","t":["🧕🏻","🧕🏼","🧕🏽","🧕🏾","🧕🏿"]},{"c":"🤵","n":"person in tuxedo","g":"People & Body","t":["🤵🏻","🤵🏼","🤵🏽","🤵🏾","🤵🏿"]},{"c":"🤵‍♂️","n":"man in tuxedo","g":"People & Body","t":["🤵🏻‍♂️","🤵🏼‍♂️","🤵🏽‍♂️","🤵🏾‍♂️","🤵🏿‍♂️"]},{"c":"🤵‍♀️","n":"woman in tuxedo","g":"People & Body","t":["🤵🏻‍♀️","🤵🏼‍♀️","🤵🏽‍♀️","🤵🏾‍♀️","🤵🏿‍♀️"]},{"c":"👰","n":"person with veil","g":"People & Body","t":["👰🏻","👰🏼","👰🏽","👰🏾","👰🏿"]},{"c":"👰‍♂️","n":"man with veil","g":"People & Body","t":["👰🏻‍♂️","👰🏼‍♂️","👰🏽‍♂️","👰🏾‍♂️","👰🏿‍♂️"]},{"c":"👰‍♀️","n":"woman with veil","g":"People & Body","t":["👰🏻‍♀️","👰🏼‍♀️","👰🏽‍♀️","👰🏾‍♀️","👰🏿‍♀️"]},{"c":"🤰","n":"pregnant woman","g":"People & Body","t":["🤰🏻","🤰🏼","🤰🏽","🤰🏾","🤰🏿"]},{"c":"🫃","n":"pregnant man","g":"People & Body","t":["🫃🏻","🫃🏼","🫃🏽","🫃🏾","🫃🏿"]},{"c":"🫄","n":"pregnant person","g":"People & Body","t":["🫄🏻","🫄🏼","🫄🏽","🫄🏾","🫄🏿"]},{"c":"🤱","n":"breast-feeding","g":"People & Body","t":["🤱🏻","🤱🏼","🤱🏽","🤱🏾","🤱🏿"]},{"c":"👩‍🍼","n":"woman feeding baby","g":"People & Body","t":["👩🏻‍🍼","👩🏼‍🍼","👩🏽‍🍼","👩🏾‍🍼","👩🏿‍🍼"]},{"c":"👨‍🍼","n":"man feeding baby","g":"People & Body","t":["👨🏻‍🍼","👨🏼‍🍼","👨🏽‍🍼","👨🏾‍🍼","👨🏿‍🍼"]},{"c":"🧑‍🍼","n":"person feeding baby","g":"People & Body","t":["🧑🏻‍🍼","🧑🏼‍🍼","🧑🏽‍🍼","🧑🏾‍🍼","🧑🏿‍🍼"]},{"c":"👼","n":"baby angel","g":"People & Body","t":["👼🏻","👼🏼","👼🏽","👼🏾","👼🏿"]},{"c":"🎅","n":"Santa Claus","g":"People & Body","t":["🎅🏻","🎅🏼","🎅🏽","🎅🏾","🎅🏿"]},{"c":"🤶","n":"Mrs. Claus","g":"People & Body","t":["🤶🏻","🤶🏼","🤶🏽","🤶🏾","🤶🏿"]},{"c":"🧑‍🎄","n":"mx claus","g":"People & Body","t":["🧑🏻‍🎄","🧑🏼‍🎄","🧑🏽‍🎄","🧑🏾‍🎄","🧑🏿‍🎄"]},{"c":"🦸","n":"superhero","g":"People & Body","t":["🦸🏻","🦸🏼","🦸🏽","🦸🏾","🦸🏿"]},{"c":"🦸‍♂️","n":"man superhero","g":"People & Body","t":["🦸🏻‍♂️","🦸🏼‍♂️","🦸🏽‍♂️","🦸🏾‍♂️","🦸🏿‍♂️"]},{"c":"🦸‍♀️","n":"woman superhero","g":"People & Body","t":["🦸🏻‍♀️","🦸🏼‍♀️","🦸🏽‍♀️","🦸🏾‍♀️","🦸🏿‍♀️"]},{"c":"🦹","n":"supervillain","g":"People & Body","t":["🦹🏻","🦹🏼","🦹🏽","🦹🏾","🦹🏿"]},{"c":"🦹‍♂️","n":"man supervillain","g":"People & Body","t":["🦹🏻‍♂️","🦹🏼‍♂️","🦹🏽‍♂️","🦹🏾‍♂️","🦹🏿‍♂️"]},{"c":"🦹‍♀️","n":"woman supervillain","g":"People & Body","t":["🦹🏻‍♀️","🦹🏼‍♀️","🦹🏽‍♀️","🦹🏾‍♀️","🦹🏿‍♀️"]},{"c":"🧙","n":"mage","g":"People & Body","t":["🧙🏻","🧙🏼","🧙🏽","🧙🏾","🧙🏿"]},{"c":"🧙‍♂️","n":"man mage","g":"People & Body","t":["🧙🏻‍♂️","🧙🏼‍♂️","🧙🏽‍♂️","🧙🏾‍♂️","🧙🏿‍♂️"]},{"c":"🧙‍♀️","n":"woman mage","g":"People & Body","t":["🧙🏻‍♀️","🧙🏼‍♀️","🧙🏽‍♀️","🧙🏾‍♀️","🧙🏿‍♀️"]},{"c":"🧚","n":"fairy","g":"People & Body","t":["🧚🏻","🧚🏼","🧚🏽","🧚🏾","🧚🏿"]},{"c":"🧚‍♂️","n":"man fairy","g":"People & Body","t":["🧚🏻‍♂️","🧚🏼‍♂️","🧚🏽‍♂️","🧚🏾‍♂️","🧚🏿‍♂️"]},{"c":"🧚‍♀️","n":"woman fairy","g":"People & Body","t":["🧚🏻‍♀️","🧚🏼‍♀️","🧚🏽‍♀️","🧚🏾‍♀️","🧚🏿‍♀️"]},{"c":"🧛","n":"vampire","g":"People & Body","t":["🧛🏻","🧛🏼","🧛🏽","🧛🏾","🧛🏿"]},{"c":"🧛‍♂️","n":"man vampire","g":"People & Body","t":["🧛🏻‍♂️","🧛🏼‍♂️","🧛🏽‍♂️","🧛🏾‍♂️","🧛🏿‍♂️"]},{"c":"🧛‍♀️","n":"woman vampire","g":"People & Body","t":["🧛🏻‍♀️","🧛🏼‍♀️","🧛🏽‍♀️","🧛🏾‍♀️","🧛🏿‍♀️"]},{"c":"🧜","n":"merperson","g":"People & Body","t":["🧜🏻","🧜🏼","🧜🏽","🧜🏾","🧜🏿"]},{"c":"🧜‍♂️","n":"merman","g":"People & Body","t":["🧜🏻‍♂️","🧜🏼‍♂️","🧜🏽‍♂️","🧜🏾‍♂️","🧜🏿‍♂️"]},{"c":"🧜‍♀️","n":"mermaid","g":"People & Body","t":["🧜🏻‍♀️","🧜🏼‍♀️","🧜🏽‍♀️","🧜🏾‍♀️","🧜🏿‍♀️"]},{"c":"🧝","n":"elf","g":"People & Body","t":["🧝🏻","🧝🏼","🧝🏽","🧝🏾","🧝🏿"]},{"c":"🧝‍♂️","n":"man elf","g":"People & Body","t":["🧝🏻‍♂️","🧝🏼‍♂️","🧝🏽‍♂️","🧝🏾‍♂️","🧝🏿‍♂️"]},{"c":"🧝‍♀️","n":"woman elf","g":"People & Body","t":["🧝🏻‍♀️","🧝🏼‍♀️","🧝🏽‍♀️","🧝🏾‍♀️","🧝🏿‍♀️"]},{"c":"🧞","n":"genie","g":"People & Body"},{"c":"🧞‍♂️","n":"man genie","g":"People & Body"},{"c":"🧞‍♀️","n":"woman genie","g":"People & Body"},{"c":"🧟","n":"zombie","g":"People & Body"},{"c":"🧟‍♂️","n":"man zombie","g":"People & Body"},{"c":"🧟‍♀️","n":"woman zombie","g":"People & Body"},{"c":"🧌","n":"troll","g":"People & Body"},{"c":"💆","n":"person getting massage","g":"People & Body","t":["💆🏻","💆🏼","💆🏽","💆🏾","💆🏿"]},{"c":"💆‍♂️","n":"man getting massage","g":"People & Body","t":["💆🏻‍♂️","💆🏼‍♂️","💆🏽‍♂️","💆🏾‍♂️","💆🏿‍♂️"]},{"c":"💆‍♀️","n":"woman getting massage","g":"People & Body","t":["💆🏻‍♀️","💆🏼‍♀️","💆🏽‍♀️","💆🏾‍♀️","💆🏿‍♀️"]},{"c":"💇","n":"person getting haircut","g":"People & Body","t":["💇🏻","💇🏼","💇🏽","💇🏾","💇🏿"]},{"c":"💇‍♂️","n":"man getting haircut","g":"People & Body","t":["💇🏻‍♂️","💇🏼‍♂️","💇🏽‍♂️","💇🏾‍♂️","💇🏿‍♂️"]},{"c":"💇‍♀️","n":"woman getting haircut","g":"People & Body","t":["💇🏻‍♀️","💇🏼‍♀️","💇🏽‍♀️","💇🏾‍♀️","💇🏿‍♀️"]},{"c":"🚶","n":"person walking","g":"People & Body","t":["🚶🏻","🚶🏼","🚶🏽","🚶🏾","🚶🏿"]},{"c":"🚶‍♂️","n":"man walking","g":"People & Body","t":["🚶🏻‍♂️","🚶🏼‍♂️","🚶🏽‍♂️","🚶🏾‍♂️","🚶🏿‍♂️"]},{"c":"🚶‍♀️","n":"woman walking","g":"People & Body","t":["🚶🏻‍♀️","🚶🏼‍♀️","🚶🏽‍♀️","🚶🏾‍♀️","🚶🏿‍♀️"]},{"c":"🚶‍➡️","n":"person walking facing right","g":"People & Body","t":["🚶🏻‍➡️","🚶🏼‍➡️","🚶🏽‍➡️","🚶🏾‍➡️","🚶🏿‍➡️"]},{"c":"🚶‍♀️‍➡️","n":"woman walking facing right","g":"People & Body","t":["🚶🏻‍♀️‍➡️","🚶🏼‍♀️‍➡️","🚶🏽‍♀️‍➡️","🚶🏾‍♀️‍➡️","🚶🏿‍♀️‍➡️"]},{"c":"🚶‍♂️‍➡️","n":"man walking facing right","g":"People & Body","t":["🚶🏻‍♂️‍➡️","🚶🏼‍♂️‍➡️","🚶🏽‍♂️‍➡️","🚶🏾‍♂️‍➡️","🚶🏿‍♂️‍➡️"]},{"c":"🧍","n":"person standing","g":"People & Body","t":["🧍🏻","🧍🏼","🧍🏽","🧍🏾","🧍🏿"]},{"c":"🧍‍♂️","n":"man standing","g":"People & Body","t":["🧍🏻‍♂️","🧍🏼‍♂️","🧍🏽‍♂️","🧍🏾‍♂️","🧍🏿‍♂️"]},{"c":"🧍‍♀️","n":"woman standing","g":"People & Body","t":["🧍🏻‍♀️","🧍🏼‍♀️","🧍🏽‍♀️","🧍🏾‍♀️","🧍🏿‍♀️"]},{"c":"🧎","n":"person kneeling","g":"People & Body","t":["🧎🏻","🧎🏼","🧎🏽","🧎🏾","🧎🏿"]},{"c":"🧎‍♂️","n":"man kneeling","g":"People & Body","t":["🧎🏻‍♂️","🧎🏼‍♂️","🧎🏽‍♂️","🧎🏾‍♂️","🧎🏿‍♂️"]},{"c":"🧎‍♀️","n":"woman kneeling","g":"People & Body","t":["🧎🏻‍♀️","🧎🏼‍♀️","🧎🏽‍♀️","🧎🏾‍♀️","🧎🏿‍♀️"]},{"c":"🧎‍➡️","n":"person kneeling facing right","g":"People & Body","t":["🧎🏻‍➡️","🧎🏼‍➡️","🧎🏽‍➡️","🧎🏾‍➡️","🧎🏿‍➡️"]},{"c":"🧎‍♀️‍➡️","n":"woman kneeling facing right","g":"People & Body","t":["🧎🏻‍♀️‍➡️","🧎🏼‍♀️‍➡️","🧎🏽‍♀️‍➡️","🧎🏾‍♀️‍➡️","🧎🏿‍♀️‍➡️"]},{"c":"🧎‍♂️‍➡️","n":"man kneeling facing right","g":"People & Body","t":["🧎🏻‍♂️‍➡️","🧎🏼‍♂️‍➡️","🧎🏽‍♂️‍➡️","🧎🏾‍♂️‍➡️","🧎🏿‍♂️‍➡️"]},{"c":"🧑‍🦯","n":"person with white cane","g":"People & Body","t":["🧑🏻‍🦯","🧑🏼‍🦯","🧑🏽‍🦯","🧑🏾‍🦯","🧑🏿‍🦯"]},{"c":"🧑‍🦯‍➡️","n":"person with white cane facing right","g":"People & Body","t":["🧑🏻‍🦯‍➡️","🧑🏼‍🦯‍➡️","🧑🏽‍🦯‍➡️","🧑🏾‍🦯‍➡️","🧑🏿‍🦯‍➡️"]},{"c":"👨‍🦯","n":"man with white cane","g":"People & Body","t":["👨🏻‍🦯","👨🏼‍🦯","👨🏽‍🦯","👨🏾‍🦯","👨🏿‍🦯"]},{"c":"👨‍🦯‍➡️","n":"man with white cane facing right","g":"People & Body","t":["👨🏻‍🦯‍➡️","👨🏼‍🦯‍➡️","👨🏽‍🦯‍➡️","👨🏾‍🦯‍➡️","👨🏿‍🦯‍➡️"]},{"c":"👩‍🦯","n":"woman with white cane","g":"People & Body","t":["👩🏻‍🦯","👩🏼‍🦯","👩🏽‍🦯","👩🏾‍🦯","👩🏿‍🦯"]},{"c":"👩‍🦯‍➡️","n":"woman with white cane facing right","g":"People & Body","t":["👩🏻‍🦯‍➡️","👩🏼‍🦯‍➡️","👩🏽‍🦯‍➡️","👩🏾‍🦯‍➡️","👩🏿‍🦯‍➡️"]},{"c":"🧑‍🦼","n":"person in motorized wheelchair","g":"People & Body","t":["🧑🏻‍🦼","🧑🏼‍🦼","🧑🏽‍🦼","🧑🏾‍🦼","🧑🏿‍🦼"]},{"c":"🧑‍🦼‍➡️","n":"person in motorized wheelchair facing right","g":"People & Body","t":["🧑🏻‍🦼‍➡️","🧑🏼‍🦼‍➡️","🧑🏽‍🦼‍➡️","🧑🏾‍🦼‍➡️","🧑🏿‍🦼‍➡️"]},{"c":"👨‍🦼","n":"man in motorized wheelchair","g":"People & Body","t":["👨🏻‍🦼","👨🏼‍🦼","👨🏽‍🦼","👨🏾‍🦼","👨🏿‍🦼"]},{"c":"👨‍🦼‍➡️","n":"man in motorized wheelchair facing right","g":"People & Body","t":["👨🏻‍🦼‍➡️","👨🏼‍🦼‍➡️","👨🏽‍🦼‍➡️","👨🏾‍🦼‍➡️","👨🏿‍🦼‍➡️"]},{"c":"👩‍🦼","n":"woman in motorized wheelchair","g":"People & Body","t":["👩🏻‍🦼","👩🏼‍🦼","👩🏽‍🦼","👩🏾‍🦼","👩🏿‍🦼"]},{"c":"👩‍🦼‍➡️","n":"woman in motorized wheelchair facing right","g":"People & Body","t":["👩🏻‍🦼‍➡️","👩🏼‍🦼‍➡️","👩🏽‍🦼‍➡️","👩🏾‍🦼‍➡️","👩🏿‍🦼‍➡️"]},{"c":"🧑‍🦽","n":"person in manual wheelchair","g":"People & Body","t":["🧑🏻‍🦽","🧑🏼‍🦽","🧑🏽‍🦽","🧑🏾‍🦽","🧑🏿‍🦽"]},{"c":"🧑‍🦽‍➡️","n":"person in manual wheelchair facing right","g":"People & Body","t":["🧑🏻‍🦽‍➡️","🧑🏼‍🦽‍➡️","🧑🏽‍🦽‍➡️","🧑🏾‍🦽‍➡️","🧑🏿‍🦽‍➡️"]},{"c":"👨‍🦽","n":"man in manual wheelchair","g":"People & Body","t":["👨🏻‍🦽","👨🏼‍🦽","👨🏽‍🦽","👨🏾‍🦽","👨🏿‍🦽"]},{"c":"👨‍🦽‍➡️","n":"man in manual wheelchair facing right","g":"People & Body","t":["👨🏻‍🦽‍➡️","👨🏼‍🦽‍➡️","👨🏽‍🦽‍➡️","👨🏾‍🦽‍➡️","👨🏿‍🦽‍➡️"]},{"c":"👩‍🦽","n":"woman in manual wheelchair","g":"People & Body","t":["👩🏻‍🦽","👩🏼‍🦽","👩🏽‍🦽","👩🏾‍🦽","👩🏿‍🦽"]},{"c":"👩‍🦽‍➡️","n":"woman in manual wheelchair facing right","g":"People & Body","t":["👩🏻‍🦽‍➡️","👩🏼‍🦽‍➡️","👩🏽‍🦽‍➡️","👩🏾‍🦽‍➡️","👩🏿‍🦽‍➡️"]},{"c":"🏃","n":"person running","g":"People & Body","t":["🏃🏻","🏃🏼","🏃🏽","🏃🏾","🏃🏿"]},{"c":"🏃‍♂️","n":"man running","g":"People & Body","t":["🏃🏻‍♂️","🏃🏼‍♂️","🏃🏽‍♂️","🏃🏾‍♂️","🏃🏿‍♂️"]},{"c":"🏃‍♀️","n":"woman running","g":"People & Body","t":["🏃🏻‍♀️","🏃🏼‍♀️","🏃🏽‍♀️","🏃🏾‍♀️","🏃🏿‍♀️"]},{"c":"🏃‍➡️","n":"person running facing right","g":"People & Body","t":["🏃🏻‍➡️","🏃🏼‍➡️","🏃🏽‍➡️","🏃🏾‍➡️","🏃🏿‍➡️"]},{"c":"🏃‍♀️‍➡️","n":"woman running facing right","g":"People & Body","t":["🏃🏻‍♀️‍➡️","🏃🏼‍♀️‍➡️","🏃🏽‍♀️‍➡️","🏃🏾‍♀️‍➡️","🏃🏿‍♀️‍➡️"]},{"c":"🏃‍♂️‍➡️","n":"man running facing right","g":"People & Body","t":["🏃🏻‍♂️‍➡️","🏃🏼‍♂️‍➡️","🏃🏽‍♂️‍➡️","🏃🏾‍♂️‍➡️","🏃🏿‍♂️‍➡️"]},{"c":"💃","n":"woman dancing","g":"People & Body","t":["💃🏻","💃🏼","💃🏽","💃🏾","💃🏿"]},{"c":"🕺","n":"man dancing","g":"People & Body","t":["🕺🏻","🕺🏼","🕺🏽","🕺🏾","🕺🏿"]},{"c":"🕴️","n":"person in suit levitating","g":"People & Body","t":["🕴🏻","🕴🏼","🕴🏽","🕴🏾","🕴🏿"]},{"c":"👯","n":"people with bunny ears","g":"People & Body"},{"c":"👯‍♂️","n":"men with bunny ears","g":"People & Body"},{"c":"👯‍♀️","n":"women with bunny ears","g":"People & Body"},{"c":"🧖","n":"person in steamy room","g":"People & Body","t":["🧖🏻","🧖🏼","🧖🏽","🧖🏾","🧖🏿"]},{"c":"🧖‍♂️","n":"man in steamy room","g":"People & Body","t":["🧖🏻‍♂️","🧖🏼‍♂️","🧖🏽‍♂️","🧖🏾‍♂️","🧖🏿‍♂️"]},{"c":"🧖‍♀️","n":"woman in steamy room","g":"People & Body","t":["🧖🏻‍♀️","🧖🏼‍♀️","🧖🏽‍♀️","🧖🏾‍♀️","🧖🏿‍♀️"]},{"c":"🧗","n":"person climbing","g":"People & Body","t":["🧗🏻","🧗🏼","🧗🏽","🧗🏾","🧗🏿"]},{"c":"🧗‍♂️","n":"man climbing","g":"People & Body","t":["🧗🏻‍♂️","🧗🏼‍♂️","🧗🏽‍♂️","🧗🏾‍♂️","🧗🏿‍♂️"]},{"c":"🧗‍♀️","n":"woman climbing","g":"People & Body","t":["🧗🏻‍♀️","🧗🏼‍♀️","🧗🏽‍♀️","🧗🏾‍♀️","🧗🏿‍♀️"]},{"c":"🤺","n":"person fencing","g":"People & Body"},{"c":"🏇","n":"horse racing","g":"People & Body","t":["🏇🏻","🏇🏼","🏇🏽","🏇🏾","🏇🏿"]},{"c":"⛷️","n":"skier","g":"People & Body"},{"c":"🏂","n":"snowboarder","g":"People & Body","t":["🏂🏻","🏂🏼","🏂🏽","🏂🏾","🏂🏿"]},{"c":"🏌️","n":"person golfing","g":"People & Body","t":["🏌🏻","🏌🏼","🏌🏽","🏌🏾","🏌🏿"]},{"c":"🏌️‍♂️","n":"man golfing","g":"People & Body","t":["🏌🏻‍♂️","🏌🏼‍♂️","🏌🏽‍♂️","🏌🏾‍♂️","🏌🏿‍♂️"]},{"c":"🏌️‍♀️","n":"woman golfing","g":"People & Body","t":["🏌🏻‍♀️","🏌🏼‍♀️","🏌🏽‍♀️","🏌🏾‍♀️","🏌🏿‍♀️"]},{"c":"🏄","n":"person surfing","g":"People & Body","t":["🏄🏻","🏄🏼","🏄🏽","🏄🏾","🏄🏿"]},{"c":"🏄‍♂️","n":"man surfing","g":"People & Body","t":["🏄🏻‍♂️","🏄🏼‍♂️","🏄🏽‍♂️","🏄🏾‍♂️","🏄🏿‍♂️"]},{"c":"🏄‍♀️","n":"woman surfing","g":"People & Body","t":["🏄🏻‍♀️","🏄🏼‍♀️","🏄🏽‍♀️","🏄🏾‍♀️","🏄🏿‍♀️"]},{"c":"🚣","n":"person rowing boat","g":"People & Body","t":["🚣🏻","🚣🏼","🚣🏽","🚣🏾","🚣🏿"]},{"c":"🚣‍♂️","n":"man rowing boat","g":"People & Body","t":["🚣🏻‍♂️","🚣🏼‍♂️","🚣🏽‍♂️","🚣🏾‍♂️","🚣🏿‍♂️"]},{"c":"🚣‍♀️","n":"woman rowing boat","g":"People & Body","t":["🚣🏻‍♀️","🚣🏼‍♀️","🚣🏽‍♀️","🚣🏾‍♀️","🚣🏿‍♀️"]},{"c":"🏊","n":"person swimming","g":"People & Body","t":["🏊🏻","🏊🏼","🏊🏽","🏊🏾","🏊🏿"]},{"c":"🏊‍♂️","n":"man swimming","g":"People & Body","t":["🏊🏻‍♂️","🏊🏼‍♂️","🏊🏽‍♂️","🏊🏾‍♂️","🏊🏿‍♂️"]},{"c":"🏊‍♀️","n":"woman swimming","g":"People & Body","t":["🏊🏻‍♀️","🏊🏼‍♀️","🏊🏽‍♀️","🏊🏾‍♀️","🏊🏿‍♀️"]},{"c":"⛹️","n":"person bouncing ball","g":"People & Body","t":["⛹🏻","⛹🏼","⛹🏽","⛹🏾","⛹🏿"]},{"c":"⛹️‍♂️","n":"man bouncing ball","g":"People & Body","t":["⛹🏻‍♂️","⛹🏼‍♂️","⛹🏽‍♂️","⛹🏾‍♂️","⛹🏿‍♂️"]},{"c":"⛹️‍♀️","n":"woman bouncing ball","g":"People & Body","t":["⛹🏻‍♀️","⛹🏼‍♀️","⛹🏽‍♀️","⛹🏾‍♀️","⛹🏿‍♀️"]},{"c":"🏋️","n":"person lifting weights","g":"People & Body","t":["🏋🏻","🏋🏼","🏋🏽","🏋🏾","🏋🏿"]},{"c":"🏋️‍♂️","n":"man lifting weights","g":"People & Body","t":["🏋🏻‍♂️","🏋🏼‍♂️","🏋🏽‍♂️","🏋🏾‍♂️","🏋🏿‍♂️"]},{"c":"🏋️‍♀️","n":"woman lifting weights","g":"People & Body","t":["🏋🏻‍♀️","🏋🏼‍♀️","🏋🏽‍♀️","🏋🏾‍♀️","🏋🏿‍♀️"]},{"c":"🚴","n":"person biking","g":"People & Body","t":["🚴🏻","🚴🏼","🚴🏽","🚴🏾","🚴🏿"]},{"c":"🚴‍♂️","n":"man biking","g":"People & Body","t":["🚴🏻‍♂️","🚴🏼‍♂️","🚴🏽‍♂️","🚴🏾‍♂️","🚴🏿‍♂️"]},{"c":"🚴‍♀️","n":"woman biking","g":"People & Body","t":["🚴🏻‍♀️","🚴🏼‍♀️","🚴🏽‍♀️","🚴🏾‍♀️","🚴🏿‍♀️"]},{"c":"🚵","n":"person mountain biking","g":"People & Body","t":["🚵🏻","🚵🏼","🚵🏽","🚵🏾","🚵🏿"]},{"c":"🚵‍♂️","n":"man mountain biking","g":"People & Body","t":["🚵🏻‍♂️","🚵🏼‍♂️","🚵🏽‍♂️","🚵🏾‍♂️","🚵🏿‍♂️"]},{"c":"🚵‍♀️","n":"woman mountain biking","g":"People & Body","t":["🚵🏻‍♀️","🚵🏼‍♀️","🚵🏽‍♀️","🚵🏾‍♀️","🚵🏿‍♀️"]},{"c":"🤸","n":"person cartwheeling","g":"People & Body","t":["🤸🏻","🤸🏼","🤸🏽","🤸🏾","🤸🏿"]},{"c":"🤸‍♂️","n":"man cartwheeling","g":"People & Body","t":["🤸🏻‍♂️","🤸🏼‍♂️","🤸🏽‍♂️","🤸🏾‍♂️","🤸🏿‍♂️"]},{"c":"🤸‍♀️","n":"woman cartwheeling","g":"People & Body","t":["🤸🏻‍♀️","🤸🏼‍♀️","🤸🏽‍♀️","🤸🏾‍♀️","🤸🏿‍♀️"]},{"c":"🤼","n":"people wrestling","g":"People & Body"},{"c":"🤼‍♂️","n":"men wrestling","g":"People & Body"},{"c":"🤼‍♀️","n":"women wrestling","g":"People & Body"},{"c":"🤽","n":"person playing water polo","g":"People & Body","t":["🤽🏻","🤽🏼","🤽🏽","🤽🏾","🤽🏿"]},{"c":"🤽‍♂️","n":"man playing water polo","g":"People & Body","t":["🤽🏻‍♂️","🤽🏼‍♂️","🤽🏽‍♂️","🤽🏾‍♂️","🤽🏿‍♂️"]},{"c":"🤽‍♀️","n":"woman playing water polo","g":"People & Body","t":["🤽🏻‍♀️","🤽🏼‍♀️","🤽🏽‍♀️","🤽🏾‍♀️","🤽🏿‍♀️"]},{"c":"🤾","n":"person playing handball","g":"People & Body","t":["🤾🏻","🤾🏼","🤾🏽","🤾🏾","🤾🏿"]},{"c":"🤾‍♂️","n":"man playing handball","g":"People & Body","t":["🤾🏻‍♂️","🤾🏼‍♂️","🤾🏽‍♂️","🤾🏾‍♂️","🤾🏿‍♂️"]},{"c":"🤾‍♀️","n":"woman playing handball","g":"People & Body","t":["🤾🏻‍♀️","🤾🏼‍♀️","🤾🏽‍♀️","🤾🏾‍♀️","🤾🏿‍♀️"]},{"c":"🤹","n":"person juggling","g":"People & Body","t":["🤹🏻","🤹🏼","🤹🏽","🤹🏾","🤹🏿"]},{"c":"🤹‍♂️","n":"man juggling","g":"People & Body","t":["🤹🏻‍♂️","🤹🏼‍♂️","🤹🏽‍♂️","🤹🏾‍♂️","🤹🏿‍♂️"]},{"c":"🤹‍♀️","n":"woman juggling","g":"People & Body","t":["🤹🏻‍♀️","🤹🏼‍♀️","🤹🏽‍♀️","🤹🏾‍♀️","🤹🏿‍♀️"]},{"c":"🧘","n":"person in lotus position","g":"People & Body","t":["🧘🏻","🧘🏼","🧘🏽","🧘🏾","🧘🏿"]},{"c":"🧘‍♂️","n":"man in lotus position","g":"People & Body","t":["🧘🏻‍♂️","🧘🏼‍♂️","🧘🏽‍♂️","🧘🏾‍♂️","🧘🏿‍♂️"]},{"c":"🧘‍♀️","n":"woman in lotus position","g":"People & Body","t":["🧘🏻‍♀️","🧘🏼‍♀️","🧘🏽‍♀️","🧘🏾‍♀️","🧘🏿‍♀️"]},{"c":"🛀","n":"person taking bath","g":"People & Body","t":["🛀🏻","🛀🏼","🛀🏽","🛀🏾","🛀🏿"]},{"c":"🛌","n":"person in bed","g":"People & Body","t":["🛌🏻","🛌🏼","🛌🏽","🛌🏾","🛌🏿"]},{"c":"🧑‍🤝‍🧑","n":"people holding hands","g":"People & Body","t":["🧑🏻‍🤝‍🧑🏻","🧑🏻‍🤝‍🧑🏼","🧑🏻‍🤝‍🧑🏽","🧑🏻‍🤝‍🧑🏾","🧑🏻‍🤝‍🧑🏿"]},{"c":"👭","n":"women holding hands","g":"People & Body","t":["👭🏻","👩🏻‍🤝‍👩🏼","👩🏻‍🤝‍👩🏽","👩🏻‍🤝‍👩🏾","👩🏻‍🤝‍👩🏿"]},{"c":"👫","n":"woman and man holding hands","g":"People & Body","t":["👫🏻","👩🏻‍🤝‍👨🏼","👩🏻‍🤝‍👨🏽","👩🏻‍🤝‍👨🏾","👩🏻‍🤝‍👨🏿"]},{"c":"👬","n":"men holding hands","g":"People & Body","t":["👬🏻","👨🏻‍🤝‍👨🏼","👨🏻‍🤝‍👨🏽","👨🏻‍🤝‍👨🏾","👨🏻‍🤝‍👨🏿"]},{"c":"💏","n":"kiss","g":"People & Body","t":["💏🏻","💏🏼","💏🏽","💏🏾","💏🏿"]},{"c":"👩‍❤️‍💋‍👨","n":"kiss: woman, man","g":"People & Body"},{"c":"👨‍❤️‍💋‍👨","n":"kiss: man, man","g":"People & Body"},{"c":"👩‍❤️‍💋‍👩","n":"kiss: woman, woman","g":"People & Body"},{"c":"💑","n":"couple with heart","g":"People & Body","t":["💑🏻","💑🏼","💑🏽","💑🏾","💑🏿"]},{"c":"👩‍❤️‍👨","n":"couple with heart: woman, man","g":"People & Body"},{"c":"👨‍❤️‍👨","n":"couple with heart: man, man","g":"People & Body"},{"c":"👩‍❤️‍👩","n":"couple with heart: woman, woman","g":"People & Body"},{"c":"👨‍👩‍👦","n":"family: man, woman, boy","g":"People & Body"},{"c":"👨‍👩‍👧","n":"family: man, woman, girl","g":"People & Body"},{"c":"👨‍👩‍👧‍👦","n":"family: man, woman, girl, boy","g":"People & Body"},{"c":"👨‍👩‍👦‍👦","n":"family: man, woman, boy, boy","g":"People & Body"},{"c":"👨‍👩‍👧‍👧","n":"family: man, woman, girl, girl","g":"People & Body"},{"c":"👨‍👨‍👦","n":"family: man, man, boy","g":"People & Body"},{"c":"👨‍👨‍👧","n":"family: man, man, girl","g":"People & Body"},{"c":"👨‍👨‍👧‍👦","n":"family: man, man, girl, boy","g":"People & Body"},{"c":"👨‍👨‍👦‍👦","n":"family: man, man, boy, boy","g":"People & Body"},{"c":"👨‍👨‍👧‍👧","n":"family: man, man, girl, girl","g":"People & Body"},{"c":"👩‍👩‍👦","n":"family: woman, woman, boy","g":"People & Body"},{"c":"👩‍👩‍👧","n":"family: woman, woman, girl","g":"People & Body"},{"c":"👩‍👩‍👧‍👦","n":"family: woman, woman, girl, boy","g":"People & Body"},{"c":"👩‍👩‍👦‍👦","n":"family: woman, woman, boy, boy","g":"People & Body"},{"c":"👩‍👩‍👧‍👧","n":"family: woman, woman, girl, girl","g":"People & Body"},{"c":"👨‍👦","n":"family: man, boy","g":"People & Body"},{"c":"👨‍👦‍👦","n":"family: man, boy, boy","g":"People & Body"},{"c":"👨‍👧","n":"family: man, girl","g":"People & Body"},{"c":"👨‍👧‍👦","n":"family: man, girl, boy","g":"People & Body"},{"c":"👨‍👧‍👧","n":"family: man, girl, girl","g":"People & Body"},{"c":"👩‍👦","n":"family: woman, boy","g":"People & Body"},{"c":"👩‍👦‍👦","n":"family: woman, boy, boy","g":"People & Body"},{"c":"👩‍👧","n":"family: woman, girl","g":"People & Body"},{"c":"👩‍👧‍👦","n":"family: woman, girl, boy","g":"People & Body"},{"c":"👩‍👧‍👧","n":"family: woman, girl, girl","g":"People & Body"},{"c":"🗣️","n":"speaking head","g":"People & Body"},{"c":"👤","n":"bust in silhouette","g":"People & Body"},{"c":"👥","n":"busts in silhouette","g":"People & Body"},{"c":"🫂","n":"people hugging","g":"People & Body"},{"c":"👪","n":"family","g":"People & Body"},{"c":"🧑‍🧑‍🧒","n":"family: adult, adult, child","g":"People & Body"},{"c":"🧑‍🧑‍🧒‍🧒","n":"family: adult, adult, child, child","g":"People & Body"},{"c":"🧑‍🧒","n":"family: adult, child","g":"People & Body"},{"c":"🧑‍🧒‍🧒","n":"family: adult, child, child","g":"People & Body"},{"c":"👣","n":"footprints","g":"People & Body"},{"c":"🐵","n":"monkey face","g":"Animals & Nature"},{"c":"🐒","n":"monkey","g":"Animals & Nature"},{"c":"🦍","n":"gorilla","g":"Animals & Nature"},{"c":"🦧","n":"orangutan","g":"Animals & Nature"},{"c":"🐶","n":"dog face","g":"Animals & Nature"},{"c":"🐕","n":"dog","g":"Animals & Nature"},{"c":"🦮","n":"guide dog","g":"Animals & Nature"},{"c":"🐕‍🦺","n":"service dog","g":"Animals & Nature"},{"c":"🐩","n":"poodle","g":"Animals & Nature"},{"c":"🐺","n":"wolf","g":"Animals & Nature"},{"c":"🦊","n":"fox","g":"Animals & Nature"},{"c":"🦝","n":"raccoon","g":"Animals & Nature"},{"c":"🐱","n":"cat face","g":"Animals & Nature"},{"c":"🐈","n":"cat","g":"Animals & Nature"},{"c":"🐈‍⬛","n":"black cat","g":"Animals & Nature"},{"c":"🦁","n":"lion","g":"Animals & Nature"},{"c":"🐯","n":"tiger face","g":"Animals & Nature"},{"c":"🐅","n":"tiger","g":"Animals & Nature"},{"c":"🐆","n":"leopard","g":"Animals & Nature"},{"c":"🐴","n":"horse face","g":"Animals & Nature"},{"c":"🫎","n":"moose","g":"Animals & Nature"},{"c":"🫏","n":"donkey","g":"Animals & Nature"},{"c":"🐎","n":"horse","g":"Animals & Nature"},{"c":"🦄","n":"unicorn","g":"Animals & Nature"},{"c":"🦓","n":"zebra","g":"Animals & Nature"},{"c":"🦌","n":"deer","g":"Animals & Nature"},{"c":"🦬","n":"bison","g":"Animals & Nature"},{"c":"🐮","n":"cow face","g":"Animals & Nature"},{"c":"🐂","n":"ox","g":"Animals & Nature"},{"c":"🐃","n":"water buffalo","g":"Animals & Nature"},{"c":"🐄","n":"cow","g":"Animals & Nature"},{"c":"🐷","n":"pig face","g":"Animals & Nature"},{"c":"🐖","n":"pig","g":"Animals & Nature"},{"c":"🐗","n":"boar","g":"Animals & Nature"},{"c":"🐽","n":"pig nose","g":"Animals & Nature"},{"c":"🐏","n":"ram","g":"Animals & Nature"},{"c":"🐑","n":"ewe","g":"Animals & Nature"},{"c":"🐐","n":"goat","g":"Animals & Nature"},{"c":"🐪","n":"camel","g":"Animals & Nature"},{"c":"🐫","n":"two-hump camel","g":"Animals & Nature"},{"c":"🦙","n":"llama","g":"Animals & Nature"},{"c":"🦒","n":"giraffe","g":"Animals & Nature"},{"c":"🐘","n":"elephant","g":"Animals & Nature"},{"c":"🦣","n":"mammoth","g":"Animals & Nature"},{"c":"🦏","n":"rhinoceros","g":"Animals & Nature"},{"c":"🦛","n":"hippopotamus","g":"Animals & Nature"},{"c":"🐭","n":"mouse face","g":"Animals & Nature"},{"c":"🐁","n":"mouse","g":"Animals & Nature"},{"c":"🐀","n":"rat","g":"Animals & Nature"},{"c":"🐹","n":"hamster","g":"Animals & Nature"},{"c":"🐰","n":"rabbit face","g":"Animals & Nature"},{"c":"🐇","n":"rabbit","g":"Animals & Nature"},{"c":"🐿️","n":"chipmunk","g":"Animals & Nature"},{"c":"🦫","n":"beaver","g":"Animals & Nature"},{"c":"🦔","n":"hedgehog","g":"Animals & Nature"},{"c":"🦇","n":"bat","g":"Animals & Nature"},{"c":"🐻","n":"bear","g":"Animals & Nature"},{"c":"🐻‍❄️","n":"polar bear","g":"Animals & Nature"},{"c":"🐨","n":"koala","g":"Animals & Nature"},{"c":"🐼","n":"panda","g":"Animals & Nature"},{"c":"🦥","n":"sloth","g":"Animals & Nature"},{"c":"🦦","n":"otter","g":"Animals & Nature"},{"c":"🦨","n":"skunk","g":"Animals & Nature"},{"c":"🦘","n":"kangaroo","g":"Animals & Nature"},{"c":"🦡","n":"badger","g":"Animals & Nature"},{"c":"🐾","n":"paw prints","g":"Animals & Nature"},{"c":"🦃","n":"turkey","g":"Animals & Nature"},{"c":"🐔","n":"chicken","g":"Animals & Nature"},{"c":"🐓","n":"rooster","g":"Animals & Nature"},{"c":"🐣","n":"hatching chick","g":"Animals & Nature"},{"c":"🐤","n":"baby chick","g":"Animals & Nature"},{"c":"🐥","n":"front-facing baby chick","g":"Animals & Nature"},{"c":"🐦","n":"bird","g":"Animals & Nature"},{"c":"🐧","n":"penguin","g":"Animals & Nature"},{"c":"🕊️","n":"dove","g":"Animals & Nature"},{"c":"🦅","n":"eagle","g":"Animals & Nature"},{"c":"🦆","n":"duck","g":"Animals & Nature"},{"c":"🦢","n":"swan","g":"Animals & Nature"},{"c":"🦉","n":"owl","g":"Animals & Nature"},{"c":"🦤","n":"dodo","g":"Animals & Nature"},{"c":"🪶","n":"feather","g":"Animals & Nature"},{"c":"🦩","n":"flamingo","g":"Animals & Nature"},{"c":"🦚","n":"peacock","g":"Animals & Nature"},{"c":"🦜","n":"parrot","g":"Animals & Nature"},{"c":"🪽","n":"wing","g":"Animals & Nature"},{"c":"🐦‍⬛","n":"black bird","g":"Animals & Nature"},{"c":"🪿","n":"goose","g":"Animals & Nature"},{"c":"🐦‍🔥","n":"phoenix","g":"Animals & Nature"},{"c":"🐸","n":"frog","g":"Animals & Nature"},{"c":"🐊","n":"crocodile","g":"Animals & Nature"},{"c":"🐢","n":"turtle","g":"Animals & Nature"},{"c":"🦎","n":"lizard","g":"Animals & Nature"},{"c":"🐍","n":"snake","g":"Animals & Nature"},{"c":"🐲","n":"dragon face","g":"Animals & Nature"},{"c":"🐉","n":"dragon","g":"Animals & Nature"},{"c":"🦕","n":"sauropod","g":"Animals & Nature"},{"c":"🦖","n":"T-Rex","g":"Animals & Nature"},{"c":"🐳","n":"spouting whale","g":"Animals & Nature"},{"c":"🐋","n":"whale","g":"Animals & Nature"},{"c":"🐬","n":"dolphin","g":"Animals & Nature"},{"c":"🦭","n":"seal","g":"Animals & Nature"},{"c":"🐟","n":"fish","g":"Animals & Nature"},{"c":"🐠","n":"tropical fish","g":"Animals & Nature"},{"c":"🐡","n":"blowfish","g":"Animals & Nature"},{"c":"🦈","n":"shark","g":"Animals & Nature"},{"c":"🐙","n":"octopus","g":"Animals & Nature"},{"c":"🐚","n":"spiral shell","g":"Animals & Nature"},{"c":"🪸","n":"coral","g":"Animals & Nature"},{"c":"🪼","n":"jellyfish","g":"Animals & Nature"},{"c":"🐌","n":"snail","g":"Animals & Nature"},{"c":"🦋","n":"butterfly","g":"Animals & Nature"},{"c":"🐛","n":"bug","g":"Animals & Nature"},{"c":"🐜","n":"ant","g":"Animals & Nature"},{"c":"🐝","n":"honeybee","g":"Animals & Nature"},{"c":"🪲","n":"beetle","g":"Animals & Nature"},{"c":"🐞","n":"lady beetle","g":"Animals & Nature"},{"c":"🦗","n":"cricket","g":"Animals & Nature"},{"c":"🪳","n":"cockroach","g":"Animals & Nature"},{"c":"🕷️","n":"spider","g":"Animals & Nature"},{"c":"🕸️","n":"spider web","g":"Animals & Nature"},{"c":"🦂","n":"scorpion","g":"Animals & Nature"},{"c":"🦟","n":"mosquito","g":"Animals & Nature"},{"c":"🪰","n":"fly","g":"Animals & Nature"},{"c":"🪱","n":"worm","g":"Animals & Nature"},{"c":"🦠","n":"microbe","g":"Animals & Nature"},{"c":"💐","n":"bouquet","g":"Animals & Nature"},{"c":"🌸","n":"cherry blossom","g":"Animals & Nature"},{"c":"💮","n":"white flower","g":"Animals & Nature"},{"c":"🪷","n":"lotus","g":"Animals & Nature"},{"c":"🏵️","n":"rosette","g":"Animals & Nature"},{"c":"🌹","n":"rose","g":"Animals & Nature"},{"c":"🥀","n":"wilted flower","g":"Animals & Nature"},{"c":"🌺","n":"hibiscus","g":"Animals & Nature"},{"c":"🌻","n":"sunflower","g":"Animals & Nature"},{"c":"🌼","n":"blossom","g":"Animals & Nature"},{"c":"🌷","n":"tulip","g":"Animals & Nature"},{"c":"🪻","n":"hyacinth","g":"Animals & Nature"},{"c":"🌱","n":"seedling","g":"Animals & Nature"},{"c":"🪴","n":"potted plant","g":"Animals & Nature"},{"c":"🌲","n":"evergreen tree","g":"Animals & Nature"},{"c":"🌳","n":"deciduous tree","g":"Animals & Nature"},{"c":"🌴","n":"palm tree","g":"Animals & Nature"},{"c":"🌵","n":"cactus","g":"Animals & Nature"},{"c":"🌾","n":"sheaf of rice","g":"Animals & Nature"},{"c":"🌿","n":"herb","g":"Animals & Nature"},{"c":"☘️","n":"shamrock","g":"Animals & Nature"},{"c":"🍀","n":"four leaf clover","g":"Animals & Nature"},{"c":"🍁","n":"maple leaf","g":"Animals & Nature"},{"c":"🍂","n":"fallen leaf","g":"Animals & Nature"},{"c":"🍃","n":"leaf fluttering in wind","g":"Animals & Nature"},{"c":"🪹","n":"empty nest","g":"Animals & Nature"},{"c":"🪺","n":"nest with eggs","g":"Animals & Nature"},{"c":"🍄","n":"mushroom","g":"Animals & Nature"},{"c":"🍇","n":"grapes","g":"Food & Drink"},{"c":"🍈","n":"melon","g":"Food & Drink"},{"c":"🍉","n":"watermelon","g":"Food & Drink"},{"c":"🍊","n":"tangerine","g":"Food & Drink"},{"c":"🍋","n":"lemon","g":"Food & Drink"},{"c":"🍋‍🟩","n":"lime","g":"Food & Drink"},{"c":"🍌","n":"banana","g":"Food & Drink"},{"c":"🍍","n":"pineapple","g":"Food & Drink"},{"c":"🥭","n":"mango","g":"Food & Drink"},{"c":"🍎","n":"red apple","g":"Food & Drink"},{"c":"🍏","n":"green apple","g":"Food & Drink"},{"c":"🍐","n":"pear","g":"Food & Drink"},{"c":"🍑","n":"peach","g":"Food & Drink"},{"c":"🍒","n":"cherries","g":"Food & Drink"},{"c":"🍓","n":"strawberry","g":"Food & Drink"},{"c":"🫐","n":"blueberries","g":"Food & Drink"},{"c":"🥝","n":"kiwi fruit","g":"Food & Drink"},{"c":"🍅","n":"tomato","g":"Food & Drink"},{"c":"🫒","n":"olive","g":"Food & Drink"},{"c":"🥥","n":"coconut","g":"Food & Drink"},{"c":"🥑","n":"avocado","g":"Food & Drink"},{"c":"🍆","n":"eggplant","g":"Food & Drink"},{"c":"🥔","n":"potato","g":"Food & Drink"},{"c":"🥕","n":"carrot","g":"Food & Drink"},{"c":"🌽","n":"ear of corn","g":"Food & Drink"},{"c":"🌶️","n":"hot pepper","g":"Food & Drink"},{"c":"🫑","n":"bell pepper","g":"Food & Drink"},{"c":"🥒","n":"cucumber","g":"Food & Drink"},{"c":"🥬","n":"leafy green","g":"Food & Drink"},{"c":"🥦","n":"broccoli","g":"Food & Drink"},{"c":"🧄","n":"garlic","g":"Food & Drink"},{"c":"🧅","n":"onion","g":"Food & Drink"},{"c":"🥜","n":"peanuts","g":"Food & Drink"},{"c":"🫘","n":"beans","g":"Food & Drink"},{"c":"🌰","n":"chestnut","g":"Food & Drink"},{"c":"🫚","n":"ginger root","g":"Food & Drink"},{"c":"🫛","n":"pea pod","g":"Food & Drink"},{"c":"🍄‍🟫","n":"brown mushroom","g":"Food & Drink"},{"c":"🍞","n":"bread","g":"Food & Drink"},{"c":"🥐","n":"croissant","g":"Food & Drink"},{"c":"🥖","n":"baguette bread","g":"Food & Drink"},{"c":"🫓","n":"flatbread","g":"Food & Drink"},{"c":"🥨","n":"pretzel","g":"Food & Drink"},{"c":"🥯","n":"bagel","g":"Food & Drink"},{"c":"🥞","n":"pancakes","g":"Food & Drink"},{"c":"🧇","n":"waffle","g":"Food & Drink"},{"c":"🧀","n":"cheese wedge","g":"Food & Drink"},{"c":"🍖","n":"meat on bone","g":"Food & Drink"},{"c":"🍗","n":"poultry leg","g":"Food & Drink"},{"c":"🥩","n":"cut of meat","g":"Food & Drink"},{"c":"🥓","n":"bacon","g":"Food & Drink"},{"c":"🍔","n":"hamburger","g":"Food & Drink"},{"c":"🍟","n":"french fries","g":"Food & Drink"},{"c":"🍕","n":"pizza","g":"Food & Drink"},{"c":"🌭","n":"hot dog","g":"Food & Drink"},{"c":"🥪","n":"sandwich","g":"Food & Drink"},{"c":"🌮","n":"taco","g":"Food & Drink"},{"c":"🌯","n":"burrito","g":"Food & Drink"},{"c":"🫔","n":"tamale","g":"Food & Drink"},{"c":"🥙","n":"stuffed flatbread","g":"Food & Drink"},{"c":"🧆","n":"falafel","g":"Food & Drink"},{"c":"🥚","n":"egg","g":"Food & Drink"},{"c":"🍳","n":"cooking","g":"Food & Drink"},{"c":"🥘","n":"shallow pan of food","g":"Food & Drink"},{"c":"🍲","n":"pot of food","g":"Food & Drink"},{"c":"🫕","n":"fondue","g":"Food & Drink"},{"c":"🥣","n":"bowl with spoon","g":"Food & Drink"},{"c":"🥗","n":"green salad","g":"Food & Drink"},{"c":"🍿","n":"popcorn","g":"Food & Drink"},{"c":"🧈","n":"butter","g":"Food & Drink"},{"c":"🧂","n":"salt","g":"Food & Drink"},{"c":"🥫","n":"canned food","g":"Food & Drink"},{"c":"🍱","n":"bento box","g":"Food & Drink"},{"c":"🍘","n":"rice cracker","g":"Food & Drink"},{"c":"🍙","n":"rice ball","g":"Food & Drink"},{"c":"🍚","n":"cooked rice","g":"Food & Drink"},{"c":"🍛","n":"curry rice","g":"Food & Drink"},{"c":"🍜","n":"steaming bowl","g":"Food & Drink"},{"c":"🍝","n":"spaghetti","g":"Food & Drink"},{"c":"🍠","n":"roasted sweet potato","g":"Food & Drink"},{"c":"🍢","n":"oden","g":"Food & Drink"},{"c":"🍣","n":"sushi","g":"Food & Drink"},{"c":"🍤","n":"fried shrimp","g":"Food & Drink"},{"c":"🍥","n":"fish cake with swirl","g":"Food & Drink"},{"c":"🥮","n":"moon cake","g":"Food & Drink"},{"c":"🍡","n":"dango","g":"Food & Drink"},{"c":"🥟","n":"dumpling","g":"Food & Drink"},{"c":"🥠","n":"fortune cookie","g":"Food & Drink"},{"c":"🥡","n":"takeout box","g":"Food & Drink"},{"c":"🦀","n":"crab","g":"Food & Drink"},{"c":"🦞","n":"lobster","g":"Food & Drink"},{"c":"🦐","n":"shrimp","g":"Food & Drink"},{"c":"🦑","n":"squid","g":"Food & Drink"},{"c":"🦪","n":"oyster","g":"Food & Drink"},{"c":"🍦","n":"soft ice cream","g":"Food & Drink"},{"c":"🍧","n":"shaved ice","g":"Food & Drink"},{"c":"🍨","n":"ice cream","g":"Food & Drink"},{"c":"🍩","n":"doughnut","g":"Food & Drink"},{"c":"🍪","n":"cookie","g":"Food & Drink"},{"c":"🎂","n":"birthday cake","g":"Food & Drink"},{"c":"🍰","n":"shortcake","g":"Food & Drink"},{"c":"🧁","n":"cupcake","g":"Food & Drink"},{"c":"🥧","n":"pie","g":"Food & Drink"},{"c":"🍫","n":"chocolate bar","g":"Food & Drink"},{"c":"🍬","n":"candy","g":"Food & Drink"},{"c":"🍭","n":"lollipop","g":"Food & Drink"},{"c":"🍮","n":"custard","g":"Food & Drink"},{"c":"🍯","n":"honey pot","g":"Food & Drink"},{"c":"🍼","n":"baby bottle","g":"Food & Drink"},{"c":"🥛","n":"glass of milk","g":"Food & Drink"},{"c":"☕","n":"hot beverage","g":"Food & Drink"},{"c":"🫖","n":"teapot","g":"Food & Drink"},{"c":"🍵","n":"teacup without handle","g":"Food & Drink"},{"c":"🍶","n":"sake","g":"Food & Drink"},{"c":"🍾","n":"bottle with popping cork","g":"Food & Drink"},{"c":"🍷","n":"wine glass","g":"Food & Drink"},{"c":"🍸","n":"cocktail glass","g":"Food & Drink"},{"c":"🍹","n":"tropical drink","g":"Food & Drink"},{"c":"🍺","n":"beer mug","g":"Food & Drink"},{"c":"🍻","n":"clinking beer mugs","g":"Food & Drink"},{"c":"🥂","n":"clinking glasses","g":"Food & Drink"},{"c":"🥃","n":"tumbler glass","g":"Food & Drink"},{"c":"🫗","n":"pouring liquid","g":"Food & Drink"},{"c":"🥤","n":"cup with straw","g":"Food & Drink"},{"c":"🧋","n":"bubble tea","g":"Food & Drink"},{"c":"🧃","n":"beverage box","g":"Food & Drink"},{"c":"🧉","n":"mate","g":"Food & Drink"},{"c":"🧊","n":"ice","g":"Food & Drink"},{"c":"🥢","n":"chopsticks","g":"Food & Drink"},{"c":"🍽️","n":"fork and knife with plate","g":"Food & Drink"},{"c":"🍴","n":"fork and knife","g":"Food & Drink"},{"c":"🥄","n":"spoon","g":"Food & Drink"},{"c":"🔪","n":"kitchen knife","g":"Food & Drink"},{"c":"🫙","n":"jar","g":"Food & Drink"},{"c":"🏺","n":"amphora","g":"Food & Drink"},{"c":"🌍","n":"globe showing Europe-Africa","g":"Travel & Places"},{"c":"🌎","n":"globe showing Americas","g":"Travel & Places"},{"c":"🌏","n":"globe showing Asia-Australia","g":"Travel & Places"},{"c":"🌐","n":"globe with meridians","g":"Travel & Places"},{"c":"🗺️","n":"world map","g":"Travel & Places"},{"c":"🗾","n":"map of Japan","g":"Travel & Places"},{"c":"🧭","n":"compass","g":"Travel & Places"},{"c":"🏔️","n":"snow-capped mountain","g":"Travel & Places"},{"c":"⛰️","n":"mountain","g":"Travel & Places"},{"c":"🌋","n":"volcano","g":"Travel & Places"},{"c":"🗻","n":"mount fuji","g":"Travel & Places"},{"c":"🏕️","n":"camping","g":"Travel & Places"},{"c":"🏖️","n":"beach with umbrella","g":"Travel & Places"},{"c":"🏜️","n":"desert","g":"Travel & Places"},{"c":"🏝️","n":"desert island","g":"Travel & Places"},{"c":"🏞️","n":"national park","g":"Travel & Places"},{"c":"🏟️","n":"stadium","g":"Travel & Places"},{"c":"🏛️","n":"classical building","g":"Travel & Places"},{"c":"🏗️","n":"building construction","g":"Travel & Places"},{"c":"🧱","n":"brick","g":"Travel & Places"},{"c":"🪨","n":"rock","g":"Travel & Places"},{"c":"🪵","n":"wood","g":"Travel & Places"},{"c":"🛖","n":"hut","g":"Travel & Places"},{"c":"🏘️","n":"houses","g":"Travel & Places"},{"c":"🏚️","n":"derelict house","g":"Travel & Places"},{"c":"🏠","n":"house","g":"Travel & Places"},{"c":"🏡","n":"house with garden","g":"Travel & Places"},{"c":"🏢","n":"office building","g":"Travel & Places"},{"c":"🏣","n":"Japanese post office","g":"Travel & Places"},{"c":"🏤","n":"post office","g":"Travel & Places"},{"c":"🏥","n":"hospital","g":"Travel & Places"},{"c":"🏦","n":"bank","g":"Travel & Places"},{"c":"🏨","n":"hotel","g":"Travel & Places"},{"c":"🏩","n":"love hotel","g":"Travel & Places"},{"c":"🏪","n":"convenience store","g":"Travel & Places"},{"c":"🏫","n":"school","g":"Travel & Places"},{"c":"🏬","n":"department store","g":"Travel & Places"},{"c":"🏭","n":"factory","g":"Travel & Places"},{"c":"🏯","n":"Japanese castle","g":"Travel & Places"},{"c":"🏰","n":"castle","g":"Travel & Places"},{"c":"💒","n":"wedding","g":"Travel & Places"},{"c":"🗼","n":"Tokyo tower","g":"Travel & Places"},{"c":"🗽","n":"Statue of Liberty","g":"Travel & Places"},{"c":"⛪","n":"church","g":"Travel & Places"},{"c":"🕌","n":"mosque","g":"Travel & Places"},{"c":"🛕","n":"hindu temple","g":"Travel & Places"},{"c":"🕍","n":"synagogue","g":"Travel & Places"},{"c":"⛩️","n":"shinto shrine","g":"Travel & Places"},{"c":"🕋","n":"kaaba","g":"Travel & Places"},{"c":"⛲","n":"fountain","g":"Travel & Places"},{"c":"⛺","n":"tent","g":"Travel & Places"},{"c":"🌁","n":"foggy","g":"Travel & Places"},{"c":"🌃","n":"night with stars","g":"Travel & Places"},{"c":"🏙️","n":"cityscape","g":"Travel & Places"},{"c":"🌄","n":"sunrise over mountains","g":"Travel & Places"},{"c":"🌅","n":"sunrise","g":"Travel & Places"},{"c":"🌆","n":"cityscape at dusk","g":"Travel & Places"},{"c":"🌇","n":"sunset","g":"Travel & Places"},{"c":"🌉","n":"bridge at night","g":"Travel & Places"},{"c":"♨️","n":"hot springs","g":"Travel & Places"},{"c":"🎠","n":"carousel horse","g":"Travel & Places"},{"c":"🛝","n":"playground slide","g":"Travel & Places"},{"c":"🎡","n":"ferris wheel","g":"Travel & Places"},{"c":"🎢","n":"roller coaster","g":"Travel & Places"},{"c":"💈","n":"barber pole","g":"Travel & Places"},{"c":"🎪","n":"circus tent","g":"Travel & Places"},{"c":"🚂","n":"locomotive","g":"Travel & Places"},{"c":"🚃","n":"railway car","g":"Travel & Places"},{"c":"🚄","n":"high-speed train","g":"Travel & Places"},{"c":"🚅","n":"bullet train","g":"Travel & Places"},{"c":"🚆","n":"train","g":"Travel & Places"},{"c":"🚇","n":"metro","g":"Travel & Places"},{"c":"🚈","n":"light rail","g":"Travel & Places"},{"c":"🚉","n":"station","g":"Travel & Places"},{"c":"🚊","n":"tram","g":"Travel & Places"},{"c":"🚝","n":"monorail","g":"Travel & Places"},{"c":"🚞","n":"mountain railway","g":"Travel & Places"},{"c":"🚋","n":"tram car","g":"Travel & Places"},{"c":"🚌","n":"bus","g":"Travel & Places"},{"c":"🚍","n":"oncoming bus","g":"Travel & Places"},{"c":"🚎","n":"trolleybus","g":"Travel & Places"},{"c":"🚐","n":"minibus","g":"Travel & Places"},{"c":"🚑","n":"ambulance","g":"Travel & Places"},{"c":"🚒","n":"fire engine","g":"Travel & Places"},{"c":"🚓","n":"police car","g":"Travel & Places"},{"c":"🚔","n":"oncoming police car","g":"Travel & Places"},{"c":"🚕","n":"taxi","g":"Travel & Places"},{"c":"🚖","n":"oncoming taxi","g":"Travel & Places"},{"c":"🚗","n":"automobile","g":"Travel & Places"},{"c":"🚘","n":"oncoming automobile","g":"Travel & Places"},{"c":"🚙","n":"sport utility vehicle","g":"Travel & Places"},{"c":"🛻","n":"pickup truck","g":"Travel & Places"},{"c":"🚚","n":"delivery truck","g":"Travel & Places"},{"c":"🚛","n":"articulated lorry","g":"Travel & Places"},{"c":"🚜","n":"tractor","g":"Travel & Places"},{"c":"🏎️","n":"racing car","g":"Travel & Places"},{"c":"🏍️","n":"motorcycle","g":"Travel & Places"},{"c":"🛵","n":"motor scooter","g":"Travel & Places"},{"c":"🦽","n":"manual wheelchair","g":"Travel & Places"},{"c":"🦼","n":"motorized wheelchair","g":"Travel & Places"},{"c":"🛺","n":"auto rickshaw","g":"Travel & Places"},{"c":"🚲","n":"bicycle","g":"Travel & Places"},{"c":"🛴","n":"kick scooter","g":"Travel & Places"},{"c":"🛹","n":"skateboard","g":"Travel & Places"},{"c":"🛼","n":"roller skate","g":"Travel & Places"},{"c":"🚏","n":"bus stop","g":"Travel & Places"},{"c":"🛣️","n":"motorway","g":"Travel & Places"},{"c":"🛤️","n":"railway track","g":"Travel & Places"},{"c":"🛢️","n":"oil drum","g":"Travel & Places"},{"c":"⛽","n":"fuel pump","g":"Travel & Places"},{"c":"🛞","n":"wheel","g":"Travel & Places"},{"c":"🚨","n":"police car light","g":"Travel & Places"},{"c":"🚥","n":"horizontal traffic light","g":"Travel & Places"},{"c":"🚦","n":"vertical traffic light","g":"Travel & Places"},{"c":"🛑","n":"stop sign","g":"Travel & Places"},{"c":"🚧","n":"construction","g":"Travel & Places"},{"c":"⚓","n":"anchor","g":"Travel & Places"},{"c":"🛟","n":"ring buoy","g":"Travel & Places"},{"c":"⛵","n":"sailboat","g":"Travel & Places"},{"c":"🛶","n":"canoe","g":"Travel & Places"},{"c":"🚤","n":"speedboat","g":"Travel & Places"},{"c":"🛳️","n":"passenger ship","g":"Travel & Places"},{"c":"⛴️","n":"ferry","g":"Travel & Places"},{"c":"🛥️","n":"motor boat","g":"Travel & Places"},{"c":"🚢","n":"ship","g":"Travel & Places"},{"c":"✈️","n":"airplane","g":"Travel & Places"},{"c":"🛩️","n":"small airplane","g":"Travel & Places"},{"c":"🛫","n":"airplane departure","g":"Travel & Places"},{"c":"🛬","n":"airplane arrival","g":"Travel & Places"},{"c":"🪂","n":"parachute","g":"Travel & Places"},{"c":"💺","n":"seat","g":"Travel & Places"},{"c":"🚁","n":"helicopter","g":"Travel & Places"},{"c":"🚟","n":"suspension railway","g":"Travel & Places"},{"c":"🚠","n":"mountain cableway","g":"Travel & Places"},{"c":"🚡","n":"aerial tramway","g":"Travel & Places"},{"c":"🛰️","n":"satellite","g":"Travel & Places"},{"c":"🚀","n":"rocket","g":"Travel & Places"},{"c":"🛸","n":"flying saucer","g":"Travel & Places"},{"c":"🛎️","n":"bellhop bell","g":"Travel & Places"},{"c":"🧳","n":"luggage","g":"Travel & Places"},{"c":"⌛","n":"hourglass done","g":"Travel & Places"},{"c":"⏳","n":"hourglass not done","g":"Travel & Places"},{"c":"⌚","n":"watch","g":"Travel & Places"},{"c":"⏰","n":"alarm clock","g":"Travel & Places"},{"c":"⏱️","n":"stopwatch","g":"Travel & Places"},{"c":"⏲️","n":"timer clock","g":"Travel & Places"},{"c":"🕰️","n":"mantelpiece clock","g":"Travel & Places"},{"c":"🕛","n":"twelve o’clock","g":"Travel & Places"},{"c":"🕧","n":"twelve-thirty","g":"Travel & Places"},{"c":"🕐","n":"one o’clock","g":"Travel & Places"},{"c":"🕜","n":"one-thirty","g":"Travel & Places"},{"c":"🕑","n":"two o’clock","g":"Travel & Places"},{"c":"🕝","n":"two-thirty","g":"Travel & Places"},{"c":"🕒","n":"three o’clock","g":"Travel & Places"},{"c":"🕞","n":"three-thirty","g":"Travel & Places"},{"c":"🕓","n":"four o’clock","g":"Travel & Places"},{"c":"🕟","n":"four-thirty","g":"Travel & Places"},{"c":"🕔","n":"five o’clock","g":"Travel & Places"},{"c":"🕠","n":"five-thirty","g":"Travel & Places"},{"c":"🕕","n":"six o’clock","g":"Travel & Places"},{"c":"🕡","n":"six-thirty","g":"Travel & Places"},{"c":"🕖","n":"seven o’clock","g":"Travel & Places"},{"c":"🕢","n":"seven-thirty","g":"Travel & Places"},{"c":"🕗","n":"eight o’clock","g":"Travel & Places"},{"c":"🕣","n":"eight-thirty","g":"Travel & Places"},{"c":"🕘","n":"nine o’clock","g":"Travel & Places"},{"c":"🕤","n":"nine-thirty","g":"Travel & Places"},{"c":"🕙","n":"ten o’clock","g":"Travel & Places"},{"c":"🕥","n":"ten-thirty","g":"Travel & Places"},{"c":"🕚","n":"eleven o’clock","g":"Travel & Places"},{"c":"🕦","n":"eleven-thirty","g":"Travel & Places"},{"c":"🌑","n":"new moon","g":"Travel & Places"},{"c":"🌒","n":"waxing crescent moon","g":"Travel & Places"},{"c":"🌓","n":"first quarter moon","g":"Travel & Places"},{"c":"🌔","n":"waxing gibbous moon","g":"Travel & Places"},{"c":"🌕","n":"full moon","g":"Travel & Places"},{"c":"🌖","n":"waning gibbous moon","g":"Travel & Places"},{"c":"🌗","n":"last quarter moon","g":"Travel & Places"},{"c":"🌘","n":"waning crescent moon","g":"Travel & Places"},{"c":"🌙","n":"crescent moon","g":"Travel & Places"},{"c":"🌚","n":"new moon face","g":"Travel & Places"},{"c":"🌛","n":"first quarter moon face","g":"Travel & Places"},{"c":"🌜","n":"last quarter moon face","g":"Travel & Places"},{"c":"🌡️","n":"thermometer","g":"Travel & Places"},{"c":"☀️","n":"sun","g":"Travel & Places"},{"c":"🌝","n":"full moon face","g":"Travel & Places"},{"c":"🌞","n":"sun with face","g":"Travel & Places"},{"c":"🪐","n":"ringed planet","g":"Travel & Places"},{"c":"⭐","n":"star","g":"Travel & Places"},{"c":"🌟","n":"glowing star","g":"Travel & Places"},{"c":"🌠","n":"shooting star","g":"Travel & Places"},{"c":"🌌","n":"milky way","g":"Travel & Places"},{"c":"☁️","n":"cloud","g":"Travel & Places"},{"c":"⛅","n":"sun behind cloud","g":"Travel & Places"},{"c":"⛈️","n":"cloud with lightning and rain","g":"Travel & Places"},{"c":"🌤️","n":"sun behind small cloud","g":"Travel & Places"},{"c":"🌥️","n":"sun behind large cloud","g":"Travel & Places"},{"c":"🌦️","n":"sun behind rain cloud","g":"Travel & Places"},{"c":"🌧️","n":"cloud with rain","g":"Travel & Places"},{"c":"🌨️","n":"cloud with snow","g":"Travel & Places"},{"c":"🌩️","n":"cloud with lightning","g":"Travel & Places"},{"c":"🌪️","n":"tornado","g":"Travel & Places"},{"c":"🌫️","n":"fog","g":"Travel & Places"},{"c":"🌬️","n":"wind face","g":"Travel & Places"},{"c":"🌀","n":"cyclone","g":"Travel & Places"},{"c":"🌈","n":"rainbow","g":"Travel & Places"},{"c":"🌂","n":"closed umbrella","g":"Travel & Places"},{"c":"☂️","n":"umbrella","g":"Travel & Places"},{"c":"☔","n":"umbrella with rain drops","g":"Travel & Places"},{"c":"⛱️","n":"umbrella on ground","g":"Travel & Places"},{"c":"⚡","n":"high voltage","g":"Travel & Places"},{"c":"❄️","n":"snowflake","g":"Travel & Places"},{"c":"☃️","n":"snowman","g":"Travel & Places"},{"c":"⛄","n":"snowman without snow","g":"Travel & Places"},{"c":"☄️","n":"comet","g":"Travel & Places"},{"c":"🔥","n":"fire","g":"Travel & Places"},{"c":"💧","n":"droplet","g":"Travel & Places"},{"c":"🌊","n":"water wave","g":"Travel & Places"},{"c":"🎃","n":"jack-o-lantern","g":"Activities"},{"c":"🎄","n":"Christmas tree","g":"Activities"},{"c":"🎆","n":"fireworks","g":"Activities"},{"c":"🎇","n":"sparkler","g":"Activities"},{"c":"🧨","n":"firecracker","g":"Activities"},{"c":"✨","n":"sparkles","g":"Activities"},{"c":"🎈","n":"balloon","g":"Activities"},{"c":"🎉","n":"party popper","g":"Activities"},{"c":"🎊","n":"confetti ball","g":"Activities"},{"c":"🎋","n":"tanabata tree","g":"Activities"},{"c":"🎍","n":"pine decoration","g":"Activities"},{"c":"🎎","n":"Japanese dolls","g":"Activities"},{"c":"🎏","n":"carp streamer","g":"Activities"},{"c":"🎐","n":"wind chime","g":"Activities"},{"c":"🎑","n":"moon viewing ceremony","g":"Activities"},{"c":"🧧","n":"red envelope","g":"Activities"},{"c":"🎀","n":"ribbon","g":"Activities"},{"c":"🎁","n":"wrapped gift","g":"Activities"},{"c":"🎗️","n":"reminder ribbon","g":"Activities"},{"c":"🎟️","n":"admission tickets","g":"Activities"},{"c":"🎫","n":"ticket","g":"Activities"},{"c":"🎖️","n":"military medal","g":"Activities"},{"c":"🏆","n":"trophy","g":"Activities"},{"c":"🏅","n":"sports medal","g":"Activities"},{"c":"🥇","n":"1st place medal","g":"Activities"},{"c":"🥈","n":"2nd place medal","g":"Activities"},{"c":"🥉","n":"3rd place medal","g":"Activities"},{"c":"⚽","n":"soccer ball","g":"Activities"},{"c":"⚾","n":"baseball","g":"Activities"},{"c":"🥎","n":"softball","g":"Activities"},{"c":"🏀","n":"basketball","g":"Activities"},{"c":"🏐","n":"volleyball","g":"Activities"},{"c":"🏈","n":"american football","g":"Activities"},{"c":"🏉","n":"rugby football","g":"Activities"},{"c":"🎾","n":"tennis","g":"Activities"},{"c":"🥏","n":"flying disc","g":"Activities"},{"c":"🎳","n":"bowling","g":"Activities"},{"c":"🏏","n":"cricket game","g":"Activities"},{"c":"🏑","n":"field hockey","g":"Activities"},{"c":"🏒","n":"ice hockey","g":"Activities"},{"c":"🥍","n":"lacrosse","g":"Activities"},{"c":"🏓","n":"ping pong","g":"Activities"},{"c":"🏸","n":"badminton","g":"Activities"},{"c":"🥊","n":"boxing glove","g":"Activities"},{"c":"🥋","n":"martial arts uniform","g":"Activities"},{"c":"🥅","n":"goal net","g":"Activities"},{"c":"⛳","n":"flag in hole","g":"Activities"},{"c":"⛸️","n":"ice skate","g":"Activities"},{"c":"🎣","n":"fishing pole","g":"Activities"},{"c":"🤿","n":"diving mask","g":"Activities"},{"c":"🎽","n":"running shirt","g":"Activities"},{"c":"🎿","n":"skis","g":"Activities"},{"c":"🛷","n":"sled","g":"Activities"},{"c":"🥌","n":"curling stone","g":"Activities"},{"c":"🎯","n":"bullseye","g":"Activities"},{"c":"🪀","n":"yo-yo","g":"Activities"},{"c":"🪁","n":"kite","g":"Activities"},{"c":"🔫","n":"water pistol","g":"Activities"},{"c":"🎱","n":"pool 8 ball","g":"Activities"},{"c":"🔮","n":"crystal ball","g":"Activities"},{"c":"🪄","n":"magic wand","g":"Activities"},{"c":"🎮","n":"video game","g":"Activities"},{"c":"🕹️","n":"joystick","g":"Activities"},{"c":"🎰","n":"slot machine","g":"Activities"},{"c":"🎲","n":"game die","g":"Activities"},{"c":"🧩","n":"puzzle piece","g":"Activities"},{"c":"🧸","n":"teddy bear","g":"Activities"},{"c":"🪅","n":"piñata","g":"Activities"},{"c":"🪩","n":"mirror ball","g":"Activities"},{"c":"🪆","n":"nesting dolls","g":"Activities"},{"c":"♠️","n":"spade suit","g":"Activities"},{"c":"♥️","n":"heart suit","g":"Activities"},{"c":"♦️","n":"diamond suit","g":"Activities"},{"c":"♣️","n":"club suit","g":"Activities"},{"c":"♟️","n":"chess pawn","g":"Activities"},{"c":"🃏","n":"joker","g":"Activities"},{"c":"🀄","n":"mahjong red dragon","g":"Activities"},{"c":"🎴","n":"flower playing cards","g":"Activities"},{"c":"🎭","n":"performing arts","g":"Activities"},{"c":"🖼️","n":"framed picture","g":"Activities"},{"c":"🎨","n":"artist palette","g":"Activities"},{"c":"🧵","n":"thread","g":"Activities"},{"c":"🪡","n":"sewing needle","g":"Activities"},{"c":"🧶","n":"yarn","g":"Activities"},{"c":"🪢","n":"knot","g":"Activities"},{"c":"👓","n":"glasses","g":"Objects"},{"c":"🕶️","n":"sunglasses","g":"Objects"},{"c":"🥽","n":"goggles","g":"Objects"},{"c":"🥼","n":"lab coat","g":"Objects"},{"c":"🦺","n":"safety vest","g":"Objects"},{"c":"👔","n":"necktie","g":"Objects"},{"c":"👕","n":"t-shirt","g":"Objects"},{"c":"👖","n":"jeans","g":"Objects"},{"c":"🧣","n":"scarf","g":"Objects"},{"c":"🧤","n":"gloves","g":"Objects"},{"c":"🧥","n":"coat","g":"Objects"},{"c":"🧦","n":"socks","g":"Objects"},{"c":"👗","n":"dress","g":"Objects"},{"c":"👘","n":"kimono","g":"Objects"},{"c":"🥻","n":"sari","g":"Objects"},{"c":"🩱","n":"one-piece swimsuit","g":"Objects"},{"c":"🩲","n":"briefs","g":"Objects"},{"c":"🩳","n":"shorts","g":"Objects"},{"c":"👙","n":"bikini","g":"Objects"},{"c":"👚","n":"woman’s clothes","g":"Objects"},{"c":"🪭","n":"folding hand fan","g":"Objects"},{"c":"👛","n":"purse","g":"Objects"},{"c":"👜","n":"handbag","g":"Objects"},{"c":"👝","n":"clutch bag","g":"Objects"},{"c":"🛍️","n":"shopping bags","g":"Objects"},{"c":"🎒","n":"backpack","g":"Objects"},{"c":"🩴","n":"thong sandal","g":"Objects"},{"c":"👞","n":"man’s shoe","g":"Objects"},{"c":"👟","n":"running shoe","g":"Objects"},{"c":"🥾","n":"hiking boot","g":"Objects"},{"c":"🥿","n":"flat shoe","g":"Objects"},{"c":"👠","n":"high-heeled shoe","g":"Objects"},{"c":"👡","n":"woman’s sandal","g":"Objects"},{"c":"🩰","n":"ballet shoes","g":"Objects"},{"c":"👢","n":"woman’s boot","g":"Objects"},{"c":"🪮","n":"hair pick","g":"Objects"},{"c":"👑","n":"crown","g":"Objects"},{"c":"👒","n":"woman’s hat","g":"Objects"},{"c":"🎩","n":"top hat","g":"Objects"},{"c":"🎓","n":"graduation cap","g":"Objects"},{"c":"🧢","n":"billed cap","g":"Objects"},{"c":"🪖","n":"military helmet","g":"Objects"},{"c":"⛑️","n":"rescue worker’s helmet","g":"Objects"},{"c":"📿","n":"prayer beads","g":"Objects"},{"c":"💄","n":"lipstick","g":"Objects"},{"c":"💍","n":"ring","g":"Objects"},{"c":"💎","n":"gem stone","g":"Objects"},{"c":"🔇","n":"muted speaker","g":"Objects"},{"c":"🔈","n":"speaker low volume","g":"Objects"},{"c":"🔉","n":"speaker medium volume","g":"Objects"},{"c":"🔊","n":"speaker high volume","g":"Objects"},{"c":"📢","n":"loudspeaker","g":"Objects"},{"c":"📣","n":"megaphone","g":"Objects"},{"c":"📯","n":"postal horn","g":"Objects"},{"c":"🔔","n":"bell","g":"Objects"},{"c":"🔕","n":"bell with slash","g":"Objects"},{"c":"🎼","n":"musical score","g":"Objects"},{"c":"🎵","n":"musical note","g":"Objects"},{"c":"🎶","n":"musical notes","g":"Objects"},{"c":"🎙️","n":"studio microphone","g":"Objects"},{"c":"🎚️","n":"level slider","g":"Objects"},{"c":"🎛️","n":"control knobs","g":"Objects"},{"c":"🎤","n":"microphone","g":"Objects"},{"c":"🎧","n":"headphone","g":"Objects"},{"c":"📻","n":"radio","g":"Objects"},{"c":"🎷","n":"saxophone","g":"Objects"},{"c":"🪗","n":"accordion","g":"Objects"},{"c":"🎸","n":"guitar","g":"Objects"},{"c":"🎹","n":"musical keyboard","g":"Objects"},{"c":"🎺","n":"trumpet","g":"Objects"},{"c":"🎻","n":"violin","g":"Objects"},{"c":"🪕","n":"banjo","g":"Objects"},{"c":"🥁","n":"drum","g":"Objects"},{"c":"🪘","n":"long drum","g":"Objects"},{"c":"🪇","n":"maracas","g":"Objects"},{"c":"🪈","n":"flute","g":"Objects"},{"c":"📱","n":"mobile phone","g":"Objects"},{"c":"📲","n":"mobile phone with arrow","g":"Objects"},{"c":"☎️","n":"telephone","g":"Objects"},{"c":"📞","n":"telephone receiver","g":"Objects"},{"c":"📟","n":"pager","g":"Objects"},{"c":"📠","n":"fax machine","g":"Objects"},{"c":"🔋","n":"battery","g":"Objects"},{"c":"🪫","n":"low battery","g":"Objects"},{"c":"🔌","n":"electric plug","g":"Objects"},{"c":"💻","n":"laptop","g":"Objects"},{"c":"🖥️","n":"desktop computer","g":"Objects"},{"c":"🖨️","n":"printer","g":"Objects"},{"c":"⌨️","n":"keyboard","g":"Objects"},{"c":"🖱️","n":"computer mouse","g":"Objects"},{"c":"🖲️","n":"trackball","g":"Objects"},{"c":"💽","n":"computer disk","g":"Objects"},{"c":"💾","n":"floppy disk","g":"Objects"},{"c":"💿","n":"optical disk","g":"Objects"},{"c":"📀","n":"dvd","g":"Objects"},{"c":"🧮","n":"abacus","g":"Objects"},{"c":"🎥","n":"movie camera","g":"Objects"},{"c":"🎞️","n":"film frames","g":"Objects"},{"c":"📽️","n":"film projector","g":"Objects"},{"c":"🎬","n":"clapper board","g":"Objects"},{"c":"📺","n":"television","g":"Objects"},{"c":"📷","n":"camera","g":"Objects"},{"c":"📸","n":"camera with flash","g":"Objects"},{"c":"📹","n":"video camera","g":"Objects"},{"c":"📼","n":"videocassette","g":"Objects"},{"c":"🔍","n":"magnifying glass tilted left","g":"Objects"},{"c":"🔎","n":"magnifying glass tilted right","g":"Objects"},{"c":"🕯️","n":"candle","g":"Objects"},{"c":"💡","n":"light bulb","g":"Objects"},{"c":"🔦","n":"flashlight","g":"Objects"},{"c":"🏮","n":"red paper lantern","g":"Objects"},{"c":"🪔","n":"diya lamp","g":"Objects"},{"c":"📔","n":"notebook with decorative cover","g":"Objects"},{"c":"📕","n":"closed book","g":"Objects"},{"c":"📖","n":"open book","g":"Objects"},{"c":"📗","n":"green book","g":"Objects"},{"c":"📘","n":"blue book","g":"Objects"},{"c":"📙","n":"orange book","g":"Objects"},{"c":"📚","n":"books","g":"Objects"},{"c":"📓","n":"notebook","g":"Objects"},{"c":"📒","n":"ledger","g":"Objects"},{"c":"📃","n":"page with curl","g":"Objects"},{"c":"📜","n":"scroll","g":"Objects"},{"c":"📄","n":"page facing up","g":"Objects"},{"c":"📰","n":"newspaper","g":"Objects"},{"c":"🗞️","n":"rolled-up newspaper","g":"Objects"},{"c":"📑","n":"bookmark tabs","g":"Objects"},{"c":"🔖","n":"bookmark","g":"Objects"},{"c":"🏷️","n":"label","g":"Objects"},{"c":"💰","n":"money bag","g":"Objects"},{"c":"🪙","n":"coin","g":"Objects"},{"c":"💴","n":"yen banknote","g":"Objects"},{"c":"💵","n":"dollar banknote","g":"Objects"},{"c":"💶","n":"euro banknote","g":"Objects"},{"c":"💷","n":"pound banknote","g":"Objects"},{"c":"💸","n":"money with wings","g":"Objects"},{"c":"💳","n":"credit card","g":"Objects"},{"c":"🧾","n":"receipt","g":"Objects"},{"c":"💹","n":"chart increasing with yen","g":"Objects"},{"c":"✉️","n":"envelope","g":"Objects"},{"c":"📧","n":"e-mail","g":"Objects"},{"c":"📨","n":"incoming envelope","g":"Objects"},{"c":"📩","n":"envelope with arrow","g":"Objects"},{"c":"📤","n":"outbox tray","g":"Objects"},{"c":"📥","n":"inbox tray","g":"Objects"},{"c":"📦","n":"package","g":"Objects"},{"c":"📫","n":"closed mailbox with raised flag","g":"Objects"},{"c":"📪","n":"closed mailbox with lowered flag","g":"Objects"},{"c":"📬","n":"open mailbox with raised flag","g":"Objects"},{"c":"📭","n":"open mailbox with lowered flag","g":"Objects"},{"c":"📮","n":"postbox","g":"Objects"},{"c":"🗳️","n":"ballot box with ballot","g":"Objects"},{"c":"✏️","n":"pencil","g":"Objects"},{"c":"✒️","n":"black nib","g":"Objects"},{"c":"🖋️","n":"fountain pen","g":"Objects"},{"c":"🖊️","n":"pen","g":"Objects"},{"c":"🖌️","n":"paintbrush","g":"Objects"},{"c":"🖍️","n":"crayon","g":"Objects"},{"c":"📝","n":"memo","g":"Objects"},{"c":"💼","n":"briefcase","g":"Objects"},{"c":"📁","n":"file folder","g":"Objects"},{"c":"📂","n":"open file folder","g":"Objects"},{"c":"🗂️","n":"card index dividers","g":"Objects"},{"c":"📅","n":"calendar","g":"Objects"},{"c":"📆","n":"tear-off calendar","g":"Objects"},{"c":"🗒️","n":"spiral notepad","g":"Objects"},{"c":"🗓️","n":"spiral calendar","g":"Objects"},{"c":"📇","n":"card index","g":"Objects"},{"c":"📈","n":"chart increasing","g":"Objects"},{"c":"📉","n":"chart decreasing","g":"Objects"},{"c":"📊","n":"bar chart","g":"Objects"},{"c":"📋","n":"clipboard","g":"Objects"},{"c":"📌","n":"pushpin","g":"Objects"},{"c":"📍","n":"round pushpin","g":"Objects"},{"c":"📎","n":"paperclip","g":"Objects"},{"c":"🖇️","n":"linked paperclips","g":"Objects"},{"c":"📏","n":"straight ruler","g":"Objects"},{"c":"📐","n":"triangular ruler","g":"Objects"},{"c":"✂️","n":"scissors","g":"Objects"},{"c":"🗃️","n":"card file box","g":"Objects"},{"c":"🗄️","n":"file cabinet","g":"Objects"},{"c":"🗑️","n":"wastebasket","g":"Objects"},{"c":"🔒","n":"locked","g":"Objects"},{"c":"🔓","n":"unlocked","g":"Objects"},{"c":"🔏","n":"locked with pen","g":"Objects"},{"c":"🔐","n":"locked with key","g":"Objects"},{"c":"🔑","n":"key","g":"Objects"},{"c":"🗝️","n":"old key","g":"Objects"},{"c":"🔨","n":"hammer","g":"Objects"},{"c":"🪓","n":"axe","g":"Objects"},{"c":"⛏️","n":"pick","g":"Objects"},{"c":"⚒️","n":"hammer and pick","g":"Objects"},{"c":"🛠️","n":"hammer and wrench","g":"Objects"},{"c":"🗡️","n":"dagger","g":"Objects"},{"c":"⚔️","n":"crossed swords","g":"Objects"},{"c":"💣","n":"bomb","g":"Objects"},{"c":"🪃","n":"boomerang","g":"Objects"},{"c":"🏹","n":"bow and arrow","g":"Objects"},{"c":"🛡️","n":"shield","g":"Objects"},{"c":"🪚","n":"carpentry saw","g":"Objects"},{"c":"🔧","n":"wrench","g":"Objects"},{"c":"🪛","n":"screwdriver","g":"Objects"},{"c":"🔩","n":"nut and bolt","g":"Objects"},{"c":"⚙️","n":"gear","g":"Objects"},{"c":"🗜️","n":"clamp","g":"Objects"},{"c":"⚖️","n":"balance scale","g":"Objects"},{"c":"🦯","n":"white cane","g":"Objects"},{"c":"🔗","n":"link","g":"Objects"},{"c":"⛓️‍💥","n":"broken chain","g":"Objects"},{"c":"⛓️","n":"chains","g":"Objects"},{"c":"🪝","n":"hook","g":"Objects"},{"c":"🧰","n":"toolbox","g":"Objects"},{"c":"🧲","n":"magnet","g":"Objects"},{"c":"🪜","n":"ladder","g":"Objects"},{"c":"⚗️","n":"alembic","g":"Objects"},{"c":"🧪","n":"test tube","g":"Objects"},{"c":"🧫","n":"petri dish","g":"Objects"},{"c":"🧬","n":"dna","g":"Objects"},{"c":"🔬","n":"microscope","g":"Objects"},{"c":"🔭","n":"telescope","g":"Objects"},{"c":"📡","n":"satellite antenna","g":"Objects"},{"c":"💉","n":"syringe","g":"Objects"},{"c":"🩸","n":"drop of blood","g":"Objects"},{"c":"💊","n":"pill","g":"Objects"},{"c":"🩹","n":"adhesive bandage","g":"Objects"},{"c":"🩼","n":"crutch","g":"Objects"},{"c":"🩺","n":"stethoscope","g":"Objects"},{"c":"🩻","n":"x-ray","g":"Objects"},{"c":"🚪","n":"door","g":"Objects"},{"c":"🛗","n":"elevator","g":"Objects"},{"c":"🪞","n":"mirror","g":"Objects"},{"c":"🪟","n":"window","g":"Objects"},{"c":"🛏️","n":"bed","g":"Objects"},{"c":"🛋️","n":"couch and lamp","g":"Objects"},{"c":"🪑","n":"chair","g":"Objects"},{"c":"🚽","n":"toilet","g":"Objects"},{"c":"🪠","n":"plunger","g":"Objects"},{"c":"🚿","n":"shower","g":"Objects"},{"c":"🛁","n":"bathtub","g":"Objects"},{"c":"🪤","n":"mouse trap","g":"Objects"},{"c":"🪒","n":"razor","g":"Objects"},{"c":"🧴","n":"lotion bottle","g":"Objects"},{"c":"🧷","n":"safety pin","g":"Objects"},{"c":"🧹","n":"broom","g":"Objects"},{"c":"🧺","n":"basket","g":"Objects"},{"c":"🧻","n":"roll of paper","g":"Objects"},{"c":"🪣","n":"bucket","g":"Objects"},{"c":"🧼","n":"soap","g":"Objects"},{"c":"🫧","n":"bubbles","g":"Objects"},{"c":"🪥","n":"toothbrush","g":"Objects"},{"c":"🧽","n":"sponge","g":"Objects"},{"c":"🧯","n":"fire extinguisher","g":"Objects"},{"c":"🛒","n":"shopping cart","g":"Objects"},{"c":"🚬","n":"cigarette","g":"Objects"},{"c":"⚰️","n":"coffin","g":"Objects"},{"c":"🪦","n":"headstone","g":"Objects"},{"c":"⚱️","n":"funeral urn","g":"Objects"},{"c":"🧿","n":"nazar amulet","g":"Objects"},{"c":"🪬","n":"hamsa","g":"Objects"},{"c":"🗿","n":"moai","g":"Objects"},{"c":"🪧","n":"placard","g":"Objects"},{"c":"🪪","n":"identification card","g":"Objects"},{"c":"🏧","n":"ATM sign","g":"Symbols"},{"c":"🚮","n":"litter in bin sign","g":"Symbols"},{"c":"🚰","n":"potable water","g":"Symbols"},{"c":"♿","n":"wheelchair symbol","g":"Symbols"},{"c":"🚹","n":"men’s room","g":"Symbols"},{"c":"🚺","n":"women’s room","g":"Symbols"},{"c":"🚻","n":"restroom","g":"Symbols"},{"c":"🚼","n":"baby symbol","g":"Symbols"},{"c":"🚾","n":"water closet","g":"Symbols"},{"c":"🛂","n":"passport control","g":"Symbols"},{"c":"🛃","n":"customs","g":"Symbols"},{"c":"🛄","n":"baggage claim","g":"Symbols"},{"c":"🛅","n":"left luggage","g":"Symbols"},{"c":"⚠️","n":"warning","g":"Symbols"},{"c":"🚸","n":"children crossing","g":"Symbols"},{"c":"⛔","n":"no entry","g":"Symbols"},{"c":"🚫","n":"prohibited","g":"Symbols"},{"c":"🚳","n":"no bicycles","g":"Symbols"},{"c":"🚭","n":"no smoking","g":"Symbols"},{"c":"🚯","n":"no littering","g":"Symbols"},{"c":"🚱","n":"non-potable water","g":"Symbols"},{"c":"🚷","n":"no pedestrians","g":"Symbols"},{"c":"📵","n":"no mobile phones","g":"Symbols"},{"c":"🔞","n":"no one under eighteen","g":"Symbols"},{"c":"☢️","n":"radioactive","g":"Symbols"},{"c":"☣️","n":"biohazard","g":"Symbols"},{"c":"⬆️","n":"up arrow","g":"Symbols"},{"c":"↗️","n":"up-right arrow","g":"Symbols"},{"c":"➡️","n":"right arrow","g":"Symbols"},{"c":"↘️","n":"down-right arrow","g":"Symbols"},{"c":"⬇️","n":"down arrow","g":"Symbols"},{"c":"↙️","n":"down-left arrow","g":"Symbols"},{"c":"⬅️","n":"left arrow","g":"Symbols"},{"c":"↖️","n":"up-left arrow","g":"Symbols"},{"c":"↕️","n":"up-down arrow","g":"Symbols"},{"c":"↔️","n":"left-right arrow","g":"Symbols"},{"c":"↩️","n":"right arrow curving left","g":"Symbols"},{"c":"↪️","n":"left arrow curving right","g":"Symbols"},{"c":"⤴️","n":"right arrow curving up","g":"Symbols"},{"c":"⤵️","n":"right arrow curving down","g":"Symbols"},{"c":"🔃","n":"clockwise vertical arrows","g":"Symbols"},{"c":"🔄","n":"counterclockwise arrows button","g":"Symbols"},{"c":"🔙","n":"BACK arrow","g":"Symbols"},{"c":"🔚","n":"END arrow","g":"Symbols"},{"c":"🔛","n":"ON! arrow","g":"Symbols"},{"c":"🔜","n":"SOON arrow","g":"Symbols"},{"c":"🔝","n":"TOP arrow","g":"Symbols"},{"c":"🛐","n":"place of worship","g":"Symbols"},{"c":"⚛️","n":"atom symbol","g":"Symbols"},{"c":"🕉️","n":"om","g":"Symbols"},{"c":"✡️","n":"star of David","g":"Symbols"},{"c":"☸️","n":"wheel of dharma","g":"Symbols"},{"c":"☯️","n":"yin yang","g":"Symbols"},{"c":"✝️","n":"latin cross","g":"Symbols"},{"c":"☦️","n":"orthodox cross","g":"Symbols"},{"c":"☪️","n":"star and crescent","g":"Symbols"},{"c":"☮️","n":"peace symbol","g":"Symbols"},{"c":"🕎","n":"menorah","g":"Symbols"},{"c":"🔯","n":"dotted six-pointed star","g":"Symbols"},{"c":"🪯","n":"khanda","g":"Symbols"},{"c":"♈","n":"Aries","g":"Symbols"},{"c":"♉","n":"Taurus","g":"Symbols"},{"c":"♊","n":"Gemini","g":"Symbols"},{"c":"♋","n":"Cancer","g":"Symbols"},{"c":"♌","n":"Leo","g":"Symbols"},{"c":"♍","n":"Virgo","g":"Symbols"},{"c":"♎","n":"Libra","g":"Symbols"},{"c":"♏","n":"Scorpio","g":"Symbols"},{"c":"♐","n":"Sagittarius","g":"Symbols"},{"c":"♑","n":"Capricorn","g":"Symbols"},{"c":"♒","n":"Aquarius","g":"Symbols"},{"c":"♓","n":"Pisces","g":"Symbols"},{"c":"⛎","n":"Ophiuchus","g":"Symbols"},{"c":"🔀","n":"shuffle tracks button","g":"Symbols"},{"c":"🔁","n":"repeat button","g":"Symbols"},{"c":"🔂","n":"repeat single button","g":"Symbols"},{"c":"▶️","n":"play button","g":"Symbols"},{"c":"⏩","n":"fast-forward button","g":"Symbols"},{"c":"⏭️","n":"next track button","g":"Symbols"},{"c":"⏯️","n":"play or pause button","g":"Symbols"},{"c":"◀️","n":"reverse button","g":"Symbols"},{"c":"⏪","n":"fast reverse button","g":"Symbols"},{"c":"⏮️","n":"last track button","g":"Symbols"},{"c":"🔼","n":"upwards button","g":"Symbols"},{"c":"⏫","n":"fast up button","g":"Symbols"},{"c":"🔽","n":"downwards button","g":"Symbols"},{"c":"⏬","n":"fast down button","g":"Symbols"},{"c":"⏸️","n":"pause button","g":"Symbols"},{"c":"⏹️","n":"stop button","g":"Symbols"},{"c":"⏺️","n":"record button","g":"Symbols"},{"c":"⏏️","n":"eject button","g":"Symbols"},{"c":"🎦","n":"cinema","g":"Symbols"},{"c":"🔅","n":"dim button","g":"Symbols"},{"c":"🔆","n":"bright button","g":"Symbols"},{"c":"📶","n":"antenna bars","g":"Symbols"},{"c":"🛜","n":"wireless","g":"Symbols"},{"c":"📳","n":"vibration mode","g":"Symbols"},{"c":"📴","n":"mobile phone off","g":"Symbols"},{"c":"♀️","n":"female sign","g":"Symbols"},{"c":"♂️","n":"male sign","g":"Symbols"},{"c":"⚧️","n":"transgender symbol","g":"Symbols"},{"c":"✖️","n":"multiply","g":"Symbols"},{"c":"➕","n":"plus","g":"Symbols"},{"c":"➖","n":"minus","g":"Symbols"},{"c":"➗","n":"divide","g":"Symbols"},{"c":"🟰","n":"heavy equals sign","g":"Symbols"},{"c":"♾️","n":"infinity","g":"Symbols"},{"c":"‼️","n":"double exclamation mark","g":"Symbols"},{"c":"⁉️","n":"exclamation question mark","g":"Symbols"},{"c":"❓","n":"red question mark","g":"Symbols"},{"c":"❔","n":"white question mark","g":"Symbols"},{"c":"❕","n":"white exclamation mark","g":"Symbols"},{"c":"❗","n":"red exclamation mark","g":"Symbols"},{"c":"〰️","n":"wavy dash","g":"Symbols"},{"c":"💱","n":"currency exchange","g":"Symbols"},{"c":"💲","n":"heavy dollar sign","g":"Symbols"},{"c":"⚕️","n":"medical symbol","g":"Symbols"},{"c":"♻️","n":"recycling symbol","g":"Symbols"},{"c":"⚜️","n":"fleur-de-lis","g":"Symbols"},{"c":"🔱","n":"trident emblem","g":"Symbols"},{"c":"📛","n":"name badge","g":"Symbols"},{"c":"🔰","n":"Japanese symbol for beginner","g":"Symbols"},{"c":"⭕","n":"hollow red circle","g":"Symbols"},{"c":"✅","n":"check mark button","g":"Symbols"},{"c":"☑️","n":"check box with check","g":"Symbols"},{"c":"✔️","n":"check mark","g":"Symbols"},{"c":"❌","n":"cross mark","g":"Symbols"},{"c":"❎","n":"cross mark button","g":"Symbols"},{"c":"➰","n":"curly loop","g":"Symbols"},{"c":"➿","n":"double curly loop","g":"Symbols"},{"c":"〽️","n":"part alternation mark","g":"Symbols"},{"c":"✳️","n":"eight-spoked asterisk","g":"Symbols"},{"c":"✴️","n":"eight-pointed star","g":"Symbols"},{"c":"❇️","n":"sparkle","g":"Symbols"},{"c":"©️","n":"copyright","g":"Symbols"},{"c":"®️","n":"registered","g":"Symbols"},{"c":"™️","n":"trade mark","g":"Symbols"},{"c":"#️⃣","n":"keycap: #","g":"Symbols"},{"c":"*️⃣","n":"keycap: *","g":"Symbols"},{"c":"0️⃣","n":"keycap: 0","g":"Symbols"},{"c":"1️⃣","n":"keycap: 1","g":"Symbols"},{"c":"2️⃣","n":"keycap: 2","g":"Symbols"},{"c":"3️⃣","n":"keycap: 3","g":"Symbols"},{"c":"4️⃣","n":"keycap: 4","g":"Symbols"},{"c":"5️⃣","n":"keycap: 5","g":"Symbols"},{"c":"6️⃣","n":"keycap: 6","g":"Symbols"},{"c":"7️⃣","n":"keycap: 7","g":"Symbols"},{"c":"8️⃣","n":"keycap: 8","g":"Symbols"},{"c":"9️⃣","n":"keycap: 9","g":"Symbols"},{"c":"🔟","n":"keycap: 10","g":"Symbols"},{"c":"🔠","n":"input latin uppercase","g":"Symbols"},{"c":"🔡","n":"input latin lowercase","g":"Symbols"},{"c":"🔢","n":"input numbers","g":"Symbols"},{"c":"🔣","n":"input symbols","g":"Symbols"},{"c":"🔤","n":"input latin letters","g":"Symbols"},{"c":"🅰️","n":"A button (blood type)","g":"Symbols"},{"c":"🆎","n":"AB button (blood type)","g":"Symbols"},{"c":"🅱️","n":"B button (blood type)","g":"Symbols"},{"c":"🆑","n":"CL button","g":"Symbols"},{"c":"🆒","n":"COOL button","g":"Symbols"},{"c":"🆓","n":"FREE button","g":"Symbols"},{"c":"ℹ️","n":"information","g":"Symbols"},{"c":"🆔","n":"ID button","g":"Symbols"},{"c":"Ⓜ️","n":"circled M","g":"Symbols"},{"c":"🆕","n":"NEW button","g":"Symbols"},{"c":"🆖","n":"NG button","g":"Symbols"},{"c":"🅾️","n":"O button (blood type)","g":"Symbols"},{"c":"🆗","n":"OK button","g":"Symbols"},{"c":"🅿️","n":"P button","g":"Symbols"},{"c":"🆘","n":"SOS button","g":"Symbols"},{"c":"🆙","n":"UP! button","g":"Symbols"},{"c":"🆚","n":"VS button","g":"Symbols"},{"c":"🈁","n":"Japanese “here” button","g":"Symbols"},{"c":"🈂️","n":"Japanese “service charge” button","g":"Symbols"},{"c":"🈷️","n":"Japanese “monthly amount” button","g":"Symbols"},{"c":"🈶","n":"Japanese “not free of charge” button","g":"Symbols"},{"c":"🈯","n":"Japanese “reserved” button","g":"Symbols"},{"c":"🉐","n":"Japanese “bargain” button","g":"Symbols"},{"c":"🈹","n":"Japanese “discount” button","g":"Symbols"},{"c":"🈚","n":"Japanese “free of charge” button","g":"Symbols"},{"c":"🈲","n":"Japanese “prohibited” button","g":"Symbols"},{"c":"🉑","n":"Japanese “acceptable” button","g":"Symbols"},{"c":"🈸","n":"Japanese “application” button","g":"Symbols"},{"c":"🈴","n":"Japanese “passing grade” button","g":"Symbols"},{"c":"🈳","n":"Japanese “vacancy” button","g":"Symbols"},{"c":"㊗️","n":"Japanese “congratulations” button","g":"Symbols"},{"c":"㊙️","n":"Japanese “secret” button","g":"Symbols"},{"c":"🈺","n":"Japanese “open for business” button","g":"Symbols"},{"c":"🈵","n":"Japanese “no vacancy” button","g":"Symbols"},{"c":"🔴","n":"red circle","g":"Symbols"},{"c":"🟠","n":"orange circle","g":"Symbols"},{"c":"🟡","n":"yellow circle","g":"Symbols"},{"c":"🟢","n":"green circle","g":"Symbols"},{"c":"🔵","n":"blue circle","g":"Symbols"},{"c":"🟣","n":"purple circle","g":"Symbols"},{"c":"🟤","n":"brown circle","g":"Symbols"},{"c":"⚫","n":"black circle","g":"Symbols"},{"c":"⚪","n":"white circle","g":"Symbols"},{"c":"🟥","n":"red square","g":"Symbols"},{"c":"🟧","n":"orange square","g":"Symbols"},{"c":"🟨","n":"yellow square","g":"Symbols"},{"c":"🟩","n":"green square","g":"Symbols"},{"c":"🟦","n":"blue square","g":"Symbols"},{"c":"🟪","n":"purple square","g":"Symbols"},{"c":"🟫","n":"brown square","g":"Symbols"},{"c":"⬛","n":"black large square","g":"Symbols"},{"c":"⬜","n":"white large square","g":"Symbols"},{"c":"◼️","n":"black medium square","g":"Symbols"},{"c":"◻️","n":"white medium square","g":"Symbols"},{"c":"◾","n":"black medium-small square","g":"Symbols"},{"c":"◽","n":"white medium-small square","g":"Symbols"},{"c":"▪️","n":"black small square","g":"Symbols"},{"c":"▫️","n":"white small square","g":"Symbols"},{"c":"🔶","n":"large orange diamond","g":"Symbols"},{"c":"🔷","n":"large blue diamond","g":"Symbols"},{"c":"🔸","n":"small orange diamond","g":"Symbols"},{"c":"🔹","n":"small blue diamond","g":"Symbols"},{"c":"🔺","n":"red triangle pointed up","g":"Symbols"},{"c":"🔻","n":"red triangle pointed down","g":"Symbols"},{"c":"💠","n":"diamond with a dot","g":"Symbols"},{"c":"🔘","n":"radio button","g":"Symbols"},{"c":"🔳","n":"white square button","g":"Symbols"},{"c":"🔲","n":"black square button","g":"Symbols"},{"c":"🏁","n":"chequered flag","g":"Flags"},{"c":"🚩","n":"triangular flag","g":"Flags"},{"c":"🎌","n":"crossed flags","g":"Flags"},{"c":"🏴","n":"black flag","g":"Flags"},{"c":"🏳️","n":"white flag","g":"Flags"},{"c":"🏳️‍🌈","n":"rainbow flag","g":"Flags"},{"c":"🏳️‍⚧️","n":"transgender flag","g":"Flags"},{"c":"🏴‍☠️","n":"pirate flag","g":"Flags"},{"c":"🇦🇨","n":"flag: Ascension Island","g":"Flags"},{"c":"🇦🇩","n":"flag: Andorra","g":"Flags"},{"c":"🇦🇪","n":"flag: United Arab Emirates","g":"Flags"},{"c":"🇦🇫","n":"flag: Afghanistan","g":"Flags"},{"c":"🇦🇬","n":"flag: Antigua & Barbuda","g":"Flags"},{"c":"🇦🇮","n":"flag: Anguilla","g":"Flags"},{"c":"🇦🇱","n":"flag: Albania","g":"Flags"},{"c":"🇦🇲","n":"flag: Armenia","g":"Flags"},{"c":"🇦🇴","n":"flag: Angola","g":"Flags"},{"c":"🇦🇶","n":"flag: Antarctica","g":"Flags"},{"c":"🇦🇷","n":"flag: Argentina","g":"Flags"},{"c":"🇦🇸","n":"flag: American Samoa","g":"Flags"},{"c":"🇦🇹","n":"flag: Austria","g":"Flags"},{"c":"🇦🇺","n":"flag: Australia","g":"Flags"},{"c":"🇦🇼","n":"flag: Aruba","g":"Flags"},{"c":"🇦🇽","n":"flag: Åland Islands","g":"Flags"},{"c":"🇦🇿","n":"flag: Azerbaijan","g":"Flags"},{"c":"🇧🇦","n":"flag: Bosnia & Herzegovina","g":"Flags"},{"c":"🇧🇧","n":"flag: Barbados","g":"Flags"},{"c":"🇧🇩","n":"flag: Bangladesh","g":"Flags"},{"c":"🇧🇪","n":"flag: Belgium","g":"Flags"},{"c":"🇧🇫","n":"flag: Burkina Faso","g":"Flags"},{"c":"🇧🇬","n":"flag: Bulgaria","g":"Flags"},{"c":"🇧🇭","n":"flag: Bahrain","g":"Flags"},{"c":"🇧🇮","n":"flag: Burundi","g":"Flags"},{"c":"🇧🇯","n":"flag: Benin","g":"Flags"},{"c":"🇧🇱","n":"flag: St. Barthélemy","g":"Flags"},{"c":"🇧🇲","n":"flag: Bermuda","g":"Flags"},{"c":"🇧🇳","n":"flag: Brunei","g":"Flags"},{"c":"🇧🇴","n":"flag: Bolivia","g":"Flags"},{"c":"🇧🇶","n":"flag: Caribbean Netherlands","g":"Flags"},{"c":"🇧🇷","n":"flag: Brazil","g":"Flags"},{"c":"🇧🇸","n":"flag: Bahamas","g":"Flags"},{"c":"🇧🇹","n":"flag: Bhutan","g":"Flags"},{"c":"🇧🇻","n":"flag: Bouvet Island","g":"Flags"},{"c":"🇧🇼","n":"flag: Botswana","g":"Flags"},{"c":"🇧🇾","n":"flag: Belarus","g":"Flags"},{"c":"🇧🇿","n":"flag: Belize","g":"Flags"},{"c":"🇨🇦","n":"flag: Canada","g":"Flags"},{"c":"🇨🇨","n":"flag: Cocos (Keeling) Islands","g":"Flags"},{"c":"🇨🇩","n":"flag: Congo - Kinshasa","g":"Flags"},{"c":"🇨🇫","n":"flag: Central African Republic","g":"Flags"},{"c":"🇨🇬","n":"flag: Congo - Brazzaville","g":"Flags"},{"c":"🇨🇭","n":"flag: Switzerland","g":"Flags"},{"c":"🇨🇮","n":"flag: Côte d’Ivoire","g":"Flags"},{"c":"🇨🇰","n":"flag: Cook Islands","g":"Flags"},{"c":"🇨🇱","n":"flag: Chile","g":"Flags"},{"c":"🇨🇲","n":"flag: Cameroon","g":"Flags"},{"c":"🇨🇳","n":"flag: China","g":"Flags"},{"c":"🇨🇴","n":"flag: Colombia","g":"Flags"},{"c":"🇨🇵","n":"flag: Clipperton Island","g":"Flags"},{"c":"🇨🇷","n":"flag: Costa Rica","g":"Flags"},{"c":"🇨🇺","n":"flag: Cuba","g":"Flags"},{"c":"🇨🇻","n":"flag: Cape Verde","g":"Flags"},{"c":"🇨🇼","n":"flag: Curaçao","g":"Flags"},{"c":"🇨🇽","n":"flag: Christmas Island","g":"Flags"},{"c":"🇨🇾","n":"flag: Cyprus","g":"Flags"},{"c":"🇨🇿","n":"flag: Czechia","g":"Flags"},{"c":"🇩🇪","n":"flag: Germany","g":"Flags"},{"c":"🇩🇬","n":"flag: Diego Garcia","g":"Flags"},{"c":"🇩🇯","n":"flag: Djibouti","g":"Flags"},{"c":"🇩🇰","n":"flag: Denmark","g":"Flags"},{"c":"🇩🇲","n":"flag: Dominica","g":"Flags"},{"c":"🇩🇴","n":"flag: Dominican Republic","g":"Flags"},{"c":"🇩🇿","n":"flag: Algeria","g":"Flags"},{"c":"🇪🇦","n":"flag: Ceuta & Melilla","g":"Flags"},{"c":"🇪🇨","n":"flag: Ecuador","g":"Flags"},{"c":"🇪🇪","n":"flag: Estonia","g":"Flags"},{"c":"🇪🇬","n":"flag: Egypt","g":"Flags"},{"c":"🇪🇭","n":"flag: Western Sahara","g":"Flags"},{"c":"🇪🇷","n":"flag: Eritrea","g":"Flags"},{"c":"🇪🇸","n":"flag: Spain","g":"Flags"},{"c":"🇪🇹","n":"flag: Ethiopia","g":"Flags"},{"c":"🇪🇺","n":"flag: European Union","g":"Flags"},{"c":"🇫🇮","n":"flag: Finland","g":"Flags"},{"c":"🇫🇯","n":"flag: Fiji","g":"Flags"},{"c":"🇫🇰","n":"flag: Falkland Islands","g":"Flags"},{"c":"🇫🇲","n":"flag: Micronesia","g":"Flags"},{"c":"🇫🇴","n":"flag: Faroe Islands","g":"Flags"},{"c":"🇫🇷","n":"flag: France","g":"Flags"},{"c":"🇬🇦","n":"flag: Gabon","g":"Flags"},{"c":"🇬🇧","n":"flag: United Kingdom","g":"Flags"},{"c":"🇬🇩","n":"flag: Grenada","g":"Flags"},{"c":"🇬🇪","n":"flag: Georgia","g":"Flags"},{"c":"🇬🇫","n":"flag: French Guiana","g":"Flags"},{"c":"🇬🇬","n":"flag: Guernsey","g":"Flags"},{"c":"🇬🇭","n":"flag: Ghana","g":"Flags"},{"c":"🇬🇮","n":"flag: Gibraltar","g":"Flags"},{"c":"🇬🇱","n":"flag: Greenland","g":"Flags"},{"c":"🇬🇲","n":"flag: Gambia","g":"Flags"},{"c":"🇬🇳","n":"flag: Guinea","g":"Flags"},{"c":"🇬🇵","n":"flag: Guadeloupe","g":"Flags"},{"c":"🇬🇶","n":"flag: Equatorial Guinea","g":"Flags"},{"c":"🇬🇷","n":"flag: Greece","g":"Flags"},{"c":"🇬🇸","n":"flag: South Georgia & South Sandwich Islands","g":"Flags"},{"c":"🇬🇹","n":"flag: Guatemala","g":"Flags"},{"c":"🇬🇺","n":"flag: Guam","g":"Flags"},{"c":"🇬🇼","n":"flag: Guinea-Bissau","g":"Flags"},{"c":"🇬🇾","n":"flag: Guyana","g":"Flags"},{"c":"🇭🇰","n":"flag: Hong Kong SAR China","g":"Flags"},{"c":"🇭🇲","n":"flag: Heard & McDonald Islands","g":"Flags"},{"c":"🇭🇳","n":"flag: Honduras","g":"Flags"},{"c":"🇭🇷","n":"flag: Croatia","g":"Flags"},{"c":"🇭🇹","n":"flag: Haiti","g":"Flags"},{"c":"🇭🇺","n":"flag: Hungary","g":"Flags"},{"c":"🇮🇨","n":"flag: Canary Islands","g":"Flags"},{"c":"🇮🇩","n":"flag: Indonesia","g":"Flags"},{"c":"🇮🇪","n":"flag: Ireland","g":"Flags"},{"c":"🇮🇱","n":"flag: Israel","g":"Flags"},{"c":"🇮🇲","n":"flag: Isle of Man","g":"Flags"},{"c":"🇮🇳","n":"flag: India","g":"Flags"},{"c":"🇮🇴","n":"flag: British Indian Ocean Territory","g":"Flags"},{"c":"🇮🇶","n":"flag: Iraq","g":"Flags"},{"c":"🇮🇷","n":"flag: Iran","g":"Flags"},{"c":"🇮🇸","n":"flag: Iceland","g":"Flags"},{"c":"🇮🇹","n":"flag: Italy","g":"Flags"},{"c":"🇯🇪","n":"flag: Jersey","g":"Flags"},{"c":"🇯🇲","n":"flag: Jamaica","g":"Flags"},{"c":"🇯🇴","n":"flag: Jordan","g":"Flags"},{"c":"🇯🇵","n":"flag: Japan","g":"Flags"},{"c":"🇰🇪","n":"flag: Kenya","g":"Flags"},{"c":"🇰🇬","n":"flag: Kyrgyzstan","g":"Flags"},{"c":"🇰🇭","n":"flag: Cambodia","g":"Flags"},{"c":"🇰🇮","n":"flag: Kiribati","g":"Flags"},{"c":"🇰🇲","n":"flag: Comoros","g":"Flags"},{"c":"🇰🇳","n":"flag: St. Kitts & Nevis","g":"Flags"},{"c":"🇰🇵","n":"flag: North Korea","g":"Flags"},{"c":"🇰🇷","n":"flag: South Korea","g":"Flags"},{"c":"🇰🇼","n":"flag: Kuwait","g":"Flags"},{"c":"🇰🇾","n":"flag: Cayman Islands","g":"Flags"},{"c":"🇰🇿","n":"flag: Kazakhstan","g":"Flags"},{"c":"🇱🇦","n":"flag: Laos","g":"Flags"},{"c":"🇱🇧","n":"flag: Lebanon","g":"Flags"},{"c":"🇱🇨","n":"flag: St. Lucia","g":"Flags"},{"c":"🇱🇮","n":"flag: Liechtenstein","g":"Flags"},{"c":"🇱🇰","n":"flag: Sri Lanka","g":"Flags"},{"c":"🇱🇷","n":"flag: Liberia","g":"Flags"},{"c":"🇱🇸","n":"flag: Lesotho","g":"Flags"},{"c":"🇱🇹","n":"flag: Lithuania","g":"Flags"},{"c":"🇱🇺","n":"flag: Luxembourg","g":"Flags"},{"c":"🇱🇻","n":"flag: Latvia","g":"Flags"},{"c":"🇱🇾","n":"flag: Libya","g":"Flags"},{"c":"🇲🇦","n":"flag: Morocco","g":"Flags"},{"c":"🇲🇨","n":"flag: Monaco","g":"Flags"},{"c":"🇲🇩","n":"flag: Moldova","g":"Flags"},{"c":"🇲🇪","n":"flag: Montenegro","g":"Flags"},{"c":"🇲🇫","n":"flag: St. Martin","g":"Flags"},{"c":"🇲🇬","n":"flag: Madagascar","g":"Flags"},{"c":"🇲🇭","n":"flag: Marshall Islands","g":"Flags"},{"c":"🇲🇰","n":"flag: North Macedonia","g":"Flags"},{"c":"🇲🇱","n":"flag: Mali","g":"Flags"},{"c":"🇲🇲","n":"flag: Myanmar (Burma)","g":"Flags"},{"c":"🇲🇳","n":"flag: Mongolia","g":"Flags"},{"c":"🇲🇴","n":"flag: Macao SAR China","g":"Flags"},{"c":"🇲🇵","n":"flag: Northern Mariana Islands","g":"Flags"},{"c":"🇲🇶","n":"flag: Martinique","g":"Flags"},{"c":"🇲🇷","n":"flag: Mauritania","g":"Flags"},{"c":"🇲🇸","n":"flag: Montserrat","g":"Flags"},{"c":"🇲🇹","n":"flag: Malta","g":"Flags"},{"c":"🇲🇺","n":"flag: Mauritius","g":"Flags"},{"c":"🇲🇻","n":"flag: Maldives","g":"Flags"},{"c":"🇲🇼","n":"flag: Malawi","g":"Flags"},{"c":"🇲🇽","n":"flag: Mexico","g":"Flags"},{"c":"🇲🇾","n":"flag: Malaysia","g":"Flags"},{"c":"🇲🇿","n":"flag: Mozambique","g":"Flags"},{"c":"🇳🇦","n":"flag: Namibia","g":"Flags"},{"c":"🇳🇨","n":"flag: New Caledonia","g":"Flags"},{"c":"🇳🇪","n":"flag: Niger","g":"Flags"},{"c":"🇳🇫","n":"flag: Norfolk Island","g":"Flags"},{"c":"🇳🇬","n":"flag: Nigeria","g":"Flags"},{"c":"🇳🇮","n":"flag: Nicaragua","g":"Flags"},{"c":"🇳🇱","n":"flag: Netherlands","g":"Flags"},{"c":"🇳🇴","n":"flag: Norway","g":"Flags"},{"c":"🇳🇵","n":"flag: Nepal","g":"Flags"},{"c":"🇳🇷","n":"flag: Nauru","g":"Flags"},{"c":"🇳🇺","n":"flag: Niue","g":"Flags"},{"c":"🇳🇿","n":"flag: New Zealand","g":"Flags"},{"c":"🇴🇲","n":"flag: Oman","g":"Flags"},{"c":"🇵🇦","n":"flag: Panama","g":"Flags"},{"c":"🇵🇪","n":"flag: Peru","g":"Flags"},{"c":"🇵🇫","n":"flag: French Polynesia","g":"Flags"},{"c":"🇵🇬","n":"flag: Papua New Guinea","g":"Flags"},{"c":"🇵🇭","n":"flag: Philippines","g":"Flags"},{"c":"🇵🇰","n":"flag: Pakistan","g":"Flags"},{"c":"🇵🇱","n":"flag: Poland","g":"Flags"},{"c":"🇵🇲","n":"flag: St. Pierre & Miquelon","g":"Flags"},{"c":"🇵🇳","n":"flag: Pitcairn Islands","g":"Flags"},{"c":"🇵🇷","n":"flag: Puerto Rico","g":"Flags"},{"c":"🇵🇸","n":"flag: Palestinian Territories","g":"Flags"},{"c":"🇵🇹","n":"flag: Portugal","g":"Flags"},{"c":"🇵🇼","n":"flag: Palau","g":"Flags"},{"c":"🇵🇾","n":"flag: Paraguay","g":"Flags"},{"c":"🇶🇦","n":"flag: Qatar","g":"Flags"},{"c":"🇷🇪","n":"flag: Réunion","g":"Flags"},{"c":"🇷🇴","n":"flag: Romania","g":"Flags"},{"c":"🇷🇸","n":"flag: Serbia","g":"Flags"},{"c":"🇷🇺","n":"flag: Russia","g":"Flags"},{"c":"🇷🇼","n":"flag: Rwanda","g":"Flags"},{"c":"🇸🇦","n":"flag: Saudi Arabia","g":"Flags"},{"c":"🇸🇧","n":"flag: Solomon Islands","g":"Flags"},{"c":"🇸🇨","n":"flag: Seychelles","g":"Flags"},{"c":"🇸🇩","n":"flag: Sudan","g":"Flags"},{"c":"🇸🇪","n":"flag: Sweden","g":"Flags"},{"c":"🇸🇬","n":"flag: Singapore","g":"Flags"},{"c":"🇸🇭","n":"flag: St. Helena","g":"Flags"},{"c":"🇸🇮","n":"flag: Slovenia","g":"Flags"},{"c":"🇸🇯","n":"flag: Svalbard & Jan Mayen","g":"Flags"},{"c":"🇸🇰","n":"flag: Slovakia","g":"Flags"},{"c":"🇸🇱","n":"flag: Sierra Leone","g":"Flags"},{"c":"🇸🇲","n":"flag: San Marino","g":"Flags"},{"c":"🇸🇳","n":"flag: Senegal","g":"Flags"},{"c":"🇸🇴","n":"flag: Somalia","g":"Flags"},{"c":"🇸🇷","n":"flag: Suriname","g":"Flags"},{"c":"🇸🇸","n":"flag: South Sudan","g":"Flags"},{"c":"🇸🇹","n":"flag: São Tomé & Príncipe","g":"Flags"},{"c":"🇸🇻","n":"flag: El Salvador","g":"Flags"},{"c":"🇸🇽","n":"flag: Sint Maarten","g":"Flags"},{"c":"🇸🇾","n":"flag: Syria","g":"Flags"},{"c":"🇸🇿","n":"flag: Eswatini","g":"Flags"},{"c":"🇹🇦","n":"flag: Tristan da Cunha","g":"Flags"},{"c":"🇹🇨","n":"flag: Turks & Caicos Islands","g":"Flags"},{"c":"🇹🇩","n":"flag: Chad","g":"Flags"},{"c":"🇹🇫","n":"flag: French Southern Territories","g":"Flags"},{"c":"🇹🇬","n":"flag: Togo","g":"Flags"},{"c":"🇹🇭","n":"flag: Thailand","g":"Flags"},{"c":"🇹🇯","n":"flag: Tajikistan","g":"Flags"},{"c":"🇹🇰","n":"flag: Tokelau","g":"Flags"},{"c":"🇹🇱","n":"flag: Timor-Leste","g":"Flags"},{"c":"🇹🇲","n":"flag: Turkmenistan","g":"Flags"},{"c":"🇹🇳","n":"flag: Tunisia","g":"Flags"},{"c":"🇹🇴","n":"flag: Tonga","g":"Flags"},{"c":"🇹🇷","n":"flag: Türkiye","g":"Flags"},{"c":"🇹🇹","n":"flag: Trinidad & Tobago","g":"Flags"},{"c":"🇹🇻","n":"flag: Tuvalu","g":"Flags"},{"c":"🇹🇼","n":"flag: Taiwan","g":"Flags"},{"c":"🇹🇿","n":"flag: Tanzania","g":"Flags"},{"c":"🇺🇦","n":"flag: Ukraine","g":"Flags"},{"c":"🇺🇬","n":"flag: Uganda","g":"Flags"},{"c":"🇺🇲","n":"flag: U.S. Outlying Islands","g":"Flags"},{"c":"🇺🇳","n":"flag: United Nations","g":"Flags"},{"c":"🇺🇸","n":"flag: United States","g":"Flags"},{"c":"🇺🇾","n":"flag: Uruguay","g":"Flags"},{"c":"🇺🇿","n":"flag: Uzbekistan","g":"Flags"},{"c":"🇻🇦","n":"flag: Vatican City","g":"Flags"},{"c":"🇻🇨","n":"flag: St. Vincent & Grenadines","g":"Flags"},{"c":"🇻🇪","n":"flag: Venezuela","g":"Flags"},{"c":"🇻🇬","n":"flag: British Virgin Islands","g":"Flags"},{"c":"🇻🇮","n":"flag: U.S. Virgin Islands","g":"Flags"},{"c":"🇻🇳","n":"flag: Vietnam","g":"Flags"},{"c":"🇻🇺","n":"flag: Vanuatu","g":"Flags"},{"c":"🇼🇫","n":"flag: Wallis & Futuna","g":"Flags"},{"c":"🇼🇸","n":"flag: Samoa","g":"Flags"},{"c":"🇽🇰","n":"flag: Kosovo","g":"Flags"},{"c":"🇾🇪","n":"flag: Yemen","g":"Flags"},{"c":"🇾🇹","n":"flag: Mayotte","g":"Flags"},{"c":"🇿🇦","n":"flag: South Africa","g":"Flags"},{"c":"🇿🇲","n":"flag: Zambia","g":"Flags"},{"c":"🇿🇼","n":"flag: Zimbabwe","g":"Flags"},{"c":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","n":"flag: England","g":"Flags"},{"c":"🏴󠁧󠁢󠁳󠁣󠁴󠁿","n":"flag: Scotland","g":"Flags"},{"c":"🏴󠁧󠁢󠁷󠁬󠁳󠁿","n":"flag: Wales","g":"Flags"}];
 
+// Client logic for Emoji Picker
 document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('emoji-search-input');
-  const btnClearSearch = document.getElementById('btn-clear-search');
-  const categoryPills = document.querySelectorAll('.category-pill');
-  const categoryHeading = document.getElementById('category-heading');
-  const emojiCountBadge = document.getElementById('emoji-count-badge');
-  const emojiGrid = document.getElementById('emoji-grid');
-  const recentsList = document.getElementById('recents-list');
-  const inspectGlyph = document.getElementById('inspect-glyph');
-  const inspectName = document.getElementById('inspect-name');
-  const inspectCode = document.getElementById('inspect-code');
-  const btnCopyInspected = document.getElementById('btn-copy-inspected');
+  const emojiScrollArea = document.getElementById('emoji-scroll-area');
+  const categoryTabs = document.getElementById('category-tabs');
+  const toneSwatches = document.querySelectorAll('.tone-swatch');
+  const detailGlyph = document.getElementById('detail-glyph');
+  const detailName = document.getElementById('detail-name');
+  const detailCode = document.getElementById('detail-code');
+  const copySelectedBtn = document.getElementById('copy-selected-btn');
+  const starSelectedBtn = document.getElementById('star-selected-btn');
+  const scratchpad = document.getElementById('scratchpad');
+  const scratchMetrics = document.getElementById('scratch-metrics');
+  const copyScratchpadBtn = document.getElementById('copy-scratchpad-btn');
+  const clearScratchpadBtn = document.getElementById('clear-scratchpad-btn');
+  const appToast = document.getElementById('app-toast');
 
-  // Categorized emoji database
-  const emojiData = [
-    // Smileys & Emotion
-    { char: '😀', name: 'Grinning Face', cat: 'smileys', tags: 'smile happy joy face' },
-    { char: '😃', name: 'Grinning Face Big Eyes', cat: 'smileys', tags: 'happy joy excited' },
-    { char: '😄', name: 'Grinning Face Smiling Eyes', cat: 'smileys', tags: 'happy joy laugh' },
-    { char: '😁', name: 'Beaming Face', cat: 'smileys', tags: 'smile grin happy' },
-    { char: '😆', name: 'Grinning Squinting Face', cat: 'smileys', tags: 'laugh hilarious haha' },
-    { char: '😅', name: 'Grinning Face Sweat', cat: 'smileys', tags: 'relief phew nervous' },
-    { char: '🤣', name: 'Rolling on Floor Laughing', cat: 'smileys', tags: 'rofl lol haha funny' },
-    { char: '😂', name: 'Face with Tears of Joy', cat: 'smileys', tags: 'cry happy lol tears' },
-    { char: '🙂', name: 'Slightly Smiling Face', cat: 'smileys', tags: 'smile positive' },
-    { char: '🙃', name: 'Upside-Down Face', cat: 'smileys', tags: 'silly sarcasm ironic' },
-    { char: '😉', name: 'Winking Face', cat: 'smileys', tags: 'wink flirt playful' },
-    { char: '😊', name: 'Smiling Face with Smiling Eyes', cat: 'smileys', tags: 'blush warm happy' },
-    { char: '😇', name: 'Smiling Face with Halo', cat: 'smileys', tags: 'angel innocent holy' },
-    { char: '🥰', name: 'Smiling Face with Hearts', cat: 'smileys', tags: 'love adore affection' },
-    { char: '😍', name: 'Heart Eyes', cat: 'smileys', tags: 'love crush beautiful' },
-    { char: '🤩', name: 'Star-Struck', cat: 'smileys', tags: 'wow amazing celebrity' },
-    { char: '😘', name: 'Face Blowing a Kiss', cat: 'smileys', tags: 'kiss love affection' },
-    { char: '😋', name: 'Face Savoring Food', cat: 'smileys', tags: 'delicious yum taste' },
-    { char: '😛', name: 'Face with Tongue', cat: 'smileys', tags: 'playful silly tease' },
-    { char: '😜', name: 'Winking Face with Tongue', cat: 'smileys', tags: 'crazy playful party' },
-    { char: '🤪', name: 'Zany Face', cat: 'smileys', tags: 'wild silly crazy' },
-    { char: '🤑', name: 'Money-Mouth Face', cat: 'smileys', tags: 'rich cash dollar wealthy' },
-    { char: '🤗', name: 'Hugging Face', cat: 'smileys', tags: 'hug warm embrace' },
-    { char: '🤫', name: 'Shushing Face', cat: 'smileys', tags: 'quiet secret silent shh' },
-    { char: '🤔', name: 'Thinking Face', cat: 'smileys', tags: 'ponder wonder consider' },
-    { char: '🤐', name: 'Zipper-Mouth Face', cat: 'smileys', tags: 'silent secret mute' },
-    { char: '🤨', name: 'Face with Raised Eyebrow', cat: 'smileys', tags: 'skeptical distrust doubt' },
-    { char: '😐', name: 'Neutral Face', cat: 'smileys', tags: 'meh blank straight' },
-    { char: '😑', name: 'Expressionless Face', cat: 'smileys', tags: 'unimpressed deadpan' },
-    { char: '😶', name: 'Face Without Mouth', cat: 'smileys', tags: 'silent speech speechless' },
-    { char: '😏', name: 'Smirking Face', cat: 'smileys', tags: 'smug flirt sly' },
-    { char: '😒', name: 'Unamused Face', cat: 'smileys', tags: 'annoyed bored unimpressed' },
-    { char: '🙄', name: 'Face with Rolling Eyes', cat: 'smileys', tags: 'eye roll sarcastic whatever' },
-    { char: '😬', name: 'Grimacing Face', cat: 'smileys', tags: 'awkward nervous yikes' },
-    { char: '🤥', name: 'Lying Face', cat: 'smileys', tags: 'liar pinocchio false' },
-    { char: '😌', name: 'Relieved Face', cat: 'smileys', tags: 'phew calm peaceful' },
-    { char: '😔', name: 'Pensive Face', cat: 'smileys', tags: 'sad thoughtful regret' },
-    { char: '😪', name: 'Sleepy Face', cat: 'smileys', tags: 'tired droop snot' },
-    { char: '🤤', name: 'Drooling Face', cat: 'smileys', tags: 'delicious hungry craving' },
-    { char: '😴', name: 'Sleeping Face', cat: 'smileys', tags: 'sleep zzz bedtime' },
-    { char: '😷', name: 'Face with Medical Mask', cat: 'smileys', tags: 'sick health flu virus' },
-    { char: '🤒', name: 'Face with Thermometer', cat: 'smileys', tags: 'sick fever cold illness' },
-    { char: '🤕', name: 'Face with Head-Bandage', cat: 'smileys', tags: 'hurt injury accident' },
-    { char: '🤢', name: 'Nauseated Face', cat: 'smileys', tags: 'gross disgust vomit' },
-    { char: '🤮', name: 'Face Vomiting', cat: 'smileys', tags: 'sick throw up disgust' },
-    { char: '🥵', name: 'Hot Face', cat: 'smileys', tags: 'heat warm sweat fever' },
-    { char: '🥶', name: 'Cold Face', cat: 'smileys', tags: 'freeze ice winter chilly' },
-    { char: '🤯', name: 'Exploding Head', cat: 'smileys', tags: 'mind blown shock amazed' },
-    { char: '🥳', name: 'Partying Face', cat: 'smileys', tags: 'celebrate birthday cheer' },
-    { char: '😎', name: 'Smiling Face with Sunglasses', cat: 'smileys', tags: 'cool shades boss confident' },
-    { char: '🤓', name: 'Nerd Face', cat: 'smileys', tags: 'geek smart glasses study' },
-    { char: '🧐', name: 'Face with Monocle', cat: 'smileys', tags: 'curious examine investigate' },
-    { char: '😕', name: 'Slightly Frowning Face', cat: 'smileys', tags: 'disappointed unhappy' },
-    { char: '😟', name: 'Worried Face', cat: 'smileys', tags: 'anxious nervous fret' },
-    { char: '🙁', name: 'Frowning Face', cat: 'smileys', tags: 'sad grief gloom' },
-    { char: '😮', name: 'Face with Open Mouth', cat: 'smileys', tags: 'surprise wow shock' },
-    { char: '😯', name: 'Hushed Face', cat: 'smileys', tags: 'surprise quiet awe' },
-    { char: '😲', name: 'Astonished Face', cat: 'smileys', tags: 'shock stunned amazed' },
-    { char: '😳', name: 'Flushed Face', cat: 'smileys', tags: 'blush shy embarrassed' },
-    { char: '🥺', name: 'Pleading Face', cat: 'smileys', tags: 'beg puppy eyes please' },
-    { char: '😦', name: 'Frowning Face with Open Mouth', cat: 'smileys', tags: 'gasp dismay' },
-    { char: '😧', name: 'Anguished Face', cat: 'smileys', tags: 'pain sorrow stun' },
-    { char: '😨', name: 'Fearful Face', cat: 'smileys', tags: 'scared terrified panic' },
-    { char: '😰', name: 'Anxious Face with Sweat', cat: 'smileys', tags: 'nervous worry blue' },
-    { char: '😥', name: 'Sad but Relieved Face', cat: 'smileys', tags: 'close call phew sorrow' },
-    { char: '😢', name: 'Crying Face', cat: 'smileys', tags: 'tear sad upset weep' },
-    { char: '😭', name: 'Loudly Crying Face', cat: 'smileys', tags: 'sob sorrow heart broken' },
-    { char: '😱', name: 'Face Screaming in Fear', cat: 'smileys', tags: 'horror scream munch terrified' },
-    { char: '😖', name: 'Confounded Face', cat: 'smileys', tags: 'confused frustration quivering' },
-    { char: '😣', name: 'Persevering Face', cat: 'smileys', tags: 'struggle endure strain' },
-    { char: '😞', name: 'Disappointed Face', cat: 'smileys', tags: 'sad letdown regret' },
-    { char: '😓', name: 'Downcast Face with Sweat', cat: 'smileys', tags: 'exhausted defeated hard' },
-    { char: '😩', name: 'Weary Face', cat: 'smileys', tags: 'tired distressed frustrated' },
-    { char: '😫', name: 'Tired Face', cat: 'smileys', tags: 'exhausted overwhelmed fed up' },
-    { char: '🥱', name: 'Yawning Face', cat: 'smileys', tags: 'tired sleepy bored yawn' },
-    { char: '😤', name: 'Face with Steam from Nose', cat: 'smileys', tags: 'triumph huff determined pride' },
-    { char: '😡', name: 'Pouting Face (Enraged)', cat: 'smileys', tags: 'angry mad red fury' },
-    { char: '😠', name: 'Angry Face', cat: 'smileys', tags: 'mad grr furious rage' },
-    { char: '🤬', name: 'Face with Symbols on Mouth', cat: 'smileys', tags: 'swearing curse profanity rage' },
-    { char: '😈', name: 'Smiling Face with Horns', cat: 'smileys', tags: 'devil evil mischief bad' },
-    { char: '👿', name: 'Angry Face with Horns', cat: 'smileys', tags: 'devil imp demonic wrath' },
-    { char: '💀', name: 'Skull', cat: 'smileys', tags: 'dead skeleton death hilarious' },
-    { char: '💩', name: 'Pile of Poo', cat: 'smileys', tags: 'poop crap funny stinky' },
-    { char: '🤡', name: 'Clown Face', cat: 'smileys', tags: 'circus fool foolish' },
-    { char: '👻', name: 'Ghost', cat: 'smileys', tags: 'spooky halloween spirit phantom' },
-    { char: '👽', name: 'Alien', cat: 'smileys', tags: 'ufo extraterrestrial space mars' },
-    { char: '🤖', name: 'Robot', cat: 'smileys', tags: 'bot artificial intelligence automation' },
+  let activeToneIndex = 0; // 0 = default, 1..5 = skin tones
+  let activeCategory = 'all';
+  let searchQuery = '';
+  let selectedEmoji = EMOJI_DATA[0] || { c: '✨', n: 'sparkles', g: 'Activities' };
 
-    // People & Body
-    { char: '👋', name: 'Waving Hand', cat: 'people', tags: 'hello hi goodbye wave' },
-    { char: '🤚', name: 'Raised Back of Hand', cat: 'people', tags: 'hand back stop' },
-    { char: '🖐️', name: 'Hand with Fingers Splayed', cat: 'people', tags: 'five high five palm' },
-    { char: '✋', name: 'Raised Hand', cat: 'people', tags: 'high five stop question' },
-    { char: '🖖', name: 'Vulcan Salute', cat: 'people', tags: 'spock star trek live long' },
-    { char: '👌', name: 'OK Hand', cat: 'people', tags: 'okay perfect fine good' },
-    { char: '🤌', name: 'Pinched Fingers', cat: 'people', tags: 'italian gesture what do you want' },
-    { char: '🤏', name: 'Pinching Hand', cat: 'people', tags: 'small little tiny bit' },
-    { char: '✌️', name: 'Victory Hand', cat: 'people', tags: 'peace two win v' },
-    { char: '🤞', name: 'Crossed Fingers', cat: 'people', tags: 'luck hope wish good' },
-    { char: '🤟', name: 'Love-You Gesture', cat: 'people', tags: 'ily rock love hand' },
-    { char: '🤘', name: 'Sign of the Horns', cat: 'people', tags: 'rock heavy metal concert' },
-    { char: '🤙', name: 'Call Me Hand', cat: 'people', tags: 'shaka phone hang loose' },
-    { char: '👈', name: 'Backhand Index Pointing Left', cat: 'people', tags: 'point left direction' },
-    { char: '👉', name: 'Backhand Index Pointing Right', cat: 'people', tags: 'point right direction' },
-    { char: '👆', name: 'Backhand Index Pointing Up', cat: 'people', tags: 'point up top above' },
-    { char: '👇', name: 'Backhand Index Pointing Down', cat: 'people', tags: 'point down bottom below' },
-    { char: '☝️', name: 'Index Pointing Up', cat: 'people', tags: 'one number attention' },
-    { char: '👍', name: 'Thumbs Up', cat: 'people', tags: 'yes agree approve great good' },
-    { char: '👎', name: 'Thumbs Down', cat: 'people', tags: 'no dislike disapprove bad' },
-    { char: '✊', name: 'Raised Fist', cat: 'people', tags: 'power strength solidarity' },
-    { char: '👊', name: 'Oncoming Fist', cat: 'people', tags: 'fist bump punch bro' },
-    { char: '🤛', name: 'Left-Facing Fist', cat: 'people', tags: 'fist bump pound' },
-    { char: '🤜', name: 'Right-Facing Fist', cat: 'people', tags: 'fist bump pound' },
-    { char: '👏', name: 'Clapping Hands', cat: 'people', tags: 'applause bravo praise congrats' },
-    { char: '🙌', name: 'Raising Hands', cat: 'people', tags: 'celebrate praise yay hooray' },
-    { char: '👐', name: 'Open Hands', cat: 'people', tags: 'open hug embrace jazz' },
-    { char: '🤲', name: 'Palms Up Together', cat: 'people', tags: 'prayer duaa offering' },
-    { char: '🤝', name: 'Handshake', cat: 'people', tags: 'deal agreement partner meeting' },
-    { char: '🙏', name: 'Folded Hands', cat: 'people', tags: 'pray please thank you namaste' },
-    { char: '💪', name: 'Flexed Biceps', cat: 'people', tags: 'muscle strength power gym workout' },
-    { char: '🧠', name: 'Brain', cat: 'people', tags: 'smart intellect mind think' },
-    { char: '👀', name: 'Eyes', cat: 'people', tags: 'look glance see watch look' },
-    { char: '👁️', name: 'Eye', cat: 'people', tags: 'look vision see gaze' },
+  let recentEmojis = JSON.parse(localStorage.getItem('emoji_recent') || '[]');
+  let favoriteEmojis = JSON.parse(localStorage.getItem('emoji_favorites') || '[]');
 
-    // Animals & Nature
-    { char: '🐶', name: 'Dog Face', cat: 'animals', tags: 'pet puppy canine bark' },
-    { char: '🐱', name: 'Cat Face', cat: 'animals', tags: 'pet kitten meow feline' },
-    { char: '🐭', name: 'Mouse Face', cat: 'animals', tags: 'rodent cheese squeak' },
-    { char: '🐹', name: 'Hamster Face', cat: 'animals', tags: 'pet cute rodent' },
-    { char: '🐰', name: 'Rabbit Face', cat: 'animals', tags: 'bunny cute easter' },
-    { char: '🦊', name: 'Fox', cat: 'animals', tags: 'clever wild animal' },
-    { char: '🐻', name: 'Bear Face', cat: 'animals', tags: 'grizzly wild woods teddy' },
-    { char: '🐼', name: 'Panda Face', cat: 'animals', tags: 'bamboo china cute bear' },
-    { char: '🐨', name: 'Koala', cat: 'animals', tags: 'australia cute marsupial' },
-    { char: '🐯', name: 'Tiger Face', cat: 'animals', tags: 'wild predator cat stripes' },
-    { char: '🦁', name: 'Lion', cat: 'animals', tags: 'king jungle predator roar' },
-    { char: '🐮', name: 'Cow Face', cat: 'animals', tags: 'farm milk beef moo' },
-    { char: '🐷', name: 'Pig Face', cat: 'animals', tags: 'farm pork oink piggy' },
-    { char: '🐸', name: 'Frog', cat: 'animals', tags: 'toad amphibian green ribbit' },
-    { char: '🐵', name: 'Monkey Face', cat: 'animals', tags: 'ape playful banana jungle' },
-    { char: '🐔', name: 'Chicken', cat: 'animals', tags: 'bird poultry farm rooster' },
-    { char: '🐧', name: 'Penguin', cat: 'animals', tags: 'antarctic cold bird tux' },
-    { char: '🐦', name: 'Bird', cat: 'animals', tags: 'tweet fly chirp feather' },
-    { char: '🦅', name: 'Eagle', cat: 'animals', tags: 'raptor bird america freedom predator' },
-    { char: '🦆', name: 'Duck', cat: 'animals', tags: 'quack waterfowl pond' },
-    { char: '🦉', name: 'Owl', cat: 'animals', tags: 'wise night nocturnal bird' },
-    { char: '🦇', name: 'Bat', cat: 'animals', tags: 'vampire night caves mammal' },
-    { char: '🐺', name: 'Wolf', cat: 'animals', tags: 'howl pack wild animal' },
-    { char: '🐴', name: 'Horse Face', cat: 'animals', tags: 'stallion ride farm gallop' },
-    { char: '🦄', name: 'Unicorn', cat: 'animals', tags: 'magic fantasy horn rainbow' },
-    { char: '🐝', name: 'Honeybee', cat: 'animals', tags: 'insect bug honey sting flower' },
-    { char: '🐛', name: 'Bug', cat: 'animals', tags: 'caterpillar insect nature creep' },
-    { char: '🦋', name: 'Butterfly', cat: 'animals', tags: 'insect beauty wings flutter' },
-    { char: '🐌', name: 'Snail', cat: 'animals', tags: 'slow shell garden slime' },
-    { char: '🐞', name: 'Lady Beetle', cat: 'animals', tags: 'ladybug insect luck red dots' },
-    { char: '🐢', name: 'Turtle', cat: 'animals', tags: 'tortoise slow reptile green shell' },
-    { char: '🐍', name: 'Snake', cat: 'animals', tags: 'reptile serpent hiss poison venom' },
-    { char: '🐙', name: 'Octopus', cat: 'animals', tags: 'ocean sea tentacle marine' },
-    { char: '🐬', name: 'Dolphin', cat: 'animals', tags: 'ocean mammal marine smart' },
-    { char: '🐳', name: 'Spouting Whale', cat: 'animals', tags: 'ocean giant sea blowhole' },
-    { char: '🐟', name: 'Fish', cat: 'animals', tags: 'sea ocean swim fresh' },
-    { char: '🦈', name: 'Shark', cat: 'animals', tags: 'predator ocean sea jaws' },
-    { char: '🌸', name: 'Cherry Blossom', cat: 'animals', tags: 'flower pink spring sakura plant' },
-    { char: '🌹', name: 'Rose', cat: 'animals', tags: 'flower love romantic red petals' },
-    { char: '🌻', name: 'Sunflower', cat: 'animals', tags: 'flower sunny yellow summer plant' },
-    { char: '🌲', name: 'Evergreen Tree', cat: 'animals', tags: 'nature pine forest woods' },
-    { char: '🌴', name: 'Palm Tree', cat: 'animals', tags: 'tropical beach summer island' },
-    { char: '🔥', name: 'Fire', cat: 'animals', tags: 'flame hot lit heat burn trending' },
-    { char: '⚡', name: 'High Voltage', cat: 'animals', tags: 'lightning bolt electricity power fast' },
-    { char: '⭐', name: 'Star', cat: 'animals', tags: 'gold shining sky favorite top' },
-    { char: '✨', name: 'Sparkles', cat: 'animals', tags: 'magic sparkle clean shiny star glam' },
-
-    // Food & Drink
-    { char: '🍏', name: 'Green Apple', cat: 'food', tags: 'fruit fruit green healthy snack' },
-    { char: '🍎', name: 'Red Apple', cat: 'food', tags: 'fruit red healthy orchard' },
-    { char: '🍐', name: 'Pear', cat: 'food', tags: 'fruit sweet juicy' },
-    { char: '🍊', name: 'Tangerine', cat: 'food', tags: 'orange citrus fruit vitamin c' },
-    { char: '🍋', name: 'Lemon', cat: 'food', tags: 'sour yellow citrus juice' },
-    { char: '🍌', name: 'Banana', cat: 'food', tags: 'fruit yellow potassium monkey' },
-    { char: '🍉', name: 'Watermelon', cat: 'food', tags: 'fruit summer slice sweet seed' },
-    { char: '🍇', name: 'Grapes', cat: 'food', tags: 'fruit wine bunch purple' },
-    { char: '🍓', name: 'Strawberry', cat: 'food', tags: 'fruit berry sweet red' },
-    { char: '🫐', name: 'Blueberries', cat: 'food', tags: 'berry blue fruit antioxidant' },
-    { char: '🍒', name: 'Cherries', cat: 'food', tags: 'fruit pair red sweet' },
-    { char: '🍑', name: 'Peach', cat: 'food', tags: 'fruit sweet juicy booty' },
-    { char: '🥭', name: 'Mango', cat: 'food', tags: 'tropical fruit sweet juicy' },
-    { char: '🍍', name: 'Pineapple', cat: 'food', tags: 'tropical fruit sweet spiky' },
-    { char: '🥥', name: 'Coconut', cat: 'food', tags: 'tropical palm water nut' },
-    { char: '🥝', name: 'Kiwi Fruit', cat: 'food', tags: 'fruit green fuzzy new zealand' },
-    { char: '🍅', name: 'Tomato', cat: 'food', tags: 'vegetable fruit red salad' },
-    { char: '🥑', name: 'Avocado', cat: 'food', tags: 'guacamole green healthy toast' },
-    { char: '🍆', name: 'Eggplant', cat: 'food', tags: 'aubergine vegetable purple' },
-    { char: '🥔', name: 'Potato', cat: 'food', tags: 'spud starch fries bake' },
-    { char: '🥕', name: 'Carrot', cat: 'food', tags: 'vegetable orange rabbit healthy' },
-    { char: '🌽', name: 'Ear of Corn', cat: 'food', tags: 'maize yellow vegetable grain' },
-    { char: '🌶️', name: 'Hot Pepper', cat: 'food', tags: 'chili spicy spicy red heat' },
-    { char: '🥒', name: 'Cucumber', cat: 'food', tags: 'pickle vegetable green salad' },
-    { char: '🥬', name: 'Leafy Green', cat: 'food', tags: 'lettuce salad kale cabbage' },
-    { char: '🥦', name: 'Broccoli', cat: 'food', tags: 'vegetable green healthy tree' },
-    { char: '🍞', name: 'Bread', cat: 'food', tags: 'loaf bakery toast carbohydrate' },
-    { char: '🥐', name: 'Croissant', cat: 'food', tags: 'bakery pastry french butter' },
-    { char: '🥖', name: 'Baguette Bread', cat: 'food', tags: 'french bread long bakery' },
-    { char: '🥨', name: 'Pretzel', cat: 'food', tags: 'bavarian salty snack twisted' },
-    { char: '🥯', name: 'Bagel', cat: 'food', tags: 'bakery breakfast cream cheese' },
-    { char: '🥞', name: 'Pancakes', cat: 'food', tags: 'breakfast syrup stack flapjack' },
-    { char: '🧇', name: 'Waffle', cat: 'food', tags: 'breakfast grid syrup belgian' },
-    { char: '🧀', name: 'Cheese Wedge', cat: 'food', tags: 'dairy yellow cheddar swiss' },
-    { char: '🍖', name: 'Meat on Bone', cat: 'food', tags: 'meat barbecue steak protein' },
-    { char: '🍗', name: 'Poultry Leg', cat: 'food', tags: 'chicken drumstick fried meat' },
-    { char: '🥩', name: 'Cut of Meat', cat: 'food', tags: 'steak beef raw butcher' },
-    { char: '🥓', name: 'Bacon', cat: 'food', tags: 'breakfast meat pork crispy' },
-    { char: '🍔', name: 'Hamburger', cat: 'food', tags: 'burger fast food beef sandwich' },
-    { char: '🍟', name: 'French Fries', cat: 'food', tags: 'fast food potato crispy' },
-    { char: '🍕', name: 'Pizza', cat: 'food', tags: 'slice cheese pepperoni italian' },
-    { char: '🌭', name: 'Hot Dog', cat: 'food', tags: 'sausage bun mustard fast food' },
-    { char: '🥪', name: 'Sandwich', cat: 'food', tags: 'lunch bread deli sub' },
-    { char: '🌮', name: 'Taco', cat: 'food', tags: 'mexican shell beef lettuce' },
-    { char: '🌯', name: 'Burrito', cat: 'food', tags: 'wrap mexican bean rice' },
-    { char: '🍜', name: 'Steaming Bowl', cat: 'food', tags: 'ramen noodles soup broth' },
-    { char: '🍝', name: 'Spaghetti', cat: 'food', tags: 'pasta italian noodles sauce' },
-    { char: '🍣', name: 'Sushi', cat: 'food', tags: 'japanese fish rice raw' },
-    { char: '🍱', name: 'Bento Box', cat: 'food', tags: 'japanese lunch box meal' },
-    { char: '🍦', name: 'Soft Ice Cream', cat: 'food', tags: 'dessert sweet dairy cone' },
-    { char: '🍩', name: 'Doughnut', cat: 'food', tags: 'donut sweet pastry glaze' },
-    { char: '🍪', name: 'Cookie', cat: 'food', tags: 'biscuit chocolate chip sweet' },
-    { char: '🎂', name: 'Birthday Cake', cat: 'food', tags: 'celebrate candles dessert party' },
-    { char: '🍰', name: 'Shortcake', cat: 'food', tags: 'slice dessert sweet pastry' },
-    { char: '🧁', name: 'Cupcake', cat: 'food', tags: 'dessert sweet frosting bakery' },
-    { char: '🍫', name: 'Chocolate Bar', cat: 'food', tags: 'sweet candy cacao bar' },
-    { char: '🍬', name: 'Candy', cat: 'food', tags: 'sweet sugar treat wrapped' },
-    { char: '🍭', name: 'Lollipop', cat: 'food', tags: 'candy sweet sugar suck' },
-    { char: '☕', name: 'Hot Beverage', cat: 'food', tags: 'coffee tea warm cup mug espresso' },
-    { char: '🍵', name: 'Teacup Without Handle', cat: 'food', tags: 'green tea matcha cup' },
-    { char: '🧃', name: 'Beverage Box', cat: 'food', tags: 'juice box straw fruit drink' },
-    { char: '🥤', name: 'Cup with Straw', cat: 'food', tags: 'soda drink cup juice fast food' },
-    { char: '🧋', name: 'Bubble Tea', cat: 'food', tags: 'boba milk tea tapioca pearls' },
-
-    // Travel & Places
-    { char: '✈️', name: 'Airplane', cat: 'travel', tags: 'flight travel trip airline vacation' },
-    { char: '🚀', name: 'Rocket', cat: 'travel', tags: 'space blast off launch crypto moon' },
-    { char: '🚁', name: 'Helicopter', cat: 'travel', tags: 'rotor fly copter travel' },
-    { char: '🚂', name: 'Locomotive', cat: 'travel', tags: 'train railway steam transit' },
-    { char: '🚆', name: 'Bullet Train', cat: 'travel', tags: 'high speed train transit railway' },
-    { char: '🚗', name: 'Automobile', cat: 'travel', tags: 'car vehicle drive road transport' },
-    { char: '🚕', name: 'Taxi', cat: 'travel', tags: 'cab uber transport yellow' },
-    { char: '🚙', name: 'SUV', cat: 'travel', tags: 'car vehicle sports utility drive' },
-    { char: '🚌', name: 'Bus', cat: 'travel', tags: 'transit public transport school bus' },
-    { char: '🚎', name: 'Trolleybus', cat: 'travel', tags: 'electric transit bus wire' },
-    { char: '🏎️', name: 'Racing Car', cat: 'travel', tags: 'f1 speed race car fast' },
-    { char: '🚓', name: 'Police Car', cat: 'travel', tags: 'cop law emergency vehicle' },
-    { char: '🚑', name: 'Ambulance', cat: 'travel', tags: 'medical emergency hospital vehicle' },
-    { char: '🚒', name: 'Fire Engine', cat: 'travel', tags: 'fire truck emergency rescue' },
-    { char: '🚚', name: 'Delivery Truck', cat: 'travel', tags: 'freight shipping cargo transport' },
-    { char: '🚢', name: 'Ship', cat: 'travel', tags: 'boat cruise cargo ocean water' },
-    { char: '⛵', name: 'Sailboat', cat: 'travel', tags: 'yacht sea boat sail water' },
-    { char: '🗺️', name: 'World Map', cat: 'travel', tags: 'geography travel atlas explore' },
-    { char: '🏖️', name: 'Beach with Umbrella', cat: 'travel', tags: 'vacation summer ocean island' },
-    { char: '🏝️', name: 'Desert Island', cat: 'travel', tags: 'tropical palm ocean isolated' },
-    { char: '🏔️', name: 'Snow-Capped Mountain', cat: 'travel', tags: 'alpine hike peak nature' },
-    { char: '🏕️', name: 'Camping', cat: 'travel', tags: 'tent outdoor hike wilderness' },
-    { char: '🗽', name: 'Statue of Liberty', cat: 'travel', tags: 'new york usa landmark freedom' },
-    { char: '🗼', name: 'Tokyo Tower', cat: 'travel', tags: 'japan landmark travel tower' },
-    { char: '🏰', name: 'Castle', cat: 'travel', tags: 'fortress medieval fairy tale disney' },
-    { char: '🕋', name: 'Kaaba', cat: 'travel', tags: 'makkah hajj umrah islam mecca' },
-    { char: '🕌', name: 'Mosque', cat: 'travel', tags: 'islam minaret masjid prayer' },
-    { char: '⛪', name: 'Church', cat: 'travel', tags: 'christianity chapel building cross' },
-
-    // Activities & Sports
-    { char: '⚽', name: 'Soccer Ball', cat: 'activities', tags: 'football sport match game kick' },
-    { char: '🏀', name: 'Basketball', cat: 'activities', tags: 'hoop sport nba ball' },
-    { char: '🏈', name: 'American Football', cat: 'activities', tags: 'nfl superbowl sport touchdown' },
-    { char: '⚾', name: 'Baseball', cat: 'activities', tags: 'sport bat mlb ball' },
-    { char: '🎾', name: 'Tennis', cat: 'activities', tags: 'racket sport ball match court' },
-    { char: '🏐', name: 'Volleyball', cat: 'activities', tags: 'ball sport beach net' },
-    { char: '🏉', name: 'Rugby Football', cat: 'activities', tags: 'sport ball try scrum' },
-    { char: '🥏', name: 'Flying Disc', cat: 'activities', tags: 'frisbee sport throw catch' },
-    { char: '🎱', name: 'Pool 8 Ball', cat: 'activities', tags: 'billiards snooker cue ball eight' },
-    { char: '🏓', name: 'Ping Pong', cat: 'activities', tags: 'table tennis paddle ball game' },
-    { char: '🏸', name: 'Badminton', cat: 'activities', tags: 'shuttlecock bird racket net' },
-    { char: '🥊', name: 'Boxing Glove', cat: 'activities', tags: 'fight punch match ring combat' },
-    { char: '🥋', name: 'Martial Arts Uniform', cat: 'activities', tags: 'karate judo taekwondo gi belt' },
-    { char: '🎯', name: 'Bullseye', cat: 'activities', tags: 'dart target goal accuracy hit' },
-    { char: '🎮', name: 'Video Game Controller', cat: 'activities', tags: 'gaming play playstation xbox nintendo' },
-    { char: '🕹️', name: 'Joystick', cat: 'activities', tags: 'arcade game retro control' },
-    { char: '🎲', name: 'Game Die', cat: 'activities', tags: 'dice roll board game random luck' },
-    { char: '🧩', name: 'Puzzle Piece', cat: 'activities', tags: 'jigsaw puzzle problem solution solve' },
-    { char: '🏆', name: 'Trophy', cat: 'activities', tags: 'winner champion prize award gold' },
-    { char: '🥇', name: '1st Place Medal', cat: 'activities', tags: 'gold medal winner champion first' },
-    { char: '🥈', name: '2nd Place Medal', cat: 'activities', tags: 'silver medal second runner up' },
-    { char: '🥉', name: '3rd Place Medal', cat: 'activities', tags: 'bronze medal third place' },
-    { char: '🎨', name: 'Artist Palette', cat: 'activities', tags: 'paint art draw color create' },
-    { char: '🎬', name: 'Clapper Board', cat: 'activities', tags: 'movie film cinema director take' },
-    { char: '🎤', name: 'Microphone', cat: 'activities', tags: 'sing karaoke voice audio podcast' },
-    { char: '🎧', name: 'Headphone', cat: 'activities', tags: 'music audio listen sound podcast' },
-    { char: '🎸', name: 'Guitar', cat: 'activities', tags: 'music instrument rock acoustic electric' },
-    { char: '🎹', name: 'Musical Keyboard', cat: 'activities', tags: 'piano music keys instrument synth' },
-
-    // Objects & Tech
-    { char: '💡', name: 'Light Bulb', cat: 'objects', tags: 'idea innovation creative insight genius' },
-    { char: '📱', name: 'Mobile Phone', cat: 'objects', tags: 'iphone android smartphone cell call' },
-    { char: '💻', name: 'Laptop', cat: 'objects', tags: 'computer macbook pc tech code' },
-    { char: '🖥️', name: 'Desktop Computer', cat: 'objects', tags: 'monitor pc screen workstation' },
-    { char: '⌨️', name: 'Keyboard', cat: 'objects', tags: 'typing input tech pc mechanical' },
-    { char: '🖱️', name: 'Computer Mouse', cat: 'objects', tags: 'click pointer scroll peripheral' },
-    { char: '📷', name: 'Camera', cat: 'objects', tags: 'photo picture lens photography snapshot' },
-    { char: '📹', name: 'Video Camera', cat: 'objects', tags: 'film record camcorder footage' },
-    { char: '🔍', name: 'Magnifying Glass Tilted Left', cat: 'objects', tags: 'search find investigate look' },
-    { char: '🔎', name: 'Magnifying Glass Tilted Right', cat: 'objects', tags: 'search zoom look examine' },
-    { char: '🔒', name: 'Locked', cat: 'objects', tags: 'padlock security private safe protect' },
-    { char: '🔓', name: 'Unlocked', cat: 'objects', tags: 'padlock open access public free' },
-    { char: '🔑', name: 'Key', cat: 'objects', tags: 'access secret password security login' },
-    { char: '🔨', name: 'Hammer', cat: 'objects', tags: 'tool build repair construction craft' },
-    { char: '🛠️', name: 'Hammer and Wrench', cat: 'objects', tags: 'tools settings configure repair dev' },
-    { char: '⚙️', name: 'Gear', cat: 'objects', tags: 'settings cog options config machine' },
-    { char: '📦', name: 'Package', cat: 'objects', tags: 'box delivery shipping parcel cargo' },
-    { char: '✉️', name: 'Envelope', cat: 'objects', tags: 'mail letter message email contact' },
-    { char: '📧', name: 'E-Mail', cat: 'objects', tags: 'message communication inbox send' },
-    { char: '📝', name: 'Memo', cat: 'objects', tags: 'note write document paper pen' },
-    { char: '📄', name: 'Page Facing Up', cat: 'objects', tags: 'document sheet paper file text' },
-    { char: '📅', name: 'Calendar', cat: 'objects', tags: 'date schedule day time event' },
-    { char: '📊', name: 'Bar Chart', cat: 'objects', tags: 'graph stats analytics growth metrics' },
-    { char: '📈', name: 'Chart Increasing', cat: 'objects', tags: 'growth up stocks trend profit success' },
-    { char: '📉', name: 'Chart Decreasing', cat: 'objects', tags: 'decline down loss drop recession' },
-    { char: '💰', name: 'Money Bag', cat: 'objects', tags: 'dollar cash wealth finance rich' },
-    { char: '💳', name: 'Credit Card', cat: 'objects', tags: 'payment bank buy checkout purchase' },
-
-    // Symbols & Math
-    { char: '❤️', name: 'Red Heart', cat: 'symbols', tags: 'love affection passion favorite like' },
-    { char: '🧡', name: 'Orange Heart', cat: 'symbols', tags: 'love warm friendship' },
-    { char: '💛', name: 'Yellow Heart', cat: 'symbols', tags: 'friendship positive joy happiness' },
-    { char: '💚', name: 'Green Heart', cat: 'symbols', tags: 'nature eco health peace' },
-    { char: '💙', name: 'Blue Heart', cat: 'symbols', tags: 'trust loyalty calm cool' },
-    { char: '💜', name: 'Purple Heart', cat: 'symbols', tags: 'luxury royal wealth care' },
-    { char: '🖤', name: 'Black Heart', cat: 'symbols', tags: 'dark goth sorrow dark' },
-    { char: '🤍', name: 'White Heart', cat: 'symbols', tags: 'pure clean peace spiritual' },
-    { char: '💔', name: 'Broken Heart', cat: 'symbols', tags: 'sad breakup grief heartache hurt' },
-    { char: '💯', name: 'Hundred Points', cat: 'symbols', tags: '100 perfect score keep it 100 grade' },
-    { char: '✅', name: 'Check Mark Button', cat: 'symbols', tags: 'correct approved done verified success yes' },
-    { char: '✔️', name: 'Check Mark', cat: 'symbols', tags: 'check tick verified pass ok' },
-    { char: '❌', name: 'Cross Mark', cat: 'symbols', tags: 'wrong error no fail cancel reject' },
-    { char: '⚠️', name: 'Warning', cat: 'symbols', tags: 'caution alert danger caution risk' },
-    { char: '⛔', name: 'No Entry', cat: 'symbols', tags: 'stop forbidden access denied banned' },
-    { char: '🚫', name: 'Prohibited', cat: 'symbols', tags: 'no forbidden ban restrict' },
-    { char: 'ℹ️', name: 'Information', cat: 'symbols', tags: 'info details help about guide' },
-    { char: '❓', name: 'Question Mark', cat: 'symbols', tags: 'help doubt query ask question' },
-    { char: '❗', name: 'Exclamation Mark', cat: 'symbols', tags: 'alert attention warn notice priority' },
-    { char: '➕', name: 'Plus', cat: 'symbols', tags: 'math add positive increase sum' },
-    { char: '➖', name: 'Minus', cat: 'symbols', tags: 'math subtract negative reduce' },
-    { char: '✖️', name: 'Multiply', cat: 'symbols', tags: 'math times product math' },
-    { char: '➗', name: 'Divide', cat: 'symbols', tags: 'math division slash fraction' },
-    { char: '💲', name: 'Heavy Dollar Sign', cat: 'symbols', tags: 'money currency usd cost price' },
-
-    // Flags
-    { char: '🏁', name: 'Chequered Flag', cat: 'flags', tags: 'finish race speed competition' },
-    { char: '🚩', name: 'Triangular Flag', cat: 'flags', tags: 'red flag marker warning goal' },
-    { char: '🎌', name: 'Crossed Flags', cat: 'flags', tags: 'japan celebration holiday' },
-    { char: '🏴‍☠️', name: 'Pirate Flag', cat: 'flags', tags: 'jolly roger skull bones sailing' },
-    { char: '🏳️‍🌈', name: 'Rainbow Flag', cat: 'flags', tags: 'pride lgbt freedom equality' },
-    { char: '🇺🇸', name: 'Flag: United States', cat: 'flags', tags: 'usa america english stars stripes' },
-    { char: '🇬🇧', name: 'Flag: United Kingdom', cat: 'flags', tags: 'uk britain union jack london' },
-    { char: '🇧🇩', name: 'Flag: Bangladesh', cat: 'flags', tags: 'bangladesh dhaka biman red green' },
-    { char: '🇸🇦', name: 'Flag: Saudi Arabia', cat: 'flags', tags: 'saudi arabia riyadh makkah ksa' },
-    { char: '🇦🇪', name: 'Flag: United Arab Emirates', cat: 'flags', tags: 'uae dubai abu dhabi emirates' },
-    { char: '🇨🇦', name: 'Flag: Canada', cat: 'flags', tags: 'canada maple leaf ottawa' },
-    { char: '🇦🇺', name: 'Flag: Australia', cat: 'flags', tags: 'australia sydney canberra' },
-    { char: '🇩🇪', name: 'Flag: Germany', cat: 'flags', tags: 'germany berlin deutschland' },
-    { char: '🇫🇷', name: 'Flag: France', cat: 'flags', tags: 'france paris tricolor' },
-    { char: '🇯🇵', name: 'Flag: Japan', cat: 'flags', tags: 'japan tokyo rising sun nihon' },
-    { char: '🇮🇳', name: 'Flag: India', cat: 'flags', tags: 'india delhi tricolor' }
-  ];
-
-  let currentCategory = 'all';
-  let activeInspectedEmoji = emojiData[0];
-  let recents = JSON.parse(localStorage.getItem('recent_emojis_v1') || '[]');
-
-  function saveRecent(emoji) {
-    recents = recents.filter(e => e.char !== emoji.char);
-    recents.unshift(emoji);
-    if (recents.length > 18) recents.pop();
-    localStorage.setItem('recent_emojis_v1', JSON.stringify(recents));
-    renderRecents();
+  // Toast Helper
+  let toastTimer = null;
+  function showToast(msg) {
+    if (toastTimer) clearTimeout(toastTimer);
+    appToast.textContent = msg;
+    appToast.classList.add('show');
+    toastTimer = setTimeout(() => {
+      appToast.classList.remove('show');
+    }, 2000);
   }
 
-  function renderRecents() {
-    recentsList.innerHTML = '';
-    if (recents.length === 0) {
-      recentsList.innerHTML = '<span style="font-size: 0.8rem; color: var(--text-tertiary);">Click any emoji below to copy &amp; remember</span>';
+  // Get current glyph for emoji considering skin tone
+  function getGlyph(item) {
+    if (activeToneIndex > 0 && item.t && item.t[activeToneIndex - 1]) {
+      return item.t[activeToneIndex - 1];
+    }
+    return item.c;
+  }
+
+  // Save to Recents
+  function addToRecents(glyph, name, group) {
+    recentEmojis = recentEmojis.filter(r => r.c !== glyph);
+    recentEmojis.unshift({ c: glyph, n: name, g: group });
+    if (recentEmojis.length > 50) recentEmojis.pop();
+    localStorage.setItem('emoji_recent', JSON.stringify(recentEmojis));
+  }
+
+  // Toggle Favorite
+  function toggleFavorite(item) {
+    const glyph = getGlyph(item);
+    const idx = favoriteEmojis.findIndex(f => f.c === glyph || f.n === item.n);
+    if (idx > -1) {
+      favoriteEmojis.splice(idx, 1);
+      showToast('Removed from favorites');
+    } else {
+      favoriteEmojis.unshift({ c: glyph, n: item.n, g: item.g });
+      showToast('Added ' + glyph + ' to favorites!');
+    }
+    localStorage.setItem('emoji_favorites', JSON.stringify(favoriteEmojis));
+    updateInspector(item);
+    if (activeCategory === 'favorites') renderEmojis();
+  }
+
+  // Update Inspector Card
+  function updateInspector(item) {
+    selectedEmoji = item;
+    const glyph = getGlyph(item);
+    detailGlyph.textContent = glyph;
+    detailName.textContent = item.n;
+    
+    // Convert to code points
+    const codes = Array.from(glyph).map(ch => 'U+' + ch.codePointAt(0).toString(16).toUpperCase()).join(' ');
+    detailCode.textContent = codes + ' • ' + item.g;
+
+    const isFav = favoriteEmojis.some(f => f.c === glyph || f.n === item.n);
+    starSelectedBtn.textContent = isFav ? '⭐ Starred' : '☆ Star';
+    starSelectedBtn.classList.toggle('starred', isFav);
+  }
+
+  // Copy Emoji
+  function copyEmoji(item) {
+    const glyph = getGlyph(item);
+    navigator.clipboard.writeText(glyph).then(() => {
+      showToast('Copied ' + glyph + ' to clipboard!');
+    }).catch(() => {
+      showToast('Copied ' + glyph);
+    });
+
+    addToRecents(glyph, item.n, item.g);
+    updateInspector(item);
+
+    // Insert into scratchpad at cursor or append
+    const start = scratchpad.selectionStart;
+    const end = scratchpad.selectionEnd;
+    const val = scratchpad.value;
+    scratchpad.value = val.substring(0, start) + glyph + val.substring(end);
+    scratchpad.selectionStart = scratchpad.selectionEnd = start + glyph.length;
+    scratchpad.focus();
+    updateScratchMetrics();
+  }
+
+  // Update Scratchpad metrics
+  function updateScratchMetrics() {
+    const text = scratchpad.value;
+    const chars = text.length;
+    scratchMetrics.textContent = chars + ' chars';
+  }
+
+  scratchpad.addEventListener('input', updateScratchMetrics);
+
+  // Copy Scratchpad text
+  copyScratchpadBtn.addEventListener('click', () => {
+    const val = scratchpad.value;
+    if (!val) {
+      showToast('Scratchpad is empty');
       return;
     }
-    recents.forEach(r => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'emoji-btn';
-      btn.textContent = r.char;
-      btn.title = r.name;
-      btn.addEventListener('click', () => {
-        copyEmoji(r);
-      });
-      recentsList.appendChild(btn);
+    navigator.clipboard.writeText(val).then(() => {
+      showToast('Copied message from scratchpad!');
     });
-  }
+  });
 
-  function inspect(emoji) {
-    activeInspectedEmoji = emoji;
-    inspectGlyph.textContent = emoji.char;
-    inspectName.textContent = emoji.name;
-    const codePoint = emoji.char.codePointAt(0).toString(16).toUpperCase();
-    inspectCode.textContent = `U+${codePoint}`;
-  }
+  clearScratchpadBtn.addEventListener('click', () => {
+    scratchpad.value = '';
+    updateScratchMetrics();
+    showToast('Scratchpad cleared');
+  });
 
-  function copyEmoji(emoji) {
-    inspect(emoji);
-    saveRecent(emoji);
-    navigator.clipboard.writeText(emoji.char).then(() => {
-      btnCopyInspected.textContent = `✅ Copied "${emoji.char}"!`;
-      setTimeout(() => {
-        btnCopyInspected.textContent = '📋 Copy Emoji to Clipboard';
-      }, 1500);
+  copySelectedBtn.addEventListener('click', () => {
+    copyEmoji(selectedEmoji);
+  });
+
+  starSelectedBtn.addEventListener('click', () => {
+    toggleFavorite(selectedEmoji);
+  });
+
+  // Skin Tone Click
+  toneSwatches.forEach(swatch => {
+    swatch.addEventListener('click', () => {
+      toneSwatches.forEach(s => s.classList.remove('active'));
+      swatch.classList.add('active');
+      activeToneIndex = parseInt(swatch.dataset.tone, 10);
+      updateInspector(selectedEmoji);
+      renderEmojis();
     });
-  }
+  });
 
-  function filterEmojis() {
-    const query = searchInput.value.toLowerCase().trim();
-    let filtered = emojiData;
+  // Category Tabs Click
+  document.querySelectorAll('.cat-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.cat-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeCategory = btn.dataset.cat;
+      renderEmojis();
+    });
+  });
 
-    if (currentCategory !== 'all') {
-      filtered = filtered.filter(e => e.cat === currentCategory);
-    }
+  // Search Input
+  searchInput.addEventListener('input', (e) => {
+    searchQuery = e.target.value.trim().toLowerCase();
+    renderEmojis();
+  });
 
-    if (query) {
-      filtered = filtered.filter(e => {
-        return e.name.toLowerCase().includes(query) ||
-               e.tags.toLowerCase().includes(query) ||
-               e.char.includes(query);
-      });
-    }
+  // Render Emojis
+  function renderEmojis() {
+    emojiScrollArea.innerHTML = '';
 
-    renderGrid(filtered);
-  }
-
-  function renderGrid(emojis) {
-    emojiGrid.innerHTML = '';
-    emojiCountBadge.textContent = `${emojis.length} emojis found`;
-
-    if (emojis.length === 0) {
-      emojiGrid.innerHTML = '<div style="grid-column: 1 / -1; padding: 2rem; text-align: center; color: var(--text-tertiary);">No emojis found matching your query.</div>';
+    // Handle Recent tab
+    if (activeCategory === 'recent') {
+      const section = document.createElement('div');
+      section.className = 'emoji-category-section';
+      section.innerHTML = '<div class="emoji-section-title"><span>🕒 Recently Used (' + recentEmojis.length + ')</span></div>';
+      
+      if (recentEmojis.length === 0) {
+        section.innerHTML += '<p style="color: var(--text-secondary); font-size: 0.85rem; padding: 1rem 0;">No recently used emojis yet. Click any emoji to start using it!</p>';
+      } else {
+        const grid = document.createElement('div');
+        grid.className = 'emoji-grid';
+        recentEmojis.forEach(r => {
+          const cell = document.createElement('div');
+          cell.className = 'emoji-cell';
+          cell.textContent = r.c;
+          cell.title = r.n;
+          cell.addEventListener('click', () => copyEmoji({ c: r.c, n: r.n, g: r.g }));
+          grid.appendChild(cell);
+        });
+        section.appendChild(grid);
+      }
+      emojiScrollArea.appendChild(section);
       return;
     }
 
-    emojis.forEach(e => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'emoji-btn';
-      btn.textContent = e.char;
-      btn.title = `${e.name} (Click to copy)`;
-      btn.addEventListener('click', () => copyEmoji(e));
-      btn.addEventListener('mouseenter', () => inspect(e));
-      emojiGrid.appendChild(btn);
+    // Handle Favorites tab
+    if (activeCategory === 'favorites') {
+      const section = document.createElement('div');
+      section.className = 'emoji-category-section';
+      section.innerHTML = '<div class="emoji-section-title"><span>⭐ Favorites (' + favoriteEmojis.length + ')</span></div>';
+      
+      if (favoriteEmojis.length === 0) {
+        section.innerHTML += '<p style="color: var(--text-secondary); font-size: 0.85rem; padding: 1rem 0;">No favorite emojis saved yet. Click the Star button or right-click any emoji to save!</p>';
+      } else {
+        const grid = document.createElement('div');
+        grid.className = 'emoji-grid';
+        favoriteEmojis.forEach(f => {
+          const cell = document.createElement('div');
+          cell.className = 'emoji-cell';
+          cell.textContent = f.c;
+          cell.title = f.n;
+          cell.addEventListener('click', () => copyEmoji({ c: f.c, n: f.n, g: f.g }));
+          grid.appendChild(cell);
+        });
+        section.appendChild(grid);
+      }
+      emojiScrollArea.appendChild(section);
+      return;
+    }
+
+    // Standard / All / Group Filtering
+    const groupsOrder = [
+      'Smileys & Emotion',
+      'People & Body',
+      'Animals & Nature',
+      'Food & Drink',
+      'Travel & Places',
+      'Activities',
+      'Objects',
+      'Symbols',
+      'Flags'
+    ];
+
+    const targetGroups = activeCategory === 'all' 
+      ? groupsOrder 
+      : groupsOrder.filter(g => g === activeCategory);
+
+    let totalMatches = 0;
+
+    targetGroups.forEach(grp => {
+      let items = EMOJI_DATA.filter(e => e.g === grp);
+      if (searchQuery) {
+        items = items.filter(e => e.n.toLowerCase().includes(searchQuery));
+      }
+
+      if (items.length === 0) return;
+      totalMatches += items.length;
+
+      const section = document.createElement('div');
+      section.className = 'emoji-category-section';
+
+      const title = document.createElement('div');
+      title.className = 'emoji-section-title';
+      title.innerHTML = '<span>' + grp + '</span><span style="font-size: 0.75rem; color: var(--text-tertiary);">' + items.length + '</span>';
+      section.appendChild(title);
+
+      const grid = document.createElement('div');
+      grid.className = 'emoji-grid';
+
+      items.forEach(item => {
+        const glyph = getGlyph(item);
+        const cell = document.createElement('div');
+        cell.className = 'emoji-cell';
+        cell.textContent = glyph;
+        cell.title = item.n;
+
+        cell.addEventListener('click', () => {
+          copyEmoji(item);
+        });
+
+        cell.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          toggleFavorite(item);
+        });
+
+        grid.appendChild(cell);
+      });
+
+      section.appendChild(grid);
+      emojiScrollArea.appendChild(section);
     });
+
+    if (totalMatches === 0) {
+      emojiScrollArea.innerHTML = '<div style="text-align: center; padding: 3rem 1rem; color: var(--text-secondary);">' +
+        '<svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 0.5rem;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>' +
+        '<p>No emojis found matching "' + searchQuery + '". Try another search keyword!</p></div>';
+    }
   }
 
-  // Listeners
-  searchInput.addEventListener('input', filterEmojis);
-  btnClearSearch.addEventListener('click', () => {
-    searchInput.value = '';
-    filterEmojis();
-    searchInput.focus();
-  });
-
-  categoryPills.forEach(pill => {
-    pill.addEventListener('click', () => {
-      categoryPills.forEach(p => p.classList.remove('active'));
-      pill.classList.add('active');
-      currentCategory = pill.getAttribute('data-cat');
-      categoryHeading.textContent = pill.textContent.trim();
-      filterEmojis();
-    });
-  });
-
-  btnCopyInspected.addEventListener('click', () => {
-    if (activeInspectedEmoji) {
-      copyEmoji(activeInspectedEmoji);
-    }
-  });
-
-  // Initial load
-  renderRecents();
-  filterEmojis();
-  inspect(emojiData[0]);
+  // Initialize
+  updateInspector(selectedEmoji);
+  renderEmojis();
 });

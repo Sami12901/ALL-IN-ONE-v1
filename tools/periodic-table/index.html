@@ -3,37 +3,268 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Periodic Table Explorer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Interactive database of chemical element guides.">
-  <meta name="keywords" content="periodic, table, elements, chemistry, science, free, online, tool, utility">
+  <title>Interactive Periodic Table of Elements (118) - ALL IN ONE</title>
+  <meta name="description" content="Explore all 118 chemical elements with an interactive periodic table. Filter by category, state of matter, temperature slider, electron configurations, and physical properties.">
+  <meta name="keywords" content="periodic table, chemistry, elements, atomic number, electron configuration, atomic weight, metals, noble gases">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/periodic-table/">
 
-  <!-- Open Graph / Facebook -->
+  <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/periodic-table/">
-  <meta property="og:title" content="Periodic Table Explorer - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Interactive database of chemical element guides.">
+  <meta property="og:title" content="Interactive Periodic Table of Elements - ALL IN ONE">
+  <meta property="og:description" content="Interactive 118-element periodic table with categories, live temperature state simulator, and detailed properties drawer.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:width" content="512">
-  <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="Periodic Table Explorer - ALL IN ONE">
-  <meta property="og:locale" content="en_US">
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/periodic-table/">
-  <meta name="twitter:title" content="Periodic Table Explorer - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Interactive database of chemical element guides.">
-  <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="Periodic Table Explorer - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Periodic Table Grid Container */
+    .table-scroll-stage {
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 1rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .ptable-grid {
+      display: grid;
+      grid-template-columns: repeat(18, minmax(62px, 1fr));
+      grid-template-rows: repeat(10, minmax(68px, 1fr));
+      gap: 5px;
+      min-width: 1150px;
+    }
+
+    /* Element Card Cell */
+    .element-cell {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.2s ease, border-color 0.15s ease;
+      font-family: var(--font-sans);
+    }
+
+    .element-cell:hover {
+      transform: scale(1.1);
+      z-index: 10;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      border-color: #ffffff;
+    }
+
+    .element-cell.dimmed {
+      opacity: 0.18;
+      filter: grayscale(80%);
+    }
+
+    .element-cell.highlighted {
+      box-shadow: 0 0 12px var(--accent);
+      border-color: var(--accent);
+    }
+
+    .el-num {
+      font-size: 0.65rem;
+      color: var(--text-tertiary);
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .el-sym {
+      font-size: 1.25rem;
+      font-weight: 800;
+      text-align: center;
+      line-height: 1.1;
+      color: var(--text-primary);
+    }
+
+    .el-name {
+      font-size: 0.62rem;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--text-secondary);
+    }
+
+    .el-mass {
+      font-size: 0.58rem;
+      text-align: center;
+      color: var(--text-tertiary);
+      font-family: monospace;
+      line-height: 1;
+    }
+
+    .el-state-indicator {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .state-solid { background: #3b82f6; }
+    .state-liquid { background: #10b981; }
+    .state-gas { background: #ef4444; }
+    .state-unknown { background: #9ca3af; }
+
+    /* Category Color Themes */
+    .cat-alkali-metal { background: rgba(239, 68, 68, 0.14); border-color: rgba(239, 68, 68, 0.35); }
+    .cat-alkaline-earth { background: rgba(249, 115, 22, 0.14); border-color: rgba(249, 115, 22, 0.35); }
+    .cat-transition-metal { background: rgba(234, 179, 8, 0.14); border-color: rgba(234, 179, 8, 0.35); }
+    .cat-post-transition { background: rgba(16, 185, 129, 0.14); border-color: rgba(16, 185, 129, 0.35); }
+    .cat-metalloid { background: rgba(20, 184, 166, 0.14); border-color: rgba(20, 184, 166, 0.35); }
+    .cat-reactive-nonmetal { background: rgba(14, 165, 233, 0.14); border-color: rgba(14, 165, 233, 0.35); }
+    .cat-noble-gas { background: rgba(168, 85, 247, 0.14); border-color: rgba(168, 85, 247, 0.35); }
+    .cat-halogen { background: rgba(236, 72, 153, 0.14); border-color: rgba(236, 72, 153, 0.35); }
+    .cat-lanthanide { background: rgba(99, 102, 241, 0.14); border-color: rgba(99, 102, 241, 0.35); }
+    .cat-actinide { background: rgba(244, 63, 94, 0.14); border-color: rgba(244, 63, 94, 0.35); }
+    .cat-unknown { background: rgba(156, 163, 175, 0.1); border-color: rgba(156, 163, 175, 0.25); }
+
+    /* Filter Chips Bar */
+    .cat-legend-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .cat-legend-chip {
+      font-size: 0.75rem;
+      padding: 0.3rem 0.65rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: var(--transition);
+    }
+
+    .cat-legend-chip:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+
+    .cat-legend-chip.active {
+      background: var(--surface);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 700;
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .legend-color-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* Modal / Drawer */
+    .el-modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .el-modal-backdrop.open {
+      display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .el-modal-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      max-width: 640px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 2rem;
+      position: relative;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .modal-close-btn:hover {
+      background: var(--surface);
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+
+    .modal-props-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin: 1.25rem 0;
+    }
+
+    .modal-prop-item {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .prop-name {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+    }
+
+    .prop-val {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: monospace;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -48,31 +279,130 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Periodic Table Explorer</h1>
-        <p class="tool-description">Interactive database of chemical element guides.</p>
-      </div>
-
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Periodic Table Explorer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Interactive database of chemical element guides.</div>
-            <div><strong>Inputs:</strong> periodic, table, elements, chemistry, science</div>
-            <div><strong>Category:</strong> student</div>
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+          <div>
+            <h1>Periodic Table Explorer</h1>
+            <p class="tool-description">Interactive chemistry workbench of all 118 elements with electron shells, thermodynamic melting/boiling points, and physical properties.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <input type="text" id="el-search-input" class="form-input" placeholder="Search name, symbol, or #..." style="width: 220px; padding: 0.45rem 0.75rem; font-size: 0.85rem;">
+            <button class="btn btn-outline" id="btn-reset-filters" style="padding: 0.45rem 0.75rem; font-size: 0.85rem;">Reset</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- Controls & Temperature Simulator -->
+      <div class="tool-panel glass-panel" style="padding: 1rem 1.25rem;">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;">
+          
+          <!-- State Filter -->
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">State:</span>
+            <button class="preset-chip active" data-state="all">All</button>
+            <button class="preset-chip" data-state="Solid"><span class="legend-color-dot state-solid" style="display:inline-block; margin-right:4px;"></span>Solid</button>
+            <button class="preset-chip" data-state="Liquid"><span class="legend-color-dot state-liquid" style="display:inline-block; margin-right:4px;"></span>Liquid</button>
+            <button class="preset-chip" data-state="Gas"><span class="legend-color-dot state-gas" style="display:inline-block; margin-right:4px;"></span>Gas</button>
+          </div>
+
+          <!-- Live Temperature Slider -->
+          <div style="display: flex; align-items: center; gap: 0.75rem; min-width: 280px; flex: 1; max-width: 500px;">
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); white-space: nowrap;">
+              Temp: <strong id="disp-temp-val" style="color: var(--accent); font-family: monospace;">298 K (25 &deg;C)</strong>
+            </span>
+            <input type="range" id="temp-slider" class="range-slider" min="0" max="6000" step="10" value="298">
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Category Filter Legend Chips -->
+      <div class="cat-legend-bar" id="category-chips">
+        <button class="cat-legend-chip active" data-cat="all">All Categories</button>
+        <button class="cat-legend-chip" data-cat="alkali-metal"><span class="legend-color-dot" style="background:#ef4444;"></span>Alkali Metals</button>
+        <button class="cat-legend-chip" data-cat="alkaline-earth"><span class="legend-color-dot" style="background:#f97316;"></span>Alkaline Earth</button>
+        <button class="cat-legend-chip" data-cat="transition-metal"><span class="legend-color-dot" style="background:#eab308;"></span>Transition Metals</button>
+        <button class="cat-legend-chip" data-cat="post-transition"><span class="legend-color-dot" style="background:#10b981;"></span>Post-Transition</button>
+        <button class="cat-legend-chip" data-cat="metalloid"><span class="legend-color-dot" style="background:#14b8a6;"></span>Metalloids</button>
+        <button class="cat-legend-chip" data-cat="reactive-nonmetal"><span class="legend-color-dot" style="background:#0ea5e9;"></span>Reactive Nonmetals</button>
+        <button class="cat-legend-chip" data-cat="halogen"><span class="legend-color-dot" style="background:#ec4899;"></span>Halogens</button>
+        <button class="cat-legend-chip" data-cat="noble-gas"><span class="legend-color-dot" style="background:#a855f7;"></span>Noble Gases</button>
+        <button class="cat-legend-chip" data-cat="lanthanide"><span class="legend-color-dot" style="background:#6366f1;"></span>Lanthanides</button>
+        <button class="cat-legend-chip" data-cat="actinide"><span class="legend-color-dot" style="background:#f43f5e;"></span>Actinides</button>
+      </div>
+
+      <!-- Periodic Table Grid Stage -->
+      <div class="table-scroll-stage">
+        <div class="ptable-grid" id="ptable-grid">
+          <!-- 118 Element cells injected by JS -->
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- Element Detail Modal -->
+  <div class="el-modal-backdrop" id="element-modal">
+    <div class="el-modal-card">
+      <button class="modal-close-btn" id="modal-close" aria-label="Close Modal">&times;</button>
+      
+      <div style="display: flex; align-items: flex-start; gap: 1.25rem;">
+        <div style="width: 80px; height: 88px; background: var(--bg-tertiary); border: 2px solid var(--accent); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0;" id="modal-sym-box">
+          <span style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1;" id="modal-atomic-num">79</span>
+          <span style="font-size: 2.2rem; font-weight: 800; color: var(--text-primary); line-height: 1;" id="modal-symbol">Au</span>
+        </div>
+        <div>
+          <h2 style="font-size: 1.75rem; margin-bottom: 0.25rem;" id="modal-name">Gold</h2>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
+            <span class="honor-badge honor-cum" id="modal-category">Transition Metal</span>
+            <span style="font-size: 0.8rem; color: var(--text-secondary);" id="modal-state-room">Solid at 298 K</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-props-grid">
+        <div class="modal-prop-item">
+          <span class="prop-name">Atomic Weight</span>
+          <span class="prop-val" id="modal-weight">196.97 u</span>
+        </div>
+        <div class="modal-prop-item">
+          <span class="prop-name">Electron Configuration</span>
+          <span class="prop-val" id="modal-electron" style="font-size: 0.8rem;">[Xe] 4f¹⁴ 5d¹⁰ 6s¹</span>
+        </div>
+        <div class="modal-prop-item">
+          <span class="prop-name">Melting Point</span>
+          <span class="prop-val" id="modal-melt">1337 K (1064 &deg;C)</span>
+        </div>
+        <div class="modal-prop-item">
+          <span class="prop-name">Boiling Point</span>
+          <span class="prop-val" id="modal-boil">3243 K (2970 &deg;C)</span>
+        </div>
+        <div class="modal-prop-item">
+          <span class="prop-name">Density</span>
+          <span class="prop-val" id="modal-density">19.3 g/cm&sup3;</span>
+        </div>
+        <div class="modal-prop-item">
+          <span class="prop-name">Electronegativity</span>
+          <span class="prop-val" id="modal-electro">2.54 Pauling</span>
+        </div>
+        <div class="modal-prop-item">
+          <span class="prop-name">Period / Group / Block</span>
+          <span class="prop-val" id="modal-grid-pos">Period 6, Group 11 (d)</span>
+        </div>
+        <div class="modal-prop-item">
+          <span class="prop-name">Discovered</span>
+          <span class="prop-val" id="modal-discover">Ancient (~3000 BCE)</span>
+        </div>
+      </div>
+
+      <div style="margin-top: 1rem;">
+        <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-tertiary); font-weight: 700; display: block; margin-bottom: 0.35rem;">Overview &amp; Uses:</span>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;" id="modal-summary">
+          Gold is a dense, soft, malleable transition metal and chemical element with symbol Au and atomic number 79. It is widely used in jewelry, electronics, and monetary reserves.
+        </p>
+      </div>
+
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -84,7 +414,7 @@
     "@type": "WebApplication",
     "name": "Periodic Table Explorer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/periodic-table/",
-    "description": "Interactive database of chemical element guides.",
+    "description": "Interactive periodic table of 118 elements with properties, electron configurations, and thermal simulator.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

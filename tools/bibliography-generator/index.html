@@ -3,37 +3,156 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bibliography Citation Builder - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="APA, MLA, and Chicago reference formatter.">
-  <meta name="keywords" content="bibliography, citation, apa, mla, chicago, free, online, tool, utility">
+  <title>Bibliography & Citation Generator - APA, MLA, Chicago, Harvard, IEEE - ALL IN ONE</title>
+  <meta name="description" content="Generate accurate academic citations in APA 7th, MLA 9th, Chicago 17th, Harvard, and IEEE styles for books, journal articles, websites, and conference papers.">
+  <meta name="keywords" content="bibliography generator, citation generator, apa 7th, mla 9th, chicago style, harvard citation, ieee citation, academic reference creator">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/bibliography-generator/">
 
-  <!-- Open Graph / Facebook -->
+  <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/bibliography-generator/">
-  <meta property="og:title" content="Bibliography Citation Builder - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="APA, MLA, and Chicago reference formatter.">
+  <meta property="og:title" content="Bibliography & Citation Generator - Free Academic Tool - ALL IN ONE">
+  <meta property="og:description" content="APA 7th, MLA 9th, Chicago 17th, Harvard, and IEEE citation and reference list generator.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:width" content="512">
-  <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="Bibliography Citation Builder - ALL IN ONE">
-  <meta property="og:locale" content="en_US">
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/bibliography-generator/">
-  <meta name="twitter:title" content="Bibliography Citation Builder - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="APA, MLA, and Chicago reference formatter.">
-  <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="Bibliography Citation Builder - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .style-pill-selector {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .style-pill {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .style-pill:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    .style-pill.active {
+      background: var(--accent-gradient);
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    .source-type-tabs {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.25rem;
+      overflow-x: auto;
+    }
+
+    .source-tab-btn {
+      padding: 0.5rem 0.85rem;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .source-tab-btn.active {
+      background: var(--bg-tertiary);
+      border-color: var(--border);
+      color: var(--text-primary);
+    }
+
+    .citation-preview-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      position: relative;
+    }
+
+    .citation-hanging-indent {
+      padding-left: 2rem;
+      text-indent: -2rem;
+      line-height: 1.75;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      word-break: break-word;
+    }
+
+    .citation-hanging-indent em {
+      font-style: italic;
+      color: var(--text-primary);
+    }
+
+    .intext-preview-box {
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .authors-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .author-entry-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .bib-item-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.75rem;
+      position: relative;
+      transition: var(--transition);
+    }
+
+    .bib-item-card:hover {
+      border-color: var(--accent);
+    }
+
+    .bib-item-actions {
+      display: flex;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+      justify-content: flex-end;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -48,29 +167,233 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Bibliography Citation Builder</h1>
-        <p class="tool-description">APA, MLA, and Chicago reference formatter.</p>
-      </div>
-
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Bibliography Citation Builder</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> APA, MLA, and Chicago reference formatter.</div>
-            <div><strong>Inputs:</strong> bibliography, citation, apa, mla, chicago</div>
-            <div><strong>Category:</strong> student</div>
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+          <div>
+            <h1>Bibliography &amp; Citation Generator</h1>
+            <p class="tool-description">Create verified citations in APA 7th, MLA 9th, Chicago 17th, Harvard, and IEEE styles with hanging indent previews, BibTeX export, and bibliography list management.</p>
+          </div>
+          <div class="presets-bar" style="margin: 0;">
+            <button class="preset-chip" id="preset-book-sample">Sample Book</button>
+            <button class="preset-chip" id="preset-journal-sample">Sample Journal</button>
+            <button class="preset-chip" id="preset-web-sample">Sample Website</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- Citation Style Selector -->
+      <div class="style-pill-selector" id="style-selector">
+        <button class="style-pill active" data-style="apa">APA 7th Edition</button>
+        <button class="style-pill" data-style="mla">MLA 9th Edition</button>
+        <button class="style-pill" data-style="chicago">Chicago 17th (Author-Date)</button>
+        <button class="style-pill" data-style="harvard">Harvard Style</button>
+        <button class="style-pill" data-style="ieee">IEEE Style</button>
+      </div>
+
+      <!-- Workarea Grid -->
+      <div class="tool-workarea split-view">
+        <!-- Form Left Panel -->
+        <div class="tool-panel glass-panel">
+          
+          <!-- Source Type Tabs -->
+          <div class="source-type-tabs" id="source-tabs">
+            <button class="source-tab-btn active" data-source="book">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+              Book
+            </button>
+            <button class="source-tab-btn" data-source="journal">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              Journal Article
+            </button>
+            <button class="source-tab-btn" data-source="website">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+              Website
+            </button>
+            <button class="source-tab-btn" data-source="conference">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              Conference Paper
+            </button>
+          </div>
+
+          <!-- Authors Section -->
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label>Authors / Contributors:</label>
+              <button class="btn btn-outline" id="btn-add-author" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">+ Add Author</button>
+            </div>
+            <div class="authors-list" id="authors-container">
+              <!-- Dynamically populated author inputs -->
+            </div>
+          </div>
+
+          <!-- Common Fields -->
+          <div class="form-group">
+            <label for="inp-title" id="lbl-title">Source Title:</label>
+            <input type="text" id="inp-title" class="form-input" placeholder="e.g. Artificial Intelligence: A Modern Approach" value="Artificial Intelligence: A Modern Approach">
+          </div>
+
+          <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div>
+              <label for="inp-year">Publication Year:</label>
+              <input type="text" id="inp-year" class="form-input" placeholder="e.g. 2021" value="2021">
+            </div>
+            <div id="field-edition-container">
+              <label for="inp-edition">Edition (Optional):</label>
+              <input type="text" id="inp-edition" class="form-input" placeholder="e.g. 4th ed." value="4th ed.">
+            </div>
+          </div>
+
+          <!-- Source Specific Fields -->
+          <!-- Book Fields -->
+          <div id="group-book-fields">
+            <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div>
+                <label for="inp-publisher">Publisher:</label>
+                <input type="text" id="inp-publisher" class="form-input" placeholder="e.g. Pearson" value="Pearson">
+              </div>
+              <div>
+                <label for="inp-city">City / Location (Optional):</label>
+                <input type="text" id="inp-city" class="form-input" placeholder="e.g. Hoboken, NJ">
+              </div>
+            </div>
+          </div>
+
+          <!-- Journal Fields -->
+          <div id="group-journal-fields" style="display: none;">
+            <div class="form-group">
+              <label for="inp-journal-name">Journal Name:</label>
+              <input type="text" id="inp-journal-name" class="form-input" placeholder="e.g. Nature Machine Intelligence">
+            </div>
+            <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem;">
+              <div>
+                <label for="inp-vol">Volume:</label>
+                <input type="text" id="inp-vol" class="form-input" placeholder="e.g. 3">
+              </div>
+              <div>
+                <label for="inp-issue">Issue:</label>
+                <input type="text" id="inp-issue" class="form-input" placeholder="e.g. 4">
+              </div>
+              <div>
+                <label for="inp-pages">Pages:</label>
+                <input type="text" id="inp-pages" class="form-input" placeholder="e.g. 210-225">
+              </div>
+            </div>
+          </div>
+
+          <!-- Website Fields -->
+          <div id="group-website-fields" style="display: none;">
+            <div class="form-group">
+              <label for="inp-site-name">Website Name:</label>
+              <input type="text" id="inp-site-name" class="form-input" placeholder="e.g. MIT Technology Review">
+            </div>
+            <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div>
+                <label for="inp-pub-date">Publication Date:</label>
+                <input type="text" id="inp-pub-date" class="form-input" placeholder="e.g. 15 March 2023">
+              </div>
+              <div>
+                <label for="inp-access-date">Access Date:</label>
+                <input type="text" id="inp-access-date" class="form-input" placeholder="e.g. 4 October 2026">
+              </div>
+            </div>
+          </div>
+
+          <!-- Conference Fields -->
+          <div id="group-conference-fields" style="display: none;">
+            <div class="form-group">
+              <label for="inp-conf-name">Conference / Proceedings Name:</label>
+              <input type="text" id="inp-conf-name" class="form-input" placeholder="e.g. Proceedings of the 38th International Conference on Machine Learning">
+            </div>
+            <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div>
+                <label for="inp-conf-loc">Conference Location:</label>
+                <input type="text" id="inp-conf-loc" class="form-input" placeholder="e.g. Vienna, Austria">
+              </div>
+              <div>
+                <label for="inp-conf-pages">Proceedings Pages:</label>
+                <input type="text" id="inp-conf-pages" class="form-input" placeholder="e.g. 450-462">
+              </div>
+            </div>
+          </div>
+
+          <!-- Universal URL / DOI Field -->
+          <div class="form-group">
+            <label for="inp-doi-url">DOI or URL:</label>
+            <input type="text" id="inp-doi-url" class="form-input" placeholder="e.g. https://doi.org/10.1007/... or https://...">
+          </div>
+
+          <div class="action-bar" style="margin-top: 1rem;">
+            <button class="btn btn-primary" id="btn-add-to-bib" style="flex: 1;">
+              + Add to Bibliography List
+            </button>
+            <button class="btn btn-outline" id="btn-clear-fields">Clear</button>
+          </div>
+        </div>
+
+        <!-- Output & Bibliography List Right Panel -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title" style="justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Formatted Citation Preview</span>
+            </div>
+            <span id="style-name-badge" style="font-size: 0.8rem; color: var(--accent); font-weight: 700;">APA 7th</span>
+          </div>
+
+          <!-- Full Reference Preview Box -->
+          <div class="citation-preview-box">
+            <div class="citation-hanging-indent" id="disp-citation-output">
+              Russell, S., &amp; Norvig, P. (2021). <em>Artificial Intelligence: A Modern Approach</em> (4th ed.). Pearson.
+            </div>
+            <div class="action-bar" style="margin-top: 1rem;">
+              <button class="btn btn-secondary" id="btn-copy-rich">
+                Copy Formatted (Rich Text)
+              </button>
+              <button class="btn btn-secondary" id="btn-copy-plain">
+                Copy Plain Text
+              </button>
+            </div>
+          </div>
+
+          <!-- In-Text Citation Box -->
+          <div class="intext-preview-box">
+            <div>
+              <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-tertiary); font-weight: 600; display: block;">In-Text Citation:</span>
+              <strong style="font-family: monospace; font-size: 0.95rem; color: var(--text-primary);" id="disp-intext-output">(Russell &amp; Norvig, 2021)</strong>
+            </div>
+            <button class="btn btn-outline" id="btn-copy-intext" style="font-size: 0.8rem; padding: 0.35rem 0.65rem;">Copy</button>
+          </div>
+
+          <!-- Bibliography List Builder -->
+          <div style="margin-top: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                <span style="font-weight: 700; color: var(--text-primary); font-size: 0.95rem;">Bibliography List</span>
+                <span id="bib-count-badge" style="font-size: 0.75rem; background: var(--bg-tertiary); padding: 0.2rem 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">1 reference</span>
+              </div>
+              <div style="display: flex; gap: 0.4rem;">
+                <button class="btn btn-secondary" id="btn-sort-bib" style="font-size: 0.8rem; padding: 0.3rem 0.6rem;">Sort A-Z</button>
+                <button class="btn btn-outline" id="btn-clear-bib" style="font-size: 0.8rem; padding: 0.3rem 0.6rem;">Clear List</button>
+              </div>
+            </div>
+
+            <div id="bibliography-items-list">
+              <!-- Dynamically rendered list cards -->
+            </div>
+
+            <div class="action-bar" style="margin-top: 0.75rem; justify-content: space-between;">
+              <button class="btn btn-primary" id="btn-copy-all-bib" style="font-size: 0.85rem;">
+                Copy Entire Bibliography
+              </button>
+              <div style="display: flex; gap: 0.4rem;">
+                <button class="btn btn-secondary" id="btn-export-bibtex" style="font-size: 0.85rem;">Export .bib</button>
+                <button class="btn btn-secondary" id="btn-export-txt" style="font-size: 0.85rem;">Export .txt</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </div>
   </main>
 
@@ -82,9 +405,9 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Bibliography Citation Builder",
+    "name": "Bibliography & Citation Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/bibliography-generator/",
-    "description": "APA, MLA, and Chicago reference formatter.",
+    "description": "Format academic references in APA 7th, MLA 9th, Chicago, Harvard, and IEEE styles with hanging indent preview and BibTeX export.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
