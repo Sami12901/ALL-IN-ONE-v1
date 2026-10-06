@@ -4,14 +4,402 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tour Package Builder - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Build and price comprehensive tour packages.">
-  <meta name="keywords" content="tour, package, itinerary, free, online, tool, utility">
+  <meta name="description" content="Build, price, and structure profitable travel agency tour packages. Calculate line item costs, agency markup, per-person pricing, and export printable client tour proposals.">
+  <meta name="keywords" content="tour package builder, travel agency pricing, tour operator calculator, tour markup, travel quotation, per person price, itinerary cost">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/tour-package-builder/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .tour-builder-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .tour-builder-layout {
+        grid-template-columns: 1.15fr 1fr;
+        align-items: start;
+      }
+    }
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.85rem;
+    }
+    @media (min-width: 576px) {
+      .form-grid-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .input-affix-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-affix-prefix {
+      position: absolute;
+      left: 0.85rem;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      pointer-events: none;
+      font-size: 0.95rem;
+      user-select: none;
+    }
+    .input-affix-wrap.has-prefix input {
+      padding-left: 2rem;
+    }
+    .currency-pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .curr-pill {
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      border-radius: var(--radius-full);
+      padding: 0.3rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .curr-pill:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+    .curr-pill.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+    .preset-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 0.5rem;
+    }
+    .preset-pill {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-full);
+      padding: 0.3rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .preset-pill:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .slider-container {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .slider-header label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .slider-badge {
+      font-family: monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--bg-secondary);
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.5rem;
+    }
+    .chip-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-full);
+      padding: 0.2rem 0.6rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .chip-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .line-item-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+    @media (min-width: 576px) {
+      .line-item-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .line-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+    .line-card:hover {
+      border-color: var(--border-hover, rgba(255,255,255,0.2));
+    }
+    .line-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .line-icon {
+      color: var(--accent);
+      display: flex;
+    }
+    .hero-pricing-card {
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.15), rgba(137, 170, 204, 0.05));
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+    .hero-price-tag {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .hero-price-val {
+      font-size: clamp(2.2rem, 5vw, 3rem);
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.1;
+      margin: 0.35rem 0;
+      letter-spacing: -0.02em;
+    }
+    .hero-sub-stats {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      flex-wrap: wrap;
+    }
+    .kpi-row-4 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    @media (min-width: 576px) {
+      .kpi-row-4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    .kpi-mini-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem;
+      text-align: center;
+    }
+    .kpi-mini-card .kpi-label {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .kpi-mini-card .kpi-val {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-top: 0.2rem;
+    }
+    .breakdown-bar-wrap {
+      margin: 1.25rem 0 0.75rem;
+    }
+    .stacked-bar {
+      height: 12px;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      overflow: hidden;
+      display: flex;
+      border: 1px solid var(--border);
+    }
+    .bar-seg {
+      height: 100%;
+      transition: width 0.4s ease;
+    }
+    .bar-seg-acc { background: #4e85bf; }
+    .bar-seg-tra { background: #38bdf8; }
+    .bar-seg-act { background: #f59e0b; }
+    .bar-seg-mea { background: #10b981; }
+    .bar-seg-gui { background: #8b5cf6; }
+    .bar-seg-ove { background: #ec4899; }
+    .bar-seg-mar { background: #06b6d4; }
+    .bar-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 0.6rem;
+      font-size: 0.72rem;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--text-secondary);
+    }
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .proposal-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+    .proposal-table th {
+      text-align: left;
+      padding: 0.6rem 0.5rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+    }
+    .proposal-table td {
+      padding: 0.6rem 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+    }
+    .proposal-table tr.total-row td {
+      border-top: 2px solid var(--accent);
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
+    }
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-backdrop.active {
+      display: flex;
+    }
+    .modal-paper {
+      background: var(--surface);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      max-width: 720px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 2.25rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+    .toast-pill {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      color: var(--text-primary);
+      border: 1px solid var(--accent);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      z-index: 1100;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+    .toast-pill.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      app-header, app-breadcrumbs, app-footer, .no-print, .tour-builder-layout {
+        display: none !important;
+      }
+      .modal-backdrop {
+        position: static !important;
+        background: none !important;
+        display: block !important;
+        padding: 0 !important;
+      }
+      .modal-paper {
+        border: none !important;
+        box-shadow: none !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        color: #000000 !important;
+      }
+      .proposal-table th, .proposal-table td {
+        color: #000000 !important;
+        border-color: #cccccc !important;
+      }
+      .hero-pricing-card {
+        border: 1px solid #333 !important;
+        background: #f8f8f8 !important;
+      }
+      .hero-price-val {
+        color: #000 !important;
+      }
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,42 +415,391 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Tour Package Builder</h1>
-        <p class="tool-description">Build and price comprehensive tour packages.</p>
+        <p class="tool-description">Build profitable group or private tour packages. Itemize accommodation, transit, guide, and operational line items, dial in agency profit markup, and create custom client proposals.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Tour Package Builder</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Build and price comprehensive tour packages.</div>
-            <div><strong>Inputs:</strong> tour, package, itinerary</div>
-            <div><strong>Category:</strong> travel</div>
+      <!-- Presets & Currency Header -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.5rem;">
+        <div>
+          <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-right: 0.5rem;">TOUR TEMPLATES:</span>
+          <div class="preset-pills" style="display: inline-flex;">
+            <button type="button" class="preset-pill" data-preset="europe">European Classic (12 Pax)</button>
+            <button type="button" class="preset-pill" data-preset="tropical">Bali Luxury Retreat (4 Pax)</button>
+            <button type="button" class="preset-pill" data-preset="safari">Kenya Safari Expedition (8 Pax)</button>
+            <button type="button" class="preset-pill" data-preset="city">Tokyo &amp; Kyoto Cultural (20 Pax)</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">CURRENCY:</span>
+          <div class="currency-pill-list" id="currency-pills">
+            <button type="button" class="curr-pill active" data-currency="USD" data-symbol="$">USD ($)</button>
+            <button type="button" class="curr-pill" data-currency="EUR" data-symbol="€">EUR (€)</button>
+            <button type="button" class="curr-pill" data-currency="GBP" data-symbol="£">GBP (£)</button>
+            <button type="button" class="curr-pill" data-currency="CAD" data-symbol="CA$">CAD (CA$)</button>
+            <button type="button" class="curr-pill" data-currency="AUD" data-symbol="A$">AUD (A$)</button>
+            <button type="button" class="curr-pill" data-currency="JPY" data-symbol="¥">JPY (¥)</button>
+            <button type="button" class="curr-pill" data-currency="AED" data-symbol="AED ">AED</button>
+            <button type="button" class="curr-pill" data-currency="INR" data-symbol="₹">INR (₹)</button>
+          </div>
+        </div>
       </div>
-    
+
+      <!-- Calculator Workspace -->
+      <div class="tour-builder-layout">
+
+        <!-- Left Column: Tour Details, Sliders & Line Items -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+            </svg>
+            Tour Configuration &amp; Line Items
+          </div>
+
+          <!-- Tour Meta Info -->
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="tour-name">Tour Package Name</label>
+              <input type="text" id="tour-name" class="form-input" value="7-Day Mediterranean Grand Tour" placeholder="e.g. 7-Day Mediterranean Tour">
+            </div>
+            <div class="form-group">
+              <label for="tour-destination">Destination &amp; Duration</label>
+              <input type="text" id="tour-destination" class="form-input" value="Italy &amp; Greece (7D/6N)" placeholder="e.g. Italy & Greece (7D/6N)">
+            </div>
+          </div>
+
+          <!-- Slider 1: Group Size (1 to 50 travelers) -->
+          <div class="slider-container" style="margin-top: 1rem;">
+            <div class="slider-header">
+              <label for="group-size-slider">Group Size (Travelers)</label>
+              <span class="slider-badge" id="group-size-val">12</span>
+            </div>
+            <div class="range-group">
+              <input type="range" id="group-size-slider" class="range-slider" min="1" max="50" step="1" value="12">
+            </div>
+            <div class="preset-chips">
+              <span style="font-size: 0.72rem; color: var(--text-tertiary); margin-right: 0.25rem;">Quick sizes:</span>
+              <button type="button" class="chip-btn" data-group="1">Solo (1)</button>
+              <button type="button" class="chip-btn" data-group="2">Couple (2)</button>
+              <button type="button" class="chip-btn" data-group="4">Family (4)</button>
+              <button type="button" class="chip-btn" data-group="10">Small Tour (10)</button>
+              <button type="button" class="chip-btn" data-group="20">Group (20)</button>
+              <button type="button" class="chip-btn" data-group="35">Coach (35)</button>
+              <button type="button" class="chip-btn" data-group="50">Charter (50)</button>
+            </div>
+          </div>
+
+          <!-- Slider 2: Agency Profit Markup (10% to 50%) -->
+          <div class="slider-container">
+            <div class="slider-header">
+              <label for="markup-slider">Agency Profit Markup (%)</label>
+              <span class="slider-badge" id="markup-val">25%</span>
+            </div>
+            <div class="range-group">
+              <input type="range" id="markup-slider" class="range-slider" min="10" max="50" step="1" value="25">
+            </div>
+            <div class="preset-chips">
+              <span style="font-size: 0.72rem; color: var(--text-tertiary); margin-right: 0.25rem;">Quick markups:</span>
+              <button type="button" class="chip-btn" data-markup="10">10% (Volume)</button>
+              <button type="button" class="chip-btn" data-markup="15">15% (Competitive)</button>
+              <button type="button" class="chip-btn" data-markup="20">20% (Standard)</button>
+              <button type="button" class="chip-btn" data-markup="25">25% (Recommended)</button>
+              <button type="button" class="chip-btn" data-markup="35">35% (Bespoke)</button>
+              <button type="button" class="chip-btn" data-markup="50">50% (Luxury High-End)</button>
+            </div>
+          </div>
+
+          <!-- Line Items Section (6 required categories) -->
+          <div style="margin-top: 0.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">Total Direct Line Items</span>
+              <span style="font-size: 0.75rem; color: var(--text-secondary);">Direct Group Cost</span>
+            </div>
+
+            <div class="line-item-grid">
+              <!-- Item 1: Accommodation -->
+              <div class="line-card">
+                <div class="line-card-header">
+                  <span class="line-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></span>
+                  1. Accommodation / Hotels
+                </div>
+                <div class="input-affix-wrap has-prefix">
+                  <span class="input-affix-prefix curr-prefix">$</span>
+                  <input type="number" id="cost-accommodation" class="form-input cost-input" min="0" step="any" value="5400" placeholder="0">
+                </div>
+              </div>
+
+              <!-- Item 2: Transportation -->
+              <div class="line-card">
+                <div class="line-card-header">
+                  <span class="line-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg></span>
+                  2. Transportation &amp; Transfers
+                </div>
+                <div class="input-affix-wrap has-prefix">
+                  <span class="input-affix-prefix curr-prefix">$</span>
+                  <input type="number" id="cost-transportation" class="form-input cost-input" min="0" step="any" value="2800" placeholder="0">
+                </div>
+              </div>
+
+              <!-- Item 3: Sightseeing / Tickets -->
+              <div class="line-card">
+                <div class="line-card-header">
+                  <span class="line-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path></svg></span>
+                  3. Sightseeing &amp; Tickets
+                </div>
+                <div class="input-affix-wrap has-prefix">
+                  <span class="input-affix-prefix curr-prefix">$</span>
+                  <input type="number" id="cost-sightseeing" class="form-input cost-input" min="0" step="any" value="1900" placeholder="0">
+                </div>
+              </div>
+
+              <!-- Item 4: Meals -->
+              <div class="line-card">
+                <div class="line-card-header">
+                  <span class="line-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg></span>
+                  4. Meals &amp; Dining
+                </div>
+                <div class="input-affix-wrap has-prefix">
+                  <span class="input-affix-prefix curr-prefix">$</span>
+                  <input type="number" id="cost-meals" class="form-input cost-input" min="0" step="any" value="2200" placeholder="0">
+                </div>
+              </div>
+
+              <!-- Item 5: Tour Guide -->
+              <div class="line-card">
+                <div class="line-card-header">
+                  <span class="line-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7.5" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg></span>
+                  5. Tour Guide &amp; Escorts
+                </div>
+                <div class="input-affix-wrap has-prefix">
+                  <span class="input-affix-prefix curr-prefix">$</span>
+                  <input type="number" id="cost-guide" class="form-input cost-input" min="0" step="any" value="1200" placeholder="0">
+                </div>
+              </div>
+
+              <!-- Item 6: Overhead -->
+              <div class="line-card">
+                <div class="line-card-header">
+                  <span class="line-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg></span>
+                  6. Operations &amp; Overhead
+                </div>
+                <div class="input-affix-wrap has-prefix">
+                  <span class="input-affix-prefix curr-prefix">$</span>
+                  <input type="number" id="cost-overhead" class="form-input cost-input" min="0" step="any" value="800" placeholder="0">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Bar -->
+          <div class="action-bar" style="margin-top: 1.25rem;">
+            <button type="button" class="btn btn-secondary" id="reset-tour-btn" style="flex: 1;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+              Reset to Defaults
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Column: Outputs, Profit Metrics & Client Quotation -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+            Pricing &amp; Profit Summary
+          </div>
+
+          <!-- Hero Price Box: Per-Person Package Price -->
+          <div class="hero-pricing-card">
+            <div class="hero-price-tag">Per-Person Package Price</div>
+            <div class="hero-price-val" id="disp-per-person-price">$1,489.58</div>
+            <div class="hero-sub-stats">
+              <span>Group Total Price: <strong id="disp-total-price" style="color: var(--text-primary);">$17,875.00</strong></span>
+              <span>Profit Margin: <strong id="disp-margin-pct" style="color: var(--accent);">20.0%</strong></span>
+            </div>
+          </div>
+
+          <!-- 4 Core Metric Mini Cards -->
+          <div class="kpi-row-4">
+            <div class="kpi-mini-card">
+              <div class="kpi-label">Total Cost</div>
+              <div class="kpi-val" id="disp-total-cost">$14,300.00</div>
+            </div>
+            <div class="kpi-mini-card">
+              <div class="kpi-label">Gross Profit</div>
+              <div class="kpi-val" id="disp-gross-profit" style="color: var(--success);">$3,575.00</div>
+            </div>
+            <div class="kpi-mini-card">
+              <div class="kpi-label">Cost / Person</div>
+              <div class="kpi-val" id="disp-per-person-cost">$1,191.67</div>
+            </div>
+            <div class="kpi-mini-card">
+              <div class="kpi-label">Profit / Person</div>
+              <div class="kpi-val" id="disp-per-person-profit" style="color: var(--success);">$297.92</div>
+            </div>
+          </div>
+
+          <!-- Cost & Margin Breakdown Visual Bar -->
+          <div class="breakdown-bar-wrap">
+            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.4rem;">
+              <span>Package Revenue Distribution</span>
+              <span id="breakdown-share-label">Cost: 80% | Agency Markup: 20%</span>
+            </div>
+            <div class="stacked-bar">
+              <div class="bar-seg bar-seg-acc" id="seg-acc" style="width: 30%;" title="Accommodation"></div>
+              <div class="bar-seg bar-seg-tra" id="seg-tra" style="width: 16%;" title="Transportation"></div>
+              <div class="bar-seg bar-seg-act" id="seg-act" style="width: 11%;" title="Sightseeing"></div>
+              <div class="bar-seg bar-seg-mea" id="seg-mea" style="width: 12%;" title="Meals"></div>
+              <div class="bar-seg bar-seg-gui" id="seg-gui" style="width: 7%;" title="Tour Guide"></div>
+              <div class="bar-seg bar-seg-ove" id="seg-ove" style="width: 4%;" title="Overhead"></div>
+              <div class="bar-seg bar-seg-mar" id="seg-mar" style="width: 20%;" title="Agency Profit"></div>
+            </div>
+            <div class="bar-legend">
+              <div class="legend-item"><div class="legend-dot" style="background: #4e85bf;"></div>Hotel</div>
+              <div class="legend-item"><div class="legend-dot" style="background: #38bdf8;"></div>Transit</div>
+              <div class="legend-item"><div class="legend-dot" style="background: #f59e0b;"></div>Tickets</div>
+              <div class="legend-item"><div class="legend-dot" style="background: #10b981;"></div>Dining</div>
+              <div class="legend-item"><div class="legend-dot" style="background: #8b5cf6;"></div>Guide</div>
+              <div class="legend-item"><div class="legend-dot" style="background: #ec4899;"></div>Overhead</div>
+              <div class="legend-item"><div class="legend-dot" style="background: #06b6d4;"></div>Gross Profit</div>
+            </div>
+          </div>
+
+          <!-- Itemized Financial Breakdown Table -->
+          <div class="table-responsive">
+            <table class="proposal-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th style="text-align: right;">Group Total</th>
+                  <th style="text-align: right;">Per Person</th>
+                  <th style="text-align: right;">% Share</th>
+                </tr>
+              </thead>
+              <tbody id="pricing-table-body">
+                <!-- Dynamically generated rows -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-bar" style="margin-top: 1rem;">
+            <button type="button" class="btn btn-primary" id="open-proposal-btn" style="flex: 1;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              View Client Tour Proposal
+            </button>
+            <button type="button" class="btn btn-secondary" id="copy-proposal-btn">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy Quote
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Printable Client Tour Proposal Modal -->
+      <div class="modal-backdrop" id="proposal-modal">
+        <div class="modal-paper">
+          <!-- Proposal Header -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--accent); padding-bottom: 1.25rem; margin-bottom: 1.5rem;">
+            <div>
+              <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent); font-weight: 700;">PREMIER TOUR OPERATOR PROPOSAL</div>
+              <h2 style="font-size: 1.6rem; margin-top: 0.25rem; margin-bottom: 0.25rem;" id="prop-tour-name">7-Day Mediterranean Grand Tour</h2>
+              <div style="font-size: 0.875rem; color: var(--text-secondary);" id="prop-destination">Destination: Italy &amp; Greece (7D/6N)</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 0.85rem; font-weight: 700; color: var(--accent);" id="prop-ref-num">PROP-2026-TR-4029</div>
+              <div style="font-size: 0.75rem; color: var(--text-secondary);" id="prop-date">Date: October 6, 2026</div>
+              <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">Valid for: 30 Days</div>
+            </div>
+          </div>
+
+          <!-- Highlight Key Box: Per Person & Group Details -->
+          <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.25rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center; margin-bottom: 1.5rem;">
+            <div>
+              <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">Per Traveler Rate</div>
+              <div style="font-size: 1.5rem; font-weight: 800; color: var(--accent); margin-top: 0.2rem;" id="prop-per-person">$1,489.58</div>
+            </div>
+            <div>
+              <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">Confirmed Group Size</div>
+              <div style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin-top: 0.2rem;" id="prop-group-size">12 Travelers</div>
+            </div>
+            <div>
+              <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">Total Package Price</div>
+              <div style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin-top: 0.2rem;" id="prop-total-package">$17,875.00</div>
+            </div>
+          </div>
+
+          <!-- Package Inclusions Table -->
+          <div style="margin-bottom: 1.5rem;">
+            <div style="font-size: 0.85rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary);">Itemized Inclusions &amp; Services</div>
+            <table class="proposal-table">
+              <thead>
+                <tr>
+                  <th>Included Service Component</th>
+                  <th style="text-align: center;">Coverage Basis</th>
+                  <th style="text-align: right;">Package Total</th>
+                </tr>
+              </thead>
+              <tbody id="prop-inclusions-body">
+                <!-- Dynamically generated rows -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Terms & Booking Instructions -->
+          <div style="border-top: 1px dashed var(--border); padding-top: 1rem; font-size: 0.75rem; color: var(--text-secondary); line-height: 1.6;">
+            <p><strong>Package Inclusions &amp; Notes:</strong> Accommodations as listed, all private ground transfers, guided visits with certified multilingual guides, admission tickets to standard itinerary sights, and scheduled meals as specified. Price quoted is net client price based on group size indicated. 30% deposit required upon confirmation, balance payable 30 days prior to departure.</p>
+          </div>
+
+          <!-- Modal Actions -->
+          <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;" class="no-print">
+            <button type="button" class="btn btn-secondary" id="close-prop-btn">Close</button>
+            <button type="button" class="btn btn-primary" id="print-prop-btn">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+              </svg>
+              Print Proposal
+            </button>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- Toast -->
+  <div class="toast-pill" id="toast-msg">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--success);">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span id="toast-text">Proposal quotation copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Tour Package Builder",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/tour-package-builder/",
-    "description": "Build and price comprehensive tour packages.",
+    "description": "Build, price, and calculate travel agency tour packages, per-person pricing, markups, and client proposals.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

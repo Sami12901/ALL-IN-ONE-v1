@@ -3,15 +3,233 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shipping Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Estimate shipping costs by weight and region.">
-  <meta name="keywords" content="shipping, logistics, delivery, free, online, tool, utility">
+  <title>Shipping Calculator & Dimensional Weight Estimator - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Calculate dimensional weight (DIM weight), billable package weight, identify oversize surcharges, and estimate multi-tier carrier shipping rates.">
+  <meta name="keywords" content="shipping calculator, dimensional weight, DIM weight, billable weight, FedEx divisor, UPS shipping, USPS postage, oversize package">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/shipping-calculator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .shipping-workarea {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+    @media (min-width: 1024px) {
+      .shipping-workarea {
+        grid-template-columns: 460px 1fr;
+      }
+    }
+
+    /* Unit toggle */
+    .unit-switch-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      background: var(--bg-tertiary);
+      padding: 0.35rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    .unit-switch-btn {
+      padding: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+    }
+    .unit-switch-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .dim-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+
+    .input-with-affix-right {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-affix-right {
+      position: absolute;
+      right: 0.75rem;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      pointer-events: none;
+      font-size: 0.85rem;
+    }
+    .input-with-affix-right input {
+      padding-right: 2rem;
+    }
+
+    /* KPI Cards */
+    .kpi-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .kpi-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      position: relative;
+      transition: var(--transition);
+    }
+    .kpi-card:hover {
+      border-color: rgba(var(--accent-rgb), 0.4);
+      transform: translateY(-2px);
+    }
+    .kpi-card.highlight {
+      background: linear-gradient(145deg, rgba(var(--accent-rgb), 0.12), var(--bg-tertiary));
+      border-color: var(--accent);
+    }
+    .kpi-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 700;
+    }
+    .kpi-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .kpi-card.highlight .kpi-value {
+      color: var(--accent);
+    }
+    .kpi-subtext {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Visual Box Representation */
+    .visual-box-container {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .svg-box-preview {
+      width: 100%;
+      max-width: 320px;
+      height: 140px;
+    }
+
+    /* Rate Tier Cards */
+    .tier-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    @media (max-width: 640px) {
+      .tier-cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .tier-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      position: relative;
+      transition: var(--transition);
+    }
+    .tier-card:hover {
+      border-color: var(--accent);
+    }
+    .tier-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .tier-delivery {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+    .tier-price {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-top: 0.25rem;
+    }
+    .tier-badge {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-full);
+      width: fit-content;
+      margin-top: 0.25rem;
+      font-weight: 600;
+    }
+
+    /* Alerts */
+    .alert-banner {
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-sm);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+    .alert-banner.warning {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #fbbf24;
+    }
+    .alert-banner.error {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+    }
+    .alert-banner.info {
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #60a5fa;
+    }
+
+    .badge-pill {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      background: rgba(var(--accent-rgb), 0.15);
+      color: var(--accent);
+      font-weight: 600;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,27 +244,209 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Shipping Calculator</h1>
-        <p class="tool-description">Estimate shipping costs by weight and region.</p>
+        <h1>Shipping & Dimensional Weight Calculator</h1>
+        <p class="tool-description">Estimate parcel dimensional weight (DIM), determine billable weight vs actual weight, evaluate carrier oversize surcharges, and simulate shipping rate tiers across FedEx, UPS, and USPS standards.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Shipping Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Estimate shipping costs by weight and region.</div>
-            <div><strong>Inputs:</strong> shipping, logistics, delivery</div>
-            <div><strong>Category:</strong> ecommerce</div>
+      <div class="shipping-workarea">
+        <!-- Input Controls (Left Column) -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+            Package Specifications
+          </h2>
+
+          <!-- Measurement System Unit Switch -->
+          <div class="form-group">
+            <label>Measurement Units</label>
+            <div class="unit-switch-group">
+              <button type="button" class="unit-switch-btn active" id="btn-unit-imperial" data-unit="imperial">
+                Imperial (Inches, Lbs)
+              </button>
+              <button type="button" class="unit-switch-btn" id="btn-unit-metric" data-unit="metric">
+                Metric (Centimeters, Kg)
+              </button>
+            </div>
+          </div>
+
+          <!-- Package Dimensions (L, W, H) -->
+          <div class="form-group">
+            <label>Package Dimensions (Length &times; Width &times; Height)</label>
+            <div class="dim-grid-3">
+              <div class="input-with-affix-right">
+                <input type="number" id="dim-length" class="form-input" min="0.1" step="0.5" value="16" placeholder="Length">
+                <span class="input-affix-right unit-len-label">in</span>
+              </div>
+              <div class="input-with-affix-right">
+                <input type="number" id="dim-width" class="form-input" min="0.1" step="0.5" value="12" placeholder="Width">
+                <span class="input-affix-right unit-len-label">in</span>
+              </div>
+              <div class="input-with-affix-right">
+                <input type="number" id="dim-height" class="form-input" min="0.1" step="0.5" value="10" placeholder="Height">
+                <span class="input-affix-right unit-len-label">in</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actual Weight -->
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <label for="actual-weight-input">Actual Scale Weight</label>
+              <span id="actual-weight-badge" class="badge-pill">8.00 lbs</span>
+            </div>
+            <div class="input-with-affix-right">
+              <input type="number" id="actual-weight-input" class="form-input" min="0.05" step="0.5" value="8" placeholder="Weight">
+              <span class="input-affix-right unit-wt-label">lbs</span>
+            </div>
+          </div>
+
+          <!-- Dimensional Factor / Divisor -->
+          <div class="form-group">
+            <label for="dim-divisor-select">Carrier Dimensional Divisor</label>
+            <select id="dim-divisor-select" class="form-select">
+              <option value="139" selected>139 - FedEx / UPS Commercial (US Daily)</option>
+              <option value="166">166 - USPS / FedEx Retail (Standard Domestic)</option>
+              <option value="5000">5000 - International Metric (cm³/kg)</option>
+              <option value="custom">Custom Divisor...</option>
+            </select>
+          </div>
+
+          <div id="custom-divisor-wrap" style="display: none;" class="form-group">
+            <label for="custom-divisor-input" style="font-size: 0.78rem;">Custom Divisor Factor</label>
+            <input type="number" id="custom-divisor-input" class="form-input" min="1" step="1" value="139">
+          </div>
+
+          <!-- Shipping Destination Zone -->
+          <div class="form-group">
+            <label for="shipping-zone-select">Delivery Distance / Shipping Zone</label>
+            <select id="shipping-zone-select" class="form-select">
+              <option value="local">Zone 1-2: Local / Metro (0 - 150 miles)</option>
+              <option value="regional" selected>Zone 3-5: Regional / Mid-Range (151 - 1,000 miles)</option>
+              <option value="national">Zone 6-8: Cross-Country / Coast-to-Coast (1,001+ miles)</option>
+            </select>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+            <button type="button" id="btn-reset-shipping" class="btn btn-secondary" style="flex: 1;">Reset Defaults</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Shipping Analytics & Rates (Right Column) -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+            <h2 class="panel-title" style="margin: 0; border: none; padding: 0;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+              Weight & Rate Analysis
+            </h2>
+            <span id="package-compliance-badge" class="badge">Standard Parcel</span>
+          </div>
+
+          <!-- Alert / Oversize Surcharge Banner (dynamically toggled) -->
+          <div id="surcharge-alert-banner" class="alert-banner info">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            <div id="surcharge-alert-text">
+              Package qualifies for standard commercial ground parcel delivery.
+            </div>
+          </div>
+
+          <!-- 4 KPI Cards -->
+          <div class="kpi-cards-grid">
+            <div class="kpi-card highlight" id="card-billable-wt">
+              <span class="kpi-title">Billable Weight</span>
+              <span id="kpi-billable-weight" class="kpi-value">13.8 lbs</span>
+              <span id="kpi-billable-rule" class="kpi-subtext">DIM weight governs pricing</span>
+            </div>
+            <div class="kpi-card" id="card-dim-wt">
+              <span class="kpi-title">Dimensional Weight</span>
+              <span id="kpi-dim-weight" class="kpi-value" style="color: #f59e0b;">13.8 lbs</span>
+              <span id="kpi-dim-sub" class="kpi-subtext">Volumetric estimate</span>
+            </div>
+            <div class="kpi-card" id="card-actual-wt">
+              <span class="kpi-title">Actual Weight</span>
+              <span id="kpi-actual-weight" class="kpi-value">8.0 lbs</span>
+              <span class="kpi-subtext">Physical scale weight</span>
+            </div>
+            <div class="kpi-card" id="card-volume">
+              <span class="kpi-title">Package Volume</span>
+              <span id="kpi-volume" class="kpi-value" style="color: #3b82f6;">1,920 in³</span>
+              <span id="kpi-volume-sub" class="kpi-subtext">1.11 cubic feet</span>
+            </div>
+          </div>
+
+          <!-- Interactive 3D Package Isometric Illustration -->
+          <div class="visual-box-container">
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 0.75rem; width: 100%; display: flex; justify-content: space-between;">
+              <span>Parcel Proportions & Girth</span>
+              <span id="girth-calc-label" style="font-family: monospace; color: var(--accent);">Girth: 44 in &bull; Length+Girth: 60 in</span>
+            </div>
+            <svg class="svg-box-preview" id="svg-box-preview" viewBox="0 0 320 140">
+              <!-- Top Face -->
+              <polygon id="box-top-face" points="160,20 250,55 160,85 70,55" fill="rgba(59, 130, 246, 0.25)" stroke="#3b82f6" stroke-width="1.5"></polygon>
+              <!-- Left Face -->
+              <polygon id="box-left-face" points="70,55 160,85 160,130 70,100" fill="rgba(59, 130, 246, 0.45)" stroke="#3b82f6" stroke-width="1.5"></polygon>
+              <!-- Right Face -->
+              <polygon id="box-right-face" points="160,85 250,55 250,100 160,130" fill="rgba(59, 130, 246, 0.35)" stroke="#3b82f6" stroke-width="1.5"></polygon>
+              <!-- Labels -->
+              <text id="box-label-length" x="105" y="118" fill="#ffffff" font-size="11" font-weight="700">L: 16"</text>
+              <text id="box-label-width" x="215" y="118" fill="#ffffff" font-size="11" font-weight="700">W: 12"</text>
+              <text id="box-label-height" x="165" y="60" fill="#ffffff" font-size="11" font-weight="700">H: 10"</text>
+            </svg>
+          </div>
+
+          <!-- Shipping Rate Tier Simulator -->
+          <div>
+            <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.65rem; display: flex; justify-content: space-between; align-items: center;">
+              <span>Estimated Shipping Rates by Tier</span>
+              <button type="button" id="btn-copy-shipping-estimate" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.35rem 0.75rem;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span id="copy-estimate-text">Copy Estimate</span>
+              </button>
+            </div>
+
+            <div class="tier-cards-grid">
+              <!-- Ground Tier -->
+              <div class="tier-card">
+                <span class="tier-name">Ground Economy</span>
+                <span class="tier-delivery">3 - 5 Business Days</span>
+                <span class="tier-price" id="tier-ground-price">$16.80</span>
+                <span class="tier-badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">Best Value</span>
+              </div>
+
+              <!-- Expedited Tier -->
+              <div class="tier-card" style="border-color: rgba(var(--accent-rgb), 0.5);">
+                <span class="tier-name">Priority Expedited</span>
+                <span class="tier-delivery">2 - 3 Business Days</span>
+                <span class="tier-price" id="tier-priority-price" style="color: var(--accent);">$32.50</span>
+                <span class="tier-badge" style="background: rgba(var(--accent-rgb), 0.15); color: var(--accent);">Most Popular</span>
+              </div>
+
+              <!-- Overnight Express Tier -->
+              <div class="tier-card">
+                <span class="tier-name">Overnight Express</span>
+                <span class="tier-delivery">Next Day by 10:30 AM</span>
+                <span class="tier-price" id="tier-express-price" style="color: #f59e0b;">$68.20</span>
+                <span class="tier-badge" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">Fastest</span>
+              </div>
+            </div>
+
+            <!-- Rate Breakdown Spec Table -->
+            <div class="table-responsive" style="border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden;">
+              <table class="data-table" style="font-size: 0.85rem;">
+                <thead>
+                  <tr>
+                    <th>Pricing Element</th>
+                    <th>Rate Basis</th>
+                    <th>Estimated Charge</th>
+                  </tr>
+                </thead>
+                <tbody id="shipping-breakdown-tbody">
+                  <!-- Populated by script.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     
     </div>
@@ -60,10 +460,10 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Shipping Calculator",
+    "name": "Shipping & Dimensional Weight Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/shipping-calculator/",
-    "description": "Estimate shipping costs by weight and region.",
-    "applicationCategory": "UtilityPage",
+    "description": "Calculate dimensional weight, billable package weight, identify oversize surcharges, and simulate carrier shipping rates.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

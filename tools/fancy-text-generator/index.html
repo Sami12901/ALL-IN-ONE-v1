@@ -3,15 +3,177 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Unicode Stylized Font Maker - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Converts plain text into stylized unicode scripts.">
-  <meta name="keywords" content="fonts, unicode, fancy, text, style, free, online, tool, utility">
+  <title>Fancy Text Generator - 20+ Aesthetic Unicode Fonts - ALL IN ONE</title>
+  <meta name="description" content="Convert standard text into 20+ aesthetic Unicode fonts in real-time. Cursive script, Fraktur gothic, bold serif, bubbles, small caps, and strikethrough with 1-click copy.">
+  <meta name="keywords" content="fancy text generator, unicode fonts, aesthetic text, cursive text generator, copy paste fonts, instagram fonts, gothic text, free online tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/fancy-text-generator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .fancy-input-card {
+      margin-bottom: 1.5rem;
+    }
+
+    /* Filter & Search Toolbar */
+    .filter-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .category-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .cat-pill {
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.825rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .cat-pill:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .cat-pill.active {
+      background: var(--accent-gradient);
+      color: #ffffff;
+      border-color: transparent;
+    }
+
+    /* Font Output Cards Grid */
+    .font-cards-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 768px) {
+      .font-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (min-width: 1200px) {
+      .font-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .font-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.85rem;
+      transition: var(--transition);
+      position: relative;
+    }
+    .font-card:hover {
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    }
+
+    .font-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .font-name {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+    .font-cat-badge {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-full);
+      background: var(--accent-glow);
+      color: var(--accent);
+      border: 1px solid var(--border);
+    }
+
+    .font-preview-text {
+      font-size: 1.25rem;
+      line-height: 1.5;
+      color: var(--text-primary);
+      word-break: break-word;
+      user-select: all;
+      min-height: 2.2rem;
+    }
+
+    .font-card-bottom {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+    .font-copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .font-copy-btn:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .font-copy-btn.copied {
+      background: var(--success);
+      color: #ffffff;
+      border-color: transparent;
+    }
+
+    /* Toast Notification */
+    .toast-notice {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 9999;
+      background: rgba(16, 185, 129, 0.95);
+      backdrop-filter: blur(8px);
+      color: #ffffff;
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.9rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      pointer-events: none;
+    }
+    .toast-notice.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,31 +188,87 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Unicode Stylized Font Maker</h1>
-        <p class="tool-description">Converts plain text into stylized unicode scripts.</p>
+        <h1>Fancy Text Generator & Aesthetic Font Maker</h1>
+        <p class="tool-description">Transform normal text into 20+ aesthetic Unicode fonts in real-time. Instantly copy cursive script, Fraktur gothic, bold serif, bubble letters, small caps, and strikethrough.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Unicode Stylized Font Maker</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Converts plain text into stylized unicode scripts.</div>
-            <div><strong>Inputs:</strong> fonts, unicode, fancy, text, style</div>
-            <div><strong>Category:</strong> social</div>
+      <!-- Input Panel -->
+      <div class="tool-panel glass-panel fancy-input-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <label for="fancy-input" style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">Enter Normal Text:</label>
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="sample-quote-btn" class="btn btn-secondary" style="padding: 0.25rem 0.65rem; font-size: 0.75rem;">Aesthetic Bio</button>
+            <button id="sample-gamer-btn" class="btn btn-secondary" style="padding: 0.25rem 0.65rem; font-size: 0.75rem;">Gamer Tag</button>
+            <button id="clear-fancy-btn" class="btn btn-secondary" style="padding: 0.25rem 0.65rem; font-size: 0.75rem;">Clear</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="form-group">
+          <textarea 
+            id="fancy-input" 
+            class="form-textarea" 
+            placeholder="Type or paste your text here..." 
+            style="min-height: 100px; font-size: 1.15rem; line-height: 1.5;"
+          >Aesthetic Typography & Creative Vibes</textarea>
+        </div>
       </div>
-    
+
+      <!-- Filter & Search Toolbar -->
+      <div class="filter-toolbar">
+        <div class="category-pills">
+          <button class="cat-pill active" data-cat="all">All Fonts (24)</button>
+          <button class="cat-pill" data-cat="script">Script & Cursive</button>
+          <button class="cat-pill" data-cat="gothic">Gothic & Fraktur</button>
+          <button class="cat-pill" data-cat="serif">Serif & Sans</button>
+          <button class="cat-pill" data-cat="frames">Bubbles & Boxes</button>
+          <button class="cat-pill" data-cat="effects">Decorators & Strikethrough</button>
+        </div>
+
+        <div style="min-width: 200px; flex-shrink: 0;">
+          <input 
+            type="text" 
+            id="font-search" 
+            class="form-input" 
+            placeholder="Search font style..." 
+            style="padding: 0.4rem 0.85rem; font-size: 0.85rem;"
+          >
+        </div>
+      </div>
+
+      <!-- Generated Font Cards Grid -->
+      <div id="font-grid" class="font-cards-grid">
+        <!-- Dynamically rendered by script.js -->
+      </div>
+
+      <!-- Informational Section -->
+      <div class="tool-panel glass-panel" style="margin-top: 2rem;">
+        <h2 class="panel-title">How Unicode Font Styling Works</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; color: var(--text-secondary); font-size: 0.925rem; line-height: 1.6;">
+          <div>
+            <h3 style="color: var(--text-primary); font-size: 1.05rem; margin-bottom: 0.4rem;">Unicode Alphanumeric Symbols</h3>
+            <p>Unlike downloadable font files (.ttf or .woff) which require specific CSS to render, these styles leverage native Unicode code points from the <em>Mathematical Alphanumeric Symbols</em> block (U+1D400–U+1D7FF) and <em>Enclosed Alphanumerics</em> block.</p>
+          </div>
+          <div>
+            <h3 style="color: var(--text-primary); font-size: 1.05rem; margin-bottom: 0.4rem;">Copy & Paste Anywhere</h3>
+            <p>Because these are raw Unicode glyphs, you can copy and paste them directly into your Instagram bio, TikTok captions, Discord usernames, Twitter/X tweets, WhatsApp status, and YouTube comments without formatting loss.</p>
+          </div>
+          <div>
+            <h3 style="color: var(--text-primary); font-size: 1.05rem; margin-bottom: 0.4rem;">Combining Diacritics</h3>
+            <p>Effects like strikethrough (<code>\u0336</code>) and underline (<code>\u0332</code>) work by attaching Unicode combining diacritical marks to each individual character in the string.</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- Global Toast Notification -->
+  <div id="toast-notice" class="toast-notice">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span id="toast-msg">Copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -60,9 +278,9 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Unicode Stylized Font Maker",
+    "name": "Fancy Text Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/fancy-text-generator/",
-    "description": "Converts plain text into stylized unicode scripts.",
+    "description": "Transforms plain text into 20+ aesthetic Unicode fonts in real-time.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

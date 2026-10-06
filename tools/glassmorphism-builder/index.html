@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CSS Glassmorphic Card Builder - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Build premium glass effects with blur and opacity.">
-  <meta name="keywords" content="glassmorphism, glass, css, blur, opacity, free, online, tool, utility">
+  <meta name="description" content="Build premium CSS glassmorphism effects with live blur, opacity, border sheen, background wallpaper switcher, and instant CSS export.">
+  <meta name="keywords" content="glassmorphism, glass effect, css glass, backdrop filter, blur, opacity, card builder, ui design, free online tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/glassmorphism-builder/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,198 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+  <style>
+    .preset-chip-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .preset-chip {
+      padding: 0.45rem 0.9rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.825rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .preset-chip:hover {
+      background: var(--accent-glow);
+      color: var(--text-primary);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .preset-chip.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+    .wallpaper-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
+      gap: 0.6rem;
+      margin-top: 0.5rem;
+    }
+    .wallpaper-btn {
+      height: 48px;
+      border-radius: var(--radius-md);
+      border: 2px solid var(--border);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      padding: 0;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #ffffff;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    }
+    .wallpaper-btn:hover {
+      transform: scale(1.03);
+      border-color: var(--accent);
+    }
+    .wallpaper-btn.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+    .control-row {
+      display: grid;
+      grid-template-columns: 130px 1fr 65px;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    @media (max-width: 500px) {
+      .control-row {
+        grid-template-columns: 110px 1fr 50px;
+        gap: 0.5rem;
+      }
+    }
+    .color-picker-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+    .color-input-bubble {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      padding: 0;
+      cursor: pointer;
+      background: transparent;
+    }
+    /* Preview Stage Canvas */
+    .glass-stage {
+      width: 100%;
+      min-height: 400px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      transition: background 0.4s ease;
+    }
+    /* Floating background shapes */
+    .bg-shape {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(8px);
+      pointer-events: none;
+      animation: floatMotion 8s ease-in-out infinite alternate;
+    }
+    .shape-1 {
+      width: 220px;
+      height: 220px;
+      top: 10%;
+      left: 12%;
+      background: radial-gradient(circle, #f43f5e 0%, rgba(244, 63, 94, 0.2) 70%);
+    }
+    .shape-2 {
+      width: 260px;
+      height: 260px;
+      bottom: 10%;
+      right: 10%;
+      background: radial-gradient(circle, #3b82f6 0%, rgba(59, 130, 246, 0.2) 70%);
+      animation-delay: -3s;
+    }
+    .shape-3 {
+      width: 150px;
+      height: 150px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, #a855f7 0%, rgba(168, 85, 247, 0.2) 70%);
+      animation-delay: -5s;
+    }
+    @keyframes floatMotion {
+      0% { transform: translateY(0px) scale(1); }
+      100% { transform: translateY(-18px) scale(1.06); }
+    }
+    /* Glass Target Card */
+    .glass-card-target {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 380px;
+      min-height: 220px;
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: backdrop-filter 0.15s ease, -webkit-backdrop-filter 0.15s ease, background 0.15s ease, border 0.15s ease, box-shadow 0.15s ease;
+      overflow: hidden;
+    }
+    .glass-highlight-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+    }
+    .glass-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+    .glass-chip-icon {
+      width: 36px;
+      height: 28px;
+      border-radius: 4px;
+      border: 1.5px solid rgba(255, 255, 255, 0.45);
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.4), rgba(255, 255, 255, 0.1));
+      display: grid;
+      place-content: center;
+      font-size: 0.65rem;
+      letter-spacing: 0.5px;
+      color: rgba(255,255,255,0.9);
+      font-weight: 700;
+    }
+    .code-preview-pre {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: var(--text-primary);
+      white-space: pre-wrap;
+      word-break: break-all;
+      position: relative;
+      line-height: 1.55;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,26 +219,184 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>CSS Glassmorphic Card Builder</h1>
-        <p class="tool-description">Build premium glass effects with blur and opacity.</p>
+        <p class="tool-description">Create luxury frosted glass UI cards with live backdrop blur, lighting sheen, edge refraction, and multi-wallpaper testing.</p>
+      </div>
+
+      <!-- Quick Presets -->
+      <div class="preset-chip-list" id="preset-list">
+        <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-tertiary); align-self: center; margin-right: 0.25rem;">Styles:</span>
+        <button type="button" class="preset-chip active" data-preset="frosted-ice">Frosted Ice</button>
+        <button type="button" class="preset-chip" data-preset="dark-obsidian">Dark Obsidian</button>
+        <button type="button" class="preset-chip" data-preset="pure-crystal">Pure Crystal</button>
+        <button type="button" class="preset-chip" data-preset="neon-prism">Neon Prism</button>
+        <button type="button" class="preset-chip" data-preset="ultra-blur">Ultra Soft Blur</button>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>CSS Glassmorphic Card Builder</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Build premium glass effects with blur and opacity.</div>
-            <div><strong>Inputs:</strong> glassmorphism, glass, css, blur, opacity</div>
-            <div><strong>Category:</strong> color</div>
+      <div class="tool-workarea split-view">
+        <!-- Controls Column -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">Glass Aesthetics</h2>
+
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <!-- Blur Intensity -->
+            <div class="control-row">
+              <label for="slider-blur" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Blur Intensity</label>
+              <input type="range" id="slider-blur" class="range-slider" min="0" max="40" value="16">
+              <span class="range-value" id="val-blur">16px</span>
+            </div>
+
+            <!-- Background Opacity -->
+            <div class="control-row">
+              <label for="slider-opacity" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Glass Opacity</label>
+              <input type="range" id="slider-opacity" class="range-slider" min="0" max="100" value="20">
+              <span class="range-value" id="val-opacity">20%</span>
+            </div>
+
+            <!-- Background Tint Color -->
+            <div class="control-row">
+              <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Glass Tint</label>
+              <div class="color-picker-wrapper">
+                <input type="color" id="glass-color" class="color-input-bubble" value="#ffffff">
+                <input type="text" id="glass-hex-text" class="form-input" style="padding: 0.35rem 0.6rem; font-family: monospace; font-size: 0.85rem; width: 100px;" value="#ffffff">
+              </div>
+              <span></span>
+            </div>
+
+            <!-- Saturation Booster -->
+            <div class="control-row">
+              <label for="slider-saturate" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Saturation</label>
+              <input type="range" id="slider-saturate" class="range-slider" min="100" max="250" value="180">
+              <span class="range-value" id="val-saturate">180%</span>
+            </div>
+
+            <!-- Border Width -->
+            <div class="control-row">
+              <label for="slider-border-width" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Border Width</label>
+              <input type="range" id="slider-border-width" class="range-slider" min="0" max="5" value="1">
+              <span class="range-value" id="val-border-width">1px</span>
+            </div>
+
+            <!-- Border Opacity -->
+            <div class="control-row">
+              <label for="slider-border-opacity" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Border Opacity</label>
+              <input type="range" id="slider-border-opacity" class="range-slider" min="0" max="100" value="30">
+              <span class="range-value" id="val-border-opacity">30%</span>
+            </div>
+
+            <!-- Border Color -->
+            <div class="control-row">
+              <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Border Color</label>
+              <div class="color-picker-wrapper">
+                <input type="color" id="border-color" class="color-input-bubble" value="#ffffff">
+                <input type="text" id="border-hex-text" class="form-input" style="padding: 0.35rem 0.6rem; font-family: monospace; font-size: 0.85rem; width: 100px;" value="#ffffff">
+              </div>
+              <span></span>
+            </div>
+
+            <!-- Highlight Sheen / Reflection -->
+            <div style="border-top: 1px solid var(--border); padding-top: 1rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <label class="checkbox-label" style="min-height: auto;">
+                  <input type="checkbox" id="check-highlight" checked>
+                  <span style="font-weight: 600; color: var(--text-primary);">Glass Highlight Reflection</span>
+                </label>
+              </div>
+              <div class="control-row" id="highlight-controls">
+                <label for="slider-highlight" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Sheen Strength</label>
+                <input type="range" id="slider-highlight" class="range-slider" min="0" max="100" value="25">
+                <span class="range-value" id="val-highlight">25%</span>
+              </div>
+            </div>
+
+            <!-- Card Geometry & Shadow -->
+            <div style="border-top: 1px solid var(--border); padding-top: 1rem;">
+              <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 0.75rem;">Geometry & Shadow</span>
+              <div class="control-row" style="margin-bottom: 0.75rem;">
+                <label for="slider-radius" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Corner Radius</label>
+                <input type="range" id="slider-radius" class="range-slider" min="0" max="40" value="20">
+                <span class="range-value" id="val-radius">20px</span>
+              </div>
+              <div class="control-row">
+                <label for="slider-shadow-depth" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Shadow Depth</label>
+                <input type="range" id="slider-shadow-depth" class="range-slider" min="0" max="50" value="32">
+                <span class="range-value" id="val-shadow-depth">32px</span>
+              </div>
+            </div>
+
+            <!-- Background Wallpaper Switcher -->
+            <div style="border-top: 1px solid var(--border); padding-top: 1rem;">
+              <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); display: block;">Test Wallpaper Backdrop</span>
+              <div class="wallpaper-grid" id="wallpaper-switcher">
+                <button type="button" class="wallpaper-btn active" data-wall="aurora" style="background: linear-gradient(135deg, #130f40 0%, #000000 100%);">Aurora</button>
+                <button type="button" class="wallpaper-btn" data-wall="cosmic" style="background: radial-gradient(circle, #2d132c 0%, #0d0c1d 100%);">Cosmic</button>
+                <button type="button" class="wallpaper-btn" data-wall="geometric" style="background: linear-gradient(45deg, #09203f 0%, #537895 100%);">Geometry</button>
+                <button type="button" class="wallpaper-btn" data-wall="sunset" style="background: linear-gradient(135deg, #432b58 0%, #170d24 100%);">Sunset</button>
+              </div>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Preview & Output Column -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">Interactive Glass Card Preview</h2>
+
+          <!-- Wallpaper Canvas Stage -->
+          <div class="glass-stage" id="glass-stage" style="background: #0b0c10;">
+            <!-- Floating blurred ambient meshes -->
+            <div class="bg-shape shape-1" id="mesh-1"></div>
+            <div class="bg-shape shape-2" id="mesh-2"></div>
+            <div class="bg-shape shape-3" id="mesh-3"></div>
+
+            <!-- The Glass Card Mockup -->
+            <div class="glass-card-target" id="glass-card">
+              <div class="glass-highlight-layer" id="glass-sheen"></div>
+              
+              <div>
+                <div class="glass-card-header">
+                  <span style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; color: #ffffff; letter-spacing: 0.5px;">AURA GLASS</span>
+                  <div class="glass-chip-icon">PRO</div>
+                </div>
+                <div style="font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.7); font-weight: 600;">Specimen Model</div>
+                <div style="font-family: monospace; font-size: 1.05rem; letter-spacing: 2px; color: #ffffff; margin-top: 0.35rem; font-weight: 600;">5412 &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; 9028</div>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 1.5rem;">
+                <div>
+                  <div style="font-size: 0.7rem; text-transform: uppercase; color: rgba(255,255,255,0.6);">Glass Layer</div>
+                  <div style="font-size: 0.85rem; font-weight: 600; color: #ffffff;">Backdrop Blur Active</div>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.25); border: 1px solid rgba(255, 255, 255, 0.4); padding: 0.35rem 0.75rem; border-radius: var(--radius-full); font-size: 0.75rem; color: #ffffff; font-weight: 600;">
+                  Active
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Code Output -->
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-weight: 600; font-size: 0.9rem;">Production CSS Code</span>
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <label class="checkbox-label" style="min-height: auto; font-size: 0.8rem;">
+                  <input type="checkbox" id="check-vendor" checked>
+                  <span>Vendor Prefixes</span>
+                </label>
+                <button type="button" class="btn btn-primary" id="copy-css-btn" style="padding: 0.45rem 1rem; font-size: 0.85rem;">
+                  Copy CSS
+                </button>
+              </div>
+            </div>
+            
+            <pre class="code-preview-pre"><code id="css-code-display">/* Glassmorphism CSS */</code></pre>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 0.25rem;">
+            <button type="button" class="btn btn-secondary" id="reset-btn" style="font-size: 0.8rem; padding: 0.4rem 0.85rem;">
+              Reset to Default
+            </button>
+          </div>
+        </div>
       </div>
     
     </div>
@@ -62,7 +412,7 @@
     "@type": "WebApplication",
     "name": "CSS Glassmorphic Card Builder",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/glassmorphism-builder/",
-    "description": "Build premium glass effects with blur and opacity.",
+    "description": "Build premium CSS glassmorphism effects with live blur, opacity, border sheen, background wallpaper switcher, and instant CSS export.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

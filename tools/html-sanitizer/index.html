@@ -3,15 +3,145 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HTML Sanitizer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Cleans malicious scripting triggers from HTML tags.">
-  <meta name="keywords" content="sanitize, html, xss, clean, security, free, online, tool, utility">
+  <title>HTML Sanitizer & XSS Shield - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Sanitize raw HTML and neutralize XSS attack vectors in your browser. Configurable whitelist tags, instant sanitized output, audit report, and sandboxed preview pane.">
+  <meta name="keywords" content="html sanitizer, xss defense, sanitize html, clean html tags, cross site scripting, xss filter, safe html preview, free online tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/html-sanitizer/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .sanitizer-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .sanitizer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Policy Control Chips */
+    .policy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+      padding: 1rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    /* Audit Stat Cards */
+    .audit-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .audit-stat-card {
+      padding: 0.75rem 0.5rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .audit-stat-val {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      font-family: monospace;
+    }
+    .audit-stat-val.threat {
+      color: var(--error);
+    }
+    .audit-stat-val.clean {
+      color: var(--success);
+    }
+    .audit-stat-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.2rem;
+    }
+
+    /* Output Tabs */
+    .output-tab-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .output-tab {
+      padding: 0.4rem 0.9rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .output-tab.active {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-color: var(--border);
+    }
+
+    /* Sandboxed Preview Frame */
+    .preview-frame-container {
+      width: 100%;
+      height: 280px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: #ffffff;
+      overflow: hidden;
+      position: relative;
+    }
+    .preview-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #ffffff;
+      color: #111827;
+    }
+
+    /* Audit Log list */
+    .audit-log-list {
+      max-height: 140px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 0.8rem;
+      padding: 0.5rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .log-item {
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .log-item.stripped {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+    }
+    .log-item.info {
+      color: var(--text-secondary);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,29 +156,167 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>HTML Sanitizer</h1>
-        <p class="tool-description">Cleans malicious scripting triggers from HTML tags.</p>
+        <h1>HTML Sanitizer & XSS Shield</h1>
+        <p class="tool-description">Client-side HTML sanitizer and XSS defense inspector. Neutralizes harmful scripts, rogue iframes, event handlers, and javascript: protocols with live safe sandboxed rendering.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>HTML Sanitizer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Cleans malicious scripting triggers from HTML tags.</div>
-            <div><strong>Inputs:</strong> sanitize, html, xss, clean, security</div>
-            <div><strong>Category:</strong> security</div>
+      <!-- Presets bar -->
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; background: var(--bg-secondary); padding: 0.85rem 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+        <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-secondary);">
+          <strong style="color: var(--text-primary);">Load Test Attack Vectors:</strong>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+          <button id="sample-xss-btn" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">XSS Injection Attack</button>
+          <button id="sample-phish-btn" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">Malicious Form & Iframe</button>
+          <button id="sample-rich-btn" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">Rich Article with Markup</button>
+        </div>
+      </div>
+
+      <!-- Main Workspace Grid -->
+      <div class="sanitizer-grid">
+        <!-- Input & Policy Column -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="16 18 22 12 16 6"></polyline>
+              <polyline points="8 6 2 12 8 18"></polyline>
+            </svg>
+            Raw Untrusted HTML Input
+          </h2>
+          
+          <div class="form-group">
+            <textarea 
+              id="raw-html-input" 
+              class="form-textarea" 
+              placeholder="Paste raw or untrusted HTML here to sanitize..."
+              style="min-height: 220px;"
+            ></textarea>
+          </div>
+
+          <!-- Allowed Tag Whitelist Settings -->
+          <div>
+            <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-primary); display: block;">Allowed Tag Rules & Whitelist:</label>
+            <div class="policy-grid">
+              <label class="checkbox-label" title="Allow p, br, h1-h6, span">
+                <input type="checkbox" id="allow-text" checked>
+                <span>Basic Text (p, h1-h6)</span>
+              </label>
+              <label class="checkbox-label" title="Allow b, i, strong, em, code, pre, blockquote, ul, ol, li">
+                <input type="checkbox" id="allow-formatting" checked>
+                <span>Formatting (b, i, code)</span>
+              </label>
+              <label class="checkbox-label" title="Allow safe links with http/https">
+                <input type="checkbox" id="allow-links" checked>
+                <span>Safe Links (a[href])</span>
+              </label>
+              <label class="checkbox-label" title="Allow safe images with http/https">
+                <input type="checkbox" id="allow-images" checked>
+                <span>Images (img[src])</span>
+              </label>
+              <label class="checkbox-label" title="Allow table, tr, th, td">
+                <input type="checkbox" id="allow-tables" checked>
+                <span>Tables (table, td)</span>
+              </label>
+              <label class="checkbox-label" title="Enforce rel='noopener noreferrer' and target='_blank' on links">
+                <input type="checkbox" id="enforce-noopener" checked>
+                <span>Harden External Links</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="action-bar">
+            <button id="sanitize-btn" class="btn btn-primary">Sanitize HTML Now</button>
+            <button id="clear-input-btn" class="btn btn-secondary">Clear Input</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Output & Sandboxed Preview Column -->
+        <div class="tool-panel glass-panel">
+          <div class="output-tab-bar">
+            <button id="tab-code-btn" class="output-tab active">Sanitized Code</button>
+            <button id="tab-preview-btn" class="output-tab">Safe Sandboxed Preview</button>
+            <button id="tab-audit-btn" class="output-tab">Threat Audit Log</button>
+          </div>
+
+          <!-- Audit Metrics -->
+          <div class="audit-stats">
+            <div class="audit-stat-card">
+              <div id="stat-tags-removed" class="audit-stat-val threat">0</div>
+              <div class="audit-stat-label">Tags Dropped</div>
+            </div>
+            <div class="audit-stat-card">
+              <div id="stat-attrs-stripped" class="audit-stat-val threat">0</div>
+              <div class="audit-stat-label">Event/Bad Attrs</div>
+            </div>
+            <div class="audit-stat-card">
+              <div id="stat-uris-defused" class="audit-stat-val threat">0</div>
+              <div class="audit-stat-label">URIs Neutralized</div>
+            </div>
+            <div class="audit-stat-card">
+              <div id="stat-chars-diff" class="audit-stat-val">0 / 0</div>
+              <div class="audit-stat-label">Bytes In / Out</div>
+            </div>
+          </div>
+
+          <!-- View 1: Sanitized Code Output -->
+          <div id="view-code" style="display: flex; flex-direction: column; flex: 1; position: relative;">
+            <textarea 
+              id="sanitized-html-output" 
+              class="form-textarea" 
+              readonly 
+              placeholder="Sanitized safe HTML will appear here..."
+              style="min-height: 280px; padding-right: 4.5rem;"
+            ></textarea>
+            <button id="copy-sanitized-btn" class="copy-btn" style="top: 0.75rem; right: 0.75rem;">Copy Code</button>
+          </div>
+
+          <!-- View 2: Sandboxed Preview Iframe -->
+          <div id="view-preview" style="display: none; flex-direction: column; flex: 1;">
+            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.4rem; display: flex; align-items: center; justify-content: space-between;">
+              <span><strong>Sandbox Isolation Active:</strong> Scripts and popups completely disabled.</span>
+              <span id="preview-tag-count" style="font-family: monospace;">0 elements</span>
+            </div>
+            <div class="preview-frame-container">
+              <!-- sandbox attribute with no permissions guarantees no script execution -->
+              <iframe id="preview-iframe" class="preview-frame" sandbox="" title="Sandboxed HTML Preview"></iframe>
+            </div>
+          </div>
+
+          <!-- View 3: Threat Audit Log -->
+          <div id="view-audit" style="display: none; flex-direction: column; flex: 1;">
+            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.4rem;">
+              Security inspection log of stripped elements & neutralizations:
+            </div>
+            <div id="audit-log-container" class="audit-log-list">
+              <div class="log-item info">No threats inspected yet. Enter HTML and click Sanitize.</div>
+            </div>
+          </div>
+
+          <div class="action-bar" style="margin-top: 0.75rem;">
+            <button id="copy-sanitized-btn2" class="btn btn-secondary">Copy Sanitized HTML</button>
+          </div>
+        </div>
       </div>
-    
+
+      <!-- Educational Safety Details -->
+      <div class="tool-panel glass-panel" style="margin-top: 1.5rem;">
+        <h2 class="panel-title">Understanding HTML Sanitization & XSS Defense</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; color: var(--text-secondary); font-size: 0.925rem; line-height: 1.6;">
+          <div>
+            <h3 style="color: var(--text-primary); font-size: 1.05rem; margin-bottom: 0.4rem;">Cross-Site Scripting (XSS)</h3>
+            <p>XSS attacks inject malicious JavaScript into web applications viewed by other users. Attackers use tags like <code>&lt;script&gt;</code>, embedded vector triggers like <code>&lt;img onerror="..."&gt;</code>, or disguised protocols like <code>href="javascript:..."</code> to hijack sessions and exfiltrate credentials.</p>
+          </div>
+          <div>
+            <h3 style="color: var(--text-primary); font-size: 1.05rem; margin-bottom: 0.4rem;">Whitelist Filtering Principle</h3>
+            <p>Rather than trying to blacklist known bad strings (which can be bypassed with obfuscation and character encodings), a robust sanitizer enforces strict whitelisting: only designated semantic tags and attributes are permitted, and all untrusted elements are pruned.</p>
+          </div>
+          <div>
+            <h3 style="color: var(--text-primary); font-size: 1.05rem; margin-bottom: 0.4rem;">Sandboxed Iframes</h3>
+            <p>The preview pane leverages the browser's native <code>sandbox=""</code> isolation. An empty sandbox flag strictly blocks script execution, form submission, popup windows, and top-level navigation, providing total containment.</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
 
@@ -62,7 +330,7 @@
     "@type": "WebApplication",
     "name": "HTML Sanitizer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/html-sanitizer/",
-    "description": "Cleans malicious scripting triggers from HTML tags.",
+    "description": "Cleans malicious scripting triggers and XSS exploits from HTML tags client-side.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

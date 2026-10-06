@@ -4,14 +4,238 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CPM Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your CPM Calculator online.">
-  <meta name="keywords" content="marketing, digital, advertising, free, online, tool, utility">
+  <meta name="description" content="Calculate Cost Per Mille (CPM), Total Ad Spend, or Total Impressions instantly. Enter any two parameters to solve the third with digital advertising industry benchmarks.">
+  <meta name="keywords" content="cpm calculator, cost per mille, cost per thousand impressions, ad spend calculator, digital marketing calculator, facebook ads cpm, google ads cpm, cpc, ctr">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/cpm-calculator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .cpm-layout-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .cpm-layout-grid {
+        grid-template-columns: 1.15fr 1fr;
+        align-items: start;
+      }
+    }
+    .mode-tab-bar {
+      display: flex;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.25rem;
+      gap: 0.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .mode-tab {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.6rem 0.5rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+      user-select: none;
+    }
+    .mode-tab:hover {
+      color: var(--text-primary);
+    }
+    .mode-tab.active {
+      background: var(--accent);
+      color: #ffffff;
+    }
+    .input-affix-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-affix-prefix {
+      position: absolute;
+      left: 0.85rem;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      pointer-events: none;
+      font-size: 0.95rem;
+      user-select: none;
+    }
+    .input-affix-suffix {
+      position: absolute;
+      right: 0.85rem;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      pointer-events: none;
+      font-size: 0.85rem;
+      user-select: none;
+    }
+    .input-affix-wrap.has-prefix input {
+      padding-left: 2rem;
+    }
+    .input-affix-wrap.has-suffix input {
+      padding-right: 2.2rem;
+    }
+    .currency-pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .curr-pill {
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      border-radius: var(--radius-full);
+      padding: 0.3rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .curr-pill:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+    .curr-pill.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+    .hero-cpm-card {
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.15), rgba(137, 170, 204, 0.05));
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+    .hero-cpm-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .hero-cpm-val {
+      font-size: clamp(2.5rem, 5vw, 3.4rem);
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.1;
+      margin: 0.35rem 0;
+      letter-spacing: -0.02em;
+    }
+    .hero-cpm-sub {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .kpi-row-4 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    @media (min-width: 576px) {
+      .kpi-row-4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    .kpi-mini-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem;
+      text-align: center;
+    }
+    .kpi-mini-card .kpi-label {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .kpi-mini-card .kpi-val {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-top: 0.2rem;
+    }
+    .benchmark-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+    .benchmark-table th {
+      text-align: left;
+      padding: 0.6rem 0.5rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+    }
+    .benchmark-table td {
+      padding: 0.6rem 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+    }
+    .bench-apply-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      border-radius: var(--radius-sm);
+      padding: 0.2rem 0.55rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .bench-apply-btn:hover {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+    .toast-pill {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      color: var(--text-primary);
+      border: 1px solid var(--accent);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      z-index: 1100;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+    .toast-pill.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,42 +251,205 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>CPM Calculator</h1>
-        <p class="tool-description">Create, analyze, and manage your CPM Calculator online.</p>
+        <p class="tool-description">Solve any parameter in the Cost Per Mille (CPM) 3-way equation: CPM, Total Ad Spend, or Total Impressions. Compare against digital channel industry benchmarks.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>CPM Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your CPM Calculator online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, advertising</div>
-            <div><strong>Category:</strong> digital-marketing</div>
-          </div>
+      <!-- Currency Selector Bar -->
+      <div style="display: flex; justify-content: flex-end; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+        <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">CURRENCY:</span>
+        <div class="currency-pill-list" id="currency-pills">
+          <button type="button" class="curr-pill active" data-currency="USD" data-symbol="$">USD ($)</button>
+          <button type="button" class="curr-pill" data-currency="EUR" data-symbol="€">EUR (€)</button>
+          <button type="button" class="curr-pill" data-currency="GBP" data-symbol="£">GBP (£)</button>
+          <button type="button" class="curr-pill" data-currency="CAD" data-symbol="CA$">CAD (CA$)</button>
+          <button type="button" class="curr-pill" data-currency="AUD" data-symbol="A$">AUD (A$)</button>
+          <button type="button" class="curr-pill" data-currency="JPY" data-symbol="¥">JPY (¥)</button>
+          <button type="button" class="curr-pill" data-currency="AED" data-symbol="AED ">AED</button>
+          <button type="button" class="curr-pill" data-currency="INR" data-symbol="₹">INR (₹)</button>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- Calculator Layout Grid -->
+      <div class="cpm-layout-grid">
+
+        <!-- Left Column: Solver Workspace -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+              <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+              <line x1="4" y1="22" x2="4" y2="15"></line>
+            </svg>
+            3-Way Equation Solver
+          </div>
+
+          <!-- Mode Switcher Tabs -->
+          <div class="mode-tab-bar" id="mode-tabs">
+            <button type="button" class="mode-tab active" data-mode="solve-cpm">1. Find CPM</button>
+            <button type="button" class="mode-tab" data-mode="solve-spend">2. Find Ad Spend</button>
+            <button type="button" class="mode-tab" data-mode="solve-impressions">3. Find Impressions</button>
+          </div>
+
+          <!-- Equation Inputs Form -->
+          <form id="cpm-form" onsubmit="return false;">
+            <!-- Field 1: Total Ad Spend -->
+            <div class="form-group" id="group-spend">
+              <label for="input-ad-spend" id="label-spend">Total Ad Spend / Cost</label>
+              <div class="input-affix-wrap has-prefix">
+                <span class="input-affix-prefix curr-prefix">$</span>
+                <input type="number" id="input-ad-spend" class="form-input" min="0" step="any" value="2500" placeholder="2500">
+              </div>
+            </div>
+
+            <!-- Field 2: Total Impressions -->
+            <div class="form-group" id="group-impressions" style="margin-top: 0.85rem;">
+              <label for="input-impressions" id="label-impressions">Total Ad Impressions</label>
+              <input type="number" id="input-impressions" class="form-input" min="1" step="1000" value="350000" placeholder="350000">
+              <span style="font-size: 0.72rem; color: var(--text-tertiary);" id="hint-impressions">Number of times ads were viewed</span>
+            </div>
+
+            <!-- Field 3: CPM (Cost Per Thousand) -->
+            <div class="form-group" id="group-cpm" style="margin-top: 0.85rem;">
+              <label for="input-cpm" id="label-cpm">Cost Per Mille (CPM)</label>
+              <div class="input-affix-wrap has-prefix">
+                <span class="input-affix-prefix curr-prefix">$</span>
+                <input type="number" id="input-cpm" class="form-input" min="0" step="any" value="7.14" placeholder="7.14" readonly style="opacity: 0.75;">
+              </div>
+              <span style="font-size: 0.72rem; color: var(--text-tertiary);" id="hint-cpm">Cost per 1,000 ad impressions (Calculated)</span>
+            </div>
+
+            <!-- Optional Engagement & Funnel Inputs -->
+            <div style="margin-top: 1.25rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+              <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                Optional Performance Est. (CTR &amp; Conversion Rate)
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem;">
+                <div class="form-group">
+                  <label for="input-ctr">Click-Through Rate (CTR)</label>
+                  <div class="input-affix-wrap has-suffix">
+                    <input type="number" id="input-ctr" class="form-input" min="0" max="100" step="0.05" value="1.20" placeholder="1.2">
+                    <span class="input-affix-suffix">%</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="input-cvr">Conversion Rate (CVR)</label>
+                  <div class="input-affix-wrap has-suffix">
+                    <input type="number" id="input-cvr" class="form-input" min="0" max="100" step="0.1" value="3.5" placeholder="3.5">
+                    <span class="input-affix-suffix">%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="action-bar" style="margin-top: 1.25rem;">
+              <button type="button" class="btn btn-secondary" id="reset-cpm-btn" style="flex: 1;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                Reset
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Right Column: Results & Industry Benchmarks -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+            Computed Metric &amp; Performance
+          </div>
+
+          <!-- Hero Metric Box -->
+          <div class="hero-cpm-card">
+            <div class="hero-cpm-label" id="hero-result-label">Computed Cost Per Mille (CPM)</div>
+            <div class="hero-cpm-val" id="hero-result-val">$7.14</div>
+            <div class="hero-cpm-sub">
+              <span>Cost Per Impression (CPI): <strong id="hero-cpi-val" style="color: var(--text-primary);">$0.0071</strong></span>
+              <span>Total Ad Spend: <strong id="hero-spend-summary" style="color: var(--text-primary);">$2,500.00</strong></span>
+            </div>
+          </div>
+
+          <!-- Funnel KPIs -->
+          <div class="kpi-row-4">
+            <div class="kpi-mini-card">
+              <div class="kpi-label">Est. Clicks</div>
+              <div class="kpi-val" id="kpi-est-clicks" style="color: var(--accent);">4,200</div>
+            </div>
+            <div class="kpi-mini-card">
+              <div class="kpi-label">Effective CPC</div>
+              <div class="kpi-val" id="kpi-eff-cpc">$0.60</div>
+            </div>
+            <div class="kpi-mini-card">
+              <div class="kpi-label">Est. Conversions</div>
+              <div class="kpi-val" id="kpi-est-conversions" style="color: var(--success);">147</div>
+            </div>
+            <div class="kpi-mini-card">
+              <div class="kpi-label">Est. CPA</div>
+              <div class="kpi-val" id="kpi-est-cpa">$17.01</div>
+            </div>
+          </div>
+
+          <!-- 1-Click Copy Result Button -->
+          <div class="action-bar" style="margin-top: 1rem;">
+            <button type="button" class="btn btn-primary" id="copy-result-btn" style="flex: 1;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              1-Click Copy Metric Result
+            </button>
+          </div>
+
+          <!-- CPM Benchmarks Reference Table -->
+          <div style="margin-top: 1.25rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">Channel CPM Benchmarks</span>
+              <span style="font-size: 0.72rem; color: var(--text-secondary);">Industry Median</span>
+            </div>
+            <div class="table-responsive">
+              <table class="benchmark-table">
+                <thead>
+                  <tr>
+                    <th>Advertising Channel</th>
+                    <th>Average CPM Range</th>
+                    <th style="text-align: right;">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="benchmark-tbody">
+                  <!-- Populated via script -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   </main>
+
+  <!-- Toast -->
+  <div class="toast-pill" id="toast-msg">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--success);">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span id="toast-text">Result copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "CPM Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/cpm-calculator/",
-    "description": "Create, analyze, and manage your CPM Calculator online.",
+    "description": "Calculate digital marketing Cost Per Mille (CPM), Ad Spend, and Impressions with advertising channel benchmarks.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

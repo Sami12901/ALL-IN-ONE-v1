@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CSS Box Shadow Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Visually design CSS box shadows and copy code.">
-  <meta name="keywords" content="shadow, box, css, visual, generator, free, online, tool, utility">
+  <meta name="description" content="Visually design CSS box shadows, multi-layer realistic shadows, presets, and copy production-ready CSS code.">
+  <meta name="keywords" content="shadow, box shadow, css, multi layer, visual, generator, web design, free, online, tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/box-shadow-generator/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,153 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+  <style>
+    .preset-chip-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .preset-chip {
+      padding: 0.45rem 0.9rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.825rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .preset-chip:hover {
+      background: var(--accent-glow);
+      color: var(--text-primary);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .preset-chip.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+    .layers-container {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1rem;
+      scrollbar-width: thin;
+    }
+    .layer-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.75rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: var(--transition);
+    }
+    .layer-tab.active {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .layer-del-btn {
+      background: transparent;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      padding: 0 0.15rem;
+      font-size: 1rem;
+      line-height: 1;
+      opacity: 0.7;
+    }
+    .layer-del-btn:hover {
+      opacity: 1;
+      color: var(--error);
+    }
+    .preview-stage-box {
+      width: 100%;
+      min-height: 340px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: var(--bg-primary);
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s ease;
+      padding: 2.5rem;
+    }
+    .demo-target {
+      width: 180px;
+      height: 180px;
+      border-radius: 16px;
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: box-shadow 0.15s ease, border-radius 0.2s ease, background 0.2s ease;
+      user-select: none;
+      text-align: center;
+      padding: 1rem;
+    }
+    .control-row {
+      display: grid;
+      grid-template-columns: 120px 1fr 65px;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    @media (max-width: 500px) {
+      .control-row {
+        grid-template-columns: 100px 1fr 50px;
+        gap: 0.5rem;
+      }
+    }
+    .color-picker-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+    .color-input-bubble {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      padding: 0;
+      cursor: pointer;
+      background: transparent;
+    }
+    .code-preview-pre {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      font-family: monospace;
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      white-space: pre-wrap;
+      word-break: break-all;
+      position: relative;
+      line-height: 1.5;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,26 +174,162 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>CSS Box Shadow Generator</h1>
-        <p class="tool-description">Visually design CSS box shadows and copy code.</p>
+        <p class="tool-description">Visually craft realistic multi-layer CSS box shadows, explore designer presets, and copy clean CSS code instantly.</p>
+      </div>
+
+      <!-- Quick Presets -->
+      <div class="preset-chip-list" id="preset-list">
+        <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-tertiary); align-self: center; margin-right: 0.25rem;">Presets:</span>
+        <button type="button" class="preset-chip active" data-preset="soft-glow">Soft Glow</button>
+        <button type="button" class="preset-chip" data-preset="floating">Floating 3D</button>
+        <button type="button" class="preset-chip" data-preset="neumorphic">Neumorphic</button>
+        <button type="button" class="preset-chip" data-preset="dark-luxury">Dark Luxury</button>
+        <button type="button" class="preset-chip" data-preset="minimal-card">Minimal Elevation</button>
+        <button type="button" class="preset-chip" data-preset="neon-cyber">Neon Cyber</button>
+        <button type="button" class="preset-chip" data-preset="deep-inset">Pressed Inset</button>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>CSS Box Shadow Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Visually design CSS box shadows and copy code.</div>
-            <div><strong>Inputs:</strong> shadow, box, css, visual, generator</div>
-            <div><strong>Category:</strong> color</div>
+      <div class="tool-workarea split-view">
+        <!-- Controls Column -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+            <h2 class="panel-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">Layer Controls</h2>
+            <button type="button" id="add-layer-btn" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">
+              + Add Shadow Layer
+            </button>
+          </div>
+
+          <!-- Shadow Layer Tabs -->
+          <div>
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-tertiary); display: block; margin-bottom: 0.4rem;">Active Layers</span>
+            <div class="layers-container" id="layers-tabs">
+              <!-- Dynamically populated layer pills -->
+            </div>
+          </div>
+
+          <!-- Active Layer Adjustments -->
+          <div style="display: flex; flex-direction: column; gap: 1rem;" id="active-layer-controls">
+            <!-- Horizontal Offset -->
+            <div class="control-row">
+              <label for="slider-x" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">X-Offset</label>
+              <input type="range" id="slider-x" class="range-slider" min="-100" max="100" value="0">
+              <span class="range-value" id="val-x">0px</span>
+            </div>
+
+            <!-- Vertical Offset -->
+            <div class="control-row">
+              <label for="slider-y" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Y-Offset</label>
+              <input type="range" id="slider-y" class="range-slider" min="-100" max="100" value="12">
+              <span class="range-value" id="val-y">12px</span>
+            </div>
+
+            <!-- Blur Radius -->
+            <div class="control-row">
+              <label for="slider-blur" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Blur Radius</label>
+              <input type="range" id="slider-blur" class="range-slider" min="0" max="100" value="28">
+              <span class="range-value" id="val-blur">28px</span>
+            </div>
+
+            <!-- Spread Radius -->
+            <div class="control-row">
+              <label for="slider-spread" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Spread Radius</label>
+              <input type="range" id="slider-spread" class="range-slider" min="-50" max="50" value="-4">
+              <span class="range-value" id="val-spread">-4px</span>
+            </div>
+
+            <!-- Color and Alpha -->
+            <div class="control-row">
+              <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Shadow Color</label>
+              <div class="color-picker-wrapper">
+                <input type="color" id="shadow-color" class="color-input-bubble" value="#4e85bf">
+                <input type="text" id="shadow-hex-text" class="form-input" style="padding: 0.35rem 0.6rem; font-family: monospace; font-size: 0.85rem; width: 100px;" value="#4e85bf">
+              </div>
+              <span></span>
+            </div>
+
+            <!-- Opacity -->
+            <div class="control-row">
+              <label for="slider-opacity" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Opacity</label>
+              <input type="range" id="slider-opacity" class="range-slider" min="0" max="100" value="35">
+              <span class="range-value" id="val-opacity">35%</span>
+            </div>
+
+            <!-- Inset Toggle -->
+            <div style="display: flex; align-items: center; gap: 0.6rem; margin-top: 0.25rem;">
+              <label class="checkbox-label" style="min-height: auto;">
+                <input type="checkbox" id="check-inset">
+                <span>Inset (Inner shadow)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Box & Canvas Cosmetics -->
+          <div style="border-top: 1px solid var(--border); padding-top: 1rem; margin-top: 0.5rem;">
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 0.75rem;">Stage & Target Customization</span>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label for="box-bg-color" style="font-size: 0.8rem;">Box Background</label>
+                <div class="color-picker-wrapper">
+                  <input type="color" id="box-bg-color" class="color-input-bubble" value="#1e2430">
+                  <span id="box-bg-hex" style="font-size: 0.8rem; font-family: monospace;">#1e2430</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="stage-bg-color" style="font-size: 0.8rem;">Stage Background</label>
+                <div class="color-picker-wrapper">
+                  <input type="color" id="stage-bg-color" class="color-input-bubble" value="#0d1117">
+                  <span id="stage-bg-hex" style="font-size: 0.8rem; font-family: monospace;">#0d1117</span>
+                </div>
+              </div>
+            </div>
+            <div class="control-row" style="margin-top: 0.75rem;">
+              <label for="slider-radius" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Corner Radius</label>
+              <input type="range" id="slider-radius" class="range-slider" min="0" max="100" value="16">
+              <span class="range-value" id="val-radius">16px</span>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Preview & Output Column -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">Interactive Stage Preview</h2>
+          
+          <div class="preview-stage-box" id="preview-stage">
+            <div class="demo-target" id="preview-target">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+                <rect x="3" y="3" width="18" height="18" rx="4"></rect>
+                <line x1="9" y1="3" x2="9" y2="21"></line>
+              </svg>
+              <span>Box Shadow</span>
+              <span style="font-size: 0.75rem; font-weight: 400; color: var(--text-tertiary);" id="layer-count-label">1 Layer Active</span>
+            </div>
+          </div>
+
+          <!-- Code Output -->
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-weight: 600; font-size: 0.9rem;">Generated CSS Code</span>
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <label class="checkbox-label" style="min-height: auto; font-size: 0.8rem;">
+                  <input type="checkbox" id="check-vendor" checked>
+                  <span>Include -webkit</span>
+                </label>
+                <button type="button" class="btn btn-primary" id="copy-css-btn" style="padding: 0.45rem 1rem; font-size: 0.85rem;">
+                  Copy CSS
+                </button>
+              </div>
+            </div>
+            
+            <pre class="code-preview-pre"><code id="css-code-display">box-shadow: 0px 12px 28px -4px rgba(78, 133, 191, 0.35);</code></pre>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 0.25rem;">
+            <button type="button" class="btn btn-secondary" id="reset-btn" style="font-size: 0.8rem; padding: 0.4rem 0.85rem;">
+              Reset to Default
+            </button>
+          </div>
+        </div>
       </div>
     
     </div>
@@ -62,7 +345,7 @@
     "@type": "WebApplication",
     "name": "CSS Box Shadow Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/box-shadow-generator/",
-    "description": "Visually design CSS box shadows and copy code.",
+    "description": "Visually design CSS box shadows, multi-layer realistic shadows, presets, and copy production-ready CSS code.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

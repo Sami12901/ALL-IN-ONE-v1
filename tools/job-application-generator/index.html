@@ -4,14 +4,236 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Job Application Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Generate complete job applications and email templates.">
-  <meta name="keywords" content="cv, resume, job, career, job application generator, free, online, tool, utility">
+  <meta name="description" content="Generate bespoke formal job application letters, direct recruiter email pitches, and LinkedIn InMails tailored to your target company and skills.">
+  <meta name="keywords" content="job application generator, cover letter builder, recruiter email pitch, linkedin inmail generator, career portfolio, job pitch">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/job-application-generator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Job Application Generator Specific Styles */
+    .app-workarea {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+
+    @media (min-width: 1024px) {
+      .app-workarea {
+        grid-template-columns: 1.05fr 1.15fr;
+      }
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+
+    @media (max-width: 640px) {
+      .form-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .section-legend {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 1.25rem 0 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-legend:first-of-type {
+      margin-top: 0;
+    }
+
+    /* Format Switcher Tabs */
+    .format-tabs {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--bg-tertiary);
+      padding: 0.35rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      margin-bottom: 1.25rem;
+      overflow-x: auto;
+    }
+
+    .format-tab-btn {
+      flex: 1;
+      min-width: 130px;
+      padding: 0.65rem 0.85rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .format-tab-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .format-tab-btn.active {
+      background: var(--surface);
+      color: var(--accent);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Preview Sheet - Stationery Aesthetic */
+    .stationery-sheet {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 2.25rem;
+      min-height: 580px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      position: relative;
+      font-family: var(--font-sans);
+      color: var(--text-primary);
+      line-height: 1.7;
+      transition: var(--transition);
+    }
+
+    .stationery-sheet::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--accent-gradient);
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+    }
+
+    .sheet-header-meta {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .applicant-brand h3 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .applicant-brand p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin: 0.2rem 0 0;
+    }
+
+    .sheet-date-stamp {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      text-align: right;
+    }
+
+    .sheet-body {
+      white-space: pre-line;
+      font-size: 0.95rem;
+      word-break: break-word;
+    }
+
+    .sheet-body p {
+      margin-bottom: 1.15rem;
+    }
+
+    .subject-pill {
+      display: inline-block;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      padding: 0.5rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      width: 100%;
+    }
+
+    .meta-stat-counter {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .meta-stat-counter span {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    /* Print Styles */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      app-header, app-breadcrumbs, app-footer, .tool-header, .form-column, .action-toolbar, .format-tabs, .meta-stat-counter {
+        display: none !important;
+      }
+      #print-sheet, #print-sheet * {
+        visibility: visible;
+      }
+      #print-sheet {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 2.5cm;
+        background: #ffffff !important;
+        color: #111827 !important;
+        box-shadow: none !important;
+        border: none !important;
+      }
+      #print-sheet::before {
+        display: none;
+      }
+      #print-sheet .sheet-header-meta {
+        border-color: #e5e7eb !important;
+      }
+      #print-sheet .applicant-brand h3 {
+        color: #111827 !important;
+      }
+      #print-sheet .applicant-brand p, #print-sheet .sheet-date-stamp {
+        color: #4b5563 !important;
+      }
+      #print-sheet .subject-pill {
+        background: #f3f4f6 !important;
+        color: #111827 !important;
+        border-color: #d1d5db !important;
+      }
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,33 +249,186 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Job Application Generator</h1>
-        <p class="tool-description">Generate complete job applications and email templates.</p>
+        <p class="tool-description">
+          Synthesize customized formal job applications, executive direct email pitches, and high-conversion LinkedIn InMail outreach tailored to your experience and target role.
+        </p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Job Application Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Generate complete job applications and email templates.</div>
-            <div><strong>Inputs:</strong> cv, resume, job, career, job application generator</div>
-            <div><strong>Category:</strong> cv</div>
+      <div class="app-workarea">
+        
+        <!-- Input Form Panel -->
+        <div class="tool-panel glass-panel form-column">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;">
+            <div class="panel-title" style="border: none; padding: 0; margin: 0;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              Candidate & Target Role
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="button" class="btn btn-secondary" id="btn-load-sample" style="padding: 0.35rem 0.65rem; font-size: 0.785rem;">Load Sample</button>
+              <button type="button" class="btn btn-secondary" id="btn-reset" style="padding: 0.35rem 0.65rem; font-size: 0.785rem;">Clear</button>
+            </div>
           </div>
+
+          <form id="app-form" onsubmit="return false;" style="display: flex; flex-direction: column; gap: 1rem;">
+            
+            <div class="section-legend">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              1. Candidate Information
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="applicantName">Applicant Full Name *</label>
+                <input type="text" id="applicantName" class="form-input" placeholder="e.g. Alex Morgan" required>
+              </div>
+              <div class="form-group">
+                <label for="applicantContact">Contact Info (Email & Phone)</label>
+                <input type="text" id="applicantContact" class="form-input" placeholder="e.g. alex.morgan@email.com | +1 555-019-2834">
+              </div>
+            </div>
+
+            <div class="section-legend">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+              2. Target Position & Company
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="targetRole">Target Job Role *</label>
+                <input type="text" id="targetRole" class="form-input" placeholder="e.g. Staff Full-Stack Engineer" required>
+              </div>
+              <div class="form-group">
+                <label for="companyName">Target Company Name *</label>
+                <input type="text" id="companyName" class="form-input" placeholder="e.g. Acme Cloud Corp" required>
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="hiringManager">Hiring Manager / Recruiter Name</label>
+                <input type="text" id="hiringManager" class="form-input" placeholder="e.g. Dr. Jordan Reed (or 'Hiring Team')">
+              </div>
+              <div class="form-group">
+                <label for="toneStyle">Application Tone</label>
+                <select id="toneStyle" class="form-select">
+                  <option value="executive">Executive & Strategic</option>
+                  <option value="modern" selected>Modern & High-Impact</option>
+                  <option value="technical">Technical & Metrics-Driven</option>
+                  <option value="warm">Warm & Conversational</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="section-legend">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              3. Core Competencies & Value Proposition
+            </div>
+
+            <div class="form-group">
+              <label for="keySkills">Key Skills (Comma separated) *</label>
+              <input type="text" id="keySkills" class="form-input" placeholder="e.g. TypeScript, React 19, Distributed Microservices, AWS, GraphQL" required>
+            </div>
+
+            <div class="form-group">
+              <label for="experienceSummary">Relevant Experience & Highlights *</label>
+              <textarea id="experienceSummary" class="form-textarea" style="min-height: 110px;" placeholder="Summarize your professional tenure, scale, and high-impact accomplishments..." required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="reasonForApplying">Reason for Applying / Why This Company? *</label>
+              <textarea id="reasonForApplying" class="form-textarea" style="min-height: 90px;" placeholder="What excites you about their mission, engineering culture, or market leadership?" required></textarea>
+            </div>
+
+          </form>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Preview & Output Panel -->
+        <div class="tool-panel glass-panel">
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <div class="panel-title" style="border: none; padding: 0; margin: 0;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              Live Application Preview
+            </div>
+
+            <!-- Action Toolbar -->
+            <div class="action-bar action-toolbar" style="margin: 0;">
+              <button type="button" class="btn btn-secondary" id="btn-copy">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy to Clipboard
+              </button>
+              <button type="button" class="btn btn-secondary" id="btn-print">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                Print Letter
+              </button>
+              <button type="button" class="btn btn-primary" id="btn-download">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download (.txt)
+              </button>
+            </div>
+          </div>
+
+          <!-- Format Switcher Tabs -->
+          <div class="format-tabs" role="tablist">
+            <button type="button" class="format-tab-btn active" data-format="letter" role="tab" aria-selected="true">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              1. Full Formal Letter
+            </button>
+            <button type="button" class="format-tab-btn" data-format="email" role="tab" aria-selected="false">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              2. Direct Email Pitch
+            </button>
+            <button type="button" class="format-tab-btn" data-format="inmail" role="tab" aria-selected="false">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+              3. LinkedIn InMail
+            </button>
+          </div>
+
+          <!-- Stationery Sheet Canvas -->
+          <div class="stationery-sheet" id="print-sheet">
+            <div class="sheet-header-meta">
+              <div class="applicant-brand">
+                <h3 id="display-applicant-name">Alex Morgan</h3>
+                <p id="display-applicant-contact">alex.morgan@email.com | +1 555-019-2834</p>
+              </div>
+              <div class="sheet-date-stamp">
+                <span id="display-date">October 6, 2026</span><br>
+                <span id="display-target-company" style="font-weight: 600; color: var(--accent);">Acme Cloud Corp</span>
+              </div>
+            </div>
+
+            <!-- Subject Line (for Email & Inmail) -->
+            <div id="subject-container" class="subject-pill" style="display: none;">
+              <strong>Subject:</strong> <span id="display-subject">Application for Staff Full-Stack Engineer</span>
+            </div>
+
+            <div class="sheet-body" id="display-body">
+              <!-- Content injected via JS -->
+            </div>
+          </div>
+
+          <!-- Word / Char Count Footer -->
+          <div class="meta-stat-counter">
+            <div>Words: <span id="stat-words">0</span></div>
+            <div>Characters: <span id="stat-chars">0</span></div>
+            <div id="inmail-indicator" style="display: none; margin-left: auto;">
+              InMail Fit: <span id="stat-fit" style="color: var(--success);">Optimal (&lt; 200 words)</span>
+            </div>
+          </div>
+
+        </div>
+
       </div>
-    
+
     </div>
   </main>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
+
+  <!-- Toast Notification Container -->
+  <div id="toast" style="position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; background: var(--surface); color: var(--text-primary); border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 0.85rem 1.25rem; border-radius: var(--radius-md); box-shadow: 0 10px 25px rgba(0,0,0,0.4); display: none; transform: translateY(10px); transition: 0.3s all ease; font-size: 0.9rem; align-items: center; gap: 0.5rem;"></div>
 
   <!-- Structured schema for search engine rich snippets -->
   <script type="application/ld+json">
@@ -62,7 +437,7 @@
     "@type": "WebApplication",
     "name": "Job Application Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/job-application-generator/",
-    "description": "Generate complete job applications and email templates.",
+    "description": "Synthesize customized formal job applications, executive direct email pitches, and high-conversion LinkedIn InMail outreach.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

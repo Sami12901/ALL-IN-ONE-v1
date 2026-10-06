@@ -4,14 +4,157 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Percentage Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Quick percentage and fraction relationship solver.">
-  <meta name="keywords" content="percentage, percent, math, ratio, free, online, tool, utility">
+  <meta name="description" content="Free 4-in-1 percentage solver: calculate percentages of numbers, percent proportions, percentage increase/decrease, and original values before change with live formulas.">
+  <meta name="keywords" content="percentage calculator, percent change, discount calculator, percentage increase, math solver, free online tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/percentage-calculator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .calc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr));
+      gap: 1.5rem;
+    }
+    .solver-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      position: relative;
+      transition: var(--transition);
+      backdrop-filter: blur(12px);
+    }
+    .solver-card:focus-within, .solver-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.3);
+    }
+    .solver-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+    }
+    .solver-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .solver-badge {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      text-transform: uppercase;
+      background: rgba(78, 133, 191, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(78, 133, 191, 0.3);
+    }
+    .inline-math-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .inline-math-row .form-input {
+      font-size: 1.1rem;
+      font-weight: 600;
+      font-family: monospace;
+    }
+    .result-display-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .result-val {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--accent);
+      font-family: monospace;
+      word-break: break-all;
+    }
+    .result-val.positive {
+      color: #34d399;
+    }
+    .result-val.negative {
+      color: #f87171;
+    }
+    .formula-explanation {
+      background: rgba(0, 0, 0, 0.2);
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      font-family: var(--font-sans);
+    }
+    .formula-code {
+      font-family: monospace;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    .presets-wrap {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+    .preset-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.2rem 0.6rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .preset-btn:hover {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+    .radio-toggle-group {
+      display: inline-flex;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.2rem;
+      gap: 0.25rem;
+    }
+    .radio-toggle-btn {
+      padding: 0.35rem 0.85rem;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      font-size: 0.825rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .radio-toggle-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,29 +169,195 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Percentage Calculator</h1>
-        <p class="tool-description">Quick percentage and fraction relationship solver.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Percentage Calculator</h1>
+        <p class="tool-description">Complete 4-in-1 percentage solver for everyday math, finance, discounts, taxes, and academic problems with real-time step formulas.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Percentage Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Quick percentage and fraction relationship solver.</div>
-            <div><strong>Inputs:</strong> percentage, percent, math, ratio</div>
-            <div><strong>Category:</strong> math</div>
+      <!-- 4-in-1 Calculators Grid -->
+      <div class="calc-grid">
+        
+        <!-- Calculator 1: What is X% of Y? -->
+        <section class="solver-card" id="calc-1">
+          <div class="solver-header">
+            <h2 class="solver-title">
+              <span class="solver-badge">1</span>
+              What is X% of Y?
+            </h2>
+            <div class="presets-wrap">
+              <button class="preset-btn" data-c1="15,65">15% of 65</button>
+              <button class="preset-btn" data-c1="20,120">20% of 120</button>
+              <button class="preset-btn" data-c1="8.25,250">8.25% of 250</button>
+            </div>
           </div>
-        </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+          <div class="inline-math-row">
+            <div class="form-group" style="flex: 1; min-width: 100px;">
+              <label for="c1-x">Percentage (X %)</label>
+              <input type="number" step="any" id="c1-x" class="form-input" value="15" placeholder="e.g. 15">
+            </div>
+            <div style="font-weight: 700; color: var(--text-tertiary); padding-top: 1.5rem;">% of</div>
+            <div class="form-group" style="flex: 1; min-width: 100px;">
+              <label for="c1-y">Number (Y)</label>
+              <input type="number" step="any" id="c1-y" class="form-input" value="200" placeholder="e.g. 200">
+            </div>
+          </div>
+
+          <div class="result-display-box">
+            <div>
+              <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-tertiary); font-weight: 600; display: block;">Calculated Result</span>
+              <span id="c1-result" class="result-val">30</span>
+            </div>
+            <button class="btn btn-secondary copy-res-btn" data-target="c1-result" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">
+              Copy Result
+            </button>
+          </div>
+
+          <div class="formula-explanation" id="c1-formula">
+            Formula: <span class="formula-code">(15 ÷ 100) × 200 = 30</span>
+          </div>
+        </section>
+
+        <!-- Calculator 2: X is what percent of Y? -->
+        <section class="solver-card" id="calc-2">
+          <div class="solver-header">
+            <h2 class="solver-title">
+              <span class="solver-badge">2</span>
+              X is what percent of Y?
+            </h2>
+            <div class="presets-wrap">
+              <button class="preset-btn" data-c2="35,50">35 of 50</button>
+              <button class="preset-btn" data-c2="75,250">75 of 250</button>
+              <button class="preset-btn" data-c2="120,80">120 of 80</button>
+            </div>
+          </div>
+
+          <div class="inline-math-row">
+            <div class="form-group" style="flex: 1; min-width: 100px;">
+              <label for="c2-x">Part (X)</label>
+              <input type="number" step="any" id="c2-x" class="form-input" value="45" placeholder="e.g. 45">
+            </div>
+            <div style="font-weight: 700; color: var(--text-tertiary); padding-top: 1.5rem;">is what % of</div>
+            <div class="form-group" style="flex: 1; min-width: 100px;">
+              <label for="c2-y">Whole (Y)</label>
+              <input type="number" step="any" id="c2-y" class="form-input" value="180" placeholder="e.g. 180">
+            </div>
+          </div>
+
+          <div class="result-display-box">
+            <div>
+              <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-tertiary); font-weight: 600; display: block;">Percentage Share</span>
+              <span id="c2-result" class="result-val">25%</span>
+            </div>
+            <button class="btn btn-secondary copy-res-btn" data-target="c2-result" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">
+              Copy Result
+            </button>
+          </div>
+
+          <div class="formula-explanation" id="c2-formula">
+            Formula: <span class="formula-code">(45 ÷ 180) × 100 = 25%</span>
+          </div>
+        </section>
+
+        <!-- Calculator 3: Percentage Increase / Decrease from X to Y -->
+        <section class="solver-card" id="calc-3">
+          <div class="solver-header">
+            <h2 class="solver-title">
+              <span class="solver-badge">3</span>
+              Percentage Increase / Decrease
+            </h2>
+            <div class="presets-wrap">
+              <button class="preset-btn" data-c3="40,50">40 → 50</button>
+              <button class="preset-btn" data-c3="80,72">80 → 72</button>
+              <button class="preset-btn" data-c3="100,125">100 → 125</button>
+            </div>
+          </div>
+
+          <div class="inline-math-row">
+            <div class="form-group" style="flex: 1; min-width: 100px;">
+              <label for="c3-x">Initial Value (From X)</label>
+              <input type="number" step="any" id="c3-x" class="form-input" value="80" placeholder="e.g. 80">
+            </div>
+            <div style="font-weight: 700; color: var(--text-tertiary); padding-top: 1.5rem;">→</div>
+            <div class="form-group" style="flex: 1; min-width: 100px;">
+              <label for="c3-y">Final Value (To Y)</label>
+              <input type="number" step="any" id="c3-y" class="form-input" value="100" placeholder="e.g. 100">
+            </div>
+            <div style="padding-top: 1.5rem;">
+              <button id="c3-swap" class="btn btn-secondary" title="Swap From and To values" style="padding: 0.65rem;">⇄</button>
+            </div>
+          </div>
+
+          <div class="result-display-box">
+            <div>
+              <span id="c3-change-label" style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-tertiary); font-weight: 600; display: block;">Change</span>
+              <span id="c3-result" class="result-val positive">+25.00%</span>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 0.75rem; color: var(--text-tertiary); display: block;">Absolute Difference:</span>
+              <span id="c3-diff" style="font-family: monospace; font-size: 1.1rem; font-weight: 700; color: var(--text-primary);">+20</span>
+            </div>
+            <button class="btn btn-secondary copy-res-btn" data-target="c3-result" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">
+              Copy Result
+            </button>
+          </div>
+
+          <div class="formula-explanation" id="c3-formula">
+            Formula: <span class="formula-code">((100 - 80) ÷ 80) × 100 = +25% Increase</span>
+          </div>
+        </section>
+
+        <!-- Calculator 4: Find Original Value Before X% Change -->
+        <section class="solver-card" id="calc-4">
+          <div class="solver-header">
+            <h2 class="solver-title">
+              <span class="solver-badge">4</span>
+              Find Original Value
+            </h2>
+            <div class="presets-wrap">
+              <button class="preset-btn" data-c4="120,20,inc">$120 (+20%)</button>
+              <button class="preset-btn" data-c4="80,20,dec">$80 (-20%)</button>
+              <button class="preset-btn" data-c4="108,8,inc">$108 (+8% tax)</button>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: flex-end;">
+            <div class="form-group" style="flex: 1; min-width: 120px;">
+              <label for="c4-y">Final Value (Y)</label>
+              <input type="number" step="any" id="c4-y" class="form-input" value="120" placeholder="e.g. 120">
+            </div>
+            <div class="form-group" style="flex: 1; min-width: 100px;">
+              <label for="c4-x">Percentage (X %)</label>
+              <input type="number" step="any" id="c4-x" class="form-input" value="20" placeholder="e.g. 20">
+            </div>
+            <div class="form-group">
+              <label>Change Type</label>
+              <div class="radio-toggle-group">
+                <button type="button" class="radio-toggle-btn active" id="c4-type-inc" data-type="increase">+ Increase</button>
+                <button type="button" class="radio-toggle-btn" id="c4-type-dec" data-type="decrease">- Decrease</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-display-box">
+            <div>
+              <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-tertiary); font-weight: 600; display: block;">Original Value (Before Change)</span>
+              <span id="c4-result" class="result-val">100</span>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 0.75rem; color: var(--text-tertiary); display: block;">Change Amount:</span>
+              <span id="c4-diff" style="font-family: monospace; font-size: 1.1rem; font-weight: 700; color: var(--text-primary);">20</span>
+            </div>
+            <button class="btn btn-secondary copy-res-btn" data-target="c4-result" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">
+              Copy Result
+            </button>
+          </div>
+
+          <div class="formula-explanation" id="c4-formula">
+            Formula: <span class="formula-code">120 ÷ (1 + 0.20) = 100</span>
+          </div>
+        </section>
+
       </div>
-    
     </div>
   </main>
 
@@ -62,7 +371,7 @@
     "@type": "WebApplication",
     "name": "Percentage Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/percentage-calculator/",
-    "description": "Quick percentage and fraction relationship solver.",
+    "description": "4-in-1 percentage solver: calculate percentages of numbers, percent proportions, percentage increase/decrease, and original values before change.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

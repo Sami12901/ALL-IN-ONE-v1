@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>World Clock Tracker - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Displays current times in international cities.">
-  <meta name="keywords" content="world, clock, time, timezone, cities, free, online, tool, utility">
+  <meta name="description" content="Track live international times with moving analog and digital clocks, custom city search, time difference comparator, and meeting planner.">
+  <meta name="keywords" content="world clock, timezone converter, international time, analog clock, london time, new york time, tokyo time, free online tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/world-clock/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,246 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+  <style>
+    /* Control Toolbar */
+    .clock-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .toggle-pill-group {
+      display: inline-flex;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      padding: 3px;
+      border: 1px solid var(--border);
+    }
+    .toggle-pill {
+      border: none;
+      background: transparent;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .toggle-pill.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 2px 6px var(--accent-glow);
+    }
+    /* City Cards Grid */
+    .city-clock-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+    .city-card {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.35rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+    .city-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .city-card.local-card {
+      border-color: var(--accent);
+      background: linear-gradient(180deg, rgba(78, 133, 191, 0.08) 0%, var(--surface) 100%);
+    }
+    .city-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .city-title-box {
+      display: flex;
+      flex-direction: column;
+    }
+    .city-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .city-meta {
+      font-size: 0.775rem;
+      color: var(--text-tertiary);
+      font-weight: 500;
+    }
+    .card-remove-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      font-size: 1.15rem;
+      line-height: 1;
+      padding: 0.2rem;
+      border-radius: 4px;
+      transition: var(--transition);
+    }
+    .card-remove-btn:hover {
+      color: var(--error);
+      background: rgba(239, 68, 68, 0.1);
+    }
+    /* Analog Clock Dial */
+    .analog-clock-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0.25rem 0;
+    }
+    .analog-clock {
+      width: 104px;
+      height: 104px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--bg-tertiary);
+      position: relative;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
+    }
+    .clock-dial-dot {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--text-tertiary);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .clock-hand {
+      position: absolute;
+      bottom: 50%;
+      left: 50%;
+      transform-origin: 50% 100%;
+      border-radius: 4px;
+      transition: transform 0.05s cubic-bezier(0.4, 2.08, 0.55, 0.44);
+    }
+    .hand-hour {
+      width: 3.5px;
+      height: 28px;
+      background: var(--text-primary);
+      margin-left: -1.75px;
+    }
+    .hand-min {
+      width: 2.5px;
+      height: 38px;
+      background: var(--text-secondary);
+      margin-left: -1.25px;
+    }
+    .hand-sec {
+      width: 1.5px;
+      height: 44px;
+      background: var(--accent);
+      margin-left: -0.75px;
+    }
+    .clock-center-hub {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      transform: translate(-50%, -50%);
+      z-index: 5;
+    }
+    /* Digital Output */
+    .digital-time-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .digital-time-display {
+      font-family: var(--font-sans);
+      font-size: 1.65rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--text-primary);
+      line-height: 1.1;
+    }
+    .digital-date-display {
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+    }
+    /* Badges & Comparators */
+    .card-footer-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+      padding-top: 0.75rem;
+      font-size: 0.775rem;
+    }
+    .difference-badge {
+      font-weight: 600;
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      font-size: 0.725rem;
+    }
+    .status-work {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .status-evening {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .status-sleep {
+      background: rgba(168, 85, 247, 0.15);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+    /* Meeting Planner Bar */
+    .meeting-planner-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -24,31 +264,108 @@
 
   <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
+    <div class="container tool-container" style="max-width: 1300px;">
       <div class="tool-header">
         <h1>World Clock Tracker</h1>
-        <p class="tool-description">Displays current times in international cities.</p>
+        <p class="tool-description">International time studio. Live analog and digital synchronized clocks, time difference comparators, custom city search, and timezone meeting planner.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>World Clock Tracker</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Displays current times in international cities.</div>
-            <div><strong>Inputs:</strong> world, clock, time, timezone, cities</div>
-            <div><strong>Category:</strong> utility</div>
+      <!-- Controls Toolbar -->
+      <div class="clock-toolbar">
+        <!-- 12h / 24h Toggle -->
+        <div class="toolbar-group">
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;">Format:</span>
+          <div class="toggle-pill-group" id="format-toggle">
+            <button type="button" class="toggle-pill active" data-format="12">12-Hour</button>
+            <button type="button" class="toggle-pill" data-format="24">24-Hour</button>
+          </div>
+
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; margin-left: 0.5rem;">Clock Face:</span>
+          <div class="toggle-pill-group" id="face-toggle">
+            <button type="button" class="toggle-pill active" data-face="both">Both</button>
+            <button type="button" class="toggle-pill" data-face="digital">Digital Only</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Add Custom City Search -->
+        <div class="toolbar-group">
+          <select id="city-select-picker" class="form-select" style="min-width: 220px; font-size: 0.85rem; padding: 0.4rem 0.75rem;">
+            <option value="" disabled selected>-- Select a City to Add --</option>
+            <optgroup label="North America">
+              <option value="America/New_York|New York|USA">New York (USA)</option>
+              <option value="America/Los_Angeles|Los Angeles|USA">Los Angeles (USA)</option>
+              <option value="America/Chicago|Chicago|USA">Chicago (USA)</option>
+              <option value="America/Toronto|Toronto|Canada">Toronto (Canada)</option>
+              <option value="America/Vancouver|Vancouver|Canada">Vancouver (Canada)</option>
+              <option value="America/Mexico_City|Mexico City|Mexico">Mexico City (Mexico)</option>
+              <option value="Pacific/Honolulu|Honolulu|Hawaii">Honolulu (Hawaii)</option>
+            </optgroup>
+            <optgroup label="Europe">
+              <option value="Europe/London|London|UK">London (UK)</option>
+              <option value="Europe/Paris|Paris|France">Paris (France)</option>
+              <option value="Europe/Berlin|Berlin|Germany">Berlin (Germany)</option>
+              <option value="Europe/Rome|Rome|Italy">Rome (Italy)</option>
+              <option value="Europe/Madrid|Madrid|Spain">Madrid (Spain)</option>
+              <option value="Europe/Amsterdam|Amsterdam|Netherlands">Amsterdam (Netherlands)</option>
+              <option value="Europe/Stockholm|Stockholm|Sweden">Stockholm (Sweden)</option>
+              <option value="Europe/Athens|Athens|Greece">Athens (Greece)</option>
+              <option value="Europe/Moscow|Moscow|Russia">Moscow (Russia)</option>
+              <option value="Europe/Istanbul|Istanbul|Turkey">Istanbul (Turkey)</option>
+            </optgroup>
+            <optgroup label="Asia & Middle East">
+              <option value="Asia/Tokyo|Tokyo|Japan">Tokyo (Japan)</option>
+              <option value="Asia/Dhaka|Dhaka|Bangladesh">Dhaka (Bangladesh)</option>
+              <option value="Asia/Dubai|Dubai|UAE">Dubai (UAE)</option>
+              <option value="Asia/Singapore|Singapore|Singapore">Singapore (Singapore)</option>
+              <option value="Asia/Hong_Kong|Hong Kong|Hong Kong">Hong Kong (HK)</option>
+              <option value="Asia/Seoul|Seoul|South Korea">Seoul (South Korea)</option>
+              <option value="Asia/Bangkok|Bangkok|Thailand">Bangkok (Thailand)</option>
+              <option value="Asia/Kolkata|New Delhi|India">New Delhi (India)</option>
+              <option value="Asia/Shanghai|Shanghai|China">Shanghai (China)</option>
+              <option value="Asia/Riyadh|Riyadh|Saudi Arabia">Riyadh (Saudi Arabia)</option>
+            </optgroup>
+            <optgroup label="Oceania">
+              <option value="Australia/Sydney|Sydney|Australia">Sydney (Australia)</option>
+              <option value="Australia/Melbourne|Melbourne|Australia">Melbourne (Australia)</option>
+              <option value="Australia/Perth|Perth|Australia">Perth (Australia)</option>
+              <option value="Pacific/Auckland|Auckland|New Zealand">Auckland (New Zealand)</option>
+            </optgroup>
+            <optgroup label="South America & Africa">
+              <option value="America/Sao_Paulo|São Paulo|Brazil">São Paulo (Brazil)</option>
+              <option value="America/Buenos_Aires|Buenos Aires|Argentina">Buenos Aires (Argentina)</option>
+              <option value="Africa/Cairo|Cairo|Egypt">Cairo (Egypt)</option>
+              <option value="Africa/Johannesburg|Johannesburg|South Africa">Johannesburg (South Africa)</option>
+              <option value="Africa/Nairobi|Nairobi|Kenya">Nairobi (Kenya)</option>
+            </optgroup>
+          </select>
+          <button type="button" class="btn btn-primary" id="btn-add-city" style="padding: 0.45rem 1rem; font-size: 0.85rem;">
+            + Add City
+          </button>
+        </div>
       </div>
-    
+
+      <!-- Meeting Planner Scrubber -->
+      <div class="meeting-planner-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="font-weight: 700; font-size: 0.85rem; color: var(--text-primary);">Meeting Time Planner:</span>
+            <span style="font-size: 0.8rem; color: var(--text-secondary);" id="planner-offset-label">Live Current Time (0h offset)</span>
+          </div>
+          <button type="button" class="btn btn-secondary" id="btn-reset-planner" style="font-size: 0.75rem; padding: 0.25rem 0.65rem;">
+            Reset to Live
+          </button>
+        </div>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <input type="range" id="planner-slider" class="range-slider" min="0" max="24" step="0.5" value="0">
+          <span class="range-value" id="planner-val" style="font-size: 0.85rem; min-width: 48px;">+0.0 hrs</span>
+        </div>
+      </div>
+
+      <!-- City Cards Container -->
+      <div class="city-clock-grid" id="city-cards-container">
+        <!-- Rendered dynamically by script.js -->
+      </div>
+
     </div>
   </main>
 
@@ -62,10 +379,10 @@
     "@type": "WebApplication",
     "name": "World Clock Tracker",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/world-clock/",
-    "description": "Displays current times in international cities.",
+    "description": "Track live international times with moving analog and digital clocks, custom city search, time difference comparator, and meeting planner.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
+    "browserRequirements": "Requires JavaScript."
   }
   </script>
 </body>

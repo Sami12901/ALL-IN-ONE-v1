@@ -3,15 +3,345 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Business Presentation Suite - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create Company Profiles, Business Proposals, and Sales Reports.">
-  <meta name="keywords" content="slide, presentation, pitch, deck, business presentation suite, free, online, tool, utility">
+  <title>Business Presentation Suite - Executive Slideshow Deck Builder - ALL IN ONE</title>
+  <meta name="description" content="Build executive corporate slideshows with pre-configured slides, slide thumbnail manager, editable canvas, presenter mode, and deck exports.">
+  <meta name="keywords" content="business presentation suite, corporate slideshow builder, executive pitch deck, presenter mode, slide deck maker">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/business-presentation-suite/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    /* Business Presentation Suite Styles */
+    .deck-workarea {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (min-width: 1080px) {
+      .deck-workarea {
+        grid-template-columns: 290px 1fr;
+      }
+    }
+
+    /* Thumbnail Reel / Manager */
+    .thumbnail-manager {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .thumbnail-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      max-height: 600px;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+
+    .slide-thumb-card {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 0.85rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .slide-thumb-card:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateX(2px);
+    }
+
+    .slide-thumb-card.active {
+      background: var(--surface);
+      border-color: var(--accent);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .slide-thumb-number {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      background: rgba(255, 255, 255, 0.05);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .slide-thumb-card.active .slide-thumb-number {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .slide-thumb-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .slide-thumb-title {
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .slide-thumb-type {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* 16:9 Presentation Slide Canvas Stage */
+    .slide-stage-wrapper {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      max-width: 1000px;
+      background: radial-gradient(circle at 20% 20%, #1e2638 0%, #0c0f17 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: clamp(1.5rem, 4vw, 3rem);
+      box-sizing: border-box;
+      color: #f8fafc;
+    }
+
+    .slide-stage-wrapper::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--accent-gradient);
+    }
+
+    /* Decorative slide watermark */
+    .slide-watermark {
+      position: absolute;
+      bottom: 1.25rem;
+      right: 2rem;
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.25);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .slide-header-area h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 3.2vw, 2.5rem);
+      margin: 0;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .slide-header-area p {
+      font-size: clamp(0.85rem, 1.4vw, 1.05rem);
+      color: rgba(255, 255, 255, 0.65);
+      margin: 0.4rem 0 0;
+    }
+
+    .slide-content-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin: 1.25rem 0;
+      width: 100%;
+    }
+
+    /* Slide Card Grids */
+    .slide-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      width: 100%;
+    }
+
+    .slide-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.85rem;
+      width: 100%;
+    }
+
+    .slide-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+      width: 100%;
+    }
+
+    .slide-metric-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      padding: clamp(0.75rem, 1.5vw, 1.25rem);
+      backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .slide-metric-value {
+      font-size: clamp(1.2rem, 2.8vw, 2rem);
+      font-weight: 800;
+      color: var(--accent);
+      margin: 0.25rem 0;
+    }
+
+    .slide-metric-label {
+      font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+      color: rgba(255, 255, 255, 0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .slide-metric-sub {
+      font-size: clamp(0.65rem, 1vw, 0.75rem);
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    /* Timeline / Roadmap items */
+    .roadmap-track {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      position: relative;
+    }
+
+    .roadmap-node {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem;
+      border-top: 3px solid var(--accent);
+    }
+
+    /* Presenter Fullscreen Mode */
+    #presenter-fullscreen-container {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #090c12;
+      z-index: 99999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    #presenter-fullscreen-container.active {
+      display: flex;
+    }
+
+    .presenter-stage {
+      width: 95vw;
+      max-width: 1400px;
+      aspect-ratio: 16 / 9;
+      max-height: 85vh;
+    }
+
+    .presenter-hud {
+      position: absolute;
+      bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 0.5rem 1.25rem;
+      border-radius: var(--radius-full);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      z-index: 100000;
+    }
+
+    .presenter-hud-btn {
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.4rem;
+      border-radius: 50%;
+      transition: var(--transition);
+    }
+
+    .presenter-hud-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: var(--accent);
+    }
+
+    /* Slide Print Layout */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      app-header, app-breadcrumbs, app-footer, .tool-header, .thumbnail-manager, .slide-editor-drawer, .action-toolbar {
+        display: none !important;
+      }
+      #print-all-slides-container, #print-all-slides-container * {
+        visibility: visible;
+      }
+      #print-all-slides-container {
+        display: block !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+      .print-slide-page {
+        page-break-after: always;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        background: #ffffff !important;
+        color: #111827 !important;
+        padding: 2.5cm;
+        box-sizing: border-box;
+        border-bottom: 2px solid #e5e7eb;
+      }
+      .print-slide-page h2 {
+        color: #111827 !important;
+      }
+      .print-slide-page p {
+        color: #4b5563 !important;
+      }
+      .print-slide-page .slide-metric-card {
+        background: #f9fafb !important;
+        border-color: #e5e7eb !important;
+        color: #111827 !important;
+      }
+      .print-slide-page .slide-metric-value {
+        color: #1d4ed8 !important;
+      }
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -24,36 +354,190 @@
 
   <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
-      <div class="tool-header">
-        <h1>Business Presentation Suite</h1>
-        <p class="tool-description">Create Company Profiles, Business Proposals, and Sales Reports.</p>
+    <div class="container tool-container" style="max-width: 1360px;">
+      
+      <!-- Tool Header -->
+      <div class="tool-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h1>Business Presentation Suite</h1>
+          <p class="tool-description">
+            Executive slideshow deck builder. Customize 6 pre-configured strategic slides, manage thumbnails, edit in real-time, launch fullscreen presenter mode (<kbd>F5</kbd>), and export presentations.
+          </p>
+        </div>
+
+        <!-- Deck Global Actions Toolbar -->
+        <div class="action-bar action-toolbar" style="margin: 0;">
+          <button type="button" class="btn btn-primary" id="btn-present-mode">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            Present Deck (<kbd>F5</kbd>)
+          </button>
+          <button type="button" class="btn btn-secondary" id="btn-print-deck">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            Print / PDF Deck
+          </button>
+          <button type="button" class="btn btn-secondary" id="btn-export-json">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Export JSON
+          </button>
+          <button type="button" class="btn btn-secondary" id="btn-export-html">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            Export HTML Deck
+          </button>
+        </div>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Business Presentation Suite</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create Company Profiles, Business Proposals, and Sales Reports.</div>
-            <div><strong>Inputs:</strong> slide, presentation, pitch, deck, business presentation suite</div>
-            <div><strong>Category:</strong> slide</div>
+      <!-- Main Workspace -->
+      <div class="deck-workarea">
+
+        <!-- Column 1: Slide Thumbnail Manager -->
+        <div class="tool-panel glass-panel thumbnail-manager">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.65rem;">
+            <div class="panel-title" style="border: none; padding: 0; margin: 0; font-size: 1.05rem;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+              Deck Slides (<span id="slide-count-badge">6</span>)
+            </div>
+            <div style="display: flex; gap: 0.25rem;">
+              <button type="button" class="btn btn-secondary" id="btn-move-up" style="padding: 0.25rem 0.45rem; font-size: 0.75rem;" title="Move Current Slide Up">&uarr;</button>
+              <button type="button" class="btn btn-secondary" id="btn-move-down" style="padding: 0.25rem 0.45rem; font-size: 0.75rem;" title="Move Current Slide Down">&darr;</button>
+            </div>
+          </div>
+
+          <div class="thumbnail-list" id="thumbnail-list">
+            <!-- Rendered dynamically via JS -->
+          </div>
+
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+            <button type="button" class="btn btn-secondary" id="btn-add-slide" style="flex: 1; font-size: 0.8rem; padding: 0.45rem;">
+              + Add Slide
+            </button>
+            <button type="button" class="btn btn-secondary" id="btn-delete-slide" style="font-size: 0.8rem; padding: 0.45rem; color: var(--error);" title="Delete Current Slide">
+              Delete
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Column 2: Interactive Slide Stage & Canvas Editor -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          
+          <!-- Slide Stage -->
+          <div class="tool-panel glass-panel" style="padding: 1rem; display: flex; flex-direction: column; align-items: center;">
+            
+            <div class="slide-stage-wrapper" id="slide-stage">
+              <!-- Injected by JS based on current slide -->
+            </div>
+
+            <!-- Slide Navigation Bar Below Stage -->
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 0.75rem; padding: 0 0.5rem;">
+              <div style="display: flex; gap: 0.5rem;">
+                <button type="button" class="btn btn-secondary" id="btn-prev-slide" style="padding: 0.35rem 0.75rem;">
+                  &larr; Previous
+                </button>
+                <button type="button" class="btn btn-secondary" id="btn-next-slide" style="padding: 0.35rem 0.75rem;">
+                  Next &rarr;
+                </button>
+              </div>
+
+              <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">
+                Slide <span id="current-slide-num" style="color: var(--accent);">1</span> of <span id="total-slides-num">6</span>
+              </div>
+
+              <div>
+                <button type="button" class="btn btn-secondary" id="btn-quick-present" style="padding: 0.35rem 0.75rem; font-size: 0.825rem;">
+                  Fullscreen
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Slide Editor Drawer -->
+          <div class="tool-panel glass-panel slide-editor-drawer">
+            <div class="panel-title" style="margin-bottom: 0.75rem;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+              Slide Canvas Editor & Speaker Notes
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label for="edit-slide-title">Slide Headline *</label>
+                <input type="text" id="edit-slide-title" class="form-input">
+              </div>
+              <div class="form-group">
+                <label for="edit-slide-subtitle">Slide Subtitle / Category</label>
+                <input type="text" id="edit-slide-subtitle" class="form-input">
+              </div>
+            </div>
+
+            <!-- Dynamic Fields for Slide Specific Details -->
+            <div id="slide-custom-editor-fields" style="display: flex; flex-direction: column; gap: 0.85rem; margin-top: 0.5rem;">
+              <!-- Populated dynamically based on slide template -->
+            </div>
+
+            <div class="form-group" style="margin-top: 0.75rem;">
+              <label for="edit-speaker-notes">Speaker Notes (Presenter Mode Only)</label>
+              <textarea id="edit-speaker-notes" class="form-textarea" style="min-height: 70px;" placeholder="Add private talking points and briefing reminders for presenter mode..."></textarea>
+            </div>
+          </div>
+
+        </div>
+
       </div>
-    
+
     </div>
   </main>
 
+  <!-- Fullscreen Presenter Mode Modal -->
+  <div id="presenter-fullscreen-container">
+    <div class="slide-stage-wrapper presenter-stage" id="presenter-slide-stage">
+      <!-- Fullscreen presentation rendered here -->
+    </div>
+
+    <!-- Presenter HUD -->
+    <div class="presenter-hud">
+      <button type="button" class="presenter-hud-btn" id="hud-prev" title="Previous Slide (Arrow Left)">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+
+      <span style="font-size: 0.85rem; font-weight: 700; color: #ffffff;" id="hud-slide-indicator">1 / 6</span>
+
+      <button type="button" class="presenter-hud-btn" id="hud-next" title="Next Slide (Arrow Right)">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+
+      <div style="width: 1px; height: 18px; background: rgba(255,255,255,0.2);"></div>
+
+      <!-- Elapsed Timer -->
+      <span style="font-family: monospace; font-size: 0.85rem; color: var(--accent); font-weight: 700;" id="hud-timer">00:00</span>
+
+      <div style="width: 1px; height: 18px; background: rgba(255,255,255,0.2);"></div>
+
+      <button type="button" class="presenter-hud-btn" id="hud-notes-toggle" title="Toggle Speaker Notes">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      </button>
+
+      <button type="button" class="presenter-hud-btn" id="hud-exit" title="Exit Fullscreen (Esc)">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+
+    <!-- Speaker Notes Flyout -->
+    <div id="hud-notes-box" style="position: absolute; bottom: 5.5rem; max-width: 600px; background: rgba(15, 23, 42, 0.95); border: 1px solid var(--accent); border-radius: var(--radius-md); padding: 1rem 1.25rem; font-size: 0.9rem; color: #ffffff; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
+      <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--accent); font-weight: 700; margin-bottom: 0.25rem;">Speaker Notes:</div>
+      <div id="hud-notes-content">No speaker notes recorded for this slide.</div>
+    </div>
+  </div>
+
+  <!-- Print Container (Hidden on screen, populated dynamically for printing) -->
+  <div id="print-all-slides-container" style="display: none;"></div>
+
   <!-- Footer Web Component -->
   <app-footer></app-footer>
+
+  <!-- Toast Notification Container -->
+  <div id="toast" style="position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; background: var(--surface); color: var(--text-primary); border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 0.85rem 1.25rem; border-radius: var(--radius-md); box-shadow: 0 10px 25px rgba(0,0,0,0.4); display: none; transform: translateY(10px); transition: 0.3s all ease; font-size: 0.9rem; align-items: center; gap: 0.5rem;"></div>
+
+  <!-- Hidden File Input for Importing Deck JSON -->
+  <input type="file" id="import-json-input" accept=".json" style="display: none;">
 
   <!-- Structured schema for search engine rich snippets -->
   <script type="application/ld+json">
@@ -62,7 +546,7 @@
     "@type": "WebApplication",
     "name": "Business Presentation Suite",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/business-presentation-suite/",
-    "description": "Create Company Profiles, Business Proposals, and Sales Reports.",
+    "description": "Executive corporate slideshow deck builder with full-screen presenter mode, real-time slide canvas, and presentation exports.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

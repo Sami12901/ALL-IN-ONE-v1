@@ -4,14 +4,163 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Email Signature Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your Email Signature Generator online.">
-  <meta name="keywords" content="marketing, digital, email, free, online, tool, utility">
+  <meta name="description" content="Generate beautiful, professional HTML email signatures for Gmail, Outlook, Apple Mail, and Thunderbird. Choose from 4 themes with live preview and rich clipboard copy.">
+  <meta name="keywords" content="email signature generator, html email signature, gmail signature, outlook email signature, professional email signature, corporate signature generator">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/email-signature-generator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .sig-builder-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .sig-builder-grid {
+        grid-template-columns: 1.15fr 1fr;
+        align-items: start;
+      }
+    }
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.85rem;
+    }
+    @media (min-width: 576px) {
+      .form-grid-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .theme-selector-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.6rem;
+      margin-bottom: 1.25rem;
+    }
+    @media (max-width: 480px) {
+      .theme-selector-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .theme-card {
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 0.85rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      user-select: none;
+    }
+    .theme-card:hover {
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+    }
+    .theme-card.active {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+    .theme-card-title {
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--text-primary);
+    }
+    .theme-card-desc {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+    }
+    .color-swatches {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.35rem;
+      flex-wrap: wrap;
+    }
+    .color-swatch {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: var(--transition);
+    }
+    .color-swatch:hover {
+      transform: scale(1.15);
+    }
+    .color-swatch.active {
+      border-color: #ffffff;
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+    /* Mock Email Client Preview Window */
+    .mock-email-window {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      color: #333333;
+    }
+    .mock-email-header {
+      background: #f3f4f6;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 0.75rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+    .mock-email-body {
+      padding: 1.5rem;
+      background: #ffffff;
+      min-height: 250px;
+    }
+    .mock-email-sample-text {
+      font-size: 0.875rem;
+      color: #4b5563;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid #f3f4f6;
+      padding-bottom: 1rem;
+    }
+    #signature-render-stage {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .toast-pill {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      color: var(--text-primary);
+      border: 1px solid var(--accent);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      z-index: 1100;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+    .toast-pill.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,42 +176,242 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Email Signature Generator</h1>
-        <p class="tool-description">Create, analyze, and manage your Email Signature Generator online.</p>
+        <p class="tool-description">Create customized, responsive HTML email signatures with social links, custom themes, and 1-click rich formatted clipboard copy for Gmail, Outlook, Apple Mail, and mobile clients.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Email Signature Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your Email Signature Generator online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, email</div>
-            <div><strong>Category:</strong> digital-marketing</div>
+      <!-- Generator Workspace Grid -->
+      <div class="sig-builder-grid">
+
+        <!-- Left Column: Form & Theme Customization -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+            Personal Details &amp; Theme
           </div>
+
+          <!-- Theme Selector -->
+          <div style="margin-bottom: 0.5rem;">
+            <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.4rem; display: block;">
+              CHOOSE SIGNATURE THEME
+            </label>
+            <div class="theme-selector-grid" id="theme-selector">
+              <div class="theme-card active" data-theme="modern">
+                <span class="theme-card-title">1. Modern Clean</span>
+                <span class="theme-card-desc">Left photo avatar, vertical accent divider, clean sans-serif</span>
+              </div>
+              <div class="theme-card" data-theme="corporate">
+                <span class="theme-card-title">2. Corporate Navy</span>
+                <span class="theme-card-desc">Authoritative corporate bar, structured contact grid</span>
+              </div>
+              <div class="theme-card" data-theme="luxury">
+                <span class="theme-card-title">3. Minimal Luxury</span>
+                <span class="theme-card-desc">Editorial serif accent, sleek borders, understated luxury</span>
+              </div>
+              <div class="theme-card" data-theme="compact">
+                <span class="theme-card-title">4. Compact Mobile</span>
+                <span class="theme-card-desc">Streamlined horizontal badge, space-efficient for replies</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Color Accent Picker -->
+          <div style="margin-bottom: 1.25rem;">
+            <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); display: block;">
+              BRAND ACCENT COLOR
+            </label>
+            <div class="color-swatches" id="color-swatches">
+              <div class="color-swatch active" style="background: #4e85bf;" data-color="#4e85bf" title="Sapphire Blue"></div>
+              <div class="color-swatch" style="background: #0f172a;" data-color="#0f172a" title="Corporate Navy"></div>
+              <div class="color-swatch" style="background: #10b981;" data-color="#10b981" title="Emerald Green"></div>
+              <div class="color-swatch" style="background: #8b5cf6;" data-color="#8b5cf6" title="Royal Violet"></div>
+              <div class="color-swatch" style="background: #ec4899;" data-color="#ec4899" title="Rose Pink"></div>
+              <div class="color-swatch" style="background: #d97706;" data-color="#d97706" title="Warm Amber / Gold"></div>
+              <div class="color-swatch" style="background: #e11d48;" data-color="#e11d48" title="Ruby Red"></div>
+            </div>
+          </div>
+
+          <!-- Input Fields Form -->
+          <form id="sig-form" onsubmit="return false;">
+            <!-- Personal Info -->
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="inp-name">Full Name</label>
+                <input type="text" id="inp-name" class="form-input" value="Alex Morgan" placeholder="e.g. Alex Morgan">
+              </div>
+              <div class="form-group">
+                <label for="inp-title">Job Title / Role</label>
+                <input type="text" id="inp-title" class="form-input" value="Head of Growth &amp; Strategy" placeholder="e.g. Head of Growth">
+              </div>
+            </div>
+
+            <!-- Company & Department -->
+            <div class="form-grid-2" style="margin-top: 0.85rem;">
+              <div class="form-group">
+                <label for="inp-company">Company / Organization</label>
+                <input type="text" id="inp-company" class="form-input" value="Nexus Global Innovations" placeholder="e.g. Nexus Innovations">
+              </div>
+              <div class="form-group">
+                <label for="inp-phone">Phone Number</label>
+                <input type="text" id="inp-phone" class="form-input" value="+1 (555) 349-8821" placeholder="e.g. +1 (555) 000-0000">
+              </div>
+            </div>
+
+            <!-- Email & Website -->
+            <div class="form-grid-2" style="margin-top: 0.85rem;">
+              <div class="form-group">
+                <label for="inp-email">Email Address</label>
+                <input type="email" id="inp-email" class="form-input" value="alex.morgan@nexusglobal.io" placeholder="alex@example.com">
+              </div>
+              <div class="form-group">
+                <label for="inp-website">Website URL</label>
+                <input type="text" id="inp-website" class="form-input" value="https://nexusglobal.io" placeholder="https://example.com">
+              </div>
+            </div>
+
+            <!-- Address & Avatar URL -->
+            <div class="form-grid-2" style="margin-top: 0.85rem;">
+              <div class="form-group">
+                <label for="inp-address">Office Address / Location</label>
+                <input type="text" id="inp-address" class="form-input" value="100 Broadway, Suite 2400, New York, NY" placeholder="City, State">
+              </div>
+              <div class="form-group">
+                <label for="inp-avatar">Avatar / Logo Image URL</label>
+                <input type="text" id="inp-avatar" class="form-input" value="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" placeholder="https://image-url.com/avatar.jpg">
+              </div>
+            </div>
+
+            <!-- Social Links -->
+            <div style="margin-top: 1.25rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+              <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.75rem;">
+                Social Media Profiles
+              </div>
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label for="inp-linkedin">LinkedIn Profile URL</label>
+                  <input type="text" id="inp-linkedin" class="form-input" value="https://linkedin.com/in/alexmorgan" placeholder="https://linkedin.com/in/username">
+                </div>
+                <div class="form-group">
+                  <label for="inp-twitter">Twitter / X URL</label>
+                  <input type="text" id="inp-twitter" class="form-input" value="https://x.com/alexmorgan" placeholder="https://x.com/username">
+                </div>
+              </div>
+              <div class="form-grid-2" style="margin-top: 0.75rem;">
+                <div class="form-group">
+                  <label for="inp-github">GitHub URL</label>
+                  <input type="text" id="inp-github" class="form-input" value="https://github.com/alexmorgan" placeholder="https://github.com/username">
+                </div>
+                <div class="form-group">
+                  <label for="inp-facebook">Facebook / Social URL</label>
+                  <input type="text" id="inp-facebook" class="form-input" value="https://facebook.com/alexmorgan" placeholder="https://facebook.com/username">
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="action-bar" style="margin-top: 1.25rem;">
+              <button type="button" class="btn btn-secondary" id="load-sample-btn">
+                Load Sample Data
+              </button>
+              <button type="button" class="btn btn-secondary" id="clear-form-btn" style="flex: 1;">
+                Clear Fields
+              </button>
+            </div>
+          </form>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Column: Live Email Preview & Clipboard Actions -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            Live Email Preview
+          </div>
+
+          <!-- Mock Email Window -->
+          <div class="mock-email-window">
+            <div class="mock-email-header">
+              <div><strong>To:</strong> client.partner@enterprise.com</div>
+              <div><strong>Subject:</strong> Proposal Partnership &amp; Follow-Up</div>
+            </div>
+            <div class="mock-email-body">
+              <div class="mock-email-sample-text">
+                Hi Jordan,<br><br>
+                Thank you for taking the time to connect earlier today. I’ve summarized our proposed scope below and look forward to hearing your team's feedback.<br><br>
+                Best regards,
+              </div>
+
+              <!-- Live Render Stage -->
+              <div id="signature-render-stage">
+                <!-- Live HTML signature renders here -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Copy & Export Buttons -->
+          <div class="action-bar" style="margin-top: 1.25rem;">
+            <button type="button" class="btn btn-primary" id="copy-formatted-btn" style="flex: 1;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+              </svg>
+              Copy Formatted Signature
+            </button>
+            <button type="button" class="btn btn-secondary" id="copy-html-btn">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+              </svg>
+              Copy Raw HTML Code
+            </button>
+          </div>
+
+          <div style="margin-top: 0.5rem; text-align: center;">
+            <button type="button" class="btn btn-secondary" id="download-html-btn" style="width: 100%;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Download Signature (.html file)
+            </button>
+          </div>
+
+          <!-- Quick Tip Card -->
+          <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem; margin-top: 1rem; font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5;">
+            <strong>Pro Tip:</strong> Click <em>"Copy Formatted Signature"</em> and paste (<kbd>Ctrl+V</kbd> or <kbd>Cmd+V</kbd>) directly into Gmail (Settings &rarr; General &rarr; Signature) or Outlook. The styled fonts, colors, and layout will be preserved automatically.
+          </div>
+
+        </div>
+
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Toast -->
+  <div class="toast-pill" id="toast-msg">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--success);">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span id="toast-text">Formatted signature copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Email Signature Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/email-signature-generator/",
-    "description": "Create, analyze, and manage your Email Signature Generator online.",
+    "description": "Create professional HTML email signatures with live preview and rich clipboard copy for Gmail, Outlook, and Apple Mail.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

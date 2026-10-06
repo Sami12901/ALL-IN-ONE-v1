@@ -4,14 +4,278 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ROI Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your ROI Calculator online.">
-  <meta name="keywords" content="marketing, digital, advertising, free, online, tool, utility">
+  <meta name="description" content="Calculate Return on Investment (ROI), Net Profit, ROAS multiplier, and Annualized ROI with visual performance gauges and sensitivity scenario tables.">
+  <meta name="keywords" content="roi calculator, return on investment, roas calculator, marketing roi, ad spend return, profitability calculator, annualized roi">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/roi-calculator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .roi-layout-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .roi-layout-grid {
+        grid-template-columns: 1.1fr 1fr;
+        align-items: start;
+      }
+    }
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 576px) {
+      .form-grid-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .input-affix-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-affix-prefix {
+      position: absolute;
+      left: 0.85rem;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      pointer-events: none;
+      font-size: 0.95rem;
+      user-select: none;
+    }
+    .input-affix-suffix {
+      position: absolute;
+      right: 0.85rem;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      pointer-events: none;
+      font-size: 0.85rem;
+      user-select: none;
+    }
+    .input-affix-wrap.has-prefix input {
+      padding-left: 2rem;
+    }
+    .currency-pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .curr-pill {
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      border-radius: var(--radius-full);
+      padding: 0.3rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .curr-pill:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+    .curr-pill.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+    .preset-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 0.5rem;
+    }
+    .preset-pill {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-full);
+      padding: 0.3rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .preset-pill:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .hero-metric-card {
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.15), rgba(137, 170, 204, 0.05));
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+    .hero-metric-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .hero-metric-val {
+      font-size: clamp(2.5rem, 5vw, 3.4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin: 0.35rem 0;
+      letter-spacing: -0.02em;
+    }
+    .hero-metric-val.positive {
+      color: var(--success);
+    }
+    .hero-metric-val.negative {
+      color: var(--error);
+    }
+    .hero-metric-val.neutral {
+      color: var(--warning);
+    }
+    .kpi-row-4 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    @media (min-width: 576px) {
+      .kpi-row-4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    .kpi-mini-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem;
+      text-align: center;
+    }
+    .kpi-mini-card .kpi-label {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .kpi-mini-card .kpi-val {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-top: 0.2rem;
+    }
+    /* SVG Gauge Container */
+    .gauge-wrapper {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      text-align: center;
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .gauge-svg {
+      width: 100%;
+      max-width: 280px;
+      height: auto;
+      overflow: visible;
+    }
+    .gauge-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-top: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .badge-negative {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid var(--error);
+      color: var(--error);
+    }
+    .badge-breakeven {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid var(--warning);
+      color: var(--warning);
+    }
+    .badge-moderate {
+      background: rgba(78, 133, 191, 0.15);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+    }
+    .badge-exceptional {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--success);
+      color: var(--success);
+    }
+    .scenario-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+    .scenario-table th {
+      text-align: left;
+      padding: 0.6rem 0.5rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+    }
+    .scenario-table td {
+      padding: 0.55rem 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+    }
+    .scenario-table tr.base-row {
+      background: rgba(78, 133, 191, 0.1);
+      font-weight: 700;
+    }
+    .scenario-table tr.base-row td {
+      border-top: 1px solid var(--accent);
+      border-bottom: 1px solid var(--accent);
+    }
+    .toast-pill {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      color: var(--text-primary);
+      border: 1px solid var(--accent);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      z-index: 1100;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+    .toast-pill.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,42 +291,290 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>ROI Calculator</h1>
-        <p class="tool-description">Create, analyze, and manage your ROI Calculator online.</p>
+        <p class="tool-description">Solve Return on Investment (ROI), Return on Ad Spend (ROAS), Net Profit, and Annualized Growth. Analyze campaign performance with interactive visual gauges and sensitivity projections.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>ROI Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your ROI Calculator online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, advertising</div>
-            <div><strong>Category:</strong> digital-marketing</div>
+      <!-- Presets & Currency Header -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.5rem;">
+        <div>
+          <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-right: 0.5rem;">QUICK PRESETS:</span>
+          <div class="preset-pills" style="display: inline-flex;">
+            <button type="button" class="preset-pill" data-preset="ecommerce">E-Commerce Ads ($5k / $18.5k)</button>
+            <button type="button" class="preset-pill" data-preset="saas">SaaS Scale ($25k / $72k)</button>
+            <button type="button" class="preset-pill" data-preset="influencer">Influencer ($8k / $14k)</button>
+            <button type="button" class="preset-pill" data-preset="breakeven">Break-Even Test ($10k / $10k)</button>
+            <button type="button" class="preset-pill" data-preset="loss">Unprofitable Campaign ($10k / $6.5k)</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">CURRENCY:</span>
+          <div class="currency-pill-list" id="currency-pills">
+            <button type="button" class="curr-pill active" data-currency="USD" data-symbol="$">USD ($)</button>
+            <button type="button" class="curr-pill" data-currency="EUR" data-symbol="€">EUR (€)</button>
+            <button type="button" class="curr-pill" data-currency="GBP" data-symbol="£">GBP (£)</button>
+            <button type="button" class="curr-pill" data-currency="CAD" data-symbol="CA$">CAD (CA$)</button>
+            <button type="button" class="curr-pill" data-currency="AUD" data-symbol="A$">AUD (A$)</button>
+            <button type="button" class="curr-pill" data-currency="JPY" data-symbol="¥">JPY (¥)</button>
+            <button type="button" class="curr-pill" data-currency="AED" data-symbol="AED ">AED</button>
+            <button type="button" class="curr-pill" data-currency="INR" data-symbol="₹">INR (₹)</button>
+          </div>
+        </div>
       </div>
-    
+
+      <!-- Main Calculator Grid -->
+      <div class="roi-layout-grid">
+
+        <!-- Left Column: Inputs & Scenarios -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+            Financial Parameters
+          </div>
+
+          <form id="roi-form" onsubmit="return false;">
+            <!-- Primary Inputs: Cost & Revenue -->
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="amount-invested">Amount Invested / Total Cost</label>
+                <div class="input-affix-wrap has-prefix">
+                  <span class="input-affix-prefix curr-prefix">$</span>
+                  <input type="number" id="amount-invested" class="form-input" min="0.01" step="any" value="5000" placeholder="5000">
+                </div>
+                <span style="font-size: 0.72rem; color: var(--text-tertiary);">Total capital, ad spend, or setup costs</span>
+              </div>
+
+              <div class="form-group">
+                <label for="amount-returned">Amount Returned / Revenue</label>
+                <div class="input-affix-wrap has-prefix">
+                  <span class="input-affix-prefix curr-prefix">$</span>
+                  <input type="number" id="amount-returned" class="form-input" min="0" step="any" value="18500" placeholder="18500">
+                </div>
+                <span style="font-size: 0.72rem; color: var(--text-tertiary);">Total revenue or sales generated</span>
+              </div>
+            </div>
+
+            <!-- Holding Time / Duration (for Annualized ROI) -->
+            <div class="form-grid-2" style="margin-top: 1rem;">
+              <div class="form-group">
+                <label for="duration-val">Investment Duration</label>
+                <input type="number" id="duration-val" class="form-input" min="1" step="any" value="6" placeholder="6">
+              </div>
+              <div class="form-group">
+                <label for="duration-unit">Time Unit</label>
+                <select id="duration-unit" class="form-select">
+                  <option value="months" selected>Months</option>
+                  <option value="years">Years</option>
+                  <option value="days">Days</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Optional Sub-cost Breakdown Accordion -->
+            <div style="margin-top: 1.25rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+                <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Itemized Cost Breakdown (Optional)</span>
+                <button type="button" id="toggle-subcosts-btn" style="background: none; border: none; color: var(--accent); font-size: 0.78rem; cursor: pointer; text-decoration: underline;">
+                  Show Breakdown
+                </button>
+              </div>
+
+              <div id="subcosts-container" style="display: none; flex-direction: column; gap: 0.6rem;">
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label for="sub-ad-spend" style="font-size: 0.75rem;">Ad Spend</label>
+                    <div class="input-affix-wrap has-prefix">
+                      <span class="input-affix-prefix curr-prefix">$</span>
+                      <input type="number" id="sub-ad-spend" class="form-input subcost-input" min="0" step="any" value="3500">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="sub-creative" style="font-size: 0.75rem;">Creative &amp; Assets</label>
+                    <div class="input-affix-wrap has-prefix">
+                      <span class="input-affix-prefix curr-prefix">$</span>
+                      <input type="number" id="sub-creative" class="form-input subcost-input" min="0" step="any" value="800">
+                    </div>
+                  </div>
+                </div>
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label for="sub-management" style="font-size: 0.75rem;">Agency / Management</label>
+                    <div class="input-affix-wrap has-prefix">
+                      <span class="input-affix-prefix curr-prefix">$</span>
+                      <input type="number" id="sub-management" class="form-input subcost-input" min="0" step="any" value="500">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="sub-tools" style="font-size: 0.75rem;">Tools &amp; Software</label>
+                    <div class="input-affix-wrap has-prefix">
+                      <span class="input-affix-prefix curr-prefix">$</span>
+                      <input type="number" id="sub-tools" class="form-input subcost-input" min="0" step="any" value="200">
+                    </div>
+                  </div>
+                </div>
+                <div style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.25rem;">
+                  Editing breakdown values will automatically sync into Amount Invested.
+                </div>
+              </div>
+            </div>
+
+            <!-- Sensitivity Scenario Projections Table -->
+            <div style="margin-top: 1.25rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">Sensitivity Projections Matrix</span>
+                <span style="font-size: 0.72rem; color: var(--text-secondary);">Revenue Variations</span>
+              </div>
+              <div class="table-responsive">
+                <table class="scenario-table">
+                  <thead>
+                    <tr>
+                      <th>Scenario</th>
+                      <th style="text-align: right;">Revenue</th>
+                      <th style="text-align: right;">Net Profit</th>
+                      <th style="text-align: right;">ROI (%)</th>
+                      <th style="text-align: right;">ROAS</th>
+                    </tr>
+                  </thead>
+                  <tbody id="sensitivity-table-body">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="action-bar" style="margin-top: 1.25rem;">
+              <button type="button" class="btn btn-secondary" id="reset-roi-btn" style="flex: 1;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                Reset
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Right Column: Outputs, Gauge & Executive Summary -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+              <polyline points="17 6 23 6 23 12"></polyline>
+            </svg>
+            Performance Evaluation
+          </div>
+
+          <!-- Hero Metric Card: ROI % -->
+          <div class="hero-metric-card">
+            <div class="hero-metric-label">Return on Investment (ROI)</div>
+            <div class="hero-metric-val positive" id="hero-roi-pct">+270.0%</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary);">
+              Net Profit: <strong id="hero-net-profit" style="color: var(--text-primary);">$13,500.00</strong>
+            </div>
+          </div>
+
+          <!-- 4 KPIs Grid -->
+          <div class="kpi-row-4">
+            <div class="kpi-mini-card">
+              <div class="kpi-label">ROAS Multiplier</div>
+              <div class="kpi-val" id="kpi-roas" style="color: var(--accent);">3.70x</div>
+            </div>
+            <div class="kpi-mini-card">
+              <div class="kpi-label">Profit Margin</div>
+              <div class="kpi-val" id="kpi-margin">73.0%</div>
+            </div>
+            <div class="kpi-mini-card">
+              <div class="kpi-label">Annualized ROI</div>
+              <div class="kpi-val" id="kpi-annualized" style="color: var(--success);">+1,269%</div>
+            </div>
+            <div class="kpi-mini-card">
+              <div class="kpi-label">Capital Ratio</div>
+              <div class="kpi-val" id="kpi-capital-ratio">3.7 : 1</div>
+            </div>
+          </div>
+
+          <!-- Visual Performance Gauge -->
+          <div class="gauge-wrapper">
+            <div style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); font-weight: 600; margin-bottom: 0.25rem;">
+              Performance Health Gauge
+            </div>
+
+            <!-- Responsive SVG Speedometer Gauge -->
+            <svg class="gauge-svg" viewBox="0 0 200 120" id="roi-gauge-svg">
+              <defs>
+                <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#ef4444" />
+                  <stop offset="25%" stop-color="#f59e0b" />
+                  <stop offset="55%" stop-color="#3b82f6" />
+                  <stop offset="100%" stop-color="#10b981" />
+                </linearGradient>
+              </defs>
+              <!-- Background Arc -->
+              <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="16" stroke-linecap="round"></path>
+              <!-- Colored Segment Arc -->
+              <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#gaugeGrad)" stroke-width="16" stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="0"></path>
+              <!-- Center Hub -->
+              <circle cx="100" cy="100" r="7" fill="var(--text-primary)"></circle>
+              <!-- Pointer Needle -->
+              <line id="gauge-needle" x1="100" y1="100" x2="100" y2="35" stroke="var(--text-primary)" stroke-width="3.5" stroke-linecap="round" transform="rotate(45, 100, 100)" style="transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);"></line>
+              <!-- Gauge Labels -->
+              <text x="18" y="115" font-size="9" fill="var(--text-tertiary)" font-weight="600">Loss</text>
+              <text x="65" y="45" font-size="9" fill="var(--text-tertiary)" font-weight="600">0%</text>
+              <text x="100" y="24" font-size="9" fill="var(--text-tertiary)" font-weight="600" text-anchor="middle">100%</text>
+              <text x="182" y="115" font-size="9" fill="var(--text-tertiary)" font-weight="600" text-anchor="end">250%+</text>
+            </svg>
+
+            <div class="gauge-badge badge-exceptional" id="gauge-badge">
+              <span id="gauge-badge-text">Exceptional Performance</span>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.4rem; max-width: 320px; line-height: 1.4;" id="gauge-diagnosis">
+              Every $1.00 invested yields $3.70 in revenue, delivering superior marketing efficiency.
+            </p>
+          </div>
+
+          <!-- Action Bar -->
+          <div class="action-bar" style="margin-top: 1rem;">
+            <button type="button" class="btn btn-primary" id="copy-report-btn" style="flex: 1;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy Executive ROI Report
+            </button>
+            <button type="button" class="btn btn-secondary" id="print-roi-btn">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+              </svg>
+              Print Report
+            </button>
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </main>
+
+  <!-- Toast -->
+  <div class="toast-pill" id="toast-msg">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--success);">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span id="toast-text">ROI report copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "ROI Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/roi-calculator/",
-    "description": "Create, analyze, and manage your ROI Calculator online.",
+    "description": "Calculate marketing and business Return on Investment (ROI), ROAS, and net profit with sensitivity analysis.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

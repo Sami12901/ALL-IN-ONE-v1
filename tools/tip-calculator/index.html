@@ -4,14 +4,297 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tip Calculator & Splitter - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Calculate bill tips and splits across guest lists.">
-  <meta name="keywords" content="tip, bill, split, restaurant, splitter, free, online, tool, utility">
+  <meta name="description" content="Calculate restaurant tips, split bills evenly across party members, round totals, and generate itemized dining receipts.">
+  <meta name="keywords" content="tip calculator, bill splitter, dining tip, restaurant calculator, split bill, gratuity calculator, party split">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/tip-calculator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .tip-workarea {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+    @media (min-width: 1024px) {
+      .tip-workarea {
+        grid-template-columns: 460px 1fr;
+      }
+    }
+
+    .input-with-affix {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-affix {
+      position: absolute;
+      left: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      pointer-events: none;
+      font-size: 1rem;
+    }
+    .input-affix-right {
+      position: absolute;
+      right: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      pointer-events: none;
+      font-size: 0.95rem;
+    }
+    .input-with-affix input {
+      padding-left: 2.2rem;
+    }
+    .input-with-affix-right input {
+      padding-right: 2.2rem;
+    }
+
+    /* Tip Presets */
+    .tip-chips-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.4rem;
+      margin-top: 0.4rem;
+    }
+    @media (max-width: 480px) {
+      .tip-chips-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    .tip-chip {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 0.25rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.15rem;
+      text-align: center;
+    }
+    .tip-chip strong {
+      font-size: 0.95rem;
+      color: var(--text-primary);
+    }
+    .tip-chip span {
+      font-size: 0.68rem;
+      color: var(--text-tertiary);
+    }
+    .tip-chip:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .tip-chip.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+    }
+    .tip-chip.active strong, .tip-chip.active span {
+      color: #ffffff;
+    }
+
+    /* Split Counter Stepper */
+    .stepper-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .stepper-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .stepper-btn:hover {
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+      color: var(--accent);
+    }
+    .stepper-input {
+      flex: 1;
+      text-align: center;
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    /* Rounding Mode Options */
+    .round-mode-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.4rem;
+      margin-top: 0.35rem;
+    }
+    .round-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      padding: 0.4rem 0.5rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+      user-select: none;
+    }
+    .round-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .round-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    /* KPI Results */
+    .kpi-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .kpi-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      position: relative;
+      transition: var(--transition);
+    }
+    .kpi-card:hover {
+      border-color: rgba(var(--accent-rgb), 0.4);
+      transform: translateY(-2px);
+    }
+    .kpi-card.highlight {
+      background: linear-gradient(145deg, rgba(var(--accent-rgb), 0.12), var(--bg-tertiary));
+      border-color: var(--accent);
+    }
+    .kpi-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 700;
+    }
+    .kpi-value {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .kpi-card.highlight .kpi-value {
+      color: var(--accent);
+    }
+    .kpi-subtext {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Receipt Preview Card */
+    .receipt-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      position: relative;
+      margin-bottom: 1.5rem;
+      font-family: var(--font-sans);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    }
+    .receipt-header {
+      text-align: center;
+      border-bottom: 1px dashed var(--border);
+      padding-bottom: 1rem;
+      margin-bottom: 1rem;
+    }
+    .receipt-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-primary);
+    }
+    .receipt-date {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      margin-top: 0.25rem;
+    }
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.45rem 0;
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+    }
+    .receipt-divider {
+      border-top: 1px dashed var(--border);
+      margin: 0.65rem 0;
+    }
+    .receipt-row.grand-total {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      padding: 0.6rem 0;
+    }
+    .receipt-row.grand-total span:last-child {
+      color: var(--accent);
+    }
+    .receipt-per-person {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem;
+      margin-top: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .receipt-per-person .pp-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .receipt-per-person .pp-val {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #10b981;
+    }
+
+    .badge-pill {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      background: rgba(var(--accent-rgb), 0.15);
+      color: var(--accent);
+      font-weight: 600;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,27 +309,204 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Tip Calculator & Splitter</h1>
-        <p class="tool-description">Calculate bill tips and splits across guest lists.</p>
+        <h1>Tip Calculator & Bill Splitter</h1>
+        <p class="tool-description">Calculate dining gratuity, customize tip percentages, split totals across any group size, round to clean figures, and preview an itemized bill receipt.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Tip Calculator & Splitter</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Calculate bill tips and splits across guest lists.</div>
-            <div><strong>Inputs:</strong> tip, bill, split, restaurant, splitter</div>
-            <div><strong>Category:</strong> business</div>
+      <div class="tip-workarea">
+        <!-- Input Controls (Left Column) -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            Bill & Gratuity Inputs
+          </h2>
+
+          <!-- Currency & Bill Total -->
+          <div style="display: grid; grid-template-columns: 120px 1fr; gap: 0.75rem;">
+            <div class="form-group">
+              <label for="currency-select">Currency</label>
+              <select id="currency-select" class="form-select">
+                <option value="$" selected>$ (USD)</option>
+                <option value="€">€ (EUR)</option>
+                <option value="£">£ (GBP)</option>
+                <option value="C$">C$ (CAD)</option>
+                <option value="A$">A$ (AUD)</option>
+                <option value="¥">¥ (JPY)</option>
+                <option value="₹">₹ (INR)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="bill-total-input">Bill Total (Before Tip)</label>
+              <div class="input-with-affix">
+                <span class="input-affix" id="currency-symbol-affix">$</span>
+                <input type="number" id="bill-total-input" class="form-input" min="0" step="0.01" value="75.00" placeholder="0.00">
+              </div>
+            </div>
+          </div>
+
+          <!-- Tip Percentage & Range Slider -->
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <label for="tip-percent-input">Tip Percentage</label>
+              <span id="tip-badge" class="badge-pill">18% (Good)</span>
+            </div>
+            <div class="input-with-affix-right">
+              <input type="number" id="tip-percent-input" class="form-input" min="0" max="100" step="1" value="18" placeholder="0">
+              <span class="input-affix-right">%</span>
+            </div>
+            <div class="range-group">
+              <input type="range" id="tip-percent-range" min="0" max="50" step="1" value="18" class="range-slider">
+            </div>
+
+            <!-- Tip Presets Grid -->
+            <div class="tip-chips-grid">
+              <button type="button" class="tip-chip" data-tip="10" data-label="Standard">
+                <strong>10%</strong>
+                <span>Fair</span>
+              </button>
+              <button type="button" class="tip-chip" data-tip="15" data-label="Good">
+                <strong>15%</strong>
+                <span>Good</span>
+              </button>
+              <button type="button" class="tip-chip active" data-tip="18" data-label="Great">
+                <strong>18%</strong>
+                <span>Great</span>
+              </button>
+              <button type="button" class="tip-chip" data-tip="20" data-label="Superb">
+                <strong>20%</strong>
+                <span>Superb</span>
+              </button>
+              <button type="button" class="tip-chip" data-tip="25" data-label="Exceptional">
+                <strong>25%</strong>
+                <span>VIP</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Split Party Count -->
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <label for="split-count-input">Split Between (Guests)</label>
+              <span id="split-badge" class="badge-pill">1 Person</span>
+            </div>
+            <div class="stepper-container">
+              <button type="button" class="stepper-btn" id="btn-split-dec" aria-label="Decrease guests">&minus;</button>
+              <input type="number" id="split-count-input" class="form-input stepper-input" min="1" max="100" step="1" value="1">
+              <button type="button" class="stepper-btn" id="btn-split-inc" aria-label="Increase guests">&plus;</button>
+            </div>
+          </div>
+
+          <!-- Rounding Toggle -->
+          <div class="form-group">
+            <label>Round Up Figures</label>
+            <div class="round-mode-grid">
+              <button type="button" class="round-btn active" data-round="none">No Rounding</button>
+              <button type="button" class="round-btn" data-round="total">Round Total</button>
+              <button type="button" class="round-btn" data-round="person">Round Each</button>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+            <button type="button" id="btn-reset-tip" class="btn btn-secondary" style="flex: 1;">Reset to Defaults</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Tip Results & Receipt (Right Column) -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title" style="justify-content: space-between;">
+            <span style="display: flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+              Payment & Bill Breakdown
+            </span>
+            <span id="party-summary-badge" class="badge">1 Person Paying</span>
+          </h2>
+
+          <!-- 4 KPI Cards Grid -->
+          <div class="kpi-cards-grid">
+            <div class="kpi-card" id="card-tip-total">
+              <span class="kpi-title">Tip Amount</span>
+              <span id="kpi-tip-amount" class="kpi-value" style="color: #f59e0b;">$13.50</span>
+              <span id="kpi-tip-subtext" class="kpi-subtext">18% Gratuity</span>
+            </div>
+            <div class="kpi-card highlight" id="card-grand-total">
+              <span class="kpi-title">Grand Total</span>
+              <span id="kpi-grand-total" class="kpi-value">$88.50</span>
+              <span id="kpi-grand-subtext" class="kpi-subtext">Bill + Gratuity</span>
+            </div>
+            <div class="kpi-card" id="card-tip-person">
+              <span class="kpi-title">Tip Per Person</span>
+              <span id="kpi-tip-per-person" class="kpi-value" style="color: #3b82f6;">$13.50</span>
+              <span id="kpi-pp-tip-subtext" class="kpi-subtext">Each guest tip share</span>
+            </div>
+            <div class="kpi-card highlight" id="card-total-person">
+              <span class="kpi-title">Total Per Person</span>
+              <span id="kpi-total-per-person" class="kpi-value" style="color: #10b981;">$88.50</span>
+              <span id="kpi-pp-total-subtext" class="kpi-subtext">Each guest pays</span>
+            </div>
+          </div>
+
+          <!-- Dining Receipt Preview Card -->
+          <div class="receipt-card">
+            <div class="receipt-header">
+              <div class="receipt-title">Dining Receipt Summary</div>
+              <div class="receipt-date" id="receipt-date-label">Generated on live workspace</div>
+            </div>
+
+            <div class="receipt-row">
+              <span>Bill Subtotal:</span>
+              <span id="rec-subtotal" style="font-weight: 600;">$75.00</span>
+            </div>
+            <div class="receipt-row">
+              <span id="rec-tip-label">Gratuity (18%):</span>
+              <span id="rec-tip-val" style="font-weight: 600; color: #f59e0b;">$13.50</span>
+            </div>
+            <div class="receipt-divider"></div>
+            <div class="receipt-row grand-total">
+              <span>Grand Total:</span>
+              <span id="rec-grand-total">$88.50</span>
+            </div>
+
+            <div class="receipt-per-person" id="receipt-split-box">
+              <div>
+                <div class="pp-label" id="rec-split-heading">Split Between 1 Guest</div>
+                <small style="color: var(--text-tertiary);" id="rec-split-sub">Tip included in amount</small>
+              </div>
+              <div class="pp-val" id="rec-split-amount">$88.50</div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+              <button type="button" id="btn-copy-receipt" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.85rem;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span id="copy-receipt-text">Copy Receipt Summary</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Tip Comparison Table -->
+          <div>
+            <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+              <span>Tip Percentage Quick Matrix</span>
+              <span style="font-size: 0.75rem; color: var(--text-tertiary);">Compare gratuity options</span>
+            </div>
+            <div class="table-responsive" style="border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden;">
+              <table class="data-table" style="font-size: 0.85rem;">
+                <thead>
+                  <tr>
+                    <th>Tip Rate</th>
+                    <th>Total Tip</th>
+                    <th>Grand Total</th>
+                    <th>Per Person</th>
+                  </tr>
+                </thead>
+                <tbody id="tip-matrix-tbody">
+                  <!-- Populated by script.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     
     </div>
@@ -62,7 +522,7 @@
     "@type": "WebApplication",
     "name": "Tip Calculator & Splitter",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/tip-calculator/",
-    "description": "Calculate bill tips and splits across guest lists.",
+    "description": "Calculate restaurant tips, split bills evenly across party members, round totals, and preview itemized dining receipts.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

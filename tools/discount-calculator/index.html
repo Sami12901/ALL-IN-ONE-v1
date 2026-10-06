@@ -4,14 +4,262 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Discount Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Finds savings from discount percentage values.">
-  <meta name="keywords" content="discount, savings, sale, price, percent, free, online, tool, utility">
+  <meta name="description" content="Calculate final sale prices, total savings, stacked promo coupons, and effective discount rates with interactive visual savings breakdown.">
+  <meta name="keywords" content="discount calculator, sale price calculator, percent off, savings calculator, promo code, retail markdown, deal calculator">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/discount-calculator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .discount-workarea {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+    @media (min-width: 1024px) {
+      .discount-workarea {
+        grid-template-columns: 460px 1fr;
+      }
+    }
+
+    .input-with-affix {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-affix {
+      position: absolute;
+      left: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      pointer-events: none;
+      font-size: 1rem;
+    }
+    .input-affix-right {
+      position: absolute;
+      right: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      pointer-events: none;
+      font-size: 0.95rem;
+    }
+    .input-with-affix input {
+      padding-left: 2.2rem;
+    }
+    .input-with-affix-right input {
+      padding-right: 2.2rem;
+    }
+
+    /* Quick Discount Pills */
+    .pill-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.35rem;
+    }
+    .pill-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-full);
+      padding: 0.3rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .pill-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .pill-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    /* KPI Results */
+    .kpi-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .kpi-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      position: relative;
+      transition: var(--transition);
+    }
+    .kpi-card:hover {
+      border-color: rgba(var(--accent-rgb), 0.4);
+      transform: translateY(-2px);
+    }
+    .kpi-card.highlight {
+      background: linear-gradient(145deg, rgba(var(--accent-rgb), 0.12), var(--bg-tertiary));
+      border-color: var(--accent);
+    }
+    .kpi-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 700;
+    }
+    .kpi-value {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .kpi-card.highlight .kpi-value {
+      color: var(--accent);
+    }
+    .kpi-subtext {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Visual Savings Bar */
+    .visual-bar-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .bar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .split-bar-track {
+      width: 100%;
+      height: 22px;
+      border-radius: var(--radius-full);
+      background: var(--bg-secondary);
+      overflow: hidden;
+      display: flex;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .bar-segment-pay {
+      background: #3b82f6;
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+    .bar-segment-save {
+      background: #10b981;
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+    .bar-legend {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.75rem;
+      font-size: 0.82rem;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* Deal Receipt Card */
+    .deal-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+    .deal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px dashed var(--border);
+      padding-bottom: 0.75rem;
+      margin-bottom: 0.85rem;
+    }
+    .deal-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.4rem 0;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    .deal-row.total {
+      border-top: 1px solid var(--border);
+      padding-top: 0.75rem;
+      margin-top: 0.5rem;
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: var(--text-primary);
+    }
+    .deal-row.total span:last-child {
+      color: var(--accent);
+    }
+
+    /* Tables */
+    .discount-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 0.85rem;
+    }
+    .discount-table th {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 700;
+      padding: 0.65rem 0.8rem;
+      text-align: right;
+      border-bottom: 1px solid var(--border);
+    }
+    .discount-table th:first-child {
+      text-align: left;
+    }
+    .discount-table td {
+      padding: 0.6rem 0.8rem;
+      border-bottom: 1px solid var(--border);
+      text-align: right;
+    }
+    .discount-table td:first-child {
+      text-align: left;
+    }
+    .discount-table tr.active-discount-row {
+      background: rgba(var(--accent-rgb), 0.12);
+      font-weight: 700;
+    }
+
+    .badge-pill {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      background: rgba(var(--accent-rgb), 0.15);
+      color: var(--accent);
+      font-weight: 600;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,27 +274,224 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Discount Calculator</h1>
-        <p class="tool-description">Finds savings from discount percentage values.</p>
+        <h1>Discount & Sale Savings Calculator</h1>
+        <p class="tool-description">Determine final sale prices, total dollars saved, stacked promo coupon reductions, and effective discount rates with real-time visual savings comparison.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Discount Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Finds savings from discount percentage values.</div>
-            <div><strong>Inputs:</strong> discount, savings, sale, price, percent</div>
-            <div><strong>Category:</strong> business</div>
+      <div class="discount-workarea">
+        <!-- Input Controls (Left Column) -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+            Price & Discount Inputs
+          </h2>
+
+          <!-- Currency & Original Price -->
+          <div style="display: grid; grid-template-columns: 120px 1fr; gap: 0.75rem;">
+            <div class="form-group">
+              <label for="currency-select">Currency</label>
+              <select id="currency-select" class="form-select">
+                <option value="$" selected>$ (USD)</option>
+                <option value="€">€ (EUR)</option>
+                <option value="£">£ (GBP)</option>
+                <option value="C$">C$ (CAD)</option>
+                <option value="A$">A$ (AUD)</option>
+                <option value="¥">¥ (JPY)</option>
+                <option value="₹">₹ (INR)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="original-price-input">Original List Price</label>
+              <div class="input-with-affix">
+                <span class="input-affix" id="currency-symbol-affix">$</span>
+                <input type="number" id="original-price-input" class="form-input" min="0" step="0.01" value="80.00" placeholder="0.00">
+              </div>
+            </div>
+          </div>
+
+          <!-- Primary Discount Percentage -->
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <label for="discount-percent-input">Primary Discount</label>
+              <span id="discount-badge" class="badge-pill">25% OFF</span>
+            </div>
+            <div class="input-with-affix-right">
+              <input type="number" id="discount-percent-input" class="form-input" min="0" max="100" step="0.5" value="25" placeholder="0">
+              <span class="input-affix-right">%</span>
+            </div>
+            <div class="range-group">
+              <input type="range" id="discount-percent-range" min="0" max="100" step="1" value="25" class="range-slider">
+            </div>
+
+            <!-- Quick Discount Pills -->
+            <div class="pill-grid" id="discount-pills">
+              <button type="button" class="pill-btn" data-percent="10">10%</button>
+              <button type="button" class="pill-btn" data-percent="15">15%</button>
+              <button type="button" class="pill-btn" data-percent="20">20%</button>
+              <button type="button" class="pill-btn active" data-percent="25">25%</button>
+              <button type="button" class="pill-btn" data-percent="30">30%</button>
+              <button type="button" class="pill-btn" data-percent="40">40%</button>
+              <button type="button" class="pill-btn" data-percent="50">50%</button>
+              <button type="button" class="pill-btn" data-percent="70">70%</button>
+            </div>
+          </div>
+
+          <!-- Quantity / Multi-Unit -->
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <label for="quantity-input">Quantity (Units)</label>
+              <span id="qty-badge" class="badge-pill">1 Item</span>
+            </div>
+            <input type="number" id="quantity-input" class="form-input" min="1" max="10000" step="1" value="1">
+          </div>
+
+          <!-- Additional Coupon / Promo Toggle -->
+          <div class="checkbox-group" style="margin-top: 0.25rem;">
+            <label class="checkbox-label">
+              <input type="checkbox" id="coupon-toggle">
+              <span>Apply Additional Coupon / Promo Code</span>
+            </label>
+          </div>
+
+          <!-- Coupon Drawer -->
+          <div id="coupon-drawer" style="display: none; background: var(--bg-tertiary); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <label for="coupon-percent-input" style="font-size: 0.75rem;">Extra Promo Discount (%)</label>
+                <div class="input-with-affix-right">
+                  <input type="number" id="coupon-percent-input" class="form-input" min="0" max="100" step="0.5" value="10">
+                  <span class="input-affix-right">%</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="stack-mode-select" style="font-size: 0.75rem;">Stacking Rule</label>
+                <select id="stack-mode-select" class="form-select" style="font-size: 0.85rem; padding: 0.65rem 0.5rem;">
+                  <option value="compound" selected>Sequential / Compound (Retail standard)</option>
+                  <option value="additive">Additive (Direct sum of %)</option>
+                </select>
+              </div>
+            </div>
+            <small style="color: var(--text-tertiary); display: block; margin-top: 0.5rem; line-height: 1.4;">
+              * Standard retail calculates extra promos against the already-discounted price.
+            </small>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+            <button type="button" id="btn-reset-discount" class="btn btn-secondary" style="flex: 1;">Reset to Defaults</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Analytics & Results (Right Column) -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title" style="justify-content: space-between;">
+            <span style="display: flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+              Sale Results & Savings
+            </span>
+            <span id="effective-rate-badge" class="badge">25.0% Effective Savings</span>
+          </h2>
+
+          <!-- KPI Cards -->
+          <div class="kpi-cards-grid">
+            <div class="kpi-card highlight" id="card-final-price">
+              <span class="kpi-title">Final Sale Price</span>
+              <span id="kpi-final-price" class="kpi-value">$60.00</span>
+              <span id="kpi-final-subtext" class="kpi-subtext">You pay this total</span>
+            </div>
+            <div class="kpi-card" id="card-total-savings">
+              <span class="kpi-title">Total Savings</span>
+              <span id="kpi-total-savings" class="kpi-value" style="color: #10b981;">$20.00</span>
+              <span id="kpi-savings-subtext" class="kpi-subtext">Cash kept in pocket</span>
+            </div>
+            <div class="kpi-card" id="card-effective-rate">
+              <span class="kpi-title">Effective Discount</span>
+              <span id="kpi-effective-rate" class="kpi-value" style="color: var(--accent);">25.0%</span>
+              <span id="kpi-rate-subtext" class="kpi-subtext">Total % markdown</span>
+            </div>
+          </div>
+
+          <!-- Visual Savings Bar -->
+          <div class="visual-bar-card">
+            <div class="bar-header">
+              <span>Price Breakdown: You Pay vs You Save</span>
+              <span id="pay-ratio-text">You pay 75.0% of original</span>
+            </div>
+            <div class="split-bar-track">
+              <div id="bar-pay" class="bar-segment-pay" style="width: 75%;" title="You Pay"></div>
+              <div id="bar-save" class="bar-segment-save" style="width: 25%;" title="You Save"></div>
+            </div>
+            <div class="bar-legend">
+              <div class="legend-item">
+                <span class="legend-dot" style="background: #3b82f6;"></span>
+                <span id="legend-pay-text">You Pay: $60.00 (75.0%)</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot" style="background: #10b981;"></span>
+                <span id="legend-save-text">You Save: $20.00 (25.0%)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Deal Summary Receipt Card -->
+          <div class="deal-card">
+            <div class="deal-header">
+              <div>
+                <strong style="font-size: 0.95rem; color: var(--text-primary); display: block;">Deal & Savings Summary</strong>
+                <small style="color: var(--text-tertiary);" id="deal-timestamp">Ready to share</small>
+              </div>
+              <button type="button" id="btn-copy-deal" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.35rem 0.75rem;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span id="copy-deal-text">Copy Summary</span>
+              </button>
+            </div>
+
+            <div class="deal-row">
+              <span>Original List Price:</span>
+              <span id="summary-original-price" style="font-weight: 600;">$80.00</span>
+            </div>
+            <div class="deal-row">
+              <span>Primary Discount Applied:</span>
+              <span id="summary-primary-discount" style="font-weight: 600;">25% (-$20.00)</span>
+            </div>
+            <div class="deal-row" id="summary-coupon-row" style="display: none;">
+              <span>Additional Promo Applied:</span>
+              <span id="summary-coupon-discount" style="font-weight: 600; color: #10b981;">10% (-$6.00)</span>
+            </div>
+            <div class="deal-row" id="summary-qty-row" style="display: none;">
+              <span>Quantity:</span>
+              <span id="summary-qty-val" style="font-weight: 600;">1 unit</span>
+            </div>
+            <div class="deal-row total">
+              <span>Final Total Price:</span>
+              <span id="summary-final-price">$60.00</span>
+            </div>
+          </div>
+
+          <!-- Quick Comparison Table across discount brackets -->
+          <div>
+            <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+              <span>Quick Markdown Comparison</span>
+              <span style="font-size: 0.75rem; color: var(--text-tertiary);">Based on original price</span>
+            </div>
+            <div class="table-responsive" style="border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden;">
+              <table class="discount-table">
+                <thead>
+                  <tr>
+                    <th>Discount Rate</th>
+                    <th>You Pay (Final)</th>
+                    <th>You Save</th>
+                    <th>Savings %</th>
+                  </tr>
+                </thead>
+                <tbody id="discount-comparison-tbody">
+                  <!-- Dynamic rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     
     </div>
@@ -62,8 +507,8 @@
     "@type": "WebApplication",
     "name": "Discount Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/discount-calculator/",
-    "description": "Finds savings from discount percentage values.",
-    "applicationCategory": "UtilityPage",
+    "description": "Calculate final sale prices, total savings, stacked promo coupons, and effective discount rates.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

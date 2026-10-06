@@ -3,19 +3,218 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Skill Visualizer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Generate beautiful skill bars and skill charts for your CV.">
-  <meta name="keywords" content="cv, resume, job, career, skill visualizer, free, online, tool, utility">
+  <title>Skill Visualizer - Interactive Radar Chart & Matrix - ALL IN ONE</title>
+  <meta name="description" content="Build interactive SVG radar charts and category skill matrices. Customize themes, proficiency levels, and export embeds or PNG charts.">
+  <meta name="keywords" content="skill visualizer, technical skills radar chart, developer skills matrix, spider chart generator, portfolio visualizer, career skills">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/skill-visualizer/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    /* Skill Visualizer Custom Styling */
+    :root {
+      --radar-accent: #d4af37;
+      --radar-accent-secondary: #f59e0b;
+      --radar-glow: rgba(212, 175, 55, 0.35);
+      --radar-fill: rgba(212, 175, 55, 0.25);
+    }
+
+    [data-radar-theme="cyber-blue"] {
+      --radar-accent: #06b6d4;
+      --radar-accent-secondary: #3b82f6;
+      --radar-glow: rgba(6, 182, 212, 0.35);
+      --radar-fill: rgba(6, 182, 212, 0.25);
+    }
+
+    [data-radar-theme="neon-green"] {
+      --radar-accent: #10b981;
+      --radar-accent-secondary: #22c55e;
+      --radar-glow: rgba(16, 185, 129, 0.35);
+      --radar-fill: rgba(16, 185, 129, 0.25);
+    }
+
+    .skill-workarea {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+
+    @media (min-width: 1024px) {
+      .skill-workarea {
+        grid-template-columns: 1fr 1.2fr;
+      }
+    }
+
+    /* Theme Selector Pills */
+    .theme-pill-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .theme-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      font-size: 0.825rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+
+    .theme-pill:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+
+    .theme-pill.active {
+      background: var(--surface);
+      color: var(--text-primary);
+      border-color: var(--radar-accent);
+      box-shadow: 0 0 12px var(--radar-glow);
+    }
+
+    .theme-swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* Radar Chart Container */
+    .radar-canvas-container {
+      background: radial-gradient(circle at center, rgba(30, 41, 59, 0.3) 0%, rgba(10, 10, 15, 0.7) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 480px;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    .radar-svg {
+      width: 100%;
+      max-width: 480px;
+      height: auto;
+      overflow: visible;
+      filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.5));
+    }
+
+    /* Skill Manager List */
+    .skill-items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      max-height: 380px;
+      overflow-y: auto;
+      padding-right: 0.35rem;
+    }
+
+    .skill-item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 0.85rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      gap: 0.75rem;
+      transition: var(--transition);
+    }
+
+    .skill-item-row:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .skill-badge {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    /* Matrix Progress Bars */
+    .category-matrix-section {
+      margin-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1.25rem;
+    }
+
+    .matrix-bar-item {
+      margin-bottom: 0.85rem;
+    }
+
+    .matrix-bar-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .matrix-bar-track {
+      width: 100%;
+      height: 7px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .matrix-bar-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      background: linear-gradient(90deg, var(--radar-accent), var(--radar-accent-secondary));
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 8px var(--radar-glow);
+    }
+
+    /* Modal for Export HTML */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-content {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 680px;
+      padding: 1.75rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
-<body>
+<body data-radar-theme="luxury-gold">
   <!-- Header Web Component -->
   <app-header></app-header>
   
@@ -27,33 +226,174 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Skill Visualizer</h1>
-        <p class="tool-description">Generate beautiful skill bars and skill charts for your CV.</p>
+        <p class="tool-description">
+          Build interactive technical skills radar charts and competency matrices. Customize categories, adjust proficiency ratings, toggle luxury themes, and export embeds or PNGs.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Skill Visualizer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Generate beautiful skill bars and skill charts for your CV.</div>
-            <div><strong>Inputs:</strong> cv, resume, job, career, skill visualizer</div>
-            <div><strong>Category:</strong> cv</div>
+      <!-- Main Workspace -->
+      <div class="skill-workarea">
+
+        <!-- Controls & Skills Manager Column -->
+        <div class="tool-panel glass-panel">
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+            <div class="panel-title" style="border: none; padding: 0; margin: 0;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--radar-accent);"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              Skill Catalog & Presets
+            </div>
+            
+            <div style="display: flex; gap: 0.4rem;">
+              <select id="preset-selector" class="form-select" style="padding: 0.3rem 0.65rem; font-size: 0.8rem; width: auto;">
+                <option value="fullstack" selected>Preset: Full-Stack Architect</option>
+                <option value="designer">Preset: Lead Product Designer</option>
+                <option value="leader">Preset: Engineering Director</option>
+                <option value="ai">Preset: AI & Data Specialist</option>
+              </select>
+            </div>
           </div>
+
+          <!-- Theme Toggles -->
+          <div>
+            <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.5rem;">Color Scheme Theme:</label>
+            <div class="theme-pill-group">
+              <button type="button" class="theme-pill active" data-theme="luxury-gold">
+                <span class="theme-swatch" style="background: #d4af37;"></span> Luxury Gold
+              </button>
+              <button type="button" class="theme-pill" data-theme="cyber-blue">
+                <span class="theme-swatch" style="background: #06b6d4;"></span> Cyber Blue
+              </button>
+              <button type="button" class="theme-pill" data-theme="neon-green">
+                <span class="theme-swatch" style="background: #10b981;"></span> Neon Green
+              </button>
+            </div>
+          </div>
+
+          <!-- Add Skill Form -->
+          <div style="background: var(--bg-tertiary); padding: 1.15rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <div style="font-size: 0.875rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.4rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              Add New Skill
+            </div>
+
+            <form id="add-skill-form" onsubmit="return false;" style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 0.65rem;">
+                <div>
+                  <input type="text" id="new-skill-name" class="form-input" placeholder="Skill Name (e.g. React 19)" required>
+                </div>
+                <div>
+                  <select id="new-skill-category" class="form-select">
+                    <option value="Frontend">Frontend</option>
+                    <option value="Backend">Backend</option>
+                    <option value="Design">Design</option>
+                    <option value="Management">Management</option>
+                    <option value="DevOps">DevOps</option>
+                    <option value="Data & AI">Data & AI</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.35rem; color: var(--text-secondary);">
+                  <span>Proficiency Level</span>
+                  <span id="slider-val-display" style="color: var(--radar-accent); font-weight: 700;">85%</span>
+                </div>
+                <div class="range-group">
+                  <input type="range" id="new-skill-level" class="range-slider" min="10" max="100" value="85" step="5">
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="margin-top: 0.25rem; padding: 0.55rem;">
+                + Add to Chart
+              </button>
+            </form>
+          </div>
+
+          <!-- Active Skills Manager -->
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Active Skills (<span id="skill-count">0</span>):</label>
+              <button type="button" id="btn-reset-skills" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Reset All</button>
+            </div>
+            
+            <div class="skill-items-list" id="skills-list">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Radar Chart & Matrix Visualization Column -->
+        <div class="tool-panel glass-panel">
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <div class="panel-title" style="border: none; padding: 0; margin: 0;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--radar-accent);"><circle cx="12" cy="12" r="10"></circle><path d="m10 15 5-3-5-3v6Z"></path></svg>
+              Radar & Matrix View
+            </div>
+
+            <div class="action-bar action-toolbar" style="margin: 0;">
+              <button type="button" class="btn btn-secondary" id="btn-download-png">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                Download Radar PNG
+              </button>
+              <button type="button" class="btn btn-primary" id="btn-export-embed">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                Export HTML Embed
+              </button>
+            </div>
+          </div>
+
+          <!-- Radar Canvas Container -->
+          <div class="radar-canvas-container" id="radar-container">
+            <svg class="radar-svg" id="radar-svg" viewBox="0 0 540 540" xmlns="http://www.w3.org/2000/svg">
+              <!-- SVG chart elements generated dynamically -->
+            </svg>
+            <div id="radar-tooltip" style="position: absolute; display: none; background: rgba(15, 23, 42, 0.95); border: 1px solid var(--radar-accent); padding: 0.4rem 0.75rem; border-radius: var(--radius-sm); font-size: 0.8rem; pointer-events: none; transform: translate(-50%, -120%); box-shadow: 0 4px 12px rgba(0,0,0,0.4); z-index: 10;"></div>
+          </div>
+
+          <!-- Dynamic Progress Bars Competency Matrix -->
+          <div class="category-matrix-section">
+            <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--radar-accent);"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+              Competency Matrix Breakdown
+            </h4>
+            
+            <div id="matrix-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem;">
+              <!-- Dynamically generated bars grouped by category -->
+            </div>
+          </div>
+
+        </div>
+
       </div>
-    
+
     </div>
   </main>
 
+  <!-- Export Embed Modal -->
+  <div class="modal-backdrop" id="embed-modal">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;">
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin: 0; color: var(--text-primary);">Export HTML Embed Snippet</h3>
+        <button type="button" id="modal-close" style="background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 1.25rem;">&times;</button>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+        Copy and paste this self-contained, responsive SVG radar snippet into your portfolio, personal website, or resume page.
+      </p>
+      <textarea id="embed-code-area" class="form-textarea" style="height: 180px; font-family: monospace; font-size: 0.8rem;" readonly></textarea>
+      <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+        <button type="button" class="btn btn-secondary" id="btn-copy-embed">Copy Snippet</button>
+        <button type="button" class="btn btn-primary" id="btn-close-modal">Done</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer Web Component -->
   <app-footer></app-footer>
+
+  <!-- Toast Notification Container -->
+  <div id="toast" style="position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; background: var(--surface); color: var(--text-primary); border: 1px solid var(--border); border-left: 4px solid var(--radar-accent); padding: 0.85rem 1.25rem; border-radius: var(--radius-md); box-shadow: 0 10px 25px rgba(0,0,0,0.4); display: none; transform: translateY(10px); transition: 0.3s all ease; font-size: 0.9rem; align-items: center; gap: 0.5rem;"></div>
 
   <!-- Structured schema for search engine rich snippets -->
   <script type="application/ld+json">
@@ -62,7 +402,7 @@
     "@type": "WebApplication",
     "name": "Skill Visualizer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/skill-visualizer/",
-    "description": "Generate beautiful skill bars and skill charts for your CV.",
+    "description": "Interactive technical skills radar chart and competency matrix visualizer with export capabilities.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

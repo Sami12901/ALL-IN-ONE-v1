@@ -3,15 +3,196 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Character Limit Monitor - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Monitors text lengths against social platform limits.">
-  <meta name="keywords" content="character, limits, social, twitter, linkedin, free, online, tool, utility">
+  <title>Character Limit Counter - Social Media Text Monitor - ALL IN ONE</title>
+  <meta name="description" content="Real-time multi-platform character, word, and sentence counter with live progress gauges for Twitter/X, Instagram, LinkedIn, TikTok, YouTube, SMS, and SEO.">
+  <meta name="keywords" content="character counter, char limit counter, word counter, twitter char limit, instagram bio limit, linkedin post limit, tiktok caption counter, free online tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/char-limit-counter/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .counter-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .counter-layout {
+        grid-template-columns: 1.15fr 1fr;
+      }
+    }
+
+    /* Overall Stats Bar */
+    .metric-ribbon {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .metric-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 0.5rem;
+      text-align: center;
+    }
+    .metric-box-val {
+      font-size: 1.45rem;
+      font-weight: 700;
+      font-family: monospace;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+    .metric-box-lbl {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Platform Gauge Cards Grid */
+    .platform-cards-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.85rem;
+      max-height: 590px;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+    @media (min-width: 600px) and (max-width: 991px) {
+      .platform-cards-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .platform-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.15rem;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .platform-card.status-safe {
+      border-left: 4px solid var(--success);
+    }
+    .platform-card.status-warning {
+      border-left: 4px solid var(--warning);
+      background: rgba(245, 158, 11, 0.05);
+    }
+    .platform-card.status-danger {
+      border-left: 4px solid var(--error);
+      background: rgba(239, 68, 68, 0.07);
+    }
+
+    .platform-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .platform-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .platform-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      flex-shrink: 0;
+    }
+    .platform-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .platform-limit-tag {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    /* Status Pill */
+    .limit-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: monospace;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      white-space: nowrap;
+    }
+    .limit-badge.safe {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .limit-badge.warning {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .limit-badge.danger {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--error);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+
+    /* Progress bar track */
+    .gauge-track {
+      width: 100%;
+      height: 7px;
+      border-radius: var(--radius-full);
+      background: var(--border);
+      overflow: hidden;
+      position: relative;
+    }
+    .gauge-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      transition: width 0.25s ease, background 0.25s ease;
+    }
+    .gauge-fill.fill-safe {
+      background: var(--success);
+    }
+    .gauge-fill.fill-warning {
+      background: var(--warning);
+    }
+    .gauge-fill.fill-danger {
+      background: var(--error);
+    }
+
+    .platform-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.785rem;
+      color: var(--text-secondary);
+    }
+    .trim-btn {
+      padding: 0.15rem 0.5rem;
+      font-size: 0.7rem;
+      border-radius: 4px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: var(--error);
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .trim-btn:hover {
+      background: rgba(239, 68, 68, 0.25);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,29 +207,120 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Character Limit Monitor</h1>
-        <p class="tool-description">Monitors text lengths against social platform limits.</p>
+        <h1>Character Limit Counter</h1>
+        <p class="tool-description">Real-time social media length monitor. Track character limits, reading time, words, and sentences across Twitter/X, Instagram, LinkedIn, TikTok, SMS, and YouTube.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Character Limit Monitor</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Monitors text lengths against social platform limits.</div>
-            <div><strong>Inputs:</strong> character, limits, social, twitter, linkedin</div>
-            <div><strong>Category:</strong> social</div>
+      <!-- Quick presets bar -->
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; background: var(--bg-secondary); padding: 0.85rem 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+        <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-secondary);">
+          <strong style="color: var(--text-primary);">Load Sample Content:</strong>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+          <button id="sample-tweet-btn" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">Short Tweet</button>
+          <button id="sample-insta-btn" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">Instagram Caption</button>
+          <button id="sample-linkedin-btn" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">LinkedIn Post</button>
+          <button id="sample-overlimit-btn" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; color: var(--error);">Overlimit Sample</button>
+        </div>
+      </div>
+
+      <!-- Main Layout -->
+      <div class="counter-layout">
+        <!-- Left: Textarea & Metrics -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title" style="justify-content: space-between;">
+            <span>Content Composition</span>
+            <span id="char-badge" class="badge" style="font-family: monospace;">0 CHARS</span>
+          </h2>
+
+          <!-- Metric Ribbon -->
+          <div class="metric-ribbon">
+            <div class="metric-box">
+              <div id="m-chars" class="metric-box-val">0</div>
+              <div class="metric-box-lbl">Chars (w/ space)</div>
+            </div>
+            <div class="metric-box">
+              <div id="m-nospace" class="metric-box-val">0</div>
+              <div class="metric-box-lbl">Chars (no space)</div>
+            </div>
+            <div class="metric-box">
+              <div id="m-words" class="metric-box-val">0</div>
+              <div class="metric-box-lbl">Words</div>
+            </div>
+            <div class="metric-box">
+              <div id="m-sentences" class="metric-box-val">0</div>
+              <div class="metric-box-lbl">Sentences</div>
+            </div>
+            <div class="metric-box">
+              <div id="m-paragraphs" class="metric-box-val">0</div>
+              <div class="metric-box-lbl">Paragraphs</div>
+            </div>
+            <div class="metric-box">
+              <div id="m-readtime" class="metric-box-val">0s</div>
+              <div class="metric-box-lbl">Read Time</div>
+            </div>
+          </div>
+
+          <!-- Textarea -->
+          <div class="form-group" style="position: relative; flex: 1;">
+            <textarea 
+              id="content-textarea" 
+              class="form-textarea" 
+              placeholder="Start drafting or paste your post copy here to inspect live character constraints across all networks..."
+              style="min-height: 280px; font-size: 1rem; line-height: 1.6; padding-right: 4.5rem;"
+            ></textarea>
+            <button id="copy-text-btn" class="copy-btn" style="top: 0.75rem; right: 0.75rem;">Copy</button>
+          </div>
+
+          <!-- Action bar -->
+          <div class="action-bar">
+            <button id="clear-text-btn" class="btn btn-secondary">Clear Text</button>
+            <button id="clean-spaces-btn" class="btn btn-secondary">Remove Extra Spaces</button>
+            <button id="case-upper-btn" class="btn btn-secondary">UPPERCASE</button>
+            <button id="case-lower-btn" class="btn btn-secondary">lowercase</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right: Platform Limits Grid -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+            <h2 class="panel-title" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">
+              Social Platform Gauges
+            </h2>
+            <div id="platform-warnings-count" style="font-size: 0.8rem; font-weight: 700; color: var(--success);">
+              All 8 within limits
+            </div>
+          </div>
+
+          <div id="platform-list" class="platform-cards-grid">
+            <!-- Dynamically populated or updated by script.js -->
+          </div>
+        </div>
       </div>
-    
+
+      <!-- Informational Guide -->
+      <div class="tool-panel glass-panel" style="margin-top: 1.5rem;">
+        <h2 class="panel-title">Social Media Character Limit Best Practices</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; color: var(--text-secondary); font-size: 0.925rem; line-height: 1.6;">
+          <div>
+            <h3 style="color: var(--text-primary); font-size: 1rem; margin-bottom: 0.35rem;">Twitter / X (280 chars)</h3>
+            <p>Tweets with 70–100 characters often experience the highest engagement. URLs always consume 23 characters regardless of length due to the t.co shortener.</p>
+          </div>
+          <div>
+            <h3 style="color: var(--text-primary); font-size: 1rem; margin-bottom: 0.35rem;">Instagram (150 bio / 2,200 caption)</h3>
+            <p>While captions allow up to 2,200 characters, only the first 125 characters appear before the "...more" truncation button. Place hooks in the first line.</p>
+          </div>
+          <div>
+            <h3 style="color: var(--text-primary); font-size: 1rem; margin-bottom: 0.35rem;">LinkedIn (3,000 chars)</h3>
+            <p>The first 140–210 characters show in the feed before the "see more" cutoff. Aim for 800–1,500 characters for thought leadership articles.</p>
+          </div>
+          <div>
+            <h3 style="color: var(--text-primary); font-size: 1rem; margin-bottom: 0.35rem;">SMS Messages (160 GSM-7)</h3>
+            <p>Standard SMS messages are capped at 160 characters. Adding emojis or unicode changes the encoding to UCS-2, dropping the limit per segment to 70 characters.</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
 
@@ -60,9 +332,9 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Character Limit Monitor",
+    "name": "Character Limit Counter",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/char-limit-counter/",
-    "description": "Monitors text lengths against social platform limits.",
+    "description": "Real-time character, word, sentence counter and social media character limit tracker.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

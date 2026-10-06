@@ -3,15 +3,289 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simple Expense Budget Planner - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Allocate budget items across visual tables.">
-  <meta name="keywords" content="budget, planner, expenses, income, savings, free, online, tool, utility">
+  <title>50/30/20 Monthly Budget Planner - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Synthesize your monthly finances with the 50/30/20 budgeting rule, customize category allocations, itemize expenses, and view interactive SVG donut visualizations.">
+  <meta name="keywords" content="50 30 20 budget, budget planner, monthly budget calculator, needs wants savings, expense tracker, personal finance tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/budget-planner/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .budget-workarea {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+    @media (min-width: 1024px) {
+      .budget-workarea {
+        grid-template-columns: 460px 1fr;
+      }
+    }
+
+    .input-with-affix {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-affix {
+      position: absolute;
+      left: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      pointer-events: none;
+      font-size: 1rem;
+    }
+    .input-affix-right {
+      position: absolute;
+      right: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      pointer-events: none;
+      font-size: 0.95rem;
+    }
+    .input-with-affix input {
+      padding-left: 2.2rem;
+    }
+    .input-with-affix-right input {
+      padding-right: 2.2rem;
+    }
+
+    /* Slider Group Card */
+    .slider-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem;
+      margin-bottom: 0.75rem;
+    }
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.4rem;
+    }
+    .slider-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .slider-badge {
+      font-size: 0.8rem;
+      font-weight: 700;
+      font-family: monospace;
+    }
+
+    /* Donut Chart Container */
+    .chart-container {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+    .svg-donut-wrapper {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      margin: 0.5rem 0;
+    }
+    .svg-donut-wrapper svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+      border-radius: 50%;
+    }
+    .donut-center-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+    }
+    .donut-center-amount {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.1;
+    }
+    .donut-center-label {
+      font-size: 0.72rem;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 0.2rem;
+    }
+
+    .donut-legend {
+      display: flex;
+      justify-content: center;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+      margin-top: 0.75rem;
+      width: 100%;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+
+    /* KPI Cards */
+    .kpi-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .kpi-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      position: relative;
+      transition: var(--transition);
+    }
+    .kpi-card:hover {
+      border-color: rgba(var(--accent-rgb), 0.4);
+      transform: translateY(-2px);
+    }
+    .kpi-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 700;
+    }
+    .kpi-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .kpi-subtext {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Breakdown Accordions / Tables */
+    .category-section {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+    .category-header {
+      padding: 0.85rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--border);
+    }
+    .category-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+    .category-summary-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+    }
+    .category-body {
+      padding: 0.85rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .expense-row {
+      display: grid;
+      grid-template-columns: 1fr 140px;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    .expense-row label {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+    .expense-row .form-input {
+      padding: 0.4rem 0.65rem;
+      font-size: 0.85rem;
+    }
+
+    .balance-badge {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+    }
+    .balance-balanced {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .balance-warning {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    /* Print styles */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      app-header, app-breadcrumbs, app-footer, .btn, .mode-toggle-group, .range-slider, select, button {
+        display: none !important;
+      }
+      .tool-panel {
+        background: #ffffff !important;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+      }
+      .budget-workarea {
+        grid-template-columns: 1fr !important;
+      }
+      .kpi-card, .category-section, .chart-container {
+        background: #f9f9f9 !important;
+        border: 1px solid #dddddd !important;
+        color: #000000 !important;
+      }
+      .kpi-value {
+        color: #000000 !important;
+      }
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,27 +300,289 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Simple Expense Budget Planner</h1>
-        <p class="tool-description">Allocate budget items across visual tables.</p>
+        <h1>50/30/20 Monthly Budget Planner</h1>
+        <p class="tool-description">Synthesize your monthly take-home earnings with the classic 50/30/20 balanced financial rule. Customize category percentage targets, itemize expenses, and visualize allocations with interactive SVG donut charts.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Simple Expense Budget Planner</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Allocate budget items across visual tables.</div>
-            <div><strong>Inputs:</strong> budget, planner, expenses, income, savings</div>
-            <div><strong>Category:</strong> business</div>
+      <div class="budget-workarea">
+        <!-- Input & Slider Controls (Left Column) -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+            Income & Budget Ratios
+          </h2>
+
+          <!-- Currency & Pay Frequency -->
+          <div style="display: grid; grid-template-columns: 110px 1fr; gap: 0.75rem;">
+            <div class="form-group">
+              <label for="currency-select">Currency</label>
+              <select id="currency-select" class="form-select">
+                <option value="$" selected>$ (USD)</option>
+                <option value="€">€ (EUR)</option>
+                <option value="£">£ (GBP)</option>
+                <option value="C$">C$ (CAD)</option>
+                <option value="A$">A$ (AUD)</option>
+                <option value="¥">¥ (JPY)</option>
+                <option value="₹">₹ (INR)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="pay-frequency-select">Pay Frequency</label>
+              <select id="pay-frequency-select" class="form-select">
+                <option value="monthly" selected>Monthly Net (Take-Home)</option>
+                <option value="biweekly">Bi-Weekly (Every 2 Weeks)</option>
+                <option value="weekly">Weekly</option>
+                <option value="annual">Annual Salary (Net)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Income Input -->
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <label for="income-input" id="income-input-label">Monthly Take-Home Pay</label>
+              <span id="normalized-monthly-badge" class="badge">$4,500 / month</span>
+            </div>
+            <div class="input-with-affix">
+              <span class="input-affix" id="currency-symbol-affix">$</span>
+              <input type="number" id="income-input" class="form-input" min="0" step="100" value="4500" placeholder="0.00">
+            </div>
+          </div>
+
+          <!-- Ratio Allocation Sliders -->
+          <div style="margin-top: 0.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <strong style="font-size: 0.88rem; color: var(--text-primary);">Budget Allocations</strong>
+              <span id="allocation-balance-badge" class="balance-badge balance-balanced">100% Total (Balanced)</span>
+            </div>
+
+            <!-- Needs Slider (Default 50%) -->
+            <div class="slider-card" style="border-left: 4px solid #3b82f6;">
+              <div class="slider-header">
+                <span class="slider-title" style="color: #60a5fa;">
+                  Needs (Essentials)
+                </span>
+                <span class="slider-badge" id="needs-pct-badge" style="color: #60a5fa;">50%</span>
+              </div>
+              <input type="range" id="needs-slider" min="0" max="100" step="1" value="50" class="range-slider">
+              <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-tertiary); margin-top: 0.25rem;">
+                <span>Rent, utilities, food, health</span>
+                <span id="needs-allocated-amount" style="font-weight: 700; color: var(--text-primary);">$2,250.00</span>
+              </div>
+            </div>
+
+            <!-- Wants Slider (Default 30%) -->
+            <div class="slider-card" style="border-left: 4px solid #a855f7;">
+              <div class="slider-header">
+                <span class="slider-title" style="color: #c084fc;">
+                  Wants (Discretionary)
+                </span>
+                <span class="slider-badge" id="wants-pct-badge" style="color: #c084fc;">30%</span>
+              </div>
+              <input type="range" id="wants-slider" min="0" max="100" step="1" value="30" class="range-slider">
+              <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-tertiary); margin-top: 0.25rem;">
+                <span>Dining out, entertainment, shopping</span>
+                <span id="wants-allocated-amount" style="font-weight: 700; color: var(--text-primary);">$1,350.00</span>
+              </div>
+            </div>
+
+            <!-- Savings Slider (Default 20%) -->
+            <div class="slider-card" style="border-left: 4px solid #10b981;">
+              <div class="slider-header">
+                <span class="slider-title" style="color: #34d399;">
+                  Savings & Debt Payoff
+                </span>
+                <span class="slider-badge" id="savings-pct-badge" style="color: #34d399;">20%</span>
+              </div>
+              <input type="range" id="savings-slider" min="0" max="100" step="1" value="20" class="range-slider">
+              <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-tertiary); margin-top: 0.25rem;">
+                <span>Emergency fund, retirement, loans</span>
+                <span id="savings-allocated-amount" style="font-weight: 700; color: var(--text-primary);">$900.00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+            <button type="button" id="btn-rebalance-503020" class="btn btn-secondary" style="flex: 1; font-size: 0.8rem;">Reset 50/30/20 Rule</button>
+            <button type="button" id="btn-reset-all" class="btn btn-secondary" style="font-size: 0.8rem;">Reset All</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Budget Visualizer & Itemized Expense Tracker (Right Column) -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+            <h2 class="panel-title" style="margin: 0; border: none; padding: 0;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
+              Monthly Budget Synthesizer
+            </h2>
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="button" id="btn-print-budget" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.35rem 0.75rem;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                Print / PDF
+              </button>
+              <button type="button" id="btn-copy-budget" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.35rem 0.75rem;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span id="copy-budget-label">Copy</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- KPI Cards -->
+          <div class="kpi-cards-grid">
+            <div class="kpi-card" style="border-top: 3px solid #3b82f6;">
+              <span class="kpi-title">Needs Target</span>
+              <span id="kpi-needs-amount" class="kpi-value" style="color: #60a5fa;">$2,250</span>
+              <span id="kpi-needs-sub" class="kpi-subtext">50% of monthly income</span>
+            </div>
+            <div class="kpi-card" style="border-top: 3px solid #a855f7;">
+              <span class="kpi-title">Wants Target</span>
+              <span id="kpi-wants-amount" class="kpi-value" style="color: #c084fc;">$1,350</span>
+              <span id="kpi-wants-sub" class="kpi-subtext">30% of monthly income</span>
+            </div>
+            <div class="kpi-card" style="border-top: 3px solid #10b981;">
+              <span class="kpi-title">Savings Target</span>
+              <span id="kpi-savings-amount" class="kpi-value" style="color: #34d399;">$900</span>
+              <span id="kpi-savings-sub" class="kpi-subtext">20% of monthly income</span>
+            </div>
+          </div>
+
+          <!-- Interactive SVG Donut Chart -->
+          <div class="chart-container">
+            <div class="svg-donut-wrapper">
+              <svg id="budget-svg-donut" viewBox="0 0 100 100">
+                <!-- Background circle -->
+                <circle cx="50" cy="50" r="38" fill="transparent" stroke="var(--border)" stroke-width="14"></circle>
+                <!-- SVG Circles dynamically updated -->
+                <circle id="donut-slice-needs" cx="50" cy="50" r="38" fill="transparent" stroke="#3b82f6" stroke-width="14" stroke-dasharray="0 238.76" stroke-dashoffset="0"></circle>
+                <circle id="donut-slice-wants" cx="50" cy="50" r="38" fill="transparent" stroke="#a855f7" stroke-width="14" stroke-dasharray="0 238.76" stroke-dashoffset="0"></circle>
+                <circle id="donut-slice-savings" cx="50" cy="50" r="38" fill="transparent" stroke="#10b981" stroke-width="14" stroke-dasharray="0 238.76" stroke-dashoffset="0"></circle>
+              </svg>
+              <div class="donut-center-text">
+                <div class="donut-center-amount" id="donut-total-income">$4,500</div>
+                <div class="donut-center-label">Monthly Income</div>
+              </div>
+            </div>
+
+            <!-- Chart Legend -->
+            <div class="donut-legend">
+              <div class="legend-item">
+                <span class="legend-dot" style="background: #3b82f6;"></span>
+                <span id="legend-needs-text">Needs: 50% ($2,250)</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot" style="background: #a855f7;"></span>
+                <span id="legend-wants-text">Wants: 30% ($1,350)</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot" style="background: #10b981;"></span>
+                <span id="legend-savings-text">Savings: 20% ($900)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Itemized Expense Tracking Sections -->
+          <div>
+            <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+              <span>Itemized Expenses vs Budget Targets</span>
+              <small style="color: var(--text-tertiary); font-weight: normal;">Optional itemization to compare actuals</small>
+            </div>
+
+            <!-- Needs Itemization Section -->
+            <div class="category-section">
+              <div class="category-header">
+                <div class="category-title-wrap">
+                  <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#3b82f6;"></span>
+                  <span>Needs Breakdown</span>
+                </div>
+                <div class="category-summary-wrap">
+                  <span id="needs-actual-sum" style="font-weight: 700; color: var(--text-primary);">$1,950 / $2,250</span>
+                  <span id="needs-status-badge" class="badge" style="font-size: 0.72rem;">Within Budget</span>
+                </div>
+              </div>
+              <div class="category-body">
+                <div class="expense-row">
+                  <label for="exp-rent">Housing & Rent / Mortgage</label>
+                  <input type="number" id="exp-rent" class="form-input itemized-exp exp-needs" value="1200" placeholder="0">
+                </div>
+                <div class="expense-row">
+                  <label for="exp-groceries">Groceries & Household</label>
+                  <input type="number" id="exp-groceries" class="form-input itemized-exp exp-needs" value="450" placeholder="0">
+                </div>
+                <div class="expense-row">
+                  <label for="exp-utilities">Utilities & Internet</label>
+                  <input type="number" id="exp-utilities" class="form-input itemized-exp exp-needs" value="180" placeholder="0">
+                </div>
+                <div class="expense-row">
+                  <label for="exp-transport">Transport & Gas / Transit</label>
+                  <input type="number" id="exp-transport" class="form-input itemized-exp exp-needs" value="120" placeholder="0">
+                </div>
+              </div>
+            </div>
+
+            <!-- Wants Itemization Section -->
+            <div class="category-section">
+              <div class="category-header">
+                <div class="category-title-wrap">
+                  <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#a855f7;"></span>
+                  <span>Wants Breakdown</span>
+                </div>
+                <div class="category-summary-wrap">
+                  <span id="wants-actual-sum" style="font-weight: 700; color: var(--text-primary);">$780 / $1,350</span>
+                  <span id="wants-status-badge" class="badge" style="font-size: 0.72rem;">Within Budget</span>
+                </div>
+              </div>
+              <div class="category-body">
+                <div class="expense-row">
+                  <label for="exp-dining">Dining Out & Coffee</label>
+                  <input type="number" id="exp-dining" class="form-input itemized-exp exp-wants" value="350" placeholder="0">
+                </div>
+                <div class="expense-row">
+                  <label for="exp-entertainment">Entertainment & Events</label>
+                  <input type="number" id="exp-entertainment" class="form-input itemized-exp exp-wants" value="200" placeholder="0">
+                </div>
+                <div class="expense-row">
+                  <label for="exp-shopping">Shopping & Hobbies</label>
+                  <input type="number" id="exp-shopping" class="form-input itemized-exp exp-wants" value="150" placeholder="0">
+                </div>
+                <div class="expense-row">
+                  <label for="exp-subs">Subscriptions & Streaming</label>
+                  <input type="number" id="exp-subs" class="form-input itemized-exp exp-wants" value="80" placeholder="0">
+                </div>
+              </div>
+            </div>
+
+            <!-- Savings Itemization Section -->
+            <div class="category-section">
+              <div class="category-header">
+                <div class="category-title-wrap">
+                  <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#10b981;"></span>
+                  <span>Savings & Investments</span>
+                </div>
+                <div class="category-summary-wrap">
+                  <span id="savings-actual-sum" style="font-weight: 700; color: var(--text-primary);">$800 / $900</span>
+                  <span id="savings-status-badge" class="badge" style="font-size: 0.72rem;">Within Budget</span>
+                </div>
+              </div>
+              <div class="category-body">
+                <div class="expense-row">
+                  <label for="exp-emergency">Emergency Fund Deposit</label>
+                  <input type="number" id="exp-emergency" class="form-input itemized-exp exp-savings" value="400" placeholder="0">
+                </div>
+                <div class="expense-row">
+                  <label for="exp-invest">Retirement / IRA / 401k</label>
+                  <input type="number" id="exp-invest" class="form-input itemized-exp exp-savings" value="300" placeholder="0">
+                </div>
+                <div class="expense-row">
+                  <label for="exp-debt">Extra Debt Payoff</label>
+                  <input type="number" id="exp-debt" class="form-input itemized-exp exp-savings" value="100" placeholder="0">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     
     </div>
@@ -60,10 +596,10 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Simple Expense Budget Planner",
+    "name": "50/30/20 Monthly Budget Planner",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/budget-planner/",
-    "description": "Allocate budget items across visual tables.",
-    "applicationCategory": "UtilityPage",
+    "description": "Synthesize your monthly finances with the 50/30/20 budgeting rule, customize category allocations, and view interactive SVG donut visualizations.",
+    "applicationCategory": "FinanceApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

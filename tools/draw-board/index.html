@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sketchpad Draw Board - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Canvas drawing sketchpad with brush tools.">
-  <meta name="keywords" content="draw, sketch, canvas, brush, board, free, online, tool, utility">
+  <meta name="description" content="In-browser sketching whiteboard with pen, highlighter, eraser, multi-color palette, undo/redo history, and PNG export.">
+  <meta name="keywords" content="draw board, whiteboard, sketchpad, html5 canvas drawing, pen, highlighter, eraser, paint online, free tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/draw-board/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,135 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+  <style>
+    /* Toolbar container */
+    .draw-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.85rem 1.25rem;
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .tool-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      min-height: 38px;
+    }
+    .tool-btn:hover {
+      background: var(--accent-glow);
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+    .tool-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+    .tool-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .color-swatch-list {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+    .color-dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+      padding: 0;
+    }
+    .color-dot:hover {
+      transform: scale(1.2);
+    }
+    .color-dot.active {
+      transform: scale(1.2);
+      border-color: #ffffff;
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+    .color-picker-input {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      padding: 0;
+      cursor: pointer;
+      background: transparent;
+      overflow: hidden;
+    }
+    /* Canvas Container */
+    .canvas-viewport {
+      position: relative;
+      width: 100%;
+      height: 600px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: #12151c;
+      overflow: hidden;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: none;
+    }
+    @media (max-width: 768px) {
+      .canvas-viewport {
+        height: 480px;
+      }
+    }
+    #draw-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      cursor: crosshair;
+      touch-action: none;
+    }
+    .brush-cursor {
+      position: absolute;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255, 255, 255, 0.85);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      display: none;
+      z-index: 10;
+      box-shadow: 0 0 4px rgba(0,0,0,0.5);
+    }
+    .canvas-footer-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -24,31 +153,123 @@
 
   <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
+    <div class="container tool-container" style="max-width: 1300px;">
       <div class="tool-header">
         <h1>Sketchpad Draw Board</h1>
-        <p class="tool-description">Canvas drawing sketchpad with brush tools.</p>
+        <p class="tool-description">Interactive high-resolution sketching studio. Smooth pen, translucent highlighter, precision eraser, full undo/redo stack, and PNG artwork export.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Sketchpad Draw Board</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Canvas drawing sketchpad with brush tools.</div>
-            <div><strong>Inputs:</strong> draw, sketch, canvas, brush, board</div>
-            <div><strong>Category:</strong> utility</div>
-          </div>
+      <!-- Main Toolbar -->
+      <div class="draw-toolbar">
+        <!-- Tools Selection -->
+        <div class="toolbar-group">
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;">Tool:</span>
+          <button type="button" class="tool-btn active" id="tool-pen" data-tool="pen">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+              <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+              <path d="M2 2l7.586 7.586"></path>
+              <circle cx="11" cy="11" r="2"></circle>
+            </svg>
+            Pen
+          </button>
+          <button type="button" class="tool-btn" id="tool-highlighter" data-tool="highlighter">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m9 11-6 6v3h3l6-6"></path>
+              <path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4"></path>
+            </svg>
+            Highlighter
+          </button>
+          <button type="button" class="tool-btn" id="tool-eraser" data-tool="eraser">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"></path>
+              <path d="M22 21H7"></path>
+              <path d="m5 11 9 9"></path>
+            </svg>
+            Eraser
+          </button>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Palette Swatches -->
+        <div class="toolbar-group">
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;">Color:</span>
+          <div class="color-swatch-list" id="swatch-list">
+            <button type="button" class="color-dot active" data-color="#ffffff" style="background: #ffffff;" title="White"></button>
+            <button type="button" class="color-dot" data-color="#38bdf8" style="background: #38bdf8;" title="Electric Sky"></button>
+            <button type="button" class="color-dot" data-color="#10b981" style="background: #10b981;" title="Emerald"></button>
+            <button type="button" class="color-dot" data-color="#f59e0b" style="background: #f59e0b;" title="Amber"></button>
+            <button type="button" class="color-dot" data-color="#ef4444" style="background: #ef4444;" title="Crimson"></button>
+            <button type="button" class="color-dot" data-color="#a855f7" style="background: #a855f7;" title="Purple"></button>
+            <button type="button" class="color-dot" data-color="#ec4899" style="background: #ec4899;" title="Rose"></button>
+            <button type="button" class="color-dot" data-color="#1e293b" style="background: #1e293b; border: 1px solid #475569;" title="Charcoal"></button>
+          </div>
+          <input type="color" id="custom-color-picker" class="color-picker-input" value="#ffffff" title="Custom color picker">
+        </div>
+
+        <!-- Brush Size Slider -->
+        <div class="toolbar-group" style="min-width: 160px;">
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;">Size:</span>
+          <input type="range" id="brush-size-slider" class="range-slider" min="1" max="50" value="4" style="width: 100px;">
+          <span class="range-value" id="brush-size-val" style="min-width: 32px; font-size: 0.85rem;">4px</span>
+        </div>
+
+        <!-- Canvas Background Selector -->
+        <div class="toolbar-group">
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;">Stage:</span>
+          <select id="canvas-bg-select" class="form-select" style="padding: 0.35rem 0.65rem; font-size: 0.825rem; width: auto;">
+            <option value="dark" selected>Dark Slate</option>
+            <option value="white">Pure White</option>
+            <option value="grid">Blueprint Grid</option>
+            <option value="transparent">Transparent</option>
+          </select>
+        </div>
+
+        <!-- History & Export Actions -->
+        <div class="toolbar-group">
+          <button type="button" class="tool-btn" id="btn-undo" title="Undo (Ctrl+Z)" disabled>
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 7v6h6"></path>
+              <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path>
+            </svg>
+            Undo
+          </button>
+          <button type="button" class="tool-btn" id="btn-redo" title="Redo (Ctrl+Y)" disabled>
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 7v6h-6"></path>
+              <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"></path>
+            </svg>
+            Redo
+          </button>
+          <button type="button" class="tool-btn" id="btn-clear" title="Clear board">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            Clear
+          </button>
+          <button type="button" class="btn btn-primary" id="btn-download" style="padding: 0.45rem 1rem; font-size: 0.85rem;">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download PNG
+          </button>
+        </div>
       </div>
-    
+
+      <!-- Canvas Stage Area -->
+      <div class="canvas-viewport" id="canvas-container">
+        <canvas id="draw-canvas"></canvas>
+        <div class="brush-cursor" id="brush-cursor"></div>
+      </div>
+
+      <!-- Canvas Footer Status -->
+      <div class="canvas-footer-bar">
+        <span id="status-resolution">Stage Ready</span>
+        <span>Keyboard shortcuts: <kbd>Ctrl+Z</kbd> Undo &bull; <kbd>Ctrl+Y</kbd> Redo &bull; <kbd>E</kbd> Eraser &bull; <kbd>P</kbd> Pen &bull; <kbd>H</kbd> Highlighter</span>
+      </div>
+
     </div>
   </main>
 
@@ -62,10 +283,10 @@
     "@type": "WebApplication",
     "name": "Sketchpad Draw Board",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/draw-board/",
-    "description": "Canvas drawing sketchpad with brush tools.",
+    "description": "In-browser sketching whiteboard with pen, highlighter, eraser, multi-color palette, undo/redo history, and PNG export.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
+    "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas."
   }
   </script>
 </body>

@@ -4,14 +4,489 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Number Typing Practice - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Enhance your skills with Number Typing Practice.">
-  <meta name="keywords" content="typing, keyboard, practice, free, online, tool, utility">
+  <meta name="description" content="Master 10-key numeric keypad and top-row number typing. Practice PINs, phone numbers, currency, and alphanumeric drills with live WPM, CPM, and key highlighting.">
+  <meta name="keywords" content="number typing practice, 10 key typing test, numpad practice, number row typing tutor, wpm calculator, data entry typing">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/number-typing-practice/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    /* Scoped styling for Number Typing Practice */
+    .num-practice-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    /* Control Toolbar */
+    .num-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+
+    .num-mode-group, .num-sub-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .toolbar-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      margin-right: 0.25rem;
+    }
+
+    .mode-pill-btn {
+      padding: 0.45rem 0.9rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 500;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .mode-pill-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+    }
+
+    .mode-pill-btn.active {
+      background: var(--accent-gradient);
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    /* Metrics Dashboard */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 1rem;
+    }
+
+    .metric-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.1rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+      opacity: 0.7;
+    }
+
+    .metric-value {
+      font-size: 2.25rem;
+      font-weight: 800;
+      font-family: var(--font-sans);
+      color: var(--text-primary);
+      line-height: 1.1;
+      margin-top: 0.25rem;
+    }
+
+    .metric-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+    }
+
+    .metric-sub {
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+      margin-top: 0.2rem;
+    }
+
+    /* Typing Workspace */
+    .typing-stage-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      position: relative;
+      cursor: text;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .typing-stage-card.is-focused {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .typing-prompt-display {
+      font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+      font-size: 1.85rem;
+      letter-spacing: 0.06em;
+      line-height: 2;
+      user-select: none;
+      word-break: break-all;
+      position: relative;
+      min-height: 80px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    @media (max-width: 640px) {
+      .typing-prompt-display {
+        font-size: 1.35rem;
+      }
+    }
+
+    .prompt-char {
+      position: relative;
+      padding: 0 1px;
+      border-radius: 3px;
+      transition: background-color 0.1s ease, color 0.1s ease;
+      color: var(--text-secondary);
+      opacity: 0.65;
+    }
+
+    .prompt-char.is-space {
+      width: 14px;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .prompt-char.correct {
+      color: var(--success);
+      opacity: 1;
+      font-weight: 600;
+    }
+
+    .prompt-char.incorrect {
+      color: var(--error);
+      background: rgba(239, 68, 68, 0.25);
+      opacity: 1;
+      font-weight: 700;
+      text-decoration: underline;
+    }
+
+    .prompt-char.current {
+      opacity: 1;
+      color: var(--text-primary);
+      background: var(--accent-glow);
+      border-bottom: 3px solid var(--accent);
+      animation: pulse-cursor 1s infinite alternate ease-in-out;
+    }
+
+    @keyframes pulse-cursor {
+      from { border-bottom-color: var(--accent); }
+      to { border-bottom-color: transparent; }
+    }
+
+    .hidden-typing-input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 0;
+      height: 0;
+    }
+
+    .focus-notice {
+      position: absolute;
+      top: 0.75rem;
+      right: 1rem;
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .focus-pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      display: inline-block;
+    }
+
+    .focus-notice.blurred .focus-pulse-dot {
+      background: var(--error);
+    }
+
+    /* Keyboards Layout Container */
+    .keyboards-section {
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .keyboards-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .keyboards-display-area {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      overflow-x: auto;
+      padding: 0.5rem 0;
+    }
+
+    /* Top Row Layout */
+    .toprow-keyboard {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      background: var(--bg-tertiary);
+      padding: 0.85rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      width: 100%;
+      max-width: 680px;
+    }
+
+    .toprow-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .key-row {
+      display: flex;
+      gap: 0.35rem;
+      justify-content: center;
+    }
+
+    /* 10-Key Numpad Layout */
+    .numpad-keyboard {
+      background: var(--bg-tertiary);
+      padding: 0.85rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      width: 250px;
+    }
+
+    .numpad-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(5, 46px);
+      gap: 0.4rem;
+    }
+
+    /* Key styling */
+    .vkey {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      box-shadow: 0 2px 0 var(--border);
+      transition: all 0.08s ease;
+      user-select: none;
+      height: 44px;
+      min-width: 38px;
+      padding: 0 0.4rem;
+      position: relative;
+    }
+
+    .vkey-sub {
+      font-size: 0.65rem;
+      color: var(--text-tertiary);
+      line-height: 1;
+    }
+
+    .vkey.target-key {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 10px var(--accent-glow), inset 0 0 8px var(--accent-glow);
+      transform: translateY(-2px);
+    }
+
+    .vkey.pressed-correct {
+      background: rgba(16, 185, 129, 0.35) !important;
+      border-color: var(--success) !important;
+      color: var(--success) !important;
+      transform: translateY(1px);
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.4) !important;
+    }
+
+    .vkey.pressed-incorrect {
+      background: rgba(239, 68, 68, 0.35) !important;
+      border-color: var(--error) !important;
+      color: var(--error) !important;
+      transform: translateY(1px);
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.4) !important;
+    }
+
+    .numpad-grid .key-0 {
+      grid-column: span 2;
+    }
+
+    .numpad-grid .key-enter {
+      grid-row: span 2;
+      height: 96px;
+      background: var(--bg-primary);
+    }
+
+    .numpad-grid .key-plus {
+      grid-row: span 2;
+      height: 96px;
+    }
+
+    /* Drill Results Modal */
+    .results-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      place-items: center;
+      padding: 1rem;
+    }
+
+    .results-modal.is-active {
+      display: grid;
+    }
+
+    .results-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      max-width: 580px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      position: relative;
+    }
+
+    .results-badge-rank {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1.25rem;
+      border-radius: var(--radius-full);
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: var(--accent-gradient);
+      color: #ffffff;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    .results-stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .results-stat-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 0.5rem;
+    }
+
+    .results-stat-num {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .results-stat-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-top: 0.2rem;
+    }
+
+    .key-mistakes-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      justify-content: center;
+      margin: 1rem 0;
+      font-size: 0.85rem;
+    }
+
+    .mistake-tag {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid var(--error);
+      color: var(--error);
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,30 +502,218 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Number Typing Practice</h1>
-        <p class="tool-description">Enhance your skills with Number Typing Practice.</p>
+        <p class="tool-description">
+          Build swift muscle memory for numbers. Practice 10-key numeric keypad, top-row numerals, PINs, phone numbers, and currency with live key guidance and diagnostic metrics.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Number Typing Practice</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Enhance your skills with Number Typing Practice.</div>
-            <div><strong>Inputs:</strong> typing, keyboard, practice</div>
-            <div><strong>Category:</strong> typing</div>
+      <div class="num-practice-wrapper">
+        <!-- Toolbar & Modes -->
+        <div class="num-toolbar">
+          <div class="num-mode-group">
+            <span class="toolbar-label">Drill Mode:</span>
+            <button class="mode-pill-btn active" data-mode="sequential" title="Sequential counting & patterns">
+              <span>123</span> Sequential
+            </button>
+            <button class="mode-pill-btn" data-mode="pins" title="Random 4-Digit Security PINs">
+              <span>#</span> 4-Digit PINs
+            </button>
+            <button class="mode-pill-btn" data-mode="phone" title="Phone Numbers format">
+              <span>☎</span> Phone Numbers
+            </button>
+            <button class="mode-pill-btn" data-mode="currency" title="Currency with decimals and commas">
+              <span>$</span> Currency
+            </button>
+            <button class="mode-pill-btn" data-mode="alphanumeric" title="Mixed Letters & Numbers">
+              <span>A1</span> Alphanumeric
+            </button>
+          </div>
+
+          <div class="num-sub-group">
+            <span class="toolbar-label">Length:</span>
+            <button class="mode-pill-btn active" data-length="30">30s</button>
+            <button class="mode-pill-btn" data-length="60">60s</button>
+            <button class="mode-pill-btn" data-length="120">120s</button>
+            <button class="mode-pill-btn" data-length="items25">25 Items</button>
+          </div>
+
+          <div class="num-sub-group">
+            <button id="soundToggleBtn" class="btn btn-secondary" style="padding: 0.45rem 0.8rem; font-size: 0.85rem;" title="Toggle audio feedback">
+              🔊 Sound: ON
+            </button>
+            <button id="restartBtn" class="btn btn-primary" style="padding: 0.45rem 1rem; font-size: 0.85rem;">
+              ↻ Restart Drill
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Metrics Grid -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <span class="metric-title">Speed (WPM)</span>
+            <span id="statWpm" class="metric-value">0</span>
+            <span class="metric-sub">Words / Min</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-title">Speed (CPM)</span>
+            <span id="statCpm" class="metric-value">0</span>
+            <span class="metric-sub">Chars / Min</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-title">Accuracy</span>
+            <span id="statAccuracy" class="metric-value">100%</span>
+            <span class="metric-sub">Keystroke precision</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-title">Errors</span>
+            <span id="statErrors" class="metric-value" style="color: var(--error);">0</span>
+            <span class="metric-sub">Missed keys</span>
+          </div>
+          <div class="metric-card">
+            <span id="timerLabel" class="metric-title">Time Left</span>
+            <span id="statTimer" class="metric-value">30s</span>
+            <span id="statProgressSub" class="metric-sub">Elapsed: 0s</span>
+          </div>
+        </div>
+
+        <!-- Interactive Typing Stage -->
+        <div id="typingStage" class="typing-stage-card is-focused" tabindex="0" role="textbox" aria-label="Typing Practice Area">
+          <div class="focus-notice" id="focusNotice">
+            <span class="focus-pulse-dot"></span>
+            <span id="focusNoticeText">Click or press any key to type</span>
+          </div>
+
+          <!-- Hidden Input for capturing all keyboard input across desktop and mobile -->
+          <input type="text" id="hiddenInput" class="hidden-typing-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+
+          <!-- Rendered Stream of Characters -->
+          <div id="promptDisplay" class="typing-prompt-display">
+            <!-- Dynamically populated characters -->
+          </div>
+        </div>
+
+        <!-- On-Screen Keyboard Representation -->
+        <div class="keyboards-section">
+          <div class="keyboards-header">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0;">Interactive Virtual Keyboards</h2>
+              <span class="badge">Visual Guide</span>
+            </div>
+            <div class="num-sub-group">
+              <span class="toolbar-label">Layout View:</span>
+              <button class="mode-pill-btn active" data-view="both">Both Keyboards</button>
+              <button class="mode-pill-btn" data-view="numpad">10-Key Numpad</button>
+              <button class="mode-pill-btn" data-view="toprow">Top Number Row</button>
+            </div>
+          </div>
+
+          <div id="keyboardsContainer" class="keyboards-display-area">
+            <!-- Top Number Row -->
+            <div id="toprowView" class="toprow-keyboard">
+              <div class="toprow-label">
+                <span>⌨ Top Number Row</span>
+              </div>
+              <div class="key-row">
+                <div class="vkey" data-key="`" data-shift="~"><span class="vkey-sub">~</span>`</div>
+                <div class="vkey" data-key="1" data-shift="!"><span class="vkey-sub">!</span>1</div>
+                <div class="vkey" data-key="2" data-shift="@"><span class="vkey-sub">@</span>2</div>
+                <div class="vkey" data-key="3" data-shift="#"><span class="vkey-sub">#</span>3</div>
+                <div class="vkey" data-key="4" data-shift="$"><span class="vkey-sub">$</span>4</div>
+                <div class="vkey" data-key="5" data-shift="%"><span class="vkey-sub">%</span>5</div>
+                <div class="vkey" data-key="6" data-shift="^"><span class="vkey-sub">^</span>6</div>
+                <div class="vkey" data-key="7" data-shift="&"><span class="vkey-sub">&amp;</span>7</div>
+                <div class="vkey" data-key="8" data-shift="*"><span class="vkey-sub">*</span>8</div>
+                <div class="vkey" data-key="9" data-shift="("><span class="vkey-sub">(</span>9</div>
+                <div class="vkey" data-key="0" data-shift=")"><span class="vkey-sub">)</span>0</div>
+                <div class="vkey" data-key="-" data-shift="_"><span class="vkey-sub">_</span>-</div>
+                <div class="vkey" data-key="=" data-shift="+"><span class="vkey-sub">+</span>=</div>
+                <div class="vkey" data-key="Backspace" style="min-width: 60px; font-size: 0.75rem;">⌫ Back</div>
+              </div>
+            </div>
+
+            <!-- 10-Key Numpad -->
+            <div id="numpadView" class="numpad-keyboard">
+              <div class="toprow-label">
+                <span>🔢 10-Key Numeric Pad</span>
+              </div>
+              <div class="numpad-grid">
+                <div class="vkey" data-key="NumLock" style="font-size: 0.65rem;">Num</div>
+                <div class="vkey" data-key="/">/</div>
+                <div class="vkey" data-key="*">*</div>
+                <div class="vkey" data-key="-">-</div>
+                <div class="vkey" data-key="7">7</div>
+                <div class="vkey" data-key="8">8</div>
+                <div class="vkey" data-key="9">9</div>
+                <div class="vkey key-plus" data-key="+">+</div>
+                <div class="vkey" data-key="4">4</div>
+                <div class="vkey" data-key="5">5</div>
+                <div class="vkey" data-key="6">6</div>
+                <div class="vkey" data-key="1">1</div>
+                <div class="vkey" data-key="2">2</div>
+                <div class="vkey" data-key="3">3</div>
+                <div class="vkey key-enter" data-key="Enter" style="font-size: 0.75rem;">↵</div>
+                <div class="vkey key-0" data-key="0">0</div>
+                <div class="vkey" data-key=".">.</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
+
+  <!-- Drill Results Modal -->
+  <div id="resultsModal" class="results-modal">
+    <div class="results-card glass-panel">
+      <div id="resultsBadge" class="results-badge-rank">★ Numeric Speedster</div>
+      <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text-primary);">Drill Completed!</h2>
+      <p style="color: var(--text-secondary); font-size: 0.95rem;">Great run! Here is your numerical typing efficiency breakdown:</p>
+
+      <div class="results-stats-row">
+        <div class="results-stat-box">
+          <div id="finalWpm" class="results-stat-num">0</div>
+          <div class="results-stat-label">Net WPM</div>
+        </div>
+        <div class="results-stat-box">
+          <div id="finalCpm" class="results-stat-num">0</div>
+          <div class="results-stat-label">Net CPM</div>
+        </div>
+        <div class="results-stat-box">
+          <div id="finalAccuracy" class="results-stat-num">0%</div>
+          <div class="results-stat-label">Accuracy</div>
+        </div>
+      </div>
+
+      <div style="margin: 1.25rem 0; text-align: left; background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+        <div style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 0.5rem;">Drill Summary:</div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.875rem; padding: 0.25rem 0; color: var(--text-primary);">
+          <span>Total Keystrokes:</span>
+          <strong id="finalTotalKeys">0</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.875rem; padding: 0.25rem 0; color: var(--text-primary);">
+          <span>Mistakes Made:</span>
+          <strong id="finalMistakes" style="color: var(--error);">0</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.875rem; padding: 0.25rem 0; color: var(--text-primary);">
+          <span>Time Taken:</span>
+          <strong id="finalTime">0s</strong>
+        </div>
+        <div id="mistakesSection" style="margin-top: 0.75rem; border-top: 1px solid var(--border); padding-top: 0.5rem;">
+          <span style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Problematic Keys:</span>
+          <div id="mistakesList" class="key-mistakes-list">None! Perfect typing.</div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem;">
+        <button id="modalRetryBtn" class="btn btn-primary" style="padding: 0.6rem 1.5rem;">
+          ↻ Try Again
+        </button>
+        <button id="modalNextBtn" class="btn btn-secondary" style="padding: 0.6rem 1.5rem;">
+          Next Drill &rarr;
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,8 +725,8 @@
     "@type": "WebApplication",
     "name": "Number Typing Practice",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/number-typing-practice/",
-    "description": "Enhance your skills with Number Typing Practice.",
-    "applicationCategory": "UtilityPage",
+    "description": "Master 10-key numeric keypad and top-row number typing. Practice PINs, phone numbers, currency, and alphanumeric drills with live WPM, CPM, and key highlighting.",
+    "applicationCategory": "EducationalApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

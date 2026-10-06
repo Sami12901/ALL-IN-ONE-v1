@@ -3,15 +3,189 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Video Resizer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Resize videos for YouTube, TikTok, Instagram Reels/Stories, and Facebook.">
-  <meta name="keywords" content="video, media, video resizer, free, online, tool, utility">
+  <title>Video Resizer & Aspect Ratio Scaler - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Resize video dimensions and aspect ratios online. Scale to 16:9 Landscape, 9:16 TikTok/Reels, 1:1 Square, 4:5 Portrait, or custom resolution with Letterbox or Crop.">
+  <meta name="keywords" content="video resizer, change video aspect ratio, 16:9 to 9:16, resize mp4, video scaler, letterbox video, crop video for tiktok">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/video-resizer/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .resizer-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    .video-drop-area {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      background: var(--bg-tertiary);
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .video-drop-area:hover, .video-drop-area.dragover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .stage-container {
+      background: rgba(10, 14, 20, 0.95);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .video-viewport-wrapper {
+      width: 100%;
+      height: 480px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000000;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #preview-canvas {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .video-info-badge {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-family: monospace;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      gap: 0.6rem;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .meta-tags-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .meta-tag {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-family: monospace;
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .control-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: var(--transition);
+    }
+    .control-card:hover {
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .aspect-pills {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.5rem;
+    }
+
+    .aspect-pill {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.6rem 0.75rem;
+      border-radius: var(--radius-md);
+      font-size: 0.825rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      transition: var(--transition);
+    }
+    .aspect-pill:hover, .aspect-pill.active {
+      background: var(--accent);
+      border-color: var(--accent-light);
+      color: #ffffff;
+    }
+    .aspect-pill span.subtext {
+      font-size: 0.725rem;
+      font-weight: 400;
+      opacity: 0.8;
+    }
+
+    .dimension-inputs-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .preview-player-panel {
+      margin-top: 1rem;
+      padding: 1.25rem;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      display: none;
+    }
+
+    .progress-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: var(--accent-gradient);
+      transition: width 0.15s ease;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,27 +200,229 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Video Resizer</h1>
-        <p class="tool-description">Resize videos for YouTube, TikTok, Instagram Reels/Stories, and Facebook.</p>
-      </div>
-
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Video Resizer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Resize videos for YouTube, TikTok, Instagram Reels/Stories, and Facebook.</div>
-            <div><strong>Inputs:</strong> video, media, video resizer</div>
-            <div><strong>Category:</strong> video</div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>Video Resizer & Aspect Ratio Scaler</h1>
+            <p class="tool-description">Scale video dimensions and convert aspect ratios for social media and web. Presets for TikTok (9:16), YouTube (16:9), Instagram (1:1 & 4:5), with Fit (Letterbox) or Fill (Crop) modes and client-side WebM export.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <button id="btn-load-demo" class="btn btn-secondary" title="Load built-in 16:9 demo video">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+              Load Demo Video
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+      </div>
+
+      <!-- Main Tool Workspace -->
+      <div class="resizer-workspace">
+        
+        <!-- File Upload Drag Zone -->
+        <div id="video-drop-zone" class="video-drop-area">
+          <input type="file" id="video-file-input" accept="video/mp4,video/webm,video/ogg,video/quicktime,.mov,.mp4,.webm" style="display: none;">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
+            <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.8" style="color: var(--accent);"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+            <div style="font-weight: 600; font-size: 1.15rem; color: var(--text-primary);">
+              Drag & Drop your video file here or <span style="color: var(--accent); text-decoration: underline;">Browse Video</span>
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-tertiary);">
+              Supports MP4, WebM, MOV. Fast browser-based GPU canvas rendering with 100% data privacy.
+            </div>
+          </div>
+        </div>
+
+        <!-- Video Studio Panel (Shown once video is loaded) -->
+        <div id="video-studio-panel" class="tool-panel glass-panel" style="display: none;">
+          
+          <!-- Source Video Details Bar -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
+            <div>
+              <div id="file-title" style="font-weight: 700; font-size: 1.2rem; color: var(--text-primary);">Loaded Video</div>
+              <div class="meta-tags-bar" style="margin-top: 0.5rem;">
+                <span id="badge-orig-res" class="meta-tag">Original: 1920 x 1080 (16:9)</span>
+                <span id="badge-target-res" class="meta-tag" style="color: var(--accent-light);">Target: 1080 x 1920 (9:16)</span>
+                <span id="badge-duration" class="meta-tag">Duration: 00:00.00</span>
+                <span id="badge-filesize" class="meta-tag">Size: 0 MB</span>
+              </div>
+            </div>
+            <button id="btn-change-file" class="btn btn-secondary" style="font-size: 0.85rem;">
+              Change Video
+            </button>
+          </div>
+
+          <!-- Video Resizer Canvas Stage -->
+          <div class="stage-container">
+            <div class="video-viewport-wrapper" id="viewport-wrapper">
+              <div class="video-info-badge">
+                <span id="badge-aspect-ratio">9:16 Vertical</span>
+                <span>•</span>
+                <span id="badge-fit-mode">Fit (Letterbox)</span>
+              </div>
+              <canvas id="preview-canvas"></canvas>
+              <!-- Hidden video element driving canvas -->
+              <video id="source-video" playsinline muted preload="auto" style="display: none;"></video>
+            </div>
+
+            <!-- Transport & Playback Bar -->
+            <div style="width: 100%; padding: 0.85rem 1.25rem; background: var(--bg-tertiary); border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <button id="btn-play-pause" class="btn btn-primary" style="padding: 0.4rem 0.9rem;" title="Play / Pause">
+                  <svg id="play-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                  <span id="play-label">Play</span>
+                </button>
+                <button id="btn-stop" class="btn btn-secondary" style="padding: 0.4rem 0.9rem;" title="Restart">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="6" y="6" width="12" height="12"></rect></svg>
+                  <span>Reset</span>
+                </button>
+                <label class="checkbox-label" style="margin-left: 0.5rem; min-height: auto;">
+                  <input type="checkbox" id="check-loop" checked>
+                  <span>Loop</span>
+                </label>
+              </div>
+
+              <!-- Seek Slider -->
+              <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1; max-width: 450px; min-width: 200px;">
+                <input type="range" id="video-seek-slider" min="0" max="100" step="0.1" value="0" class="range-slider" style="flex: 1;">
+                <span id="video-time-readout" style="font-family: monospace; font-size: 0.85rem; color: var(--text-secondary); white-space: nowrap;">
+                  00:00 / 00:00
+                </span>
+              </div>
+
+              <!-- Snapshot Action -->
+              <button id="btn-snapshot-frame" class="btn btn-secondary" style="font-size: 0.85rem;" title="Download current resized frame as high-resolution PNG">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                <span>Snapshot PNG</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Controls Grid -->
+          <div class="controls-grid">
+            
+            <!-- Preset Aspect Ratios Card -->
+            <div class="control-card">
+              <div style="font-weight: 700; font-size: 1rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
+                Target Aspect Ratio Presets
+              </div>
+
+              <div class="aspect-pills">
+                <button class="aspect-pill" data-ratio="16:9" data-w="1920" data-h="1080">
+                  <div>16:9 Landscape</div>
+                  <span class="subtext">YouTube / TV (1920x1080)</span>
+                </button>
+                <button class="aspect-pill active" data-ratio="9:16" data-w="1080" data-h="1920">
+                  <div>9:16 Vertical</div>
+                  <span class="subtext">TikTok / Reels / Shorts</span>
+                </button>
+                <button class="aspect-pill" data-ratio="1:1" data-w="1080" data-h="1080">
+                  <div>1:1 Square</div>
+                  <span class="subtext">Instagram Post</span>
+                </button>
+                <button class="aspect-pill" data-ratio="4:5" data-w="1080" data-h="1350">
+                  <div>4:5 Portrait</div>
+                  <span class="subtext">Instagram Feed</span>
+                </button>
+                <button class="aspect-pill" data-ratio="4:3" data-w="1440" data-h="1080">
+                  <div>4:3 Classic</div>
+                  <span class="subtext">Standard TV / Deck</span>
+                </button>
+                <button class="aspect-pill" data-ratio="21:9" data-w="2560" data-h="1080">
+                  <div>21:9 Ultrawide</div>
+                  <span class="subtext">Cinematic Scope</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Custom Dimensions & Scaling Card -->
+            <div class="control-card">
+              <div style="font-weight: 700; font-size: 1rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 14 10 14 10 20"></polyline><polyline points="20 10 14 10 14 4"></polyline><line x1="14" y1="10" x2="21" y2="3"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                Dimensions & Fit Strategy
+              </div>
+
+              <!-- Custom Width & Height Inputs -->
+              <div class="dimension-inputs-row">
+                <div class="form-group" style="flex: 1;">
+                  <label for="input-target-width">Width (px):</label>
+                  <input type="number" id="input-target-width" class="form-input" min="160" max="3840" step="2" value="1080">
+                </div>
+                <div style="margin-top: 1.5rem; color: var(--text-tertiary); font-weight: 700;">&times;</div>
+                <div class="form-group" style="flex: 1;">
+                  <label for="input-target-height">Height (px):</label>
+                  <input type="number" id="input-target-height" class="form-input" min="160" max="3840" step="2" value="1920">
+                </div>
+              </div>
+
+              <!-- Aspect Ratio Lock -->
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                <label class="checkbox-label" style="min-height: auto;">
+                  <input type="checkbox" id="check-lock-aspect" checked>
+                  <span>Lock Aspect Ratio</span>
+                </label>
+                <div style="display: flex; gap: 0.35rem;">
+                  <button class="btn-step" id="btn-scale-100">100%</button>
+                  <button class="btn-step" id="btn-scale-75">75%</button>
+                  <button class="btn-step" id="btn-scale-50">50%</button>
+                </div>
+              </div>
+
+              <!-- Fit Mode Selector -->
+              <div class="form-group">
+                <label for="select-fit-mode">Framing / Fit Mode:</label>
+                <select id="select-fit-mode" class="form-select">
+                  <option value="fit" selected>Fit with Letterbox / Pillarbox (Keep 100% Content)</option>
+                  <option value="fill">Fill & Center Crop (No Black Bars, Edge Cropping)</option>
+                  <option value="stretch">Stretch to Fit (Ignore Aspect Ratio)</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Progress Bar -->
+          <div id="progress-container" class="progress-bar-container">
+            <div id="progress-fill" class="progress-bar-fill"></div>
+          </div>
+
+          <!-- Video Export Action Bar -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 1px solid var(--border); padding-top: 1.25rem;">
+            <div id="status-indicator" style="font-size: 0.9rem; color: var(--text-secondary);">
+              Ready to export resized video.
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+              <button id="btn-export-video" class="btn btn-primary" style="padding: 0.85rem 2rem;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                <span>Export Resized Video (WebM)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Export Preview Panel -->
+          <div id="export-panel" class="preview-player-panel" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+              <span style="font-weight: 700; color: var(--success); font-size: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                Resized Video Ready!
+              </span>
+              <span id="export-meta-badge" class="meta-tag" style="background: rgba(16, 185, 129, 0.2); border-color: var(--success); color: var(--text-primary);">
+                WebM • 1080 x 1920 • 0.0 MB
+              </span>
+            </div>
+            
+            <video id="export-video-player" controls playsinline style="max-height: 400px; width: 100%; border-radius: var(--radius-sm); outline: none; background: #000; margin-top: 0.5rem;"></video>
+            
+            <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 0.5rem;">
+              <a id="btn-download-export" class="btn btn-primary" href="#" download="resized_video.webm" style="padding: 0.6rem 1.4rem;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download Resized Video
+              </a>
+            </div>
+          </div>
+
+        </div>
+
       </div>
     
     </div>
@@ -60,12 +436,12 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Video Resizer",
+    "name": "Video Resizer & Aspect Ratio Scaler",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/video-resizer/",
-    "description": "Resize videos for YouTube, TikTok, Instagram Reels/Stories, and Facebook.",
-    "applicationCategory": "UtilityPage",
+    "description": "Resize video dimensions, aspect ratios for TikTok, Reels, YouTube and Instagram natively in browser.",
+    "applicationCategory": "VideoEditor",
     "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
+    "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas & MediaRecorder."
   }
   </script>
 </body>

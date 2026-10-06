@@ -4,14 +4,375 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Typing Heatmap - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Enhance your skills with Typing Heatmap.">
-  <meta name="keywords" content="typing, keyboard, practice, free, online, tool, utility">
+  <meta name="description" content="Visual keyboard error and speed heatmap analyzer. Inspect keystroke frequency, finger distribution, row fatigue, and typo hotspots across a full QWERTY keyboard layout.">
+  <meta name="keywords" content="typing heatmap, keyboard error heatmap, keystroke visualizer, typing speed heatmap, finger fatigue analysis, touch typing diagnostics">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/typing-heatmap/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    /* Scoped styling for Typing Heatmap */
+    .heatmap-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    /* Toolbar */
+    .heatmap-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+
+    .toolbar-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .toolbar-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      margin-right: 0.25rem;
+    }
+
+    .pill-btn {
+      padding: 0.45rem 0.9rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 500;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .pill-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+    }
+
+    .pill-btn.active {
+      background: var(--accent-gradient);
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    .select-dropdown {
+      padding: 0.45rem 1rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    /* Live Typing Test Area */
+    .live-test-panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: relative;
+      cursor: text;
+    }
+
+    .live-test-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .test-stats-row {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .test-stats-row strong {
+      color: var(--text-primary);
+    }
+
+    .prompt-typing-stream {
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 1.25rem;
+      line-height: 1.9;
+      user-select: none;
+      word-break: break-word;
+      min-height: 60px;
+      color: var(--text-secondary);
+    }
+
+    .stream-char {
+      padding: 0 1px;
+      border-radius: 2px;
+      opacity: 0.65;
+    }
+
+    .stream-char.correct {
+      color: var(--success);
+      opacity: 1;
+      font-weight: 600;
+    }
+
+    .stream-char.incorrect {
+      color: var(--error);
+      background: rgba(239, 68, 68, 0.25);
+      opacity: 1;
+      font-weight: 700;
+      text-decoration: underline;
+    }
+
+    .stream-char.current {
+      opacity: 1;
+      color: var(--text-primary);
+      background: var(--accent-glow);
+      border-bottom: 3px solid var(--accent);
+    }
+
+    .hidden-typing-input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 0;
+      height: 0;
+    }
+
+    /* Virtual Keyboard Visualizer */
+    .keyboard-container {
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      overflow-x: auto;
+    }
+
+    .keyboard-board {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      background: var(--bg-tertiary);
+      padding: 1.25rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
+      min-width: 860px;
+    }
+
+    .kb-row {
+      display: flex;
+      gap: 0.4rem;
+      justify-content: center;
+    }
+
+    .kb-key {
+      height: 48px;
+      min-width: 44px;
+      border-radius: 6px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 2px 0 var(--border);
+      transition: background-color 0.25s ease, transform 0.08s ease, box-shadow 0.25s ease;
+      padding: 0 0.35rem;
+    }
+
+    .kb-key:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      border-color: var(--accent);
+    }
+
+    .kb-key.is-selected {
+      border-color: #ffffff !important;
+      box-shadow: 0 0 12px var(--accent) !important;
+      transform: translateY(-2px);
+    }
+
+    .kb-key-sub {
+      font-size: 0.65rem;
+      color: var(--text-tertiary);
+      line-height: 1;
+    }
+
+    /* Key Width Variations */
+    .key-backspace { min-width: 82px; }
+    .key-tab { min-width: 68px; }
+    .key-caps { min-width: 78px; }
+    .key-enter { min-width: 92px; }
+    .key-lshift { min-width: 104px; }
+    .key-rshift { min-width: 114px; }
+    .key-ctrl { min-width: 62px; }
+    .key-alt { min-width: 58px; }
+    .key-space { min-width: 290px; }
+
+    /* Heatmap Color Scale Overlay */
+    .heatmap-legend-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 650px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .legend-gradient-line {
+      flex: 1;
+      height: 8px;
+      border-radius: var(--radius-full);
+      margin: 0 1rem;
+      background: linear-gradient(90deg, #10b981 0%, #38bdf8 35%, #f59e0b 70%, #ef4444 100%);
+    }
+
+    /* Diagnostics & Inspector Section */
+    .heatmap-details-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 960px) {
+      .heatmap-details-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .inspector-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .inspector-key-badge {
+      font-size: 2.5rem;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-primary);
+      width: 64px;
+      height: 64px;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .analytics-panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .analytics-subgrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 700px) {
+      .analytics-subgrid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .stat-bar-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .stat-bar-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+    }
+
+    .bar-track {
+      flex: 1;
+      height: 6px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      background: var(--accent-gradient);
+    }
+
+    .advice-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      color: var(--text-primary);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,28 +388,295 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Typing Heatmap</h1>
-        <p class="tool-description">Enhance your skills with Typing Heatmap.</p>
+        <p class="tool-description">
+          Visualize physical keyboard error clusters, keystroke velocity, and finger workloads across a full QWERTY layout. Test in real-time or analyze diagnostic typing logs.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Typing Heatmap</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Enhance your skills with Typing Heatmap.</div>
-            <div><strong>Inputs:</strong> typing, keyboard, practice</div>
-            <div><strong>Category:</strong> typing</div>
+      <div class="heatmap-wrapper">
+        <!-- Control Toolbar -->
+        <div class="heatmap-toolbar">
+          <div class="toolbar-group">
+            <span class="toolbar-label">Visualization Metric:</span>
+            <button class="pill-btn active" data-metric="error" title="Color by error frequency">
+              <span>🎯</span> Error Heatmap
+            </button>
+            <button class="pill-btn" data-metric="speed" title="Color by key latency / speed">
+              <span>⚡</span> Speed / Latency
+            </button>
+            <button class="pill-btn" data-metric="frequency" title="Color by keystroke frequency">
+              <span>📊</span> Keystroke Volume
+            </button>
+          </div>
+
+          <div class="toolbar-group">
+            <span class="toolbar-label">Data Source:</span>
+            <select id="presetScenarioSelect" class="select-dropdown" aria-label="Select diagnostic scenario">
+              <option value="live">Live Typing Session (Interactive)</option>
+              <option value="preset-programmer">Scenario: Programmer Brackets &amp; Typos</option>
+              <option value="preset-pinky">Scenario: Pinky Finger Fatigue</option>
+              <option value="preset-pro">Scenario: High-Speed Pro (Balanced)</option>
+              <option value="preset-lefthand">Scenario: Left Hand Fatigue</option>
+            </select>
+            <button id="clearDataBtn" class="btn btn-secondary" style="padding: 0.45rem 0.85rem; font-size: 0.85rem;">
+              🗑 Reset Data
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Live Typing Interactive Practice Section -->
+        <div id="liveTypingCard" class="live-test-panel" tabindex="0" role="textbox" aria-label="Typing Practice Stream">
+          <div class="live-test-header">
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 0.4rem;">
+              <span>⌨ Interactive Live Session:</span>
+              <span style="color: var(--text-secondary); font-weight: 400;">Type text below to update the heatmap live</span>
+            </div>
+            <div class="test-stats-row">
+              <span>Speed: <strong id="liveWpm">0 WPM</strong></span>
+              <span>Accuracy: <strong id="liveAcc">100%</strong></span>
+              <span>Keys Logged: <strong id="liveKeys">0</strong></span>
+            </div>
+          </div>
+
+          <input type="text" id="hiddenInput" class="hidden-typing-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+
+          <div id="promptStream" class="prompt-typing-stream">
+            <!-- Dynamically populated character stream -->
+          </div>
+        </div>
+
+        <!-- Interactive Virtual Keyboard Layout Diagram -->
+        <div class="keyboard-container">
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <span style="font-weight: 700; font-size: 1rem; color: var(--text-primary);">
+              Interactive Full QWERTY Layout
+            </span>
+            <span id="heatmapStatusTag" class="badge">Error Heatmap Active</span>
+          </div>
+
+          <!-- Physical QWERTY Keyboard Board -->
+          <div class="keyboard-board" id="keyboardBoard">
+            <!-- Row 1: Number Row -->
+            <div class="kb-row" data-row="row1">
+              <div class="kb-key" data-key="`" data-shift="~"><span class="kb-key-sub">~</span>`</div>
+              <div class="kb-key" data-key="1" data-shift="!"><span class="kb-key-sub">!</span>1</div>
+              <div class="kb-key" data-key="2" data-shift="@"><span class="kb-key-sub">@</span>2</div>
+              <div class="kb-key" data-key="3" data-shift="#"><span class="kb-key-sub">#</span>3</div>
+              <div class="kb-key" data-key="4" data-shift="$"><span class="kb-key-sub">$</span>4</div>
+              <div class="kb-key" data-key="5" data-shift="%"><span class="kb-key-sub">%</span>5</div>
+              <div class="kb-key" data-key="6" data-shift="^"><span class="kb-key-sub">^</span>6</div>
+              <div class="kb-key" data-key="7" data-shift="&"><span class="kb-key-sub">&amp;</span>7</div>
+              <div class="kb-key" data-key="8" data-shift="*"><span class="kb-key-sub">*</span>8</div>
+              <div class="kb-key" data-key="9" data-shift="("><span class="kb-key-sub">(</span>9</div>
+              <div class="kb-key" data-key="0" data-shift=")"><span class="kb-key-sub">)</span>0</div>
+              <div class="kb-key" data-key="-" data-shift="_"><span class="kb-key-sub">_</span>-</div>
+              <div class="kb-key" data-key="=" data-shift="+"><span class="kb-key-sub">+</span>=</div>
+              <div class="kb-key key-backspace" data-key="Backspace">Backspace</div>
+            </div>
+
+            <!-- Row 2: Top Row -->
+            <div class="kb-row" data-row="row2">
+              <div class="kb-key key-tab" data-key="Tab">Tab</div>
+              <div class="kb-key" data-key="Q">Q</div>
+              <div class="kb-key" data-key="W">W</div>
+              <div class="kb-key" data-key="E">E</div>
+              <div class="kb-key" data-key="R">R</div>
+              <div class="kb-key" data-key="T">T</div>
+              <div class="kb-key" data-key="Y">Y</div>
+              <div class="kb-key" data-key="U">U</div>
+              <div class="kb-key" data-key="I">I</div>
+              <div class="kb-key" data-key="O">O</div>
+              <div class="kb-key" data-key="P">P</div>
+              <div class="kb-key" data-key="[" data-shift="{"><span class="kb-key-sub">{</span>[</div>
+              <div class="kb-key" data-key="]" data-shift="}"><span class="kb-key-sub">}</span>]</div>
+              <div class="kb-key" data-key="\" data-shift="|"><span class="kb-key-sub">|</span>\</div>
+            </div>
+
+            <!-- Row 3: Home Row -->
+            <div class="kb-row" data-row="row3">
+              <div class="kb-key key-caps" data-key="CapsLock">Caps</div>
+              <div class="kb-key" data-key="A">A</div>
+              <div class="kb-key" data-key="S">S</div>
+              <div class="kb-key" data-key="D">D</div>
+              <div class="kb-key" data-key="F">F</div>
+              <div class="kb-key" data-key="G">G</div>
+              <div class="kb-key" data-key="H">H</div>
+              <div class="kb-key" data-key="J">J</div>
+              <div class="kb-key" data-key="K">K</div>
+              <div class="kb-key" data-key="L">L</div>
+              <div class="kb-key" data-key=";" data-shift=":"><span class="kb-key-sub">:</span>;</div>
+              <div class="kb-key" data-key="'" data-shift="&quot;"><span class="kb-key-sub">&quot;</span>'</div>
+              <div class="kb-key key-enter" data-key="Enter">↵ Enter</div>
+            </div>
+
+            <!-- Row 4: Bottom Row -->
+            <div class="kb-row" data-row="row4">
+              <div class="kb-key key-lshift" data-key="ShiftLeft">Shift</div>
+              <div class="kb-key" data-key="Z">Z</div>
+              <div class="kb-key" data-key="X">X</div>
+              <div class="kb-key" data-key="C">C</div>
+              <div class="kb-key" data-key="V">V</div>
+              <div class="kb-key" data-key="B">B</div>
+              <div class="kb-key" data-key="N">N</div>
+              <div class="kb-key" data-key="M">M</div>
+              <div class="kb-key" data-key="," data-shift="&lt;"><span class="kb-key-sub">&lt;</span>,</div>
+              <div class="kb-key" data-key="." data-shift="&gt;"><span class="kb-key-sub">&gt;</span>.</div>
+              <div class="kb-key" data-key="/" data-shift="?"><span class="kb-key-sub">?</span>/</div>
+              <div class="kb-key key-rshift" data-key="ShiftRight">Shift</div>
+            </div>
+
+            <!-- Row 5: Space Row -->
+            <div class="kb-row" data-row="row5">
+              <div class="kb-key key-ctrl" data-key="Ctrl">Ctrl</div>
+              <div class="kb-key key-alt" data-key="Alt">Alt</div>
+              <div class="kb-key key-space" data-key="Space">Space</div>
+              <div class="kb-key key-alt" data-key="Alt">Alt</div>
+              <div class="kb-key key-ctrl" data-key="Ctrl">Ctrl</div>
+            </div>
+          </div>
+
+          <!-- Heatmap Legend -->
+          <div class="heatmap-legend-bar">
+            <span id="legendMinLabel">🟢 Excellent (0 Typos)</span>
+            <div class="legend-gradient-line"></div>
+            <span id="legendMaxLabel">🔴 Hotspot (High Errors)</span>
+          </div>
+        </div>
+
+        <!-- Analytical Breakdown & Inspector Grid -->
+        <div class="heatmap-details-grid">
+          <!-- Key Inspector Card -->
+          <div class="inspector-card">
+            <div style="font-weight: 700; font-size: 1.05rem; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+              Key Diagnostic Inspector
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 1rem; margin: 0.5rem 0;">
+              <div id="inspKeyBadge" class="inspector-key-badge">A</div>
+              <div>
+                <div id="inspKeyName" style="font-weight: 700; font-size: 1.1rem; color: var(--text-primary);">Key 'A'</div>
+                <div id="inspFingerName" style="font-size: 0.8rem; color: var(--text-tertiary);">Left Pinky</div>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.875rem;">
+              <div style="display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--border);">
+                <span style="color: var(--text-secondary);">Total Presses:</span>
+                <strong id="inspTotalHits">0</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--border);">
+                <span style="color: var(--text-secondary);">Errors / Misses:</span>
+                <strong id="inspErrors" style="color: var(--error);">0</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--border);">
+                <span style="color: var(--text-secondary);">Accuracy Rate:</span>
+                <strong id="inspAccuracy">100%</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 0.3rem 0;">
+                <span style="color: var(--text-secondary);">Average Latency:</span>
+                <strong id="inspLatency">120 ms</strong>
+              </div>
+            </div>
+
+            <div style="margin-top: 0.5rem; font-size: 0.775rem; color: var(--text-tertiary); text-align: center;">
+              Hover or click any key above to inspect metrics
+            </div>
+          </div>
+
+          <!-- Per-Finger & Row Analytical Panel -->
+          <div class="analytics-panel">
+            <div style="font-weight: 700; font-size: 1.05rem; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+              <span>Biometric Typing Diagnostics</span>
+              <span class="badge" style="font-size: 0.7rem;">Fatigue &amp; Accuracy</span>
+            </div>
+
+            <div class="analytics-subgrid">
+              <!-- Per-Finger Breakdown -->
+              <div class="stat-bar-group">
+                <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary);">Finger Accuracy:</span>
+                <div class="stat-bar-row">
+                  <span style="width: 80px;">L. Pinky</span>
+                  <div class="bar-track"><div id="barLPinky" class="bar-fill" style="width: 95%;"></div></div>
+                  <span id="valLPinky" style="width: 36px; text-align: right; font-weight: 600;">95%</span>
+                </div>
+                <div class="stat-bar-row">
+                  <span style="width: 80px;">L. Ring</span>
+                  <div class="bar-track"><div id="barLRing" class="bar-fill" style="width: 96%;"></div></div>
+                  <span id="valLRing" style="width: 36px; text-align: right; font-weight: 600;">96%</span>
+                </div>
+                <div class="stat-bar-row">
+                  <span style="width: 80px;">L. Middle</span>
+                  <div class="bar-track"><div id="barLMiddle" class="bar-fill" style="width: 98%;"></div></div>
+                  <span id="valLMiddle" style="width: 36px; text-align: right; font-weight: 600;">98%</span>
+                </div>
+                <div class="stat-bar-row">
+                  <span style="width: 80px;">L. Index</span>
+                  <div class="bar-track"><div id="barLIndex" class="bar-fill" style="width: 97%;"></div></div>
+                  <span id="valLIndex" style="width: 36px; text-align: right; font-weight: 600;">97%</span>
+                </div>
+                <div class="stat-bar-row">
+                  <span style="width: 80px;">R. Index</span>
+                  <div class="bar-track"><div id="barRIndex" class="bar-fill" style="width: 96%;"></div></div>
+                  <span id="valRIndex" style="width: 36px; text-align: right; font-weight: 600;">96%</span>
+                </div>
+                <div class="stat-bar-row">
+                  <span style="width: 80px;">R. Middle</span>
+                  <div class="bar-track"><div id="barRMiddle" class="bar-fill" style="width: 97%;"></div></div>
+                  <span id="valRMiddle" style="width: 36px; text-align: right; font-weight: 600;">97%</span>
+                </div>
+                <div class="stat-bar-row">
+                  <span style="width: 80px;">R. Ring</span>
+                  <div class="bar-track"><div id="barRRing" class="bar-fill" style="width: 94%;"></div></div>
+                  <span id="valRRing" style="width: 36px; text-align: right; font-weight: 600;">94%</span>
+                </div>
+                <div class="stat-bar-row">
+                  <span style="width: 80px;">R. Pinky</span>
+                  <div class="bar-track"><div id="barRPinky" class="bar-fill" style="width: 89%;"></div></div>
+                  <span id="valRPinky" style="width: 36px; text-align: right; font-weight: 600;">89%</span>
+                </div>
+              </div>
+
+              <!-- Per-Row Breakdown -->
+              <div class="stat-bar-group">
+                <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary);">Row Performance:</span>
+                <div class="stat-bar-row">
+                  <span style="width: 90px;">Number Row</span>
+                  <div class="bar-track"><div id="barRow1" class="bar-fill" style="width: 91%;"></div></div>
+                  <span id="valRow1" style="width: 36px; text-align: right; font-weight: 600;">91%</span>
+                </div>
+                <div class="stat-bar-row">
+                  <span style="width: 90px;">Top Row</span>
+                  <div class="bar-track"><div id="barRow2" class="bar-fill" style="width: 96%;"></div></div>
+                  <span id="valRow2" style="width: 36px; text-align: right; font-weight: 600;">96%</span>
+                </div>
+                <div class="stat-bar-row">
+                  <span style="width: 90px;">Home Row</span>
+                  <div class="bar-track"><div id="barRow3" class="bar-fill" style="width: 98%;"></div></div>
+                  <span id="valRow3" style="width: 36px; text-align: right; font-weight: 600;">98%</span>
+                </div>
+                <div class="stat-bar-row">
+                  <span style="width: 90px;">Bottom Row</span>
+                  <div class="bar-track"><div id="barRow4" class="bar-fill" style="width: 93%;"></div></div>
+                  <span id="valRow4" style="width: 36px; text-align: right; font-weight: 600;">93%</span>
+                </div>
+                <div class="stat-bar-row">
+                  <span style="width: 90px;">Space Row</span>
+                  <div class="bar-track"><div id="barRow5" class="bar-fill" style="width: 99%;"></div></div>
+                  <span id="valRow5" style="width: 36px; text-align: right; font-weight: 600;">99%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Diagnostic Coaching Advice -->
+            <div class="advice-box" id="diagnosticAdviceBox">
+              <strong>💡 Ergonomic Coaching Advice:</strong>
+              <div id="adviceText" style="margin-top: 0.35rem;">
+                Home row positioning is strong. Focus on stabilizing your right pinky finger when reaching for brackets and apostrophes to reduce typo clusters.
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
 
@@ -62,8 +690,8 @@
     "@type": "WebApplication",
     "name": "Typing Heatmap",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/typing-heatmap/",
-    "description": "Enhance your skills with Typing Heatmap.",
-    "applicationCategory": "UtilityPage",
+    "description": "Visual keyboard error and speed heatmap analyzer. Inspect keystroke frequency, finger distribution, row fatigue, and typo hotspots across a full QWERTY keyboard layout.",
+    "applicationCategory": "EducationalApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }
