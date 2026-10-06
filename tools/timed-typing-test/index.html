@@ -3,17 +3,442 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Timed Typing Test - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Enhance your skills with Timed Typing Test.">
-  <meta name="keywords" content="typing, keyboard, practice, free, online, tool, utility">
+  <title>Timed Typing Test - Official Speed Certification - ALL IN ONE</title>
+  <meta name="description" content="Official timed typing test with 30s, 1m, 2m, and 3m countdowns. Track speed and accuracy in real-time and generate a formal completion certificate.">
+  <meta name="keywords" content="timed typing test, 1 minute typing test, official typing certificate, typing test with certificate, wpm test timed">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/timed-typing-test/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <style>
+    /* Timed Typing Test Styles */
+    .test-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      max-width: 1050px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .stats-dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+    }
+
+    .stat-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      text-align: center;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .stat-card.timer-card {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.15) 0%, rgba(137, 170, 204, 0.05) 100%);
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    .stat-card.timer-card .stat-value {
+      color: var(--accent);
+      font-family: monospace;
+      font-size: 2.25rem;
+    }
+
+    .stat-card.timer-card.danger {
+      border-color: var(--error);
+      box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
+    }
+
+    .stat-card.timer-card.danger .stat-value {
+      color: var(--error);
+      animation: blinkTimer 0.8s infinite alternate;
+    }
+
+    @keyframes blinkTimer {
+      0% { opacity: 1; }
+      100% { opacity: 0.5; }
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+
+    .stat-value {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.1;
+    }
+
+    .stat-unit {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      font-weight: 500;
+      margin-top: 0.2rem;
+    }
+
+    /* Controls bar */
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.85rem 1.25rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    .pill-group {
+      display: inline-flex;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .pill-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 0.4rem 0.9rem;
+      font-size: 0.825rem;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .pill-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .pill-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    /* Passage Area */
+    .passage-wrapper {
+      position: relative;
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      min-height: 220px;
+      max-height: 320px;
+      overflow-y: auto;
+      cursor: text;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .passage-wrapper:focus-within, .passage-wrapper.is-focused {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .passage-wrapper.locked {
+      pointer-events: none;
+      opacity: 0.75;
+      border-color: var(--border);
+    }
+
+    .passage-text {
+      font-family: 'SF Mono', 'Fira Code', 'Roboto Mono', Menlo, monospace;
+      font-size: 1.25rem;
+      line-height: 2;
+      user-select: none;
+      word-break: break-word;
+      white-space: pre-wrap;
+      color: var(--text-secondary);
+    }
+
+    .char {
+      position: relative;
+      border-radius: 2px;
+    }
+
+    .char-pending {
+      color: var(--text-secondary);
+      opacity: 0.65;
+    }
+
+    .char-correct {
+      color: #10b981;
+    }
+
+    .char-error {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.25);
+      border-bottom: 2px solid #ef4444;
+    }
+
+    .char-current {
+      background: rgba(78, 133, 191, 0.25);
+      border-bottom: 3px solid var(--accent);
+      animation: cursorPulse 1s infinite alternate;
+    }
+
+    @keyframes cursorPulse {
+      0% { border-bottom-color: var(--accent); }
+      100% { border-bottom-color: transparent; }
+    }
+
+    .typing-input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 1px;
+      height: 1px;
+      top: 0;
+      left: 0;
+    }
+
+    .click-prompt {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.75);
+      color: #ffffff;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-full);
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      pointer-events: none;
+      backdrop-filter: blur(8px);
+    }
+
+    .click-prompt.hidden {
+      display: none;
+    }
+
+    /* Certificate Section */
+    .certificate-container {
+      display: none;
+      flex-direction: column;
+      gap: 1.5rem;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .certificate-container.show {
+      display: flex;
+    }
+
+    .cert-controls-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .cert-name-input-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex: 1;
+      min-width: 280px;
+    }
+
+    .cert-name-input {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      padding: 0.5rem 0.85rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .cert-name-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    /* Formal Certificate Card */
+    .cert-frame {
+      background: linear-gradient(135deg, #0e131b 0%, #151d28 100%);
+      border: 12px double #c5a059;
+      border-radius: var(--radius-lg);
+      padding: 3.5rem 3rem;
+      position: relative;
+      color: #e5e7eb;
+      text-align: center;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+    }
+
+    .cert-watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 14rem;
+      color: rgba(197, 160, 89, 0.03);
+      font-weight: 900;
+      user-select: none;
+      pointer-events: none;
+      font-family: var(--font-display);
+    }
+
+    .cert-header {
+      font-size: 0.85rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #c5a059;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .cert-title {
+      font-family: var(--font-display);
+      font-size: 2.75rem;
+      color: #ffffff;
+      margin: 0.5rem 0 0.25rem 0;
+      letter-spacing: 0.04em;
+    }
+
+    .cert-subtitle {
+      font-size: 0.95rem;
+      color: #9ca3af;
+      margin-bottom: 2rem;
+      font-style: italic;
+    }
+
+    .cert-present-to {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #9ca3af;
+    }
+
+    .cert-recipient {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      color: #f3f4f6;
+      border-bottom: 2px solid rgba(197, 160, 89, 0.5);
+      display: inline-block;
+      padding: 0.25rem 2.5rem;
+      margin: 0.5rem 0 1.5rem 0;
+    }
+
+    .cert-text {
+      max-width: 650px;
+      margin: 0 auto 2rem auto;
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #d1d5db;
+    }
+
+    .cert-stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin: 1.5rem 0 2.5rem 0;
+    }
+
+    .cert-stat-badge {
+      border: 1px solid rgba(197, 160, 89, 0.3);
+      background: rgba(197, 160, 89, 0.06);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1.5rem;
+      min-width: 130px;
+    }
+
+    .cert-stat-val {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: #c5a059;
+    }
+
+    .cert-stat-lbl {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #9ca3af;
+      margin-top: 0.25rem;
+    }
+
+    .cert-footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-top: 1px solid rgba(197, 160, 89, 0.25);
+      padding-top: 1.5rem;
+      margin-top: 1rem;
+      font-size: 0.825rem;
+      color: #9ca3af;
+    }
+
+    .cert-seal {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid #c5a059;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle, rgba(197, 160, 89, 0.2) 0%, rgba(197, 160, 89, 0.05) 100%);
+      color: #c5a059;
+      font-weight: 800;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      box-shadow: 0 0 15px rgba(197, 160, 89, 0.2);
+    }
+
+    /* Print media optimization */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      .cert-frame, .cert-frame * {
+        visibility: visible;
+      }
+      .cert-frame {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        border-width: 8px;
+        box-shadow: none;
+        background: #111827 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,28 +452,147 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Timed Typing Test</h1>
-        <p class="tool-description">Enhance your skills with Timed Typing Test.</p>
+        <p class="tool-description">Take an official countdown typing assessment. Test automatically begins on your first keystroke. Earn and download your verified speed certificate.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Timed Typing Test</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Enhance your skills with Timed Typing Test.</div>
-            <div><strong>Inputs:</strong> typing, keyboard, practice</div>
-            <div><strong>Category:</strong> typing</div>
+      <div class="test-workspace">
+
+        <!-- Live Dashboard Counters -->
+        <div class="stats-dashboard">
+          <div class="stat-card timer-card" id="timer-stat-card">
+            <div class="stat-label">Remaining Time</div>
+            <div class="stat-value" id="val-time-remaining">01:00</div>
+            <div class="stat-unit">countdown</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Net WPM</div>
+            <div class="stat-value" id="val-net-wpm" style="color: var(--accent);">0</div>
+            <div class="stat-unit">words / min</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Accuracy</div>
+            <div class="stat-value" id="val-accuracy" style="color: var(--success);">100%</div>
+            <div class="stat-unit">precision rate</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Words Typed</div>
+            <div class="stat-value" id="val-words">0</div>
+            <div class="stat-unit">completed words</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Errors</div>
+            <div class="stat-value" id="val-errors" style="color: var(--error);">0</div>
+            <div class="stat-unit">typos</div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Timer Mode Controls Bar -->
+        <div class="controls-bar">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem;">
+            <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Duration:</span>
+            <div class="pill-group" id="duration-selector">
+              <button type="button" class="pill-btn" data-seconds="30">30 Seconds</button>
+              <button type="button" class="pill-btn active" data-seconds="60">1 Minute</button>
+              <button type="button" class="pill-btn" data-seconds="120">2 Minutes</button>
+              <button type="button" class="pill-btn" data-seconds="180">3 Minutes</button>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <button type="button" class="btn btn-secondary" id="btn-restart-test" style="padding: 0.45rem 0.9rem; font-size: 0.825rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              Restart Test
+            </button>
+          </div>
+        </div>
+
+        <!-- Timed Passage Workspace -->
+        <div class="passage-wrapper glass-panel" id="passage-container" tabindex="0">
+          <div class="click-prompt" id="click-prompt">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Click or start typing — timer automatically begins on first keypress
+          </div>
+          <div class="passage-text" id="passage-text"></div>
+          <input type="text" class="typing-input" id="typing-input" autocomplete="off" autocapitalize="off" spellcheck="false" />
+        </div>
+
+        <!-- Official Certificate Section -->
+        <div class="certificate-container" id="certificate-container">
+          <div class="cert-controls-card glass-panel">
+            <div class="cert-name-input-group">
+              <label for="input-recipient-name" style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); white-space: nowrap;">
+                Candidate Name:
+              </label>
+              <input type="text" id="input-recipient-name" class="cert-name-input" value="Champion Typist" placeholder="Enter full name..." maxlength="35" />
+            </div>
+
+            <div style="display: flex; gap: 0.75rem;">
+              <button type="button" class="btn btn-primary" id="btn-print-cert">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                Print / Download Certificate
+              </button>
+              <button type="button" class="btn btn-secondary" id="btn-retake">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                Retake Assessment
+              </button>
+            </div>
+          </div>
+
+          <!-- Formal Rendered Certificate Frame -->
+          <div class="cert-frame" id="certificate-frame">
+            <div class="cert-watermark">SPEED</div>
+            <div class="cert-header">ALL IN ONE TYPING CERTIFICATION BOARD</div>
+            <h2 class="cert-title">Certificate of Typing Proficiency</h2>
+            <div class="cert-subtitle">Official Standardized Keyboard Speed &amp; Accuracy Verification</div>
+            
+            <div class="cert-present-to">This credential is proudly awarded to</div>
+            <div class="cert-recipient" id="cert-recipient-name">Champion Typist</div>
+
+            <p class="cert-text">
+              Having successfully demonstrated high-velocity keyboard touch proficiency under standardized timed test conditions, achieving exemplary accuracy and sustained neuromuscular rhythm.
+            </p>
+
+            <div class="cert-stats-row">
+              <div class="cert-stat-badge">
+                <div class="cert-stat-val" id="cert-wpm">75</div>
+                <div class="cert-stat-lbl">Net WPM</div>
+              </div>
+              <div class="cert-stat-badge">
+                <div class="cert-stat-val" id="cert-acc">98.5%</div>
+                <div class="cert-stat-lbl">Accuracy</div>
+              </div>
+              <div class="cert-stat-badge">
+                <div class="cert-stat-val" id="cert-duration">1 Min</div>
+                <div class="cert-stat-lbl">Duration</div>
+              </div>
+              <div class="cert-stat-badge">
+                <div class="cert-stat-val" id="cert-percentile">Top 12%</div>
+                <div class="cert-stat-lbl">Global Rank</div>
+              </div>
+            </div>
+
+            <div class="cert-footer-row">
+              <div style="text-align: left;">
+                <div><strong>Verification ID:</strong> <span id="cert-id">CERT-WPM-7821-2026</span></div>
+                <div><strong>Issued Date:</strong> <span id="cert-date">October 6, 2026</span></div>
+              </div>
+
+              <div class="cert-seal">
+                <span>OFFICIAL</span>
+                <span style="font-size: 0.9rem;">★</span>
+                <span>VERIFIED</span>
+              </div>
+
+              <div style="text-align: right;">
+                <div style="border-bottom: 1px solid rgba(197, 160, 89, 0.4); padding-bottom: 2px; font-family: var(--font-display); font-size: 1.15rem; color: #f3f4f6;">Antigravity Engine</div>
+                <div style="font-size: 0.75rem; margin-top: 4px;">Standardized Testing Authority</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
-    
     </div>
   </main>
 
@@ -62,7 +606,7 @@
     "@type": "WebApplication",
     "name": "Timed Typing Test",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/timed-typing-test/",
-    "description": "Enhance your skills with Timed Typing Test.",
+    "description": "Timed typing speed test with official test completion certificate, WPM calculations, and accuracy tracking.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

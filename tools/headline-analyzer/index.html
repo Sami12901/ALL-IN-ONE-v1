@@ -3,15 +3,282 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Headline Analyzer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your Headline Analyzer online.">
-  <meta name="keywords" content="marketing, digital, content, free, online, tool, utility">
+  <title>Headline Analyzer - SEO & CTR Content Audit Tool - ALL IN ONE</title>
+  <meta name="description" content="Audit article, blog, and ad headlines for SEO, CTR, and virality. Analyzes power words, emotional triggers, readability grade, sentiment, and Google SERP previews.">
+  <meta name="keywords" content="headline analyzer, headline score, title tester, power words, emotional words, readability score, seo title, click-through rate, content marketing tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/headline-analyzer/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .headline-workarea-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+
+    @media (max-width: 992px) {
+      .headline-workarea-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Score Meter Circle */
+    .score-hero-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .gauge-circle {
+      width: 105px;
+      height: 105px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: conic-gradient(var(--accent) 0deg, var(--bg-secondary) 0deg);
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px var(--accent-glow);
+    }
+
+    .gauge-inner {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      background: var(--bg-primary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gauge-score {
+      font-size: 1.75rem;
+      font-weight: 800;
+      line-height: 1;
+      font-family: var(--font-sans);
+    }
+
+    .gauge-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-top: 2px;
+      letter-spacing: 0.05em;
+    }
+
+    .score-summary-meta {
+      flex: 1;
+    }
+
+    .score-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      color: var(--text-primary);
+    }
+
+    .score-desc {
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    /* Metrics Grid */
+    .headline-metrics-deck {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    @media (max-width: 576px) {
+      .headline-metrics-deck {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .stat-pill {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .stat-pill-label {
+      font-size: 0.725rem;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .stat-pill-val {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+    }
+
+    .stat-pill-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    /* Word Breakdown Chips */
+    .word-chips-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+    }
+
+    .word-chip {
+      padding: 0.25rem 0.6rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.775rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .word-chip.power {
+      background: rgba(137, 170, 204, 0.2);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+    }
+
+    .word-chip.emotional {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #f59e0b;
+    }
+
+    .word-chip.common {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    /* Suggestions List */
+    .suggestion-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      padding: 0.65rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.85rem;
+      line-height: 1.4;
+      color: var(--text-secondary);
+    }
+
+    .suggestion-item svg {
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .suggestion-item.passed {
+      color: var(--text-primary);
+    }
+
+    .suggestion-item.passed svg {
+      color: var(--success);
+    }
+
+    .suggestion-item.action svg {
+      color: var(--warning);
+    }
+
+    /* SERP Snippet Preview */
+    .serp-box {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      font-family: Arial, sans-serif;
+      color: #202124;
+      line-height: 1.4;
+      border: 1px solid var(--border);
+    }
+
+    .serp-url {
+      font-size: 0.775rem;
+      color: #202124;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .serp-title {
+      font-size: 1.15rem;
+      color: #1a0dab;
+      cursor: pointer;
+      font-weight: 400;
+      margin-bottom: 0.35rem;
+      word-break: break-word;
+    }
+
+    .serp-desc {
+      font-size: 0.825rem;
+      color: #4d5156;
+    }
+
+    /* Social Card Preview */
+    .social-card-box {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      overflow: hidden;
+    }
+
+    .social-card-img-placeholder {
+      height: 120px;
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.3) 0%, rgba(20, 20, 20, 0.8) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .social-card-content {
+      padding: 0.85rem 1rem;
+    }
+
+    .social-card-domain {
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.25rem;
+    }
+
+    .social-card-headline {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.35;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,29 +293,251 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Headline Analyzer</h1>
-        <p class="tool-description">Create, analyze, and manage your Headline Analyzer online.</p>
+        <h1 class="gradient-text">Content Headline Analyzer</h1>
+        <p class="tool-description">
+          Score and optimize headlines for articles, newsletters, and PPC ad copy. Audit word count, character density, readability grade, sentiment, power words, and search engine snippets.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Headline Analyzer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your Headline Analyzer online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, content</div>
-            <div><strong>Category:</strong> digital-marketing</div>
+      <!-- Main Workspace -->
+      <div class="headline-workarea-grid">
+        
+        <!-- Left: Headline Input & Lexical Analysis -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Input Card -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+                <path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/>
+              </svg>
+              Headline Auditor
+            </h2>
+
+            <!-- Quick Demo Headlines -->
+            <div class="form-group">
+              <label style="font-size: 0.8rem;">Try High-Converting Examples</label>
+              <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
+                <button type="button" class="preset-chip" data-headline="10 Proven Secrets to Drastically Slash Your Flight Costs in 2026">
+                  Listicle (Score 88)
+                </button>
+                <button type="button" class="preset-chip" data-headline="How to Fast-Track Your Visa Approval Without Paying Massive Agency Fees">
+                  How-To Guide (Score 84)
+                </button>
+                <button type="button" class="preset-chip" data-headline="Are You Making These Costly Mistakes on Your PPC Ad Campaigns?">
+                  Question (Score 79)
+                </button>
+                <button type="button" class="preset-chip" data-headline="Updates on Airline Tickets and Recent Policies">
+                  Weak Title (Score 42)
+                </button>
+              </div>
+            </div>
+
+            <!-- Headline Input Field -->
+            <div class="form-group" style="margin-top: 0.5rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label for="headline-input">Enter Your Headline</label>
+                <span id="char-counter-text" style="font-size: 0.775rem; font-family: monospace; color: var(--text-tertiary);">0 chars | 0 words</span>
+              </div>
+              <textarea id="headline-input" class="form-textarea" style="min-height: 95px; font-size: 1.05rem; font-family: var(--font-sans); line-height: 1.45;" placeholder="Paste or type your headline here...">10 Proven Secrets to Drastically Slash Your Flight Costs in 2026</textarea>
+            </div>
+
+            <!-- Action Bar -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.25rem;">
+              <button type="button" class="btn btn-secondary" id="btn-clear-headline" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">
+                Clear Text
+              </button>
+              <span style="font-size: 0.75rem; color: var(--text-tertiary);">Live dynamic analysis on keystroke</span>
+            </div>
           </div>
+
+          <!-- Lexical Breakdown Card -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+              Vocabulary & Emotional Triggers
+            </h2>
+
+            <!-- Power Words Section -->
+            <div style="margin-bottom: 1.25rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-size: 0.85rem; font-weight: 700; color: var(--accent);">
+                  Power Words Detected (<span id="power-words-count">0</span>)
+                </div>
+                <span style="font-size: 0.75rem; color: var(--text-tertiary);">Boosts CTR by up to 28%</span>
+              </div>
+              <div class="word-chips-wrap" id="power-words-list">
+                <span style="font-size: 0.8rem; color: var(--text-tertiary);">None detected</span>
+              </div>
+            </div>
+
+            <!-- Emotional Words Section -->
+            <div style="margin-bottom: 1.25rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-size: 0.85rem; font-weight: 700; color: #f59e0b;">
+                  Emotional Triggers Detected (<span id="emotional-words-count">0</span>)
+                </div>
+                <span style="font-size: 0.75rem; color: var(--text-tertiary);">Fosters virality & social sharing</span>
+              </div>
+              <div class="word-chips-wrap" id="emotional-words-list">
+                <span style="font-size: 0.8rem; color: var(--text-tertiary);">None detected</span>
+              </div>
+            </div>
+
+            <!-- Word Balance Ratio -->
+            <div>
+              <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 0.4rem;">
+                Word Balance Composition
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; text-align: center;">
+                <div style="background: var(--bg-tertiary); padding: 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                  <div style="font-size: 0.7rem; color: var(--text-tertiary);">Common</div>
+                  <div id="stat-common-pct" style="font-size: 1rem; font-weight: 700;">60%</div>
+                </div>
+                <div style="background: var(--bg-tertiary); padding: 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                  <div style="font-size: 0.7rem; color: var(--text-tertiary);">Uncommon</div>
+                  <div id="stat-uncommon-pct" style="font-size: 1rem; font-weight: 700;">20%</div>
+                </div>
+                <div style="background: var(--bg-tertiary); padding: 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                  <div style="font-size: 0.7rem; color: var(--text-tertiary);">Power/Emotion</div>
+                  <div id="stat-impact-pct" style="font-size: 1rem; font-weight: 700; color: var(--accent);">20%</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Snippet Previews -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+                <rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/>
+              </svg>
+              Search & Social Media Previews
+            </h2>
+
+            <!-- Google SERP Snippet Preview -->
+            <div style="margin-bottom: 1.25rem;">
+              <div style="font-size: 0.775rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 0.4rem;">
+                Google SERP Snippet Preview
+              </div>
+              <div class="serp-box">
+                <div class="serp-url">
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/></svg>
+                  <span>https://yoursite.com &rsaquo; blog &rsaquo; travel-guide</span>
+                </div>
+                <div class="serp-title" id="serp-preview-title">
+                  10 Proven Secrets to Drastically Slash Your Flight Costs in 2026
+                </div>
+                <div class="serp-desc">
+                  Discover actionable tips and expert insider hacks to minimize travel expenses. Learn how smart booking strategies can unlock massive savings on your next flight.
+                </div>
+              </div>
+            </div>
+
+            <!-- Social Card Preview -->
+            <div>
+              <div style="font-size: 0.775rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 0.4rem;">
+                Social Card (Facebook / LinkedIn / Twitter)
+              </div>
+              <div class="social-card-box">
+                <div class="social-card-img-placeholder">
+                  [ Featured Image 1200 x 630 ]
+                </div>
+                <div class="social-card-content">
+                  <div class="social-card-domain">YOURSITE.COM</div>
+                  <div class="social-card-headline" id="social-preview-headline">
+                    10 Proven Secrets to Drastically Slash Your Flight Costs in 2026
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right: Overall Score Meter & Recommendations -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem; position: sticky; top: 5.5rem;">
+          
+          <!-- Master Score Card -->
+          <div class="tool-panel glass-panel">
+            
+            <div class="score-hero-card">
+              <div class="gauge-circle" id="gauge-circle-elem">
+                <div class="gauge-inner">
+                  <div class="gauge-score" id="headline-score-val">88</div>
+                  <div class="gauge-label">/ 100</div>
+                </div>
+              </div>
+
+              <div class="score-summary-meta">
+                <div class="score-title" id="score-quality-label">Exceptional Headline</div>
+                <div class="score-desc" id="score-quality-desc">
+                  This headline has excellent length, compelling power words, and high viral potential.
+                </div>
+              </div>
+            </div>
+
+            <!-- 6 Key Metric Tiles -->
+            <div class="headline-metrics-deck">
+              <div class="stat-pill">
+                <span class="stat-pill-label">Word Count</span>
+                <span class="stat-pill-val" id="val-word-count">10</span>
+                <span class="stat-pill-badge" id="badge-word-count" style="color: var(--success);">Optimal (6-9)</span>
+              </div>
+
+              <div class="stat-pill">
+                <span class="stat-pill-label">Char Count</span>
+                <span class="stat-pill-val" id="val-char-count">62</span>
+                <span class="stat-pill-badge" id="badge-char-count" style="color: var(--success);">Perfect (50-65)</span>
+              </div>
+
+              <div class="stat-pill">
+                <span class="stat-pill-label">Reading Grade</span>
+                <span class="stat-pill-val" id="val-reading-grade">Grade 7</span>
+                <span class="stat-pill-badge" id="badge-reading-grade" style="color: var(--accent);">Accessible</span>
+              </div>
+
+              <div class="stat-pill">
+                <span class="stat-pill-label">Headline Type</span>
+                <span class="stat-pill-val" id="val-headline-type" style="font-size: 1rem;">Listicle</span>
+                <span class="stat-pill-badge" style="color: var(--accent);">High CTR</span>
+              </div>
+
+              <div class="stat-pill">
+                <span class="stat-pill-label">Sentiment</span>
+                <span class="stat-pill-val" id="val-sentiment-label" style="font-size: 1rem;">Positive</span>
+                <span class="stat-pill-badge" id="val-sentiment-score" style="color: var(--success);">+0.65</span>
+              </div>
+
+              <div class="stat-pill">
+                <span class="stat-pill-label">SEO Preview</span>
+                <span class="stat-pill-val" id="val-seo-status" style="font-size: 0.95rem;">Fits SERP</span>
+                <span class="stat-pill-badge" id="badge-seo-status" style="color: var(--success);">No truncation</span>
+              </div>
+            </div>
+
+            <!-- Actionable Recommendations List -->
+            <div>
+              <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                Actionable Optimization Insights
+              </div>
+
+              <div id="suggestions-container">
+                <!-- Dynamically populated suggestions -->
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
-    
+
     </div>
   </main>
 
@@ -60,9 +549,9 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Headline Analyzer",
+    "name": "Content Headline Analyzer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/headline-analyzer/",
-    "description": "Create, analyze, and manage your Headline Analyzer online.",
+    "description": "Content headline auditor analyzing word count, character count, reading grade level, headline type, sentiment score, and emotional power words.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

@@ -3,17 +3,341 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WPM Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Enhance your skills with WPM Calculator.">
-  <meta name="keywords" content="typing, keyboard, practice, free, online, tool, utility">
+  <title>WPM Calculator - Real-Time Typing Speed Test - ALL IN ONE</title>
+  <meta name="description" content="Calculate your real-time Words Per Minute (WPM), Net WPM, CPM, and accuracy with instant character feedback and speed ratings.">
+  <meta name="keywords" content="wpm calculator, typing speed test, net wpm, words per minute, typing accuracy, cpm calculator">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/wpm-calculator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <style>
+    /* WPM Calculator Custom Styles */
+    .wpm-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .stats-dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 1rem;
+    }
+
+    .stat-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      text-align: center;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card.highlight {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.15) 0%, rgba(137, 170, 204, 0.05) 100%);
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+
+    .stat-value {
+      font-family: var(--font-sans);
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.1;
+    }
+
+    .stat-card.highlight .stat-value {
+      color: var(--accent);
+    }
+
+    .stat-unit {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      font-weight: 500;
+      margin-top: 0.2rem;
+    }
+
+    /* Controls bar */
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.85rem 1.25rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    .pill-group {
+      display: inline-flex;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .pill-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 0.4rem 0.9rem;
+      font-size: 0.825rem;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .pill-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .pill-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    .sound-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.45rem 0.85rem;
+      font-size: 0.825rem;
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .sound-toggle-btn:hover, .sound-toggle-btn.active {
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+
+    /* Passage Area */
+    .passage-wrapper {
+      position: relative;
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      min-height: 220px;
+      cursor: text;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      outline: none;
+    }
+
+    .passage-wrapper:focus-within, .passage-wrapper.is-focused {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .passage-text {
+      font-family: 'SF Mono', 'Fira Code', 'Roboto Mono', Menlo, monospace;
+      font-size: 1.25rem;
+      line-height: 2;
+      user-select: none;
+      word-break: break-word;
+      white-space: pre-wrap;
+      color: var(--text-secondary);
+    }
+
+    .char {
+      position: relative;
+      transition: background 0.1s ease, color 0.1s ease;
+      border-radius: 2px;
+    }
+
+    .char-pending {
+      color: var(--text-secondary);
+      opacity: 0.65;
+    }
+
+    .char-correct {
+      color: #10b981;
+      text-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+    }
+
+    .char-error {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.2);
+      border-bottom: 2px solid #ef4444;
+      text-shadow: 0 0 8px rgba(239, 68, 68, 0.35);
+    }
+
+    .char-current {
+      background: rgba(78, 133, 191, 0.25);
+      border-bottom: 3px solid var(--accent);
+      animation: cursorPulse 1s infinite alternate;
+    }
+
+    @keyframes cursorPulse {
+      0% { border-bottom-color: var(--accent); }
+      100% { border-bottom-color: transparent; }
+    }
+
+    /* Hidden typing capture input */
+    .typing-input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 1px;
+      height: 1px;
+      top: 0;
+      left: 0;
+    }
+
+    .click-prompt {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.75);
+      color: #ffffff;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-full);
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      pointer-events: none;
+      backdrop-filter: blur(8px);
+      transition: opacity 0.2s ease;
+    }
+
+    .click-prompt.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Results Card */
+    .results-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      text-align: center;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .results-card.show {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1.25rem;
+      border-radius: var(--radius-full);
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .rank-beginner { background: rgba(107, 114, 128, 0.2); color: #9ca3af; border: 1px solid #6b7280; }
+    .rank-average { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid #3b82f6; }
+    .rank-pro { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }
+    .rank-master { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; }
+    .rank-godspeed { background: rgba(236, 72, 153, 0.2); color: #f472b6; border: 1px solid #ec4899; box-shadow: 0 0 20px rgba(236, 72, 153, 0.4); }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 1rem;
+      width: 100%;
+      max-width: 650px;
+      margin: 1rem 0;
+    }
+
+    .results-item {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+    }
+
+    .results-item-val {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .results-item-lbl {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-top: 0.25rem;
+    }
+
+    /* Custom Passage Modal */
+    .custom-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .custom-modal.show {
+      display: flex;
+    }
+
+    .custom-modal-content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      max-width: 600px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      box-shadow: var(--shadow-lg);
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,30 +351,166 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>WPM Calculator</h1>
-        <p class="tool-description">Enhance your skills with WPM Calculator.</p>
+        <p class="tool-description">Real-time Words Per Minute calculator with precision character feedback, live ticking analytics, and typing tier ratings.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>WPM Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Enhance your skills with WPM Calculator.</div>
-            <div><strong>Inputs:</strong> typing, keyboard, practice</div>
-            <div><strong>Category:</strong> typing</div>
+      <div class="wpm-workspace">
+        
+        <!-- Live Ticking Stats Dashboard -->
+        <div class="stats-dashboard" id="stats-dashboard">
+          <div class="stat-card highlight">
+            <div class="stat-label">Net WPM</div>
+            <div class="stat-value" id="val-net-wpm">0</div>
+            <div class="stat-unit">words / min</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Gross WPM</div>
+            <div class="stat-value" id="val-gross-wpm">0</div>
+            <div class="stat-unit">raw speed</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Accuracy</div>
+            <div class="stat-value" id="val-accuracy">100%</div>
+            <div class="stat-unit">precision rate</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">CPM</div>
+            <div class="stat-value" id="val-cpm">0</div>
+            <div class="stat-unit">chars / min</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Time</div>
+            <div class="stat-value" id="val-time">00:00</div>
+            <div class="stat-unit">elapsed</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Errors</div>
+            <div class="stat-value" id="val-errors" style="color: var(--error);">0</div>
+            <div class="stat-unit">mistakes</div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Controls Bar -->
+        <div class="controls-bar">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem;">
+            <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Topic:</span>
+            <div class="pill-group" id="topic-selector">
+              <button type="button" class="pill-btn active" data-topic="tech">Tech</button>
+              <button type="button" class="pill-btn" data-topic="literature">Literature</button>
+              <button type="button" class="pill-btn" data-topic="business">Business</button>
+              <button type="button" class="pill-btn" data-topic="custom">Custom</button>
+            </div>
+
+            <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-left: 0.5rem;">Length:</span>
+            <div class="pill-group" id="length-selector">
+              <button type="button" class="pill-btn" data-length="short">Short</button>
+              <button type="button" class="pill-btn active" data-length="medium">Medium</button>
+              <button type="button" class="pill-btn" data-length="long">Long</button>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <button type="button" class="sound-toggle-btn active" id="btn-sound-toggle" title="Toggle Mechanical Typing Sounds">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+              <span>Sound: ON</span>
+            </button>
+            <button type="button" class="btn btn-secondary" id="btn-restart-top" style="padding: 0.45rem 0.9rem; font-size: 0.825rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              Reset
+            </button>
+          </div>
+        </div>
+
+        <!-- Interactive Passage Display Area -->
+        <div class="passage-wrapper glass-panel" id="passage-container" tabindex="0">
+          <div class="click-prompt" id="click-prompt">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M18 16H6"/></svg>
+            Click or press any key to focus & start typing
+          </div>
+          <div class="passage-text" id="passage-text"></div>
+          <input type="text" class="typing-input" id="typing-input" autocomplete="off" autocapitalize="off" spellcheck="false" />
+        </div>
+
+        <!-- Results Summary Card -->
+        <div class="results-card glass-panel" id="results-card">
+          <div style="font-size: 0.9rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.1em;">Typing Performance Evaluation</div>
+          
+          <div id="rank-badge-container">
+            <div class="rank-badge rank-pro" id="rank-badge">
+              <span>🏆</span> <span id="rank-name">Pro Typist</span>
+            </div>
+          </div>
+          
+          <div style="font-family: var(--font-display); font-size: 3.5rem; font-weight: 800; color: var(--accent); line-height: 1;" id="final-net-wpm">
+            78 WPM
+          </div>
+          <p id="rank-description" style="color: var(--text-secondary); max-width: 500px; line-height: 1.5; font-size: 0.95rem;">
+            Impressive typing speed! Your muscle memory is well tuned, exceeding average workplace standards.
+          </p>
+
+          <div class="results-grid">
+            <div class="results-item">
+              <div class="results-item-val" id="res-gross-wpm">82</div>
+              <div class="results-item-lbl">Gross WPM</div>
+            </div>
+            <div class="results-item">
+              <div class="results-item-val" id="res-accuracy" style="color: var(--success);">98.4%</div>
+              <div class="results-item-lbl">Accuracy</div>
+            </div>
+            <div class="results-item">
+              <div class="results-item-val" id="res-cpm">410</div>
+              <div class="results-item-lbl">CPM</div>
+            </div>
+            <div class="results-item">
+              <div class="results-item-val" id="res-time">00:45</div>
+              <div class="results-item-lbl">Total Time</div>
+            </div>
+            <div class="results-item">
+              <div class="results-item-val" id="res-errors" style="color: var(--error);">2</div>
+              <div class="results-item-lbl">Errors</div>
+            </div>
+            <div class="results-item">
+              <div class="results-item-val" id="res-chars">390</div>
+              <div class="results-item-lbl">Keystrokes</div>
+            </div>
+          </div>
+
+          <div class="action-bar" style="justify-content: center; gap: 1rem;">
+            <button type="button" class="btn btn-primary" id="btn-try-again">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              Try Again
+            </button>
+            <button type="button" class="btn btn-secondary" id="btn-new-passage">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              Next Passage
+            </button>
+            <button type="button" class="btn btn-secondary" id="btn-copy-result">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy Summary
+            </button>
+          </div>
+        </div>
+
       </div>
-    
     </div>
   </main>
+
+  <!-- Custom Passage Dialog -->
+  <div class="custom-modal" id="custom-modal">
+    <div class="custom-modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="font-size: 1.25rem; font-weight: 700; margin: 0;">Set Custom Practice Text</h3>
+        <button type="button" id="btn-close-modal" style="background: none; border: none; font-size: 1.5rem; color: var(--text-secondary); cursor: pointer;">&times;</button>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">Paste or write any text you wish to practice. Minimum 20 characters.</p>
+      <textarea id="custom-text-input" class="form-textarea" style="min-height: 140px; font-size: 1rem;" placeholder="Paste custom passage here..."></textarea>
+      <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+        <button type="button" class="btn btn-secondary" id="btn-cancel-custom">Cancel</button>
+        <button type="button" class="btn btn-primary" id="btn-apply-custom">Load Passage</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,7 +522,7 @@
     "@type": "WebApplication",
     "name": "WPM Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/wpm-calculator/",
-    "description": "Enhance your skills with WPM Calculator.",
+    "description": "Calculate your real-time Words Per Minute (WPM), Net WPM, CPM, and accuracy with instant character feedback.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

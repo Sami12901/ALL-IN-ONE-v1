@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GCD & LCM Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Find GCD and LCM values of number sets.">
-  <meta name="keywords" content="gcd, lcm, math, divisor, multiple, free, online, tool, utility">
+  <meta name="description" content="Calculate Greatest Common Divisor (GCD) and Least Common Multiple (LCM) for multiple numbers with step-by-step Euclidean algorithm and prime factorization.">
+  <meta name="keywords" content="gcd, lcm, greatest common divisor, least common multiple, hcf, math calculator, prime factors, euclidean algorithm, free online tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/gcd-lcm-calculator/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,202 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+
+  <style>
+    .math-tool-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .preset-chip {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.85rem;
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .preset-chip:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .result-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: relative;
+      transition: var(--transition);
+    }
+
+    .result-card.highlight-gcd {
+      border-color: rgba(78, 133, 191, 0.4);
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.08) 0%, var(--bg-tertiary) 100%);
+    }
+
+    .result-card.highlight-lcm {
+      border-color: rgba(16, 185, 129, 0.4);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, var(--bg-tertiary) 100%);
+    }
+
+    .result-card-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+      font-weight: 600;
+    }
+
+    .result-card-val {
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      word-break: break-all;
+      line-height: 1.1;
+    }
+
+    .result-card-sub {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .copy-icon-btn {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      padding: 0.35rem 0.6rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+
+    .copy-icon-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .steps-accordion {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .step-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+    }
+
+    .step-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .step-calc-line {
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 0.9rem;
+      padding: 0.35rem 0.6rem;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      margin-bottom: 0.4rem;
+      color: var(--text-primary);
+      overflow-x: auto;
+    }
+
+    .factor-pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .factor-pill {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.25rem 0.6rem;
+      font-size: 0.825rem;
+      font-family: monospace;
+      color: var(--text-primary);
+    }
+
+    .factor-pill.prime {
+      color: #10b981;
+      border-color: rgba(16, 185, 129, 0.3);
+      background: rgba(16, 185, 129, 0.08);
+    }
+
+    .tab-bar {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .tab-btn {
+      padding: 0.5rem 1rem;
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .tab-btn.active {
+      background: var(--bg-tertiary);
+      color: var(--accent);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab-btn:hover:not(.active) {
+      color: var(--text-primary);
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -26,29 +222,123 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>GCD & LCM Calculator</h1>
-        <p class="tool-description">Find GCD and LCM values of number sets.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">GCD & LCM Calculator</h1>
+        <p class="tool-description">Calculate Greatest Common Divisor (GCD / HCF) and Least Common Multiple (LCM) for any set of positive integers with Euclidean division steps, prime factorization, and divisor breakdowns.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>GCD & LCM Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Find GCD and LCM values of number sets.</div>
-            <div><strong>Inputs:</strong> gcd, lcm, math, divisor, multiple</div>
-            <div><strong>Category:</strong> math</div>
+      <div class="math-tool-container">
+        <!-- Input Section Panel -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 12h8"></path><path d="M12 8v8"></path></svg>
+            Enter Numbers
+          </div>
+
+          <div class="form-group">
+            <label for="numbers-input">Positive Integers (separated by comma, space, or newline):</label>
+            <input type="text" id="numbers-input" class="form-input" placeholder="e.g. 24, 60, 36" value="24, 60, 36" autocomplete="off" spellcheck="false">
+            <div id="input-error" class="alert-error" style="display: none; margin-top: 0.5rem; font-size: 0.85rem; padding: 0.5rem 0.75rem;"></div>
+          </div>
+
+          <!-- Sample Presets -->
+          <div>
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-tertiary);">Quick Sample Presets:</span>
+            <div class="preset-chips">
+              <button type="button" class="preset-chip" data-preset="12, 18">12, 18</button>
+              <button type="button" class="preset-chip" data-preset="24, 60, 36">24, 60, 36</button>
+              <button type="button" class="preset-chip" data-preset="48, 180">48, 180</button>
+              <button type="button" class="preset-chip" data-preset="15, 25, 35">15, 25, 35</button>
+              <button type="button" class="preset-chip" data-preset="100, 250, 625">100, 250, 625</button>
+              <button type="button" class="preset-chip" data-preset="17, 19">17, 19 (Coprime)</button>
+              <button type="button" class="preset-chip" data-preset="144, 216, 360">144, 216, 360</button>
+            </div>
+          </div>
+
+          <div class="action-bar">
+            <button type="button" id="calc-btn" class="btn btn-primary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              Calculate GCD & LCM
+            </button>
+            <button type="button" id="clear-btn" class="btn btn-secondary">Clear</button>
+            <button type="button" id="copy-summary-btn" class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Report
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Key Results Summary Cards -->
+        <div class="results-grid">
+          <div class="result-card highlight-gcd">
+            <span class="result-card-label">Greatest Common Divisor (GCD / HCF)</span>
+            <div class="result-card-val" id="gcd-val">-</div>
+            <div class="result-card-sub" id="gcd-sub">Largest factor common to all numbers</div>
+            <button type="button" class="copy-icon-btn" id="copy-gcd-btn" title="Copy GCD">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy
+            </button>
+          </div>
+
+          <div class="result-card highlight-lcm">
+            <span class="result-card-label">Least Common Multiple (LCM)</span>
+            <div class="result-card-val" id="lcm-val">-</div>
+            <div class="result-card-sub" id="lcm-sub">Smallest positive multiple of all numbers</div>
+            <button type="button" class="copy-icon-btn" id="copy-lcm-btn" title="Copy LCM">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy
+            </button>
+          </div>
+
+          <div class="result-card">
+            <span class="result-card-label">Set Properties</span>
+            <div class="result-card-val" id="coprime-val" style="font-size: 1.5rem;">-</div>
+            <div class="result-card-sub" id="count-sub">Total numbers analyzed: 0</div>
+          </div>
+        </div>
+
+        <!-- Prime Factors & Factorization Card -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+            Prime Factorization & Divisors
+          </div>
+          <div id="prime-factors-container" style="display: flex; flex-direction: column; gap: 1rem;">
+            <!-- Rendered prime factor cards -->
+          </div>
+        </div>
+
+        <!-- Detailed Step-by-Step Derivation Breakdown -->
+        <div class="tool-panel glass-panel">
+          <div class="tab-bar">
+            <button type="button" class="tab-btn active" data-tab="euclidean-tab">Euclidean Algorithm (GCD)</button>
+            <button type="button" class="tab-btn" data-tab="prime-tab">Prime Factorization Method</button>
+            <button type="button" class="tab-btn" data-tab="all-divisors-tab">Common Divisors</button>
+          </div>
+
+          <div id="tab-content">
+            <!-- Euclidean Steps Content -->
+            <div id="euclidean-tab" class="tab-pane">
+              <div class="steps-accordion" id="euclidean-steps">
+                <!-- Euclidean steps -->
+              </div>
+            </div>
+
+            <!-- Prime Factor Steps Content -->
+            <div id="prime-tab" class="tab-pane" style="display: none;">
+              <div class="steps-accordion" id="prime-method-steps">
+                <!-- Prime factorization steps -->
+              </div>
+            </div>
+
+            <!-- Common Divisors Content -->
+            <div id="all-divisors-tab" class="tab-pane" style="display: none;">
+              <div class="steps-accordion" id="common-divisors-steps">
+                <!-- Common divisors steps -->
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
 
@@ -62,7 +352,7 @@
     "@type": "WebApplication",
     "name": "GCD & LCM Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/gcd-lcm-calculator/",
-    "description": "Find GCD and LCM values of number sets.",
+    "description": "Find GCD and LCM values of number sets with Euclidean steps and prime factorizations.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

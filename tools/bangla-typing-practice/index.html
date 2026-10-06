@@ -1,19 +1,362 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="bn" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bangla Typing Practice - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Enhance your skills with Bangla Typing Practice.">
-  <meta name="keywords" content="typing, keyboard, practice, free, online, tool, utility">
+  <title>Bangla Typing Practice - বাংলা টাইপিং টিউটর ও কিবোর্ড লেআউট - ALL IN ONE</title>
+  <meta name="description" content="বাংলা টাইপিং প্র্যাকটিস ও স্পিড টেস্ট। ফোনেটিক (Avro), বিজয় (Bijoy) এবং জাতীয় (Jatiya) কিবোর্ড লেআউট ও রিয়েল-টাইম WPM এবং শুদ্ধতা পরিমাপক।">
+  <meta name="keywords" content="bangla typing practice, avro phonetic typing tutor, bijoy keyboard layout, jatiya keyboard typing, bangla wpm calculator, বাংলা টাইপিং শিখুন">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/bangla-typing-practice/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <style>
+    /* Bangla Typing Practice Custom Styles */
+    @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Kalpurush&family=SolaimanLipi&display=swap');
+
+    .bangla-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      max-width: 1050px;
+      margin: 0 auto;
+      width: 100%;
+      font-family: 'Hind Siliguri', 'Inter', sans-serif;
+    }
+
+    .bangla-text {
+      font-family: 'Hind Siliguri', 'SolaimanLipi', 'Kalpurush', sans-serif;
+    }
+
+    /* Live Stats Grid */
+    .stats-dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+      gap: 1rem;
+    }
+
+    .stat-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .stat-card.hero {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.15) 0%, rgba(137, 170, 204, 0.05) 100%);
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+    }
+
+    .stat-value {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.1;
+    }
+
+    .stat-unit {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      font-weight: 500;
+      margin-top: 0.2rem;
+    }
+
+    /* Controls Bar */
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.85rem 1.25rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    .pill-group {
+      display: inline-flex;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .pill-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 0.4rem 0.9rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .pill-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .pill-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    /* Passage Area */
+    .passage-wrapper {
+      position: relative;
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem 2rem;
+      min-height: 200px;
+      cursor: text;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .passage-wrapper:focus-within, .passage-wrapper.is-focused {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .passage-display {
+      font-family: 'Hind Siliguri', 'SolaimanLipi', sans-serif;
+      font-size: 1.6rem;
+      line-height: 2.2;
+      user-select: none;
+      word-break: break-word;
+      white-space: pre-wrap;
+      color: var(--text-secondary);
+    }
+
+    .char {
+      position: relative;
+      border-radius: 2px;
+      transition: background 0.1s ease, color 0.1s ease;
+    }
+
+    .char-pending {
+      color: var(--text-secondary);
+      opacity: 0.65;
+    }
+
+    .char-correct {
+      color: #10b981;
+    }
+
+    .char-error {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.25);
+      border-bottom: 2px solid #ef4444;
+    }
+
+    .char-current {
+      background: rgba(78, 133, 191, 0.25);
+      border-bottom: 3px solid var(--accent);
+      animation: cursorPulse 1s infinite alternate;
+    }
+
+    @keyframes cursorPulse {
+      0% { border-bottom-color: var(--accent); }
+      100% { border-bottom-color: transparent; }
+    }
+
+    /* Phonetic Input Floating Bar */
+    .phonetic-input-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1.25rem;
+    }
+
+    .phonetic-live-preview {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      flex: 1;
+    }
+
+    .phonetic-badge {
+      background: var(--accent);
+      color: #ffffff;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .phonetic-buffer {
+      font-family: monospace;
+      font-size: 1.1rem;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .phonetic-converted {
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 1.25rem;
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    .typing-input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 1px;
+      height: 1px;
+      top: 0;
+      left: 0;
+    }
+
+    /* Keymap Visual Reference */
+    .keymap-section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .keymap-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+    }
+
+    .keymap-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Keyboard Layout Grid */
+    .kb-visual-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      user-select: none;
+    }
+
+    .kb-row {
+      display: flex;
+      gap: 5px;
+      justify-content: center;
+    }
+
+    .kb-key-tile {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      min-width: 44px;
+      height: 52px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 2px;
+      font-size: 0.85rem;
+      flex: 1;
+      max-width: 60px;
+      transition: var(--transition);
+    }
+
+    .kb-key-tile .shift-char {
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .kb-key-tile .normal-char {
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .kb-key-tile.key-spacebar {
+      max-width: 320px;
+      justify-content: center;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    /* Phonetic Quick Table */
+    .phonetic-cheat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 8px;
+      font-size: 0.85rem;
+    }
+
+    .cheat-item {
+      display: flex;
+      justify-content: space-between;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.75rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .cheat-en {
+      font-family: monospace;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .cheat-bn {
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* Results Card */
+    .results-card {
+      display: none;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      text-align: center;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .results-card.show {
+      display: flex;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,28 +370,152 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Bangla Typing Practice</h1>
-        <p class="tool-description">Enhance your skills with Bangla Typing Practice.</p>
+        <p class="tool-description">বাংলা টাইপিং অনুশীলন। ফোনেটিক (Avro) ইঞ্জিন, বিজয় এবং জাতীয় কিবোর্ড রেফারেন্সসহ রিয়েল-টাইম WPM ও নিখুঁত মূল্যায়ন।</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Bangla Typing Practice</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Enhance your skills with Bangla Typing Practice.</div>
-            <div><strong>Inputs:</strong> typing, keyboard, practice</div>
-            <div><strong>Category:</strong> typing</div>
+      <div class="bangla-workspace">
+
+        <!-- Live Metrics Dashboard -->
+        <div class="stats-dashboard">
+          <div class="stat-card hero">
+            <div class="stat-label">Bangla WPM (শব্দ/মি.)</div>
+            <div class="stat-value" id="val-wpm">০</div>
+            <div class="stat-unit">words per minute</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Accuracy (শুদ্ধতা)</div>
+            <div class="stat-value" id="val-accuracy" style="color: var(--success);">১০০%</div>
+            <div class="stat-unit">precision rate</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">CPM (অক্ষর/মি.)</div>
+            <div class="stat-value" id="val-cpm">০</div>
+            <div class="stat-unit">chars per minute</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Time (সময়)</div>
+            <div class="stat-value" id="val-time">০০:০০</div>
+            <div class="stat-unit">elapsed</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Errors (ভুল)</div>
+            <div class="stat-value" id="val-errors" style="color: var(--error);">০</div>
+            <div class="stat-unit">mistakes</div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Controls Bar -->
+        <div class="controls-bar">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem;">
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary);">পদ্ধতি / Mode:</span>
+            <div class="pill-group" id="input-mode-selector">
+              <button type="button" class="pill-btn active" data-mode="phonetic">Avro ফোনেটিক</button>
+              <button type="button" class="pill-btn" data-mode="direct">সরাসরি বাংলা / Bijoy</button>
+            </div>
+
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); margin-left: 0.5rem;">বিষয় / Passage:</span>
+            <div class="pill-group" id="topic-selector">
+              <button type="button" class="pill-btn active" data-topic="proverbs">প্রবাদ-প্রবচন</button>
+              <button type="button" class="pill-btn" data-topic="sentences">সহজ বাক্যমালা</button>
+              <button type="button" class="pill-btn" data-topic="literature">কবিতা ও সাহিত্য</button>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <button type="button" class="pill-btn" id="btn-toggle-numerals" style="background: var(--bg-tertiary); border: 1px solid var(--border);">
+              সংখ্যা: বাংলা (১২৩)
+            </button>
+            <button type="button" class="btn btn-secondary" id="btn-restart" style="padding: 0.45rem 0.9rem; font-size: 0.825rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              রিসেট
+            </button>
+          </div>
+        </div>
+
+        <!-- Phonetic Live Indicator Bar (shown in phonetic mode) -->
+        <div class="phonetic-input-bar" id="phonetic-bar">
+          <div class="phonetic-live-preview">
+            <span class="phonetic-badge">Phonetic Buffer</span>
+            <span>English: <span class="phonetic-buffer" id="phonetic-buffer">(type 'ami', 'bangla'...)</span></span>
+            <span>&rarr; বাংলা: <span class="phonetic-converted" id="phonetic-converted">...</span></span>
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text-tertiary);">Space চাপলে রূপান্তর হবে</div>
+        </div>
+
+        <!-- Interactive Bangla Passage Display Area -->
+        <div class="passage-wrapper glass-panel" id="passage-container" tabindex="0">
+          <div class="passage-display" id="passage-display"></div>
+          <input type="text" class="typing-input" id="typing-input" autocomplete="off" autocapitalize="off" spellcheck="false" />
+        </div>
+
+        <!-- Results Card -->
+        <div class="results-card glass-panel" id="results-card">
+          <div style="font-size: 0.9rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">
+            বাংলা টাইপিং মূল্যায়ন ফলাফল
+          </div>
+          <div style="font-size: 3rem; font-weight: 800; color: var(--accent);" id="res-final-wpm">
+            ৩৫ WPM
+          </div>
+          <div style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center; margin: 1rem 0;">
+            <div><strong>শুদ্ধতা:</strong> <span id="res-acc" style="color: var(--success);">৯৮%</span></div>
+            <div><strong>CPM:</strong> <span id="res-cpm">১৭৫</span></div>
+            <div><strong>মোট সময়:</strong> <span id="res-time">০০:৪৫</span></div>
+            <div><strong>ভুল:</strong> <span id="res-err" style="color: var(--error);">২</span></div>
+          </div>
+          <button type="button" class="btn btn-primary" id="btn-try-again">পুনরায় শুরু করুন (Try Again)</button>
+        </div>
+
+        <!-- Keyboard Layout Reference Section -->
+        <div class="keymap-section">
+          <div class="keymap-header">
+            <div class="keymap-title">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M18 16H6"/></svg>
+              <span>কিবোর্ড লেআউট রেফারেন্স (Keyboard Layout Guide)</span>
+            </div>
+
+            <div class="pill-group" id="layout-view-selector">
+              <button type="button" class="pill-btn active" data-layout="phonetic">Avro ফোনেটিক তালিকা</button>
+              <button type="button" class="pill-btn" data-layout="bijoy">বিজয় (Bijoy Layout)</button>
+              <button type="button" class="pill-btn" data-layout="jatiya">জাতীয় (National Jatiya)</button>
+            </div>
+          </div>
+
+          <!-- Phonetic Cheat Sheet Container -->
+          <div id="phonetic-table-view">
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              সহজ ফোনেটিক নিয়ম: ইংরেজি হরফে লিখলে তা স্বয়ংক্রিয়ভাবে বাংলায় রূপান্তরিত হয়।
+            </p>
+            <div class="phonetic-cheat-grid">
+              <div class="cheat-item"><span class="cheat-en">ami</span><span class="cheat-bn">আমি</span></div>
+              <div class="cheat-item"><span class="cheat-en">tumi</span><span class="cheat-bn">তুমি</span></div>
+              <div class="cheat-item"><span class="cheat-en">bangla</span><span class="cheat-bn">বাংলা</span></div>
+              <div class="cheat-item"><span class="cheat-en">desh</span><span class="cheat-bn">দেশ</span></div>
+              <div class="cheat-item"><span class="cheat-en">kemon</span><span class="cheat-bn">কেমন</span></div>
+              <div class="cheat-item"><span class="cheat-en">dhonnobad</span><span class="cheat-bn">ধন্যবাদ</span></div>
+              <div class="cheat-item"><span class="cheat-en">shonar</span><span class="cheat-bn">সোনার</span></div>
+              <div class="cheat-item"><span class="cheat-en">manush</span><span class="cheat-bn">মানুষ</span></div>
+              <div class="cheat-item"><span class="cheat-en">bhalo</span><span class="cheat-bn">ভালো</span></div>
+              <div class="cheat-item"><span class="cheat-en">bhasha</span><span class="cheat-bn">ভাষা</span></div>
+              <div class="cheat-item"><span class="cheat-en">kkh</span><span class="cheat-bn">ক্ষ</span></div>
+              <div class="cheat-item"><span class="cheat-en">jyo</span><span class="cheat-bn">য্য</span></div>
+            </div>
+          </div>
+
+          <!-- Bijoy & Jatiya Visual Keyboard Container -->
+          <div id="visual-layout-view" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span id="layout-name-indicator" style="font-weight: 700; font-size: 0.9rem; color: var(--accent);">বিজয় লেআউট (Bijoy Layout)</span>
+              <span style="font-size: 0.8rem; color: var(--text-tertiary);">উপরের অক্ষর = Shift + Key | নিচের অক্ষর = Normal Key</span>
+            </div>
+            <div class="kb-visual-grid" id="kb-visual-grid">
+              <!-- Rendered dynamically for Bijoy or Jatiya -->
+            </div>
+          </div>
+
+        </div>
+
       </div>
-    
     </div>
   </main>
 
@@ -62,7 +529,7 @@
     "@type": "WebApplication",
     "name": "Bangla Typing Practice",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/bangla-typing-practice/",
-    "description": "Enhance your skills with Bangla Typing Practice.",
+    "description": "Multi-layout Bengali typing tutor supporting Avro Phonetic, Bijoy, and National Jatiya layouts.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

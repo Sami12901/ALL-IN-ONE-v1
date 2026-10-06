@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Blank Presentation Creator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Start from scratch with text, images, charts, and shapes.">
-  <meta name="keywords" content="slide, presentation, pitch, deck, blank presentation creator, free, online, tool, utility">
+  <meta name="description" content="Create modern web presentations with custom slide layouts, interactive thumbnail management, theme styling, and full-screen presenter mode.">
+  <meta name="keywords" content="slide, presentation, pitch, deck, blank presentation creator, slideshow, free, online, tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/blank-presentation-creator/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,408 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+
+  <style>
+    /* Presentation Studio Custom Styles */
+    .pres-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .pres-top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0.85rem 1.25rem;
+    }
+
+    .deck-title-input {
+      font-family: var(--font-display), sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      padding: 0.25rem 0.5rem;
+      outline: none;
+      transition: var(--transition);
+      max-width: 380px;
+    }
+    .deck-title-input:hover, .deck-title-input:focus {
+      border-color: var(--border);
+      background: var(--bg-tertiary);
+    }
+
+    /* Main Studio Workspace: Drawer + Center Canvas + Properties */
+    .studio-workspace {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .studio-workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Drawer: Thumbnails */
+    .thumbnails-drawer {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      max-height: 800px;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+
+    .thumb-item {
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: relative;
+      transition: var(--transition);
+    }
+    .thumb-item:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .thumb-item.active {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    .thumb-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .thumb-idx {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-tertiary);
+    }
+    .thumb-actions {
+      display: flex;
+      gap: 0.25rem;
+    }
+    .thumb-btn-sm {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-tertiary);
+      border-radius: var(--radius-sm);
+      padding: 0.15rem 0.35rem;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .thumb-btn-sm:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border-color: var(--border);
+    }
+    .thumb-btn-sm.btn-del:hover {
+      color: var(--error);
+      background: rgba(239, 68, 68, 0.15);
+    }
+
+    .thumb-preview-box {
+      aspect-ratio: 16 / 9;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 0.5rem;
+      text-align: center;
+      overflow: hidden;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      pointer-events: none;
+    }
+
+    /* Center Stage: Interactive Slide Canvas */
+    .stage-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .stage-controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      padding: 0.6rem 1rem;
+      border-radius: var(--radius-md);
+    }
+
+    .canvas-viewport {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      padding: 3.5rem 4rem;
+      box-sizing: border-box;
+      transition: background 0.3s ease;
+    }
+    @media (max-width: 600px) {
+      .canvas-viewport {
+        padding: 1.5rem;
+      }
+    }
+
+    /* Themes for Slide Viewport */
+    .theme-obsidian {
+      background: radial-gradient(circle at top right, #1e293b, #090d16);
+      color: #f8fafc;
+    }
+    .theme-midnight {
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+      color: #ffffff;
+    }
+    .theme-gold {
+      background: radial-gradient(circle at center, #1c1917, #0c0a09);
+      color: #fef08a;
+    }
+    .theme-crimson {
+      background: linear-gradient(135deg, #2d0b17 0%, #12070c 100%);
+      color: #ffe4e6;
+    }
+    .theme-light {
+      background: #ffffff;
+      color: #0f172a;
+    }
+
+    /* Slide Content Elements */
+    .slide-content-wrap {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+
+    .slide-field-title {
+      font-family: var(--font-display), sans-serif;
+      font-size: clamp(1.8rem, 4vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+      outline: none;
+      border-bottom: 1px dashed transparent;
+      transition: border-color 0.2s;
+    }
+    .slide-field-title:focus {
+      border-bottom-color: var(--accent);
+    }
+
+    .slide-field-subtitle {
+      font-size: clamp(1rem, 2vw, 1.4rem);
+      opacity: 0.8;
+      font-weight: 400;
+      line-height: 1.4;
+      margin-bottom: 1.5rem;
+      outline: none;
+      border-bottom: 1px dashed transparent;
+    }
+    .slide-field-subtitle:focus {
+      border-bottom-color: var(--accent);
+    }
+
+    .slide-bullets-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      list-style-type: none;
+      padding: 0;
+      font-size: clamp(0.95rem, 1.8vw, 1.2rem);
+      line-height: 1.5;
+    }
+    .slide-bullet-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    .bullet-marker {
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    .slide-two-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 1rem;
+      font-size: clamp(0.9rem, 1.6vw, 1.1rem);
+      line-height: 1.6;
+    }
+
+    .slide-stat-display {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .stat-hero-number {
+      font-family: var(--font-display), sans-serif;
+      font-size: clamp(3.5rem, 8vw, 6rem);
+      font-weight: 900;
+      line-height: 1;
+      color: var(--accent);
+    }
+    .stat-hero-label {
+      font-size: clamp(1.1rem, 2.5vw, 1.75rem);
+      font-weight: 600;
+      opacity: 0.9;
+    }
+
+    .slide-footer-bar {
+      position: absolute;
+      bottom: -2.5rem;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      opacity: 0.5;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    @media (max-width: 600px) {
+      .slide-footer-bar {
+        bottom: -1rem;
+      }
+    }
+
+    /* Slide Controls Editor Panel below canvas */
+    .editor-inputs-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* FULLSCREEN PRESENTATION MODAL */
+    .present-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: #000000;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      user-select: none;
+      outline: none;
+    }
+    .present-modal.active {
+      display: flex;
+    }
+
+    .present-screen-slide {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 5vmin;
+      box-sizing: border-box;
+    }
+
+    .present-slide-inner {
+      width: 100%;
+      max-width: 1600px;
+      aspect-ratio: 16 / 9;
+      border-radius: var(--radius-lg);
+      padding: 5rem 6rem;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 0 100px rgba(0, 0, 0, 0.8);
+      animation: slideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes slideIn {
+      from { opacity: 0.7; transform: scale(0.98); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .present-hud {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 0.4rem 1rem;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: #ffffff;
+      font-size: 0.85rem;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      z-index: 100000;
+      opacity: 0.3;
+      transition: opacity 0.2s ease;
+    }
+    .present-hud:hover {
+      opacity: 1;
+    }
+    .hud-btn {
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      cursor: pointer;
+      padding: 0.3rem 0.5rem;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+    .hud-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -24,45 +426,174 @@
 
   <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
-      <div class="tool-header">
-        <h1>Blank Presentation Creator</h1>
-        <p class="tool-description">Start from scratch with text, images, charts, and shapes.</p>
+    <div class="pres-container">
+      
+      <!-- Top Action Bar -->
+      <div class="pres-top-bar">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+          <input type="text" id="deck-title-input" class="deck-title-input" value="Executive Strategy Deck" title="Click to rename presentation">
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+          <button id="btn-load-sample" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.75rem;">
+            Load Sample Deck
+          </button>
+          <button id="btn-export-json" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.75rem;">
+            Export Deck
+          </button>
+          <label class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.75rem; cursor: pointer;">
+            Import <input type="file" id="file-import-deck" accept=".json" style="display: none;">
+          </label>
+          <button id="btn-start-present" class="btn btn-primary" style="font-size: 0.85rem; padding: 0.4rem 1rem; font-weight: 700; box-shadow: 0 4px 14px var(--accent-glow);">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            Present (F5)
+          </button>
+        </div>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Blank Presentation Creator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Start from scratch with text, images, charts, and shapes.</div>
-            <div><strong>Inputs:</strong> slide, presentation, pitch, deck, blank presentation creator</div>
-            <div><strong>Category:</strong> slide</div>
+      <!-- Studio Layout: Drawer + Center Canvas -->
+      <div class="studio-workspace">
+        
+        <!-- Left: Slide Thumbnails Drawer -->
+        <div class="thumbnails-drawer">
+          <button id="btn-add-slide" class="btn btn-secondary" style="width: 100%; border-style: dashed; padding: 0.65rem;">
+            + Add New Slide
+          </button>
+          <div id="thumbs-list" style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <!-- Thumbnails injected via script -->
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Center Stage: Canvas Viewport & Slide Customizer -->
+        <div class="stage-container">
+          
+          <!-- Viewport Controls Bar -->
+          <div class="stage-controls-bar">
+            <!-- Layout Selector -->
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <label for="sel-layout" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">Layout:</label>
+              <select id="sel-layout" class="form-select" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; width: auto;">
+                <option value="title">Title Cover Slide</option>
+                <option value="bullets">Title &amp; Bullets</option>
+                <option value="columns">Two Columns</option>
+                <option value="stat">Big Stat / Metric</option>
+              </select>
+            </div>
+
+            <!-- Theme Selector -->
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <label for="sel-theme" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">Theme:</label>
+              <select id="sel-theme" class="form-select" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; width: auto;">
+                <option value="theme-obsidian">Obsidian Dark</option>
+                <option value="theme-midnight">Midnight Royal</option>
+                <option value="theme-gold">Luxury Gold</option>
+                <option value="theme-crimson">Crimson Velvet</option>
+                <option value="theme-light">Editorial Clean Light</option>
+              </select>
+            </div>
+
+            <!-- Slide Counter -->
+            <span id="slide-position-label" style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">
+              Slide 1 of 1
+            </span>
+          </div>
+
+          <!-- The Live Interactive Slide Canvas -->
+          <div id="canvas-viewport" class="canvas-viewport theme-obsidian">
+            <div class="slide-content-wrap" id="slide-canvas-content">
+              <!-- Rendered via script -->
+            </div>
+          </div>
+
+          <!-- Slide Element Editing Form -->
+          <div class="editor-inputs-panel">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">Edit Slide Elements</span>
+            
+            <div class="form-group">
+              <label for="inp-slide-title" style="font-size: 0.75rem;">Slide Headline Title</label>
+              <input type="text" id="inp-slide-title" class="form-input" placeholder="e.g. Strategic Growth Vectors">
+            </div>
+
+            <div class="form-group" id="group-subtitle">
+              <label for="inp-slide-subtitle" style="font-size: 0.75rem;">Subtitle / Tagline</label>
+              <input type="text" id="inp-slide-subtitle" class="form-input" placeholder="e.g. Scaling enterprise solutions across Tier-1 markets">
+            </div>
+
+            <!-- Bullets Field (For 'bullets' layout) -->
+            <div class="form-group" id="group-bullets" style="display: none;">
+              <label for="inp-slide-bullets" style="font-size: 0.75rem;">Bullet Points (One item per line)</label>
+              <textarea id="inp-slide-bullets" class="form-textarea" style="min-height: 90px; font-size: 0.85rem;" placeholder="Key takeaway 1&#10;Key takeaway 2&#10;Key takeaway 3"></textarea>
+            </div>
+
+            <!-- Two Columns Field (For 'columns' layout) -->
+            <div id="group-columns" class="grid-2" style="display: none;">
+              <div class="form-group">
+                <label for="inp-col1" style="font-size: 0.75rem;">Column 1 Content</label>
+                <textarea id="inp-col1" class="form-textarea" style="min-height: 80px; font-size: 0.85rem;"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="inp-col2" style="font-size: 0.75rem;">Column 2 Content</label>
+                <textarea id="inp-col2" class="form-textarea" style="min-height: 80px; font-size: 0.85rem;"></textarea>
+              </div>
+            </div>
+
+            <!-- Stat Field (For 'stat' layout) -->
+            <div id="group-stat" class="grid-2" style="display: none;">
+              <div class="form-group">
+                <label for="inp-stat-num" style="font-size: 0.75rem;">Big Stat Metric</label>
+                <input type="text" id="inp-stat-num" class="form-input" placeholder="e.g. $42M+ or 99.99%">
+              </div>
+              <div class="form-group">
+                <label for="inp-stat-label" style="font-size: 0.75rem;">Stat Description</label>
+                <input type="text" id="inp-stat-label" class="form-input" placeholder="e.g. Annual recurring revenue expansion in FY25">
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Fullscreen Presenter Mode Modal -->
+  <div id="present-modal" class="present-modal" tabindex="0">
+    <div class="present-screen-slide">
+      <div id="present-slide-inner" class="present-slide-inner theme-obsidian">
+        <!-- Injected via presenter script -->
+      </div>
+    </div>
+
+    <!-- Floating Presenter HUD -->
+    <div class="present-hud">
+      <button class="hud-btn" id="hud-prev" title="Previous Slide (← / ArrowLeft)">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <span id="hud-counter" style="font-weight: 600; font-size: 0.8rem; min-width: 60px; text-align: center;">1 / 5</span>
+      <button class="hud-btn" id="hud-next" title="Next Slide (→ / ArrowRight)">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+      <div style="width: 1px; height: 16px; background: rgba(255,255,255,0.2);"></div>
+      <button class="hud-btn" id="hud-exit" title="Exit Presentation (Esc)">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Blank Presentation Creator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/blank-presentation-creator/",
-    "description": "Start from scratch with text, images, charts, and shapes.",
+    "description": "Interactive web presentation builder with thumbnail drawer, custom slide layouts, themes, and full-screen keyboard presentation mode.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

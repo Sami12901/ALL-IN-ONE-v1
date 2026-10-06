@@ -3,15 +3,235 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Order Analyzer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Analyze order volumes and trends.">
-  <meta name="keywords" content="order, sales, analytics, free, online, tool, utility">
+  <title>E-Commerce Order Basket Analyzer - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Interactive e-commerce shopping cart and order basket analyzer. Calculate line items, discounts, taxes, shipping, AOV, and generate printable invoice summaries.">
+  <meta name="keywords" content="order analyzer, shopping cart calculator, ecommerce basket, invoice generator, AOV calculator, order tax calculator">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/order-analyzer/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .order-workarea {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+    @media (min-width: 1100px) {
+      .order-workarea {
+        grid-template-columns: 1.3fr 1fr;
+      }
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.85rem;
+    }
+    @media (max-width: 600px) {
+      .form-grid-2, .form-grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kpi-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    .kpi-card:hover {
+      border-color: rgba(var(--accent-rgb), 0.4);
+      transform: translateY(-2px);
+    }
+    .kpi-card.highlight {
+      background: linear-gradient(145deg, rgba(var(--accent-rgb), 0.12), var(--bg-tertiary));
+      border-color: var(--accent);
+    }
+    .kpi-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .kpi-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .kpi-card.highlight .kpi-value {
+      color: var(--accent);
+    }
+    .kpi-subtext {
+      font-size: 0.72rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Cart Items Table & Controls */
+    .items-table-container {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      margin-top: 0.5rem;
+    }
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+      min-width: 640px;
+    }
+    .items-table th {
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      font-weight: 700;
+      padding: 0.75rem 0.85rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .items-table td {
+      padding: 0.65rem 0.85rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .items-table input {
+      padding: 0.4rem 0.6rem;
+      font-size: 0.85rem;
+    }
+    .btn-remove-item {
+      background: transparent;
+      border: none;
+      color: var(--error);
+      cursor: pointer;
+      padding: 0.35rem;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    .btn-remove-item:hover {
+      background: rgba(239, 68, 68, 0.15);
+    }
+
+    /* Printable Invoice Receipt Card */
+    .invoice-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      color: var(--text-primary);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      position: relative;
+    }
+    .invoice-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px dashed var(--border);
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .receipt-brand {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--accent);
+    }
+    .receipt-meta {
+      text-align: right;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+    .receipt-line-items {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-bottom: 1.25rem;
+    }
+    .receipt-line-items th {
+      border-bottom: 1px solid var(--border);
+      padding: 0.5rem 0;
+      text-align: left;
+      color: var(--text-secondary);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+    }
+    .receipt-line-items td {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .receipt-summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.3rem 0;
+      font-size: 0.86rem;
+      color: var(--text-secondary);
+    }
+    .receipt-grand-total {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem 0 0.25rem 0;
+      border-top: 2px dashed var(--border);
+      margin-top: 0.5rem;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printable-invoice-container, #printable-invoice-container * {
+        visibility: visible;
+      }
+      #printable-invoice-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 2rem !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      #printable-invoice-container th, 
+      #printable-invoice-container td,
+      #printable-invoice-container div,
+      #printable-invoice-container span {
+        color: #000000 !important;
+      }
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,27 +246,204 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Order Analyzer</h1>
-        <p class="tool-description">Analyze order volumes and trends.</p>
+        <h1>E-Commerce Order Basket Analyzer</h1>
+        <p class="tool-description">Analyze shopping cart economics, line item discounts, sales taxes, shipping thresholds, Average Order Value (AOV), and export or print complete order invoices.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Order Analyzer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Analyze order volumes and trends.</div>
-            <div><strong>Inputs:</strong> order, sales, analytics</div>
-            <div><strong>Category:</strong> ecommerce</div>
+      <div class="order-workarea">
+        <!-- Cart Items & Settings Panel (Left) -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <h2 class="panel-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+              Shopping Basket Items
+            </h2>
+            <div style="display: flex; gap: 0.4rem;">
+              <button type="button" id="btn-load-sample" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">
+                Load Sample
+              </button>
+              <button type="button" id="btn-clear-cart" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">
+                Clear All
+              </button>
+            </div>
+          </div>
+
+          <!-- Order Metadata -->
+          <div style="margin-top: 0.75rem;">
+            <div class="form-grid-3">
+              <div class="form-group">
+                <label for="order-id-input">Order / Invoice ID</label>
+                <input type="text" id="order-id-input" class="form-input" value="ORD-2026-981">
+              </div>
+              <div class="form-group">
+                <label for="customer-name-input">Customer Name</label>
+                <input type="text" id="customer-name-input" class="form-input" value="Elena Rostova">
+              </div>
+              <div class="form-group">
+                <label for="order-currency-select">Currency</label>
+                <select id="order-currency-select" class="form-select">
+                  <option value="$" selected>USD ($)</option>
+                  <option value="€">EUR (€)</option>
+                  <option value="£">GBP (£)</option>
+                  <option value="C$">CAD ($)</option>
+                  <option value="A$">AUD ($)</option>
+                  <option value="¥">JPY (¥)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Line Items Table -->
+          <div class="items-table-container">
+            <table class="items-table">
+              <thead>
+                <tr>
+                  <th style="width: 28%;">Item Name</th>
+                  <th style="width: 14%;">SKU</th>
+                  <th style="width: 14%;">Price</th>
+                  <th style="width: 12%;">Qty</th>
+                  <th style="width: 12%;">Disc %</th>
+                  <th style="width: 12%;">Tax %</th>
+                  <th style="width: 14%; text-align: right;">Total</th>
+                  <th style="width: 6%; text-align: center;"></th>
+                </tr>
+              </thead>
+              <tbody id="cart-items-tbody">
+                <!-- Dynamically populated rows -->
+              </tbody>
+            </table>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+            <button type="button" id="btn-add-item" class="btn btn-primary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              Add Line Item
+            </button>
+            <div id="cart-item-count-badge" class="badge">4 Items (7 Units)</div>
+          </div>
+
+          <!-- Shipping and Coupon Configuration -->
+          <div style="margin-top: 1rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem; text-transform: uppercase;">
+              Shipping & Cart-Level Discounts
+            </div>
+            <div class="form-grid-3">
+              <div class="form-group">
+                <label for="shipping-fee-input">Flat Shipping Fee</label>
+                <input type="number" id="shipping-fee-input" class="form-input" min="0" step="0.5" value="15.00">
+              </div>
+              <div class="form-group">
+                <label for="free-shipping-thresh">Free Shipping Threshold</label>
+                <input type="number" id="free-shipping-thresh" class="form-input" min="0" step="5" value="150.00" placeholder="0 = None">
+              </div>
+              <div class="form-group">
+                <label for="cart-coupon-discount">Order Coupon (Flat $)</label>
+                <input type="number" id="cart-coupon-discount" class="form-input" min="0" step="1" value="0.00">
+              </div>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Order Analytics & Invoice Summary (Right) -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <h2 class="panel-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              Basket Economics & Invoice
+            </h2>
+            <div style="display: flex; gap: 0.4rem;">
+              <button type="button" id="btn-export-json" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.35rem 0.65rem;">
+                Export JSON
+              </button>
+              <button type="button" id="btn-export-csv" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.35rem 0.65rem;">
+                Export CSV
+              </button>
+              <button type="button" id="btn-print-invoice" class="btn btn-primary" style="font-size: 0.78rem; padding: 0.35rem 0.65rem;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                Print Invoice
+              </button>
+            </div>
+          </div>
+
+          <!-- KPI Cards -->
+          <div class="kpi-cards-grid" style="margin-top: 1rem;">
+            <div class="kpi-card highlight">
+              <span class="kpi-title">Grand Total</span>
+              <span id="kpi-grand-total" class="kpi-value">$274.50</span>
+              <span class="kpi-subtext">Tax & Shipping inclusive</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-title">Average Order (AOV)</span>
+              <span id="kpi-aov" class="kpi-value">$274.50</span>
+              <span id="kpi-aov-sub" class="kpi-subtext">$39.21 per item unit</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-title">Total Tax Collected</span>
+              <span id="kpi-total-tax" class="kpi-value" style="color: #f59e0b;">$20.50</span>
+              <span class="kpi-subtext">Effective tax rate 8.1%</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-title">Total Discounts</span>
+              <span id="kpi-total-discount" class="kpi-value" style="color: var(--success);">$30.00</span>
+              <span class="kpi-subtext">Customer savings</span>
+            </div>
+          </div>
+
+          <!-- Printable Invoice / Receipt Preview -->
+          <div class="invoice-card" id="printable-invoice-container">
+            <div class="invoice-card-header">
+              <div>
+                <div class="receipt-brand">APEX E-COMMERCE</div>
+                <div style="font-size: 0.78rem; color: var(--text-tertiary); margin-top: 0.15rem;">Order & Packing Slip Receipt</div>
+              </div>
+              <div class="receipt-meta">
+                <div style="font-weight: 700; color: var(--text-primary);" id="receipt-order-id">ORD-2026-981</div>
+                <div id="receipt-order-date">Oct 6, 2026</div>
+                <div id="receipt-customer-name">Elena Rostova</div>
+              </div>
+            </div>
+
+            <!-- Receipt Line Items Summary -->
+            <table class="receipt-line-items">
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th style="text-align: center;">Qty</th>
+                  <th style="text-align: right;">Unit</th>
+                  <th style="text-align: right;">Total</th>
+                </tr>
+              </thead>
+              <tbody id="receipt-items-tbody">
+                <!-- Dynamically generated receipt lines -->
+              </tbody>
+            </table>
+
+            <!-- Financial Summary Lines -->
+            <div style="border-top: 1px solid var(--border); padding-top: 0.75rem;">
+              <div class="receipt-summary-row">
+                <span>Subtotal:</span>
+                <span id="receipt-subtotal">$260.00</span>
+              </div>
+              <div class="receipt-summary-row" style="color: var(--success);">
+                <span>Discounts Applied:</span>
+                <span id="receipt-discounts">-$30.00</span>
+              </div>
+              <div class="receipt-summary-row">
+                <span>Estimated Sales Tax:</span>
+                <span id="receipt-tax">+$20.50</span>
+              </div>
+              <div class="receipt-summary-row">
+                <span>Shipping & Delivery:</span>
+                <span id="receipt-shipping">+$15.00</span>
+              </div>
+              <div class="receipt-grand-total">
+                <span>Grand Total:</span>
+                <span id="receipt-grand-total" style="color: var(--accent);">$274.50</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     
     </div>
@@ -62,8 +459,8 @@
     "@type": "WebApplication",
     "name": "Order Analyzer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/order-analyzer/",
-    "description": "Analyze order volumes and trends.",
-    "applicationCategory": "UtilityPage",
+    "description": "Analyze order volumes, basket lines, discounts, taxes, shipping, AOV, and generate printable invoice summaries.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ATS Resume Checker - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Check your ATS score and keyword analysis instantly.">
-  <meta name="keywords" content="cv, resume, job, career, ats resume checker, free, online, tool, utility">
+  <title>ATS Resume Checker & Auditor - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Audit your resume against any job description. Check ATS compatibility score, matched and missing keywords, formatting readability, and section headings.">
+  <meta name="keywords" content="cv, resume, job, career, ats resume checker, applicant tracking system, keyword matcher, free, online, tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ats-resume-checker/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,198 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+
+  <style>
+    /* ATS Resume Checker Custom Styling */
+    .ats-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .ats-input-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .ats-input-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .input-header-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .text-counter {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Score Gauge & Highlights Grid */
+    .score-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .score-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .score-card::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent);
+      opacity: 0.8;
+    }
+
+    .score-badge-large {
+      font-size: 3rem;
+      font-weight: 800;
+      font-family: var(--font-display), sans-serif;
+      line-height: 1;
+      display: flex;
+      align-items: baseline;
+      gap: 0.25rem;
+    }
+
+    .score-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      width: fit-content;
+    }
+    .status-pass {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .status-warn {
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .status-fail {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    /* Keyword Badges Container */
+    .chips-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .chip-match {
+      background: rgba(16, 185, 129, 0.12);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: 9999px;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .chip-missing {
+      background: rgba(239, 68, 68, 0.12);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      border-radius: 9999px;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* Audit checklist */
+    .audit-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      padding: 0;
+    }
+
+    .audit-list-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      padding: 0.85rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+    }
+
+    .audit-icon {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      margin-top: 0.1rem;
+    }
+
+    .tips-box {
+      border-left: 3px solid var(--accent);
+      background: var(--accent-glow);
+      padding: 1rem 1.25rem;
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .filter-tab {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .filter-tab.active {
+      background: var(--bg-tertiary);
+      border-color: var(--border);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -26,43 +218,185 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>ATS Resume Checker</h1>
-        <p class="tool-description">Check your ATS score and keyword analysis instantly.</p>
-      </div>
-
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>ATS Resume Checker</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Check your ATS score and keyword analysis instantly.</div>
-            <div><strong>Inputs:</strong> cv, resume, job, career, ats resume checker</div>
-            <div><strong>Category:</strong> cv</div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">ATS Resume Checker &amp; Keyword Auditor</h1>
+            <p class="tool-description">Simulate enterprise ATS screening algorithms (Workday, Taleo, Greenhouse, Lever). Audit keyword density, section taxonomy, readability, and compatibility.</p>
+          </div>
+          <div class="action-bar" style="margin-top: 0;">
+            <button id="btn-load-sample" class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              Load Sample Data
+            </button>
+            <button id="btn-clear" class="btn btn-secondary" style="color: var(--error);">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              Clear
+            </button>
+            <button id="btn-export-report" class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export Report
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <div class="ats-workspace">
+        
+        <!-- Dual Inputs Grid -->
+        <div class="ats-input-grid">
+          <!-- Left: Resume Text -->
+          <div class="tool-panel glass-panel">
+            <div class="input-header-actions">
+              <h2 class="panel-title" style="margin-bottom: 0; border: none; padding: 0;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                Resume Content
+              </h2>
+              <span class="text-counter" id="resume-counter">0 words | 0 chars</span>
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <textarea id="inp-resume" class="form-textarea" style="min-height: 280px; font-family: var(--font-sans);" placeholder="Paste your complete resume text here (including contact info, experience, education, skills)..."></textarea>
+            </div>
+          </div>
+
+          <!-- Right: Job Description Text -->
+          <div class="tool-panel glass-panel">
+            <div class="input-header-actions">
+              <h2 class="panel-title" style="margin-bottom: 0; border: none; padding: 0;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                Target Job Description
+              </h2>
+              <span class="text-counter" id="job-counter">0 words | 0 chars</span>
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <textarea id="inp-job" class="form-textarea" style="min-height: 280px; font-family: var(--font-sans);" placeholder="Paste the target job description, responsibilities, and required qualifications here..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scan Action Button -->
+        <div style="text-align: center;">
+          <button id="btn-run-audit" class="btn btn-primary" style="padding: 0.85rem 2.5rem; font-size: 1.05rem; font-weight: 700; box-shadow: 0 4px 20px var(--accent-glow);">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            Analyze ATS Compatibility
+          </button>
+        </div>
+
+        <!-- Audit Results Container (Populated dynamically) -->
+        <div id="results-area" style="display: none; flex-direction: column; gap: 2rem;">
+          
+          <!-- Score Summary Strip -->
+          <div class="score-summary-grid">
+            <!-- Overall ATS Score -->
+            <div class="score-card">
+              <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">ATS Compatibility Score</span>
+              <div class="score-badge-large" id="score-ats">
+                <span id="score-ats-num">0</span>
+                <span style="font-size: 1.25rem; color: var(--text-tertiary); font-weight: 500;">/100</span>
+              </div>
+              <div id="score-ats-pill" class="score-status-pill status-warn">Evaluating...</div>
+            </div>
+
+            <!-- Keyword Match Rate -->
+            <div class="score-card">
+              <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">Keyword Match Rate</span>
+              <div class="score-badge-large" id="score-keywords">
+                <span id="score-keywords-num">0%</span>
+              </div>
+              <span style="font-size: 0.8rem; color: var(--text-secondary);" id="keywords-ratio-text">0 of 0 target terms matched</span>
+            </div>
+
+            <!-- Section Headings Audit -->
+            <div class="score-card">
+              <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">Section Headings Audit</span>
+              <div class="score-badge-large" id="score-sections">
+                <span id="score-sections-num">0/5</span>
+              </div>
+              <span style="font-size: 0.8rem; color: var(--text-secondary);" id="sections-detail-text">Standard ATS sections found</span>
+            </div>
+
+            <!-- Formatting & Readability -->
+            <div class="score-card">
+              <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">Readability &amp; Structure</span>
+              <div class="score-badge-large" id="score-readability">
+                <span id="score-readability-num">0</span>
+                <span style="font-size: 1.25rem; color: var(--text-tertiary); font-weight: 500;">/100</span>
+              </div>
+              <span style="font-size: 0.8rem; color: var(--text-secondary);" id="readability-detail-text">Word count &amp; action verbs</span>
+            </div>
+          </div>
+
+          <!-- Deep-Dive Breakdown Tabs -->
+          <div class="tool-panel glass-panel">
+            <h3 class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+              Keywords &amp; Skills Comparison
+            </h3>
+
+            <!-- Chips Filter Tabs -->
+            <div class="filter-tabs">
+              <button class="filter-tab active" data-filter="all">All Keywords (<span id="cnt-all">0</span>)</button>
+              <button class="filter-tab" data-filter="matched">Matched Keywords (<span id="cnt-matched">0</span>)</button>
+              <button class="filter-tab" data-filter="missing">Missing Keywords (<span id="cnt-missing">0</span>)</button>
+            </div>
+
+            <div id="keywords-chips-container" class="chips-container">
+              <!-- Rendered via script -->
+            </div>
+          </div>
+
+          <!-- Section Headings & Readability Audit Panels -->
+          <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
+            <!-- Section Headings Inspection -->
+            <div class="tool-panel glass-panel">
+              <h3 class="panel-title">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                ATS Section Taxonomy Audit
+              </h3>
+              <ul class="audit-list" id="audit-sections-list">
+                <!-- Injected via script -->
+              </ul>
+            </div>
+
+            <!-- Formatting & Action Verbs -->
+            <div class="tool-panel glass-panel">
+              <h3 class="panel-title">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                Formatting, Length &amp; Action Verbs
+              </h3>
+              <ul class="audit-list" id="audit-formatting-list">
+                <!-- Injected via script -->
+              </ul>
+            </div>
+          </div>
+
+          <!-- Actionable Optimization Tips -->
+          <div class="tool-panel glass-panel">
+            <h3 class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              Actionable ATS Optimization Plan
+            </h3>
+            <div id="optimization-tips" style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <!-- Injected via script -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
     </div>
   </main>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "ATS Resume Checker",
+    "name": "ATS Resume Checker & Auditor",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ats-resume-checker/",
-    "description": "Check your ATS score and keyword analysis instantly.",
+    "description": "Applicant Tracking System resume auditor featuring NLP keyword matching, section headings audit, formatting analysis, and ATS readiness score.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

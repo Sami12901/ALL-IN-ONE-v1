@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quadratic Equation Solver - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Solve quadratic formulas for real or complex roots.">
-  <meta name="keywords" content="quadratic, equation, solve, roots, math, free, online, tool, utility">
+  <meta name="description" content="Solve quadratic equations ax² + bx + c = 0 with real and complex roots, discriminant, vertex, step-by-step derivations, and interactive parabola plotting.">
+  <meta name="keywords" content="quadratic solver, quadratic equation, roots, discriminant, vertex, parabola graph, math tool, complex roots, free online tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/quadratic-solver/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,266 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+
+  <style>
+    .quad-container {
+      max-width: 1150px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    .equation-banner {
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.15) 0%, rgba(137, 170, 204, 0.05) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .equation-display {
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.03em;
+      word-break: break-all;
+    }
+
+    .coeff-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .coeff-input-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .coeff-input-box label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .coeff-input-box input {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 1.25rem;
+      font-weight: 700;
+      font-family: monospace;
+      padding: 0.5rem 0.75rem;
+      text-align: center;
+      width: 100%;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .coeff-input-box input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .preset-chip {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.85rem;
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .preset-chip:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .stat-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      position: relative;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+      font-weight: 700;
+    }
+
+    .stat-val {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      word-break: break-all;
+    }
+
+    .stat-val.primary {
+      color: var(--accent);
+    }
+
+    .stat-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .solver-layout-2col {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 950px) {
+      .solver-layout-2col {
+        grid-template-columns: 1.1fr 1fr;
+      }
+    }
+
+    .graph-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .canvas-wrap {
+      position: relative;
+      width: 100%;
+      height: 380px;
+      background: #090d14;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    #parabola-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: crosshair;
+    }
+
+    .graph-tooltip {
+      position: absolute;
+      pointer-events: none;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-sm);
+      padding: 0.35rem 0.6rem;
+      font-family: monospace;
+      font-size: 0.775rem;
+      color: #fff;
+      display: none;
+      z-index: 10;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .graph-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .graph-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      font-size: 0.775rem;
+      color: var(--text-secondary);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .legend-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+    }
+
+    .step-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .step-math {
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 0.95rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.45rem 0.75rem;
+      color: var(--text-primary);
+      overflow-x: auto;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -26,29 +286,148 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Quadratic Equation Solver</h1>
-        <p class="tool-description">Solve quadratic formulas for real or complex roots.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Quadratic Equation Solver</h1>
+        <p class="tool-description">Solve second-degree polynomial equations ax² + bx + c = 0 with real or complex roots, discriminant analysis, vertex coordinates, line of symmetry, detailed step derivation, and interactive parabola plotting.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Quadratic Equation Solver</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Solve quadratic formulas for real or complex roots.</div>
-            <div><strong>Inputs:</strong> quadratic, equation, solve, roots, math</div>
-            <div><strong>Category:</strong> math</div>
+      <div class="quad-container">
+        <!-- Live Formatted Equation Card -->
+        <div class="equation-banner glass-panel">
+          <span style="font-size: 0.825rem; font-weight: 700; letter-spacing: 0.05em; color: var(--text-tertiary); text-transform: uppercase;">Standard Form Equation</span>
+          <div class="equation-display" id="equation-banner-text">1x² - 5x + 6 = 0</div>
+          <div id="equation-subtext" style="font-size: 0.85rem; color: var(--text-secondary);">Parabola opens upwards (a &gt; 0)</div>
+        </div>
+
+        <!-- Input Panel -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            Set Coefficients
+          </div>
+
+          <div class="coeff-grid">
+            <div class="coeff-input-box">
+              <label for="coeff-a"><span>Coefficient a</span> <span style="color:var(--text-tertiary);">(x²)</span></label>
+              <input type="number" id="coeff-a" value="1" step="any">
+            </div>
+            <div class="coeff-input-box">
+              <label for="coeff-b"><span>Coefficient b</span> <span style="color:var(--text-tertiary);">(x)</span></label>
+              <input type="number" id="coeff-b" value="-5" step="any">
+            </div>
+            <div class="coeff-input-box">
+              <label for="coeff-c"><span>Constant c</span> <span style="color:var(--text-tertiary);">(intercept)</span></label>
+              <input type="number" id="coeff-c" value="6" step="any">
+            </div>
+          </div>
+
+          <div id="solver-error" class="alert-error" style="display: none; margin-top: 0.75rem;"></div>
+
+          <!-- Presets -->
+          <div>
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-tertiary);">Quick Equation Presets:</span>
+            <div class="preset-chips">
+              <button type="button" class="preset-chip" data-a="1" data-b="-5" data-c="6">x² - 5x + 6 = 0 (Real Roots)</button>
+              <button type="button" class="preset-chip" data-a="1" data-b="-4" data-c="4">x² - 4x + 4 = 0 (Equal Roots)</button>
+              <button type="button" class="preset-chip" data-a="1" data-b="2" data-c="5">x² + 2x + 5 = 0 (Complex Roots)</button>
+              <button type="button" class="preset-chip" data-a="2" data-b="5" data-c="-3">2x² + 5x - 3 = 0 (Fractional)</button>
+              <button type="button" class="preset-chip" data-a="-1" data-b="2" data-c="3">-x² + 2x + 3 = 0 (Inverted)</button>
+              <button type="button" class="preset-chip" data-a="1" data-b="-2" data-c="-1">x² - 2x - 1 = 0 (Irrational)</button>
+              <button type="button" class="preset-chip" data-a="3" data-b="0" data-c="-12">3x² - 12 = 0 (b = 0)</button>
+            </div>
+          </div>
+
+          <div class="action-bar">
+            <button type="button" id="solve-btn" class="btn btn-primary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              Solve Equation
+            </button>
+            <button type="button" id="reset-btn" class="btn btn-secondary">Reset</button>
+            <button type="button" id="copy-roots-btn" class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Solution
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Key Metrics Cards -->
+        <div class="summary-grid">
+          <div class="stat-card" style="border-color: rgba(78, 133, 191, 0.4);">
+            <span class="stat-label">First Root (x₁)</span>
+            <div class="stat-val primary" id="root-1-val">3</div>
+            <div class="stat-desc" id="root-1-sub">Real Root</div>
+          </div>
+
+          <div class="stat-card" style="border-color: rgba(78, 133, 191, 0.4);">
+            <span class="stat-label">Second Root (x₂)</span>
+            <div class="stat-val primary" id="root-2-val">2</div>
+            <div class="stat-desc" id="root-2-sub">Real Root</div>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-label">Discriminant (Δ = b² - 4ac)</span>
+            <div class="stat-val" id="disc-val">1</div>
+            <div class="stat-desc" id="disc-nature">Δ &gt; 0 (Two distinct real roots)</div>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-label">Vertex Coordinates (h, k)</span>
+            <div class="stat-val" id="vertex-val">(2.5, -0.25)</div>
+            <div class="stat-desc" id="vertex-type">Absolute Minimum</div>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-label">Axis of Symmetry</span>
+            <div class="stat-val" id="axis-val">x = 2.5</div>
+            <div class="stat-desc">Vertical line through vertex</div>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-label">Y-Intercept</span>
+            <div class="stat-val" id="y-int-val">(0, 6)</div>
+            <div class="stat-desc">Point where curve cuts y-axis</div>
+          </div>
+        </div>
+
+        <!-- Split Grid: Interactive Graph + Derivation Steps -->
+        <div class="solver-layout-2col">
+          <!-- Interactive Parabola Canvas -->
+          <div class="graph-card glass-panel">
+            <div class="panel-title" style="margin-bottom: 0;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+              Interactive Parabola Graph
+            </div>
+
+            <div class="graph-legend">
+              <div class="legend-item"><span class="legend-dot" style="background: #4e85bf;"></span> Parabola Curve</div>
+              <div class="legend-item"><span class="legend-dot" style="background: #10b981;"></span> Roots (X-Intercepts)</div>
+              <div class="legend-item"><span class="legend-dot" style="background: #f59e0b;"></span> Vertex</div>
+              <div class="legend-item"><span class="legend-dot" style="background: #ef4444;"></span> Y-Intercept</div>
+            </div>
+
+            <div class="canvas-wrap" id="canvas-container">
+              <canvas id="parabola-canvas"></canvas>
+              <div class="graph-tooltip" id="graph-tooltip"></div>
+            </div>
+
+            <div class="graph-controls">
+              <span style="font-size: 0.775rem; color: var(--text-tertiary);">Hover cursor over graph to inspect (x, y) coordinates.</span>
+              <button type="button" id="reset-zoom-btn" class="btn btn-secondary" style="padding: 0.3rem 0.75rem; font-size: 0.775rem;">Reset View</button>
+            </div>
+          </div>
+
+          <!-- Step-by-Step Derivation Card -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              Step-by-Step Derivation
+            </div>
+
+            <div id="derivation-steps">
+              <!-- Rendered Derivation Steps -->
+            </div>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
 
@@ -62,7 +441,7 @@
     "@type": "WebApplication",
     "name": "Quadratic Equation Solver",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/quadratic-solver/",
-    "description": "Solve quadratic formulas for real or complex roots.",
+    "description": "Solve quadratic formulas for real or complex roots with interactive graphs and steps.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

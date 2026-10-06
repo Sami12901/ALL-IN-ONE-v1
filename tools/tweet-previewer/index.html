@@ -3,14 +3,320 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tweet Layout Previewer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Visual sandbox mock of a Twitter platform post.">
-  <meta name="keywords" content="tweet, twitter, preview, mock, social, free, online, tool, utility">
+  <title>Tweet & X Post Mockup Previewer - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Simulate, preview, and generate high-resolution Twitter / X post mockups with real-time 280 character circular ring gauge and PNG export.">
+  <meta name="keywords" content="tweet, twitter, x, preview, mock, social post, character counter, canvas, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/tweet-previewer/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <style>
+    /* Tool-specific styles for Tweet Previewer */
+    .tweet-workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .tweet-workspace {
+        grid-template-columns: 1.05fr 0.95fr;
+      }
+    }
+
+    /* Controls Grid */
+    .controls-grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    /* Character Counter Ring Gauge */
+    .char-counter-container {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-top: 0.4rem;
+      justify-content: flex-end;
+    }
+
+    .gauge-wrapper {
+      position: relative;
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+    }
+
+    .gauge-svg {
+      transform: rotate(-90deg);
+      width: 32px;
+      height: 32px;
+    }
+
+    .gauge-bg {
+      fill: none;
+      stroke: var(--bg-tertiary);
+      stroke-width: 3;
+    }
+
+    .gauge-fill {
+      fill: none;
+      stroke: #1d9bf0;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-dasharray: 88;
+      stroke-dashoffset: 88;
+      transition: stroke-dashoffset 0.15s ease, stroke 0.2s ease;
+    }
+
+    .gauge-text {
+      position: absolute;
+      font-size: 0.65rem;
+      font-family: monospace;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    /* Verified Badges Selector */
+    .badge-pills {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .badge-pill-btn {
+      flex: 1;
+      padding: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+    .badge-pill-btn.active {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+    }
+
+    /* Theme Switcher for Preview */
+    .card-theme-bar {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .theme-chip {
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .theme-chip.active {
+      background: var(--text-primary);
+      color: var(--bg-primary);
+      border-color: transparent;
+    }
+
+    /* --- Twitter Card Simulation Stage --- */
+    .preview-stage-container {
+      background: #08090a;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow-x: auto;
+    }
+
+    .x-card {
+      width: 100%;
+      max-width: 540px;
+      border-radius: 16px;
+      padding: 1.25rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      transition: background-color 0.25s ease, color 0.25s ease;
+      position: relative;
+    }
+
+    /* Themes */
+    .x-card.theme-dark {
+      background-color: #000000;
+      color: #e7e9ea;
+      border-color: #2f3336;
+    }
+    .x-card.theme-dim {
+      background-color: #15202b;
+      color: #f7f9f9;
+      border-color: #38444d;
+    }
+    .x-card.theme-light {
+      background-color: #ffffff;
+      color: #0f1419;
+      border-color: #cfd9de;
+    }
+
+    /* Card Header */
+    .x-card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    .x-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #333639;
+    }
+    .x-user-meta {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-width: 0;
+      line-height: 1.25;
+    }
+    .x-name-row {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .x-display-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .x-handle-row {
+      font-size: 0.85rem;
+      color: #71767b;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .x-card.theme-light .x-handle-row {
+      color: #536471;
+    }
+    .x-dot {
+      color: inherit;
+    }
+    .x-more-btn {
+      color: #71767b;
+      margin-left: auto;
+      cursor: pointer;
+    }
+
+    /* Card Body */
+    .x-tweet-body {
+      margin-top: 0.75rem;
+      font-size: 1rem;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .x-tweet-body a, .x-highlight {
+      color: #1d9bf0;
+      text-decoration: none;
+    }
+
+    /* Attached Media */
+    .x-media-container {
+      margin-top: 0.85rem;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: none;
+      background: #111;
+      max-height: 380px;
+    }
+    .x-card.theme-light .x-media-container {
+      border-color: #cfd9de;
+    }
+    .x-media-img {
+      width: 100%;
+      height: 100%;
+      max-height: 380px;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Timestamp & Views */
+    .x-meta-footer {
+      margin-top: 0.85rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #2f3336;
+      font-size: 0.85rem;
+      color: #71767b;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .x-card.theme-light .x-meta-footer {
+      border-color: #eff3f4;
+      color: #536471;
+    }
+
+    /* Action Metrics Bar */
+    .x-actions-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 0.75rem;
+      color: #71767b;
+    }
+    .x-card.theme-light .x-actions-bar {
+      color: #536471;
+    }
+    .x-action-item {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.8rem;
+      cursor: default;
+    }
+
+    /* Toast Notification */
+    .app-toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.9rem;
+      z-index: 1000;
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: all 0.25s ease;
+    }
+    .app-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+  </style>
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
@@ -26,31 +332,272 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Tweet Layout Previewer</h1>
-        <p class="tool-description">Visual sandbox mock of a Twitter platform post.</p>
+        <h1>Tweet & X Post Mockup Previewer</h1>
+        <p class="tool-description">Real-time Twitter/X post designer with live character gauge (280 max), dark/dim/light themes, and crystal-clear PNG card export.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Tweet Layout Previewer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Visual sandbox mock of a Twitter platform post.</div>
-            <div><strong>Inputs:</strong> tweet, twitter, preview, mock, social</div>
-            <div><strong>Category:</strong> social</div>
+      <div class="tweet-workspace">
+        
+        <!-- Left Panel: Content & Customization -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+            Post Editor & Attributes
+          </h2>
+
+          <!-- Author Info Row -->
+          <div class="controls-grid-2col">
+            <div class="form-group">
+              <label for="inp-name">Display Name</label>
+              <input type="text" id="inp-name" class="form-input" value="Alex Rivers" placeholder="Name">
+            </div>
+            <div class="form-group">
+              <label for="inp-handle">@Handle</label>
+              <input type="text" id="inp-handle" class="form-input" value="alexrivers" placeholder="handle without @">
+            </div>
           </div>
+
+          <!-- Avatar & Verified Badge -->
+          <div class="controls-grid-2col">
+            <div class="form-group">
+              <label>Profile Avatar</label>
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <label class="btn btn-secondary" style="padding: 0.5rem 0.8rem; font-size: 0.8rem; cursor: pointer;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                  Upload
+                  <input type="file" id="inp-avatar-file" accept="image/*" style="display: none;">
+                </label>
+                <button type="button" id="btn-reset-avatar" class="btn btn-secondary" style="padding: 0.5rem 0.7rem; font-size: 0.8rem;">Reset</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Verified Badge</label>
+              <div class="badge-pills" id="badge-selector">
+                <button type="button" class="badge-pill-btn active" data-badge="blue">Blue</button>
+                <button type="button" class="badge-pill-btn" data-badge="gold">Gold</button>
+                <button type="button" class="badge-pill-btn" data-badge="none">None</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tweet Content & Character Counter -->
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label for="inp-text">Tweet Content</label>
+              <div class="char-counter-container">
+                <div class="gauge-wrapper">
+                  <svg class="gauge-svg" viewBox="0 0 32 32">
+                    <circle class="gauge-bg" cx="16" cy="16" r="14"></circle>
+                    <circle class="gauge-fill" id="char-gauge-circle" cx="16" cy="16" r="14"></circle>
+                  </svg>
+                  <span class="gauge-text" id="gauge-remaining-text"></span>
+                </div>
+                <span id="char-count-label" style="font-size: 0.8rem; font-family: monospace; color: var(--text-tertiary);">0 / 280</span>
+              </div>
+            </div>
+            <textarea id="inp-text" class="form-textarea" style="min-height: 120px;" placeholder="What is happening?! Use #hashtags and @mentions...">Building high-performance client-side web tools with zero server overhead. Web Crypto, Canvas rendering, and modern CSS glassmorphism make browser-native utility suites incredibly powerful! 🚀
+
+#WebDev #TypeScript #ZeroKnowledge</textarea>
+          </div>
+
+          <!-- Media Attachment Upload -->
+          <div class="form-group">
+            <label>Tweet Media Attachment (Optional)</label>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <label class="btn btn-secondary" style="padding: 0.5rem 0.8rem; font-size: 0.8rem; cursor: pointer;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                Attach Image
+                <input type="file" id="inp-media-file" accept="image/*" style="display: none;">
+              </label>
+              <button type="button" id="btn-remove-media" class="btn btn-secondary" style="padding: 0.5rem 0.7rem; font-size: 0.8rem; display: none;">Remove Media</button>
+            </div>
+          </div>
+
+          <!-- Timestamp & Metrics -->
+          <div class="controls-grid-2col">
+            <div class="form-group">
+              <label for="inp-timestamp">Timestamp</label>
+              <input type="text" id="inp-timestamp" class="form-input" value="10:42 AM · Oct 6, 2026">
+            </div>
+            <div class="form-group">
+              <label for="inp-views">Views</label>
+              <input type="text" id="inp-views" class="form-input" value="142K">
+            </div>
+          </div>
+
+          <div class="controls-grid-2col">
+            <div class="form-group">
+              <label for="inp-replies">Replies</label>
+              <input type="text" id="inp-replies" class="form-input" value="128">
+            </div>
+            <div class="form-group">
+              <label for="inp-retweets">Retweets</label>
+              <input type="text" id="inp-retweets" class="form-input" value="1.4K">
+            </div>
+          </div>
+
+          <div class="controls-grid-2col">
+            <div class="form-group">
+              <label for="inp-likes">Likes</label>
+              <input type="text" id="inp-likes" class="form-input" value="8.6K">
+            </div>
+            <div class="form-group">
+              <label for="inp-bookmarks">Bookmarks</label>
+              <input type="text" id="inp-bookmarks" class="form-input" value="942">
+            </div>
+          </div>
+
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Panel: Live Card Mockup Stage & Export -->
+        <div class="tool-panel glass-panel" style="display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem;">
+            <h2 class="panel-title" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+              Live Twitter / X Card Stage
+            </h2>
+            
+            <!-- Card Theme Selector -->
+            <div class="card-theme-bar" style="margin-bottom: 0;">
+              <button type="button" class="theme-chip active" data-theme="theme-dark">Dark</button>
+              <button type="button" class="theme-chip" data-theme="theme-dim">Dim</button>
+              <button type="button" class="theme-chip" data-theme="theme-light">Light</button>
+            </div>
+          </div>
+
+          <!-- Preview Stage -->
+          <div class="preview-stage-container">
+            <div class="x-card theme-dark" id="x-card-preview">
+              <!-- Header -->
+              <div class="x-card-header">
+                <img id="card-avatar" class="x-avatar" src="" alt="Avatar">
+                <div class="x-user-meta">
+                  <div class="x-name-row">
+                    <span class="x-display-name" id="card-name">Alex Rivers</span>
+                    <span id="card-badge">
+                      <!-- Badge SVG injected here -->
+                    </span>
+                  </div>
+                  <div class="x-handle-row">
+                    <span id="card-handle">@alexrivers</span>
+                  </div>
+                </div>
+                <div class="x-more-btn">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <circle cx="5" cy="12" r="2"></circle>
+                    <circle cx="12" cy="12" r="2"></circle>
+                    <circle cx="19" cy="12" r="2"></circle>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Body Text -->
+              <div class="x-tweet-body" id="card-text"></div>
+
+              <!-- Optional Attached Media -->
+              <div class="x-media-container" id="card-media-box">
+                <img id="card-media" class="x-media-img" src="" alt="Tweet Attachment">
+              </div>
+
+              <!-- Metadata Timestamp & Views -->
+              <div class="x-meta-footer">
+                <span id="card-timestamp">10:42 AM · Oct 6, 2026</span>
+                <span class="x-dot">·</span>
+                <span style="font-weight: 700; color: inherit;" id="card-views-count">142K</span>
+                <span>Views</span>
+              </div>
+
+              <!-- Actions & Metrics Bar -->
+              <div class="x-actions-bar">
+                <!-- Reply -->
+                <div class="x-action-item">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                  </svg>
+                  <span id="card-replies-count">128</span>
+                </div>
+
+                <!-- Retweet -->
+                <div class="x-action-item">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="17 1 21 5 17 9"></polyline>
+                    <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                    <polyline points="7 23 3 19 7 15"></polyline>
+                    <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                  </svg>
+                  <span id="card-retweets-count">1.4K</span>
+                </div>
+
+                <!-- Like -->
+                <div class="x-action-item">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                  </svg>
+                  <span id="card-likes-count">8.6K</span>
+                </div>
+
+                <!-- Bookmark -->
+                <div class="x-action-item">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                  <span id="card-bookmarks-count">942</span>
+                </div>
+
+                <!-- Share -->
+                <div class="x-action-item">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                    <polyline points="16 6 12 2 8 6"></polyline>
+                    <line x1="12" y1="2" x2="12" y2="15"></line>
+                  </svg>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Export Actions -->
+          <div class="action-bar" style="margin-top: 1.25rem;">
+            <button type="button" id="btn-download-png" class="btn btn-primary" style="flex: 1;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Download Preview PNG
+            </button>
+            <button type="button" id="btn-copy-text" class="btn btn-secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Text
+            </button>
+          </div>
+
+          <!-- Hidden Export Canvas -->
+          <canvas id="export-canvas" style="display: none;"></canvas>
+
+        </div>
+
       </div>
-    
     </div>
   </main>
+
+  <!-- Global Toast Notification -->
+  <div id="app-toast" class="app-toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span id="toast-message">Image exported successfully!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,7 +609,7 @@
     "@type": "WebApplication",
     "name": "Tweet Layout Previewer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/tweet-previewer/",
-    "description": "Visual sandbox mock of a Twitter platform post.",
+    "description": "Visual sandbox mockup generator for Twitter and X posts with live preview and PNG download.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

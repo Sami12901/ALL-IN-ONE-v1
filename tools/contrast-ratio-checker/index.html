@@ -3,15 +3,303 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contrast Ratio Checker - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Check WCAG accessibility contrast scores.">
-  <meta name="keywords" content="contrast, wcag, accessibility, color, hex, free, online, tool, utility">
+  <title>WCAG Contrast Ratio Checker - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Audit WCAG 2.1 AA and AAA color contrast ratios. Auto-suggest nearest passing colors and test live typography and UI components.">
+  <meta name="keywords" content="contrast ratio checker, wcag 2.1, color contrast, accessibility audit, a11y, aa aaa compliance, hex color picker">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/contrast-ratio-checker/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .contrast-workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .contrast-workspace {
+        grid-template-columns: 460px 1fr;
+      }
+    }
+
+    .color-config-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .color-input-row {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+    .color-swatch-picker {
+      width: 52px;
+      height: 52px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      padding: 0;
+      background: transparent;
+      flex-shrink: 0;
+    }
+    .color-swatch-picker::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+    .color-swatch-picker::-webkit-color-swatch {
+      border: none;
+      border-radius: var(--radius-sm);
+    }
+    .color-inputs-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .color-meta-row {
+      display: flex;
+      gap: 0.75rem;
+      font-size: 0.775rem;
+      font-family: monospace;
+      color: var(--text-tertiary);
+    }
+
+    .swap-btn-container {
+      display: flex;
+      justify-content: center;
+      margin: -0.5rem 0;
+      position: relative;
+      z-index: 2;
+    }
+    .swap-colors-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+    .swap-colors-btn:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      transform: scale(1.05);
+    }
+
+    /* Score Hero Panel */
+    .ratio-hero-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .ratio-big-value {
+      font-size: clamp(3rem, 6vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.4rem;
+      font-family: var(--font-sans);
+    }
+    .ratio-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 1.15rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* WCAG Matrix Grid */
+    .wcag-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.85rem;
+    }
+    @media (max-width: 576px) {
+      .wcag-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .wcag-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+    .wcag-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .wcag-title {
+      font-size: 0.825rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .wcag-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: var(--radius-full);
+      font-size: 0.725rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+    .badge-pass {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+    .badge-fail {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+    .wcag-detail {
+      font-size: 0.775rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    /* Live Preview Card */
+    .sample-preview-card {
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      border: 1px solid var(--border);
+      transition: background-color 0.2s, color 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      min-height: 280px;
+      box-shadow: var(--shadow-md);
+    }
+    .preview-large-text {
+      font-size: 1.65rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    .preview-body-text {
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    .preview-small-text {
+      font-size: 0.825rem;
+      opacity: 0.85;
+    }
+    .preview-ui-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+    .preview-sample-btn {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: default;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Suggestion Box */
+    .suggestion-box {
+      background: var(--bg-tertiary);
+      border: 1px dashed var(--accent);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    /* Presets Container */
+    .preset-pill-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .preset-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.75rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: var(--transition);
+      color: var(--text-secondary);
+    }
+    .preset-pill:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .preset-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    /* Toast */
+    .toast-notification {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      color: var(--text-primary);
+      padding: 0.85rem 1.4rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      z-index: 9999;
+      transform: translateY(120%);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+    .toast-notification.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,31 +314,200 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Contrast Ratio Checker</h1>
-        <p class="tool-description">Check WCAG accessibility contrast scores.</p>
+        <h1>WCAG Contrast Ratio Checker</h1>
+        <p class="tool-description">Verify web accessibility compliance according to WCAG 2.1 standards. Test text legibility, preview sample components in real time, and auto-generate passing colors.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Contrast Ratio Checker</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Check WCAG accessibility contrast scores.</div>
-            <div><strong>Inputs:</strong> contrast, wcag, accessibility, color, hex</div>
-            <div><strong>Category:</strong> color</div>
+      <!-- Main Dual-Column Workspace -->
+      <div class="contrast-workspace">
+        
+        <!-- Left Column: Color Controls & Adjustments -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          
+          <!-- Foreground Text Color Card -->
+          <div class="color-config-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label for="fg-color-picker" style="font-weight: 700; font-size: 0.9rem;">Foreground (Text Color)</label>
+              <div style="display: flex; gap: 0.35rem;">
+                <button id="fg-lighten-btn" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;" title="Lighten Foreground">+ Lighten</button>
+                <button id="fg-darken-btn" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;" title="Darken Foreground">- Darken</button>
+              </div>
+            </div>
+
+            <div class="color-input-row">
+              <input type="color" id="fg-color-picker" value="#FFFFFF" class="color-swatch-picker" title="Pick text color">
+              <div class="color-inputs-container">
+                <input type="text" id="fg-hex-input" value="#FFFFFF" class="form-input" style="font-family: monospace; font-size: 1rem; font-weight: 700;" maxlength="7">
+                <div class="color-meta-row">
+                  <span id="fg-rgb-text">RGB: 255, 255, 255</span>
+                  <span id="fg-hsl-text">HSL: 0°, 0%, 100%</span>
+                </div>
+              </div>
+            </div>
           </div>
+
+          <!-- Swap Button -->
+          <div class="swap-btn-container">
+            <button id="swap-colors-btn" class="swap-colors-btn" title="Swap Foreground and Background">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"/></svg>
+              <span>Swap Colors</span>
+            </button>
+          </div>
+
+          <!-- Background Color Card -->
+          <div class="color-config-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label for="bg-color-picker" style="font-weight: 700; font-size: 0.9rem;">Background Color</label>
+              <div style="display: flex; gap: 0.35rem;">
+                <button id="bg-lighten-btn" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;" title="Lighten Background">+ Lighten</button>
+                <button id="bg-darken-btn" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;" title="Darken Background">- Darken</button>
+              </div>
+            </div>
+
+            <div class="color-input-row">
+              <input type="color" id="bg-color-picker" value="#0F172A" class="color-swatch-picker" title="Pick background color">
+              <div class="color-inputs-container">
+                <input type="text" id="bg-hex-input" value="#0F172A" class="form-input" style="font-family: monospace; font-size: 1rem; font-weight: 700;" maxlength="7">
+                <div class="color-meta-row">
+                  <span id="bg-rgb-text">RGB: 15, 23, 42</span>
+                  <span id="bg-hsl-text">HSL: 222°, 47%, 11%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Presets Bar -->
+          <div class="tool-panel glass-panel" style="padding: 1.15rem;">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.65rem;">Quick Presets</span>
+            <div class="preset-pill-grid" id="preset-pill-list">
+              <!-- Preset chips populated via JS -->
+            </div>
+          </div>
+
+          <!-- Auto-Suggest Nearest Passing Color -->
+          <div class="suggestion-box" id="suggestion-container">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <span style="font-weight: 700; font-size: 0.9rem;">Auto-Suggest Accessible Colors</span>
+            </div>
+            <p id="suggestion-desc" style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+              Analyzing contrast margins...
+            </p>
+            <div id="suggestion-actions" style="display: flex; flex-wrap: wrap; gap: 0.6rem;">
+              <!-- Dynamic suggest action buttons -->
+            </div>
+          </div>
+
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Column: Audit Score, Matrix & Real-world Preview -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          
+          <!-- Score Gauge Card -->
+          <div class="ratio-hero-card">
+            <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); margin-bottom: 0.25rem;">WCAG 2.1 Contrast Ratio</span>
+            <div class="ratio-big-value" id="ratio-display">16.05 : 1</div>
+            <div class="ratio-status-pill badge-pass" id="ratio-status-badge">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="16 9 10 15 7 12" stroke="#fff" stroke-width="2" fill="none"/></svg>
+              <span id="ratio-rating-label">Enhanced Pass (AAA)</span>
+            </div>
+          </div>
+
+          <!-- 4-Card WCAG Matrix -->
+          <div class="wcag-grid">
+            
+            <!-- AA Normal Text -->
+            <div class="wcag-card" id="card-aa-normal">
+              <div class="wcag-header">
+                <span class="wcag-title">AA Normal Text</span>
+                <span class="wcag-badge badge-pass" id="badge-aa-normal">Pass (4.5:1)</span>
+              </div>
+              <p class="wcag-detail">Body copy, regular paragraphs, and content &lt; 18pt (24px) or &lt; 14pt bold.</p>
+            </div>
+
+            <!-- AA Large Text -->
+            <div class="wcag-card" id="card-aa-large">
+              <div class="wcag-header">
+                <span class="wcag-title">AA Large Text</span>
+                <span class="wcag-badge badge-pass" id="badge-aa-large">Pass (3.0:1)</span>
+              </div>
+              <p class="wcag-detail">Headings &ge; 18pt (24px) or bold text &ge; 14pt (18.66px).</p>
+            </div>
+
+            <!-- AAA Normal Text -->
+            <div class="wcag-card" id="card-aaa-normal">
+              <div class="wcag-header">
+                <span class="wcag-title">AAA Normal Text</span>
+                <span class="wcag-badge badge-pass" id="badge-aaa-normal">Pass (7.0:1)</span>
+              </div>
+              <p class="wcag-detail">Enhanced compliance threshold for high legibility normal text.</p>
+            </div>
+
+            <!-- Graphical & UI Components -->
+            <div class="wcag-card" id="card-ui-components">
+              <div class="wcag-header">
+                <span class="wcag-title">UI Components</span>
+                <span class="wcag-badge badge-pass" id="badge-ui-components">Pass (3.0:1)</span>
+              </div>
+              <p class="wcag-detail">Active form inputs, focus rings, borders, buttons, and icons.</p>
+            </div>
+
+          </div>
+
+          <!-- Interactive Real-world Preview Card -->
+          <div class="sample-preview-card" id="sample-preview-stage">
+            <div class="preview-large-text" id="preview-heading">Headline 24px Bold (Large Text)</div>
+            
+            <p class="preview-body-text" id="preview-body">
+              This interactive card demonstrates how readable your chosen text appears against the background. Proper contrast ratios ensure your content remains effortlessly legible across diverse devices, ambient light levels, and for visually impaired individuals.
+            </p>
+
+            <div class="preview-small-text" id="preview-small">
+              Small caption (13px): WCAG 2.1 Success Criterion 1.4.3 Contrast (Minimum).
+            </div>
+
+            <div class="preview-ui-bar">
+              <div class="preview-sample-btn" id="preview-button-solid" style="background: currentColor;">
+                <span style="mix-blend-mode: difference; color: #fff;">Filled Action Button</span>
+              </div>
+              <div class="preview-sample-btn" id="preview-button-outlined" style="border: 2px solid currentColor;">
+                <span>Outlined Component</span>
+              </div>
+              <div style="display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.85rem;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span>Verified Component</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Action Controls -->
+          <div class="action-bar" style="justify-content: flex-end;">
+            <button id="copy-report-btn" class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Audit Report
+            </button>
+            <button id="copy-css-btn" class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+              Copy CSS Rules
+            </button>
+            <button id="share-link-btn" class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              Share Contrast URL
+            </button>
+          </div>
+
+        </div>
+
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Toast Notification Feedback -->
+  <div id="toast" class="toast-notification">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">Report copied to clipboard</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -63,7 +520,7 @@
     "name": "Contrast Ratio Checker",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/contrast-ratio-checker/",
     "description": "Check WCAG accessibility contrast scores.",
-    "applicationCategory": "UtilityPage",
+    "applicationCategory": "DesignTool",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

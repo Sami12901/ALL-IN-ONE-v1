@@ -3,14 +3,249 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Password Strength Analyzer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Checks password entropy and security levels.">
-  <meta name="keywords" content="password, strength, entropy, security, meter, free, online, tool, utility">
+  <title>Password Strength Analyzer & Generator - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Audit password entropy, crack time estimation, security checklists, and generate cryptographically secure passwords client-side.">
+  <meta name="keywords" content="password, strength, entropy, security, meter, generator, crack time, client-side, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/password-strength-meter/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <style>
+    /* Tool-specific styles for Password Strength Meter */
+    .psm-workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .psm-workspace {
+        grid-template-columns: 1.15fr 0.85fr;
+      }
+    }
+
+    .input-wrapper-rel {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .password-input-field {
+      padding-right: 5.5rem;
+      font-family: monospace, var(--font-sans);
+      font-size: 1.05rem;
+      letter-spacing: 0.05em;
+    }
+
+    .input-actions-inner {
+      position: absolute;
+      right: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .icon-action-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 0.4rem;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    .icon-action-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+    }
+
+    /* Strength Bar */
+    .meter-bar-container {
+      margin: 1.25rem 0 0.5rem;
+    }
+    .meter-bar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .meter-track {
+      width: 100%;
+      height: 10px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      display: flex;
+      gap: 4px;
+      padding: 2px;
+      border: 1px solid var(--border);
+    }
+    .meter-segment {
+      flex: 1;
+      height: 100%;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.06);
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .strength-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .strength-very-weak { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .strength-weak { background: rgba(249, 115, 22, 0.15); color: #f97316; border: 1px solid rgba(249, 115, 22, 0.3); }
+    .strength-fair { background: rgba(234, 179, 8, 0.15); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.3); }
+    .strength-strong { background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .strength-very-strong { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+    /* Metrics Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .metric-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .metric-card-label {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .metric-card-val {
+      font-size: 1.15rem;
+      font-weight: 700;
+      font-family: monospace;
+      color: var(--text-primary);
+      word-break: break-word;
+    }
+
+    /* Checklist */
+    .checklist-container {
+      margin-top: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+    .checklist-item.passed {
+      color: var(--text-primary);
+      border-color: rgba(16, 185, 129, 0.3);
+      background: rgba(16, 185, 129, 0.05);
+    }
+    .checklist-item.warning {
+      color: #ef4444;
+      border-color: rgba(239, 68, 68, 0.3);
+      background: rgba(239, 68, 68, 0.05);
+    }
+    .check-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+    }
+
+    /* Generator UI */
+    .gen-result-box {
+      position: relative;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 3.5rem 1rem 1rem;
+      font-family: monospace;
+      font-size: 1.05rem;
+      min-height: 52px;
+      display: flex;
+      align-items: center;
+      word-break: break-all;
+      color: var(--text-primary);
+    }
+    .gen-copy-btn {
+      position: absolute;
+      right: 0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .charset-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.6rem;
+      margin: 1rem 0;
+    }
+
+    .zero-knowledge-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.65rem 0.9rem;
+      border-radius: var(--radius-md);
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      color: #10b981;
+      font-size: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    /* Toast Notification */
+    .app-toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.9rem;
+      z-index: 1000;
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: all 0.25s ease;
+    }
+    .app-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+  </style>
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
@@ -27,30 +262,233 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Password Strength Analyzer</h1>
-        <p class="tool-description">Checks password entropy and security levels.</p>
+        <p class="tool-description">Audit real-time cryptographic entropy, cracking feasibility, dictionary vulnerabilities, and generate ultra-secure passwords 100% locally.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Password Strength Analyzer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Checks password entropy and security levels.</div>
-            <div><strong>Inputs:</strong> password, strength, entropy, security, meter</div>
-            <div><strong>Category:</strong> security</div>
+      <div class="psm-workspace">
+        
+        <!-- Left Panel: Auditor & Analysis -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            Password Security Auditor
+          </h2>
+
+          <!-- Password Input -->
+          <div class="form-group">
+            <label for="password-input">Enter or Paste Password to Analyze</label>
+            <div class="input-wrapper-rel">
+              <input type="password" id="password-input" class="form-input password-input-field" placeholder="Type password here..." autocomplete="off" spellcheck="false">
+              <div class="input-actions-inner">
+                <button type="button" id="toggle-visibility-btn" class="icon-action-btn" title="Toggle visibility">
+                  <svg id="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+                <button type="button" id="clear-password-btn" class="icon-action-btn" title="Clear input">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
+
+          <!-- Strength Bar & Status -->
+          <div class="meter-bar-container">
+            <div class="meter-bar-header">
+              <span style="font-weight: 600; color: var(--text-secondary);">Strength Score: <strong id="score-text" style="color: var(--text-primary);">0%</strong></span>
+              <span id="strength-badge" class="strength-badge strength-very-weak">Very Weak</span>
+            </div>
+            <div class="meter-track" id="meter-segments">
+              <div class="meter-segment" data-segment="1"></div>
+              <div class="meter-segment" data-segment="2"></div>
+              <div class="meter-segment" data-segment="3"></div>
+              <div class="meter-segment" data-segment="4"></div>
+              <div class="meter-segment" data-segment="5"></div>
+            </div>
+          </div>
+
+          <!-- Key Metrics -->
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <span class="metric-card-label">Entropy</span>
+              <span class="metric-card-val" id="metric-entropy">0.0 bits</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-card-label">Est. Crack Time</span>
+              <span class="metric-card-val" id="metric-crack-time" style="font-size: 0.95rem;">Instant</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-card-label">Length</span>
+              <span class="metric-card-val" id="metric-length">0 chars</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-card-label">Charset Pool</span>
+              <span class="metric-card-val" id="metric-pool">0 chars</span>
+            </div>
+          </div>
+
+          <!-- Checklist -->
+          <div class="checklist-container">
+            <div class="checklist-item" id="check-length">
+              <span class="check-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>
+              </span>
+              <span>Length: Minimum 12+ characters (recommended 16+)</span>
+            </div>
+            <div class="checklist-item" id="check-upper">
+              <span class="check-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>
+              </span>
+              <span>Uppercase Letters: Includes A-Z</span>
+            </div>
+            <div class="checklist-item" id="check-lower">
+              <span class="check-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>
+              </span>
+              <span>Lowercase Letters: Includes a-z</span>
+            </div>
+            <div class="checklist-item" id="check-numbers">
+              <span class="check-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>
+              </span>
+              <span>Numbers: Includes 0-9</span>
+            </div>
+            <div class="checklist-item" id="check-symbols">
+              <span class="check-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>
+              </span>
+              <span>Special Symbols: Includes !@#$%^&*...</span>
+            </div>
+            <div class="checklist-item" id="check-patterns">
+              <span class="check-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>
+              </span>
+              <span id="patterns-label">Pattern Analysis: No repetitive or common dictionary sequences</span>
+            </div>
+          </div>
+
+          <!-- Zero transmission security notice -->
+          <div class="zero-knowledge-badge">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              <polyline points="9 12 11 14 15 10"></polyline>
+            </svg>
+            <span><strong>100% Client-Side Privacy:</strong> Password audit calculations happen strictly in memory. Nothing is ever sent to any remote server or logged.</span>
+          </div>
+
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Panel: Password Generator & Security Tips -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+              <polyline points="16 18 22 12 16 6"></polyline>
+              <polyline points="8 6 2 12 8 18"></polyline>
+            </svg>
+            Secure Password Generator
+          </h2>
+
+          <!-- Generated Password Display Box -->
+          <div class="form-group">
+            <label>Generated Cryptographic Key</label>
+            <div class="gen-result-box" id="gen-password-display">
+              <span id="gen-password-text" style="color: var(--accent-light);">Click Generate to start</span>
+              <button type="button" id="copy-gen-btn" class="icon-action-btn gen-copy-btn" title="Copy password">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Generator Controls -->
+          <div class="form-group" style="margin-top: 0.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label for="gen-length-slider">Length: <strong id="gen-length-val" style="color: var(--accent);">16</strong> characters</label>
+            </div>
+            <div class="range-group">
+              <input type="range" id="gen-length-slider" class="range-slider" min="6" max="64" value="16">
+            </div>
+          </div>
+
+          <!-- Charset Toggles -->
+          <div class="charset-options">
+            <label class="checkbox-label">
+              <input type="checkbox" id="opt-upper" checked>
+              <span>Uppercase (A-Z)</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="opt-lower" checked>
+              <span>Lowercase (a-z)</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="opt-numbers" checked>
+              <span>Numbers (0-9)</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="opt-symbols" checked>
+              <span>Symbols (!@#$%)</span>
+            </label>
+            <label class="checkbox-label" style="grid-column: 1 / -1;">
+              <input type="checkbox" id="opt-avoid-ambiguous">
+              <span>Exclude Ambiguous (l, 1, I, O, 0)</span>
+            </label>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-bar">
+            <button type="button" id="generate-btn" class="btn btn-primary" style="flex: 1;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+              </svg>
+              Generate Password
+            </button>
+            <button type="button" id="use-in-auditor-btn" class="btn btn-secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 14 4 9 9 4"></polyline>
+                <path d="M20 20v-7a4 4 0 0 0-4-4H4"></path>
+              </svg>
+              Audit in Meter
+            </button>
+          </div>
+
+          <!-- Educational info card -->
+          <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem; margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+            <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.4rem;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              Entropy & Brute Force Guidelines
+            </div>
+            <p style="margin-bottom: 0.5rem;">Entropy is measured as $E = L \times \log_2(R)$, where $L$ is length and $R$ is character variety.</p>
+            <ul style="padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.25rem;">
+              <li><strong>&lt; 35 bits:</strong> Vulnerable to near-instantaneous GPU cracking.</li>
+              <li><strong>50 - 70 bits:</strong> Standard safety for low-value personal accounts.</li>
+              <li><strong>80+ bits:</strong> Military-grade resistance against cluster brute force.</li>
+            </ul>
+          </div>
+
+        </div>
+
       </div>
-    
     </div>
   </main>
+
+  <!-- Global Toast Notification -->
+  <div id="app-toast" class="app-toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span id="toast-message">Password copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,7 +500,7 @@
     "@type": "WebApplication",
     "name": "Password Strength Analyzer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/password-strength-meter/",
-    "description": "Checks password entropy and security levels.",
+    "description": "Checks password entropy and security levels with client-side auditing and password generation.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

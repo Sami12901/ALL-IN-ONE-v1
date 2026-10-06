@@ -3,17 +3,396 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>English Typing Practice - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Enhance your skills with English Typing Practice.">
-  <meta name="keywords" content="typing, keyboard, practice, free, online, tool, utility">
+  <title>English Typing Practice - Interactive Touch-Typing Tutor - ALL IN ONE</title>
+  <meta name="description" content="Master touch typing with interactive lessons covering Home Row, Top Row, Bottom Row, Symbols, and the 200 most common English words with a dynamic on-screen keyboard.">
+  <meta name="keywords" content="touch typing practice, keyboard tutor, home row practice, learn typing, qwerty keyboard trainer, typewriter sound typing">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/english-typing-practice/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <style>
+    /* English Typing Practice Custom Styles */
+    .tutor-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      max-width: 1050px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Lesson Navigation Bar */
+    .lesson-nav {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .lesson-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+      text-align: left;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .lesson-btn:hover {
+      border-color: var(--accent);
+      background: var(--bg-tertiary);
+    }
+
+    .lesson-btn.active {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.15) 0%, rgba(137, 170, 204, 0.05) 100%);
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    .lesson-num {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
+
+    .lesson-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .lesson-desc {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    /* Sub-drill selector */
+    .drill-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1.25rem;
+    }
+
+    .drill-steps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .step-chip {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .step-chip:hover {
+      color: var(--text-primary);
+    }
+
+    .step-chip.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    .step-chip.completed {
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    /* Live Tutor Dashboard */
+    .tutor-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 1rem;
+    }
+
+    .stat-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-top: 0.2rem;
+    }
+
+    /* Drill Display Box */
+    .drill-display-wrapper {
+      position: relative;
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      cursor: text;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .drill-display-wrapper:focus-within, .drill-display-wrapper.is-focused {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .drill-stream {
+      font-family: 'SF Mono', 'Fira Code', 'Roboto Mono', Menlo, monospace;
+      font-size: 1.75rem;
+      line-height: 1.8;
+      letter-spacing: 0.08em;
+      user-select: none;
+      text-align: center;
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+
+    .char {
+      display: inline-block;
+      padding: 0 1px;
+      border-radius: 2px;
+      transition: color 0.1s ease;
+    }
+
+    .char-pending {
+      color: var(--text-secondary);
+      opacity: 0.6;
+    }
+
+    .char-correct {
+      color: #10b981;
+    }
+
+    .char-error {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.25);
+      border-bottom: 2px solid #ef4444;
+    }
+
+    .char-current {
+      background: rgba(78, 133, 191, 0.35);
+      border-bottom: 3px solid var(--accent);
+      animation: cursorPulse 1s infinite alternate;
+    }
+
+    @keyframes cursorPulse {
+      0% { border-bottom-color: var(--accent); }
+      100% { border-bottom-color: transparent; }
+    }
+
+    /* Target Finger Banner */
+    .finger-prompt-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1.25rem;
+      font-size: 0.9rem;
+    }
+
+    .target-key-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+    }
+
+    .key-cap {
+      font-family: monospace;
+      font-size: 1.15rem;
+      background: var(--bg-secondary);
+      border: 2px solid var(--accent);
+      border-radius: var(--radius-sm);
+      padding: 0.2rem 0.6rem;
+      color: var(--accent);
+      box-shadow: 0 2px 6px var(--accent-glow);
+    }
+
+    .finger-guide-badge {
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* On-Screen Keyboard Container */
+    .keyboard-wrapper {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      box-shadow: var(--shadow-md);
+      user-select: none;
+    }
+
+    .kb-row {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .kb-key {
+      position: relative;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      min-width: 42px;
+      height: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: monospace;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      transition: transform 0.05s ease, background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      flex: 1;
+      max-width: 58px;
+    }
+
+    .kb-key.tactile::after {
+      content: "";
+      position: absolute;
+      bottom: 6px;
+      width: 8px;
+      height: 2px;
+      background: var(--text-tertiary);
+      border-radius: 1px;
+    }
+
+    /* Special wide keys */
+    .kb-key.key-backspace { max-width: 90px; font-size: 0.75rem; }
+    .kb-key.key-tab { max-width: 80px; font-size: 0.75rem; }
+    .kb-key.key-caps { max-width: 85px; font-size: 0.75rem; }
+    .kb-key.key-enter { max-width: 95px; font-size: 0.75rem; }
+    .kb-key.key-shift { max-width: 110px; font-size: 0.75rem; }
+    .kb-key.key-space { max-width: 320px; }
+
+    /* Target Active Key Highlight */
+    .kb-key.target-active {
+      border-color: var(--accent);
+      background: linear-gradient(180deg, rgba(78, 133, 191, 0.3) 0%, rgba(78, 133, 191, 0.1) 100%);
+      color: #ffffff;
+      box-shadow: 0 0 14px var(--accent-glow);
+      transform: translateY(-2px);
+      animation: keyPulse 1.2s infinite alternate;
+    }
+
+    @keyframes keyPulse {
+      0% { box-shadow: 0 0 8px var(--accent-glow); }
+      100% { box-shadow: 0 0 20px var(--accent); }
+    }
+
+    /* Physically Pressed Key Animation */
+    .kb-key.key-pressed {
+      transform: translateY(3px) !important;
+      background: var(--accent) !important;
+      color: #ffffff !important;
+      border-color: #ffffff !important;
+    }
+
+    /* Finger Color Accents (Subtle borders) */
+    .finger-l-pinky { border-bottom: 3px solid #ec4899; }
+    .finger-l-ring { border-bottom: 3px solid #a855f7; }
+    .finger-l-middle { border-bottom: 3px solid #3b82f6; }
+    .finger-l-index { border-bottom: 3px solid #06b6d4; }
+    .finger-thumb { border-bottom: 3px solid #10b981; }
+    .finger-r-index { border-bottom: 3px solid #14b8a6; }
+    .finger-r-middle { border-bottom: 3px solid #3b82f6; }
+    .finger-r-ring { border-bottom: 3px solid #a855f7; }
+    .finger-r-pinky { border-bottom: 3px solid #ec4899; }
+
+    /* Legend Bar */
+    .finger-legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .typing-input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 1px;
+      height: 1px;
+    }
+
+    /* Drill Completion Modal */
+    .completion-banner {
+      display: none;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.05) 100%);
+      border: 1px solid var(--success);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .completion-banner.show {
+      display: flex;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,28 +406,197 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>English Typing Practice</h1>
-        <p class="tool-description">Enhance your skills with English Typing Practice.</p>
+        <p class="tool-description">Interactive touch-typing tutor. Master row-by-row muscle memory with dynamic finger-guided QWERTY keyboard visualization and typewriter sound effects.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>English Typing Practice</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Enhance your skills with English Typing Practice.</div>
-            <div><strong>Inputs:</strong> typing, keyboard, practice</div>
-            <div><strong>Category:</strong> typing</div>
+      <div class="tutor-workspace">
+
+        <!-- 5 Lesson Selection Cards -->
+        <div class="lesson-nav" id="lesson-nav">
+          <button type="button" class="lesson-btn active" data-lesson="home">
+            <span class="lesson-num">Lesson 01</span>
+            <span class="lesson-name">Home Row</span>
+            <span class="lesson-desc">ASDF JKL; Anchor Keys</span>
+          </button>
+          <button type="button" class="lesson-btn" data-lesson="top">
+            <span class="lesson-num">Lesson 02</span>
+            <span class="lesson-name">Top Row</span>
+            <span class="lesson-desc">QWERTY UIOP Reach</span>
+          </button>
+          <button type="button" class="lesson-btn" data-lesson="bottom">
+            <span class="lesson-num">Lesson 03</span>
+            <span class="lesson-name">Bottom Row</span>
+            <span class="lesson-desc">ZXCV BNM Finger Curl</span>
+          </button>
+          <button type="button" class="lesson-btn" data-lesson="numbers">
+            <span class="lesson-num">Lesson 04</span>
+            <span class="lesson-name">Numbers &amp; Symbols</span>
+            <span class="lesson-desc">1234567890 &amp; Punctuation</span>
+          </button>
+          <button type="button" class="lesson-btn" data-lesson="common200">
+            <span class="lesson-num">Lesson 05</span>
+            <span class="lesson-name">Top 200 Words</span>
+            <span class="lesson-desc">High-Frequency English Fluency</span>
+          </button>
+        </div>
+
+        <!-- Sub-drill Selector & Controls -->
+        <div class="drill-bar">
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary);">Drill Exercise:</span>
+            <div class="drill-steps" id="drill-steps">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <button type="button" class="btn btn-secondary" id="btn-sound-toggle" style="padding: 0.4rem 0.8rem; font-size: 0.825rem;">
+              🔊 Sound: ON
+            </button>
+            <button type="button" class="btn btn-secondary" id="btn-restart-drill" style="padding: 0.4rem 0.8rem; font-size: 0.825rem;">
+              Restart Drill
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Live Metrics Bar -->
+        <div class="tutor-stats">
+          <div class="stat-card">
+            <div class="stat-label">Typing Speed</div>
+            <div class="stat-value" id="val-wpm" style="color: var(--accent);">0 WPM</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Accuracy</div>
+            <div class="stat-value" id="val-accuracy" style="color: var(--success);">100%</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Progress</div>
+            <div class="stat-value" id="val-progress">0%</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Errors</div>
+            <div class="stat-value" id="val-errors" style="color: var(--error);">0</div>
+          </div>
+        </div>
+
+        <!-- Drill Passage Workspace -->
+        <div class="drill-display-wrapper glass-panel" id="drill-container" tabindex="0">
+          <div class="drill-stream" id="drill-stream"></div>
+          <input type="text" class="typing-input" id="typing-input" autocomplete="off" autocapitalize="off" spellcheck="false" />
+        </div>
+
+        <!-- Drill Completed Banner -->
+        <div class="completion-banner" id="completion-banner">
+          <div>
+            <div style="font-size: 1.1rem; font-weight: 800; color: var(--success);">🎉 Drill Completed Flawlessly!</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 2px;">Your neural muscle pathways are adapting rapidly. Ready for the next progression?</div>
+          </div>
+          <div style="display: flex; gap: 0.75rem;">
+            <button type="button" class="btn btn-secondary" id="btn-redo-drill">Repeat Drill</button>
+            <button type="button" class="btn btn-primary" id="btn-next-drill">Next Exercise &rarr;</button>
+          </div>
+        </div>
+
+        <!-- Target Finger & Key Banner -->
+        <div class="finger-prompt-bar">
+          <div class="target-key-badge">
+            <span>Next Target Key:</span>
+            <span class="key-cap" id="prompt-target-key">F</span>
+          </div>
+          <div class="finger-guide-badge">
+            <span>Recommended Finger:</span>
+            <span id="prompt-finger-name" style="color: var(--accent);">Left Index Finger</span>
+          </div>
+        </div>
+
+        <!-- Interactive Visual QWERTY Keyboard -->
+        <div class="keyboard-wrapper">
+          <!-- Row 1: Numbers -->
+          <div class="kb-row">
+            <div class="kb-key finger-l-pinky" data-key="`">`</div>
+            <div class="kb-key finger-l-pinky" data-key="1">1</div>
+            <div class="kb-key finger-l-ring" data-key="2">2</div>
+            <div class="kb-key finger-l-middle" data-key="3">3</div>
+            <div class="kb-key finger-l-index" data-key="4">4</div>
+            <div class="kb-key finger-l-index" data-key="5">5</div>
+            <div class="kb-key finger-r-index" data-key="6">6</div>
+            <div class="kb-key finger-r-index" data-key="7">7</div>
+            <div class="kb-key finger-r-middle" data-key="8">8</div>
+            <div class="kb-key finger-r-ring" data-key="9">9</div>
+            <div class="kb-key finger-r-pinky" data-key="0">0</div>
+            <div class="kb-key finger-r-pinky" data-key="-">-</div>
+            <div class="kb-key finger-r-pinky" data-key="=">=</div>
+            <div class="kb-key key-backspace finger-r-pinky" data-key="Backspace">&larr; Back</div>
+          </div>
+
+          <!-- Row 2: Top Row -->
+          <div class="kb-row">
+            <div class="kb-key key-tab finger-l-pinky" data-key="Tab">Tab</div>
+            <div class="kb-key finger-l-pinky" data-key="q">Q</div>
+            <div class="kb-key finger-l-ring" data-key="w">W</div>
+            <div class="kb-key finger-l-middle" data-key="e">E</div>
+            <div class="kb-key finger-l-index" data-key="r">R</div>
+            <div class="kb-key finger-l-index" data-key="t">T</div>
+            <div class="kb-key finger-r-index" data-key="y">Y</div>
+            <div class="kb-key finger-r-index" data-key="u">U</div>
+            <div class="kb-key finger-r-middle" data-key="i">I</div>
+            <div class="kb-key finger-r-ring" data-key="o">O</div>
+            <div class="kb-key finger-r-pinky" data-key="p">P</div>
+            <div class="kb-key finger-r-pinky" data-key="[">[</div>
+            <div class="kb-key finger-r-pinky" data-key="]">]</div>
+            <div class="kb-key finger-r-pinky" data-key="\">&#92;</div>
+          </div>
+
+          <!-- Row 3: Home Row -->
+          <div class="kb-row">
+            <div class="kb-key key-caps finger-l-pinky" data-key="CapsLock">Caps</div>
+            <div class="kb-key finger-l-pinky" data-key="a">A</div>
+            <div class="kb-key finger-l-ring" data-key="s">S</div>
+            <div class="kb-key finger-l-middle" data-key="d">D</div>
+            <div class="kb-key finger-l-index tactile" data-key="f">F</div>
+            <div class="kb-key finger-l-index" data-key="g">G</div>
+            <div class="kb-key finger-r-index" data-key="h">H</div>
+            <div class="kb-key finger-r-index tactile" data-key="j">J</div>
+            <div class="kb-key finger-r-middle" data-key="k">K</div>
+            <div class="kb-key finger-r-ring" data-key="l">L</div>
+            <div class="kb-key finger-r-pinky" data-key=";">;</div>
+            <div class="kb-key finger-r-pinky" data-key="'">'</div>
+            <div class="kb-key key-enter finger-r-pinky" data-key="Enter">&crarr; Enter</div>
+          </div>
+
+          <!-- Row 4: Bottom Row -->
+          <div class="kb-row">
+            <div class="kb-key key-shift finger-l-pinky" data-key="Shift">Shift</div>
+            <div class="kb-key finger-l-pinky" data-key="z">Z</div>
+            <div class="kb-key finger-l-ring" data-key="x">X</div>
+            <div class="kb-key finger-l-middle" data-key="c">C</div>
+            <div class="kb-key finger-l-index" data-key="v">V</div>
+            <div class="kb-key finger-l-index" data-key="b">B</div>
+            <div class="kb-key finger-r-index" data-key="n">N</div>
+            <div class="kb-key finger-r-index" data-key="m">M</div>
+            <div class="kb-key finger-r-middle" data-key=",">,</div>
+            <div class="kb-key finger-r-ring" data-key=".">.</div>
+            <div class="kb-key finger-r-pinky" data-key="/">/</div>
+            <div class="kb-key key-shift finger-r-pinky" data-key="Shift">Shift</div>
+          </div>
+
+          <!-- Row 5: Space Bar -->
+          <div class="kb-row">
+            <div class="kb-key key-space finger-thumb" data-key=" ">Spacebar</div>
+          </div>
+
+          <!-- Finger Legend -->
+          <div class="finger-legend">
+            <div class="legend-item"><span class="legend-dot" style="background: #ec4899;"></span> Left / Right Pinky</div>
+            <div class="legend-item"><span class="legend-dot" style="background: #a855f7;"></span> Ring Finger</div>
+            <div class="legend-item"><span class="legend-dot" style="background: #3b82f6;"></span> Middle Finger</div>
+            <div class="legend-item"><span class="legend-dot" style="background: #06b6d4;"></span> Index Finger</div>
+            <div class="legend-item"><span class="legend-dot" style="background: #10b981;"></span> Thumbs (Space)</div>
+          </div>
+        </div>
+
       </div>
-    
     </div>
   </main>
 
@@ -62,7 +610,7 @@
     "@type": "WebApplication",
     "name": "English Typing Practice",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/english-typing-practice/",
-    "description": "Enhance your skills with English Typing Practice.",
+    "description": "Interactive English touch-typing tutor with visual keyboard highlighting, finger recommendations, and sound effects.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

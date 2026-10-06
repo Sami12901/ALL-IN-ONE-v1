@@ -3,15 +3,181 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Audio Cutter - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Trim and cut specific parts of an audio file.">
-  <meta name="keywords" content="audio, music, sound, audio cutter, free, online, tool, utility">
+  <title>Audio Cutter & Waveform Trimmer - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Trim, cut, slice, and fade audio files with visual waveform editing directly in your browser. 100% free and client-side private.">
+  <meta name="keywords" content="audio cutter, audio trimmer, cut audio, trim mp3, waveform cutter, audio slicer, wav export, web audio">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/audio-cutter/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Audio Cutter Workspace Specific Styles */
+    .cutter-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    .audio-upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem 1.5rem;
+      text-align: center;
+      background: var(--bg-tertiary);
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+    }
+    .audio-upload-zone.dragover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .waveform-stage-container {
+      background: rgba(10, 14, 20, 0.85);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .waveform-canvas-wrapper {
+      position: relative;
+      width: 100%;
+      height: 180px;
+      user-select: none;
+      touch-action: none;
+      border-radius: var(--radius-md);
+      background: rgba(0, 0, 0, 0.35);
+      overflow: hidden;
+      cursor: crosshair;
+    }
+
+    #waveform-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    #overlay-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+    }
+
+    .waveform-timeline-ticks {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-tertiary);
+      font-size: 0.75rem;
+      font-family: monospace;
+      padding: 0.25rem 0.25rem 0;
+    }
+
+    .time-readout-pill {
+      font-family: monospace;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .scrubber-inputs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .control-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      transition: var(--transition);
+    }
+    .control-card:hover {
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .meta-tags-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+
+    .meta-tag {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.6rem;
+      border-radius: var(--radius-full);
+      font-family: monospace;
+    }
+
+    .btn-step {
+      padding: 0.35rem 0.65rem;
+      font-size: 0.8rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn-step:hover {
+      background: var(--border);
+      border-color: var(--accent);
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .trim-summary-badge {
+      font-family: monospace;
+      color: var(--accent-light);
+      font-weight: 600;
+    }
+
+    .preview-player-panel {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,27 +192,213 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Audio Cutter</h1>
-        <p class="tool-description">Trim and cut specific parts of an audio file.</p>
-      </div>
-
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Audio Cutter</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Trim and cut specific parts of an audio file.</div>
-            <div><strong>Inputs:</strong> audio, music, sound, audio cutter</div>
-            <div><strong>Category:</strong> audio</div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>Audio Cutter & Waveform Trimmer</h1>
+            <p class="tool-description">High-precision browser audio slicer. Drag & drop audio, scrub visual waveforms, apply gentle fade transitions, and export CD-quality WAV files.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <button id="btn-load-demo" class="btn btn-secondary" title="Load built-in demo sound synthesizer">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+              Load Demo Audio
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+      </div>
+
+      <!-- Main Tool Workspace -->
+      <div class="cutter-workspace">
+        
+        <!-- File Upload Drag Zone -->
+        <div id="drop-zone" class="audio-upload-zone">
+          <input type="file" id="audio-file-input" accept="audio/*,.mp3,.wav,.ogg,.aac,.m4a,.flac" style="display: none;">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
+            <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.8" style="color: var(--accent);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M9 15a2 2 0 1 0 4 0v-4l4 1"></path></svg>
+            <div style="font-weight: 600; font-size: 1.1rem; color: var(--text-primary);">
+              Drag & Drop your audio file here or <span style="color: var(--accent); text-decoration: underline;">Browse File</span>
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-tertiary);">
+              Supports MP3, WAV, OGG, FLAC, M4A, AAC. Audio processing is 100% offline and secure.
+            </div>
+          </div>
+        </div>
+
+        <!-- Waveform Studio Panel (Shown once audio is loaded) -->
+        <div id="studio-panel" class="tool-panel glass-panel" style="display: none;">
+          
+          <!-- File Details & Status -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
+            <div>
+              <div id="file-title" style="font-weight: 700; font-size: 1.15rem; color: var(--text-primary);">Loaded Audio</div>
+              <div class="meta-tags-bar">
+                <span id="tag-duration" class="meta-tag">Duration: 00:00.00</span>
+                <span id="tag-rate" class="meta-tag">Sample Rate: 44.1 kHz</span>
+                <span id="tag-channels" class="meta-tag">Channels: Stereo</span>
+                <span id="tag-size" class="meta-tag">Size: 0 MB</span>
+              </div>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <button id="btn-zoom-out" class="btn-step" title="Zoom out waveform">Zoom -</button>
+              <button id="btn-zoom-reset" class="btn-step" title="Fit to full view">Fit</button>
+              <button id="btn-zoom-in" class="btn-step" title="Zoom in waveform">Zoom +</button>
+            </div>
+          </div>
+
+          <!-- Waveform Canvas Stage -->
+          <div class="waveform-stage-container">
+            <div class="waveform-canvas-wrapper" id="canvas-wrapper">
+              <canvas id="waveform-canvas"></canvas>
+              <canvas id="overlay-canvas"></canvas>
+            </div>
+            <div class="waveform-timeline-ticks">
+              <span id="tick-start">0:00.0</span>
+              <span id="tick-mid">--:--.-</span>
+              <span id="tick-end">--:--.-</span>
+            </div>
+          </div>
+
+          <!-- Playback and Main Transport Controls -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+              <button id="btn-play-selection" class="btn btn-primary" title="Play trimmed segment">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                <span>Play Selection</span>
+              </button>
+              <button id="btn-play-all" class="btn btn-secondary" title="Play from start of file">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="6 4 18 12 6 20 6 4"></polygon></svg>
+                <span>Play All</span>
+              </button>
+              <button id="btn-stop" class="btn btn-secondary" title="Stop playback">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="6" y="6" width="12" height="12"></rect></svg>
+                <span>Stop</span>
+              </button>
+              <label class="checkbox-label" style="margin-left: 0.5rem; min-height: auto;">
+                <input type="checkbox" id="check-loop">
+                <span>Loop Selection</span>
+              </label>
+            </div>
+
+            <!-- Volume & Readout -->
+            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.9" style="width: 90px;" class="range-slider">
+              </div>
+              <div class="time-readout-pill">
+                <span id="readout-current" style="color: var(--accent);">00:00.000</span>
+                <span style="color: var(--text-tertiary);">/</span>
+                <span id="readout-total" style="color: var(--text-secondary);">00:00.000</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Start / End Scrubbers Fine Tuning Grid -->
+          <div class="scrubber-inputs-grid">
+            
+            <!-- Start Point Card -->
+            <div class="control-card">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 700; color: #10b981; font-size: 0.95rem; display: flex; align-items: center; gap: 0.4rem;">
+                  <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #10b981;"></span>
+                  Start Time
+                </span>
+                <button id="btn-start-to-current" class="btn-step" title="Set to current playhead">Set Current</button>
+              </div>
+              <div class="form-group">
+                <input type="number" id="input-start-sec" class="form-input" min="0" step="0.01" value="0.00" style="font-family: monospace; font-size: 1.1rem; font-weight: 700;">
+              </div>
+              <div style="display: flex; gap: 0.4rem; justify-content: space-between;">
+                <button class="btn-step" id="btn-start-sub-1">-1.0s</button>
+                <button class="btn-step" id="btn-start-sub-01">-0.1s</button>
+                <button class="btn-step" id="btn-start-add-01">+0.1s</button>
+                <button class="btn-step" id="btn-start-add-1">+1.0s</button>
+              </div>
+            </div>
+
+            <!-- End Point Card -->
+            <div class="control-card">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 700; color: #f43f5e; font-size: 0.95rem; display: flex; align-items: center; gap: 0.4rem;">
+                  <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #f43f5e;"></span>
+                  End Time
+                </span>
+                <button id="btn-end-to-current" class="btn-step" title="Set to current playhead">Set Current</button>
+              </div>
+              <div class="form-group">
+                <input type="number" id="input-end-sec" class="form-input" min="0" step="0.01" value="0.00" style="font-family: monospace; font-size: 1.1rem; font-weight: 700;">
+              </div>
+              <div style="display: flex; gap: 0.4rem; justify-content: space-between;">
+                <button class="btn-step" id="btn-end-sub-1">-1.0s</button>
+                <button class="btn-step" id="btn-end-sub-01">-0.1s</button>
+                <button class="btn-step" id="btn-end-add-01">+0.1s</button>
+                <button class="btn-step" id="btn-end-add-1">+1.0s</button>
+              </div>
+            </div>
+
+            <!-- Fades & Effects Card -->
+            <div class="control-card">
+              <div style="font-weight: 700; color: var(--text-primary); font-size: 0.95rem;">
+                Audio Transitions
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <label class="checkbox-label" style="min-height: auto;">
+                    <input type="checkbox" id="check-fade-in">
+                    <span>Fade In</span>
+                  </label>
+                  <div style="display: flex; align-items: center; gap: 0.35rem;">
+                    <input type="number" id="input-fade-in-dur" class="form-input" style="width: 70px; padding: 0.3rem 0.5rem; font-size: 0.85rem;" min="0.1" max="5" step="0.1" value="0.5">
+                    <span style="font-size: 0.8rem; color: var(--text-tertiary);">sec</span>
+                  </div>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <label class="checkbox-label" style="min-height: auto;">
+                    <input type="checkbox" id="check-fade-out">
+                    <span>Fade Out</span>
+                  </label>
+                  <div style="display: flex; align-items: center; gap: 0.35rem;">
+                    <input type="number" id="input-fade-out-dur" class="form-input" style="width: 70px; padding: 0.3rem 0.5rem; font-size: 0.85rem;" min="0.1" max="5" step="0.1" value="0.5">
+                    <span style="font-size: 0.8rem; color: var(--text-tertiary);">sec</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Cut Summary & Download Action Area -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 1px solid var(--border); padding-top: 1.25rem;">
+            <div>
+              <div style="font-size: 0.85rem; color: var(--text-tertiary);">Selected Duration:</div>
+              <div id="selection-duration-text" class="trim-summary-badge" style="font-size: 1.25rem;">00:00.000</div>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+              <button id="btn-preview-cut" class="btn btn-secondary">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                Preview Trimmed
+              </button>
+              <button id="btn-download-wav" class="btn btn-primary" style="padding: 0.85rem 1.75rem;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download Trimmed Audio (WAV)
+              </button>
+            </div>
+          </div>
+
+          <!-- Inline Export Preview / Audio Player -->
+          <div id="export-preview-container" class="preview-player-panel" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+              <span style="font-weight: 700; color: var(--success); font-size: 0.95rem; display: flex; align-items: center; gap: 0.4rem;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                Trimmed Audio Ready!
+              </span>
+              <span id="export-file-meta" style="font-size: 0.85rem; color: var(--text-secondary); font-family: monospace;">WAV 16-bit PCM • 0.0 MB</span>
+            </div>
+            <audio id="export-audio-element" controls style="width: 100%; border-radius: var(--radius-sm); outline: none;"></audio>
+          </div>
+
+        </div>
+
       </div>
     
     </div>
@@ -62,10 +414,10 @@
     "@type": "WebApplication",
     "name": "Audio Cutter",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/audio-cutter/",
-    "description": "Trim and cut specific parts of an audio file.",
-    "applicationCategory": "UtilityPage",
+    "description": "Trim, cut, slice, and fade audio files with visual waveform editing directly in your browser.",
+    "applicationCategory": "AudioEditor",
     "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
+    "browserRequirements": "Requires JavaScript. Requires HTML5 AudioContext."
   }
   </script>
 </body>

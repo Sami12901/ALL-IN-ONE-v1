@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Matrix Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Addition, multiplication, and determinant of matrices.">
-  <meta name="keywords" content="matrix, determinant, multiply, math, free, online, tool, utility">
+  <title>Matrix Calculator Studio - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Interactive Matrix algebra studio for 2x2 and 3x3 matrices. Compute Addition, Subtraction, Multiplication, Determinant, Inverse, and Transpose with step-by-step solutions.">
+  <meta name="keywords" content="matrix calculator, matrix multiplication, determinant, matrix inverse, transpose, linear algebra, 2x2, 3x3, free online tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/matrix-calculator/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,380 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+
+  <style>
+    .matrix-studio {
+      max-width: 1150px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    .dimension-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .dim-btn-group {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--bg-tertiary);
+      padding: 0.35rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+
+    .dim-btn {
+      padding: 0.4rem 1.1rem;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .dim-btn.active {
+      background: var(--bg-secondary);
+      color: var(--accent);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .matrices-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 900px) {
+      .matrices-layout {
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+      }
+    }
+
+    .matrix-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .matrix-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .matrix-name {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .matrix-bracket-box {
+      position: relative;
+      padding: 0.75rem 1rem;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto;
+    }
+
+    .matrix-bracket-box::before,
+    .matrix-bracket-box::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 10px;
+      border: 3px solid var(--accent);
+    }
+
+    .matrix-bracket-box::before {
+      left: 0;
+      border-right: none;
+      border-radius: 6px 0 0 6px;
+    }
+
+    .matrix-bracket-box::after {
+      right: 0;
+      border-left: none;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .matrix-grid {
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    .matrix-grid.dim-2 {
+      grid-template-columns: repeat(2, 64px);
+      grid-template-rows: repeat(2, 48px);
+    }
+
+    .matrix-grid.dim-3 {
+      grid-template-columns: repeat(3, 56px);
+      grid-template-rows: repeat(3, 44px);
+    }
+
+    .matrix-cell {
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      font-family: monospace;
+      font-size: 1.15rem;
+      font-weight: 700;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .matrix-cell:focus {
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .matrix-quick-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      justify-content: center;
+    }
+
+    .matrix-mini-btn {
+      padding: 0.25rem 0.6rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .matrix-mini-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .inter-matrix-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+
+    .swap-matrices-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      display: grid;
+      place-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .swap-matrices-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      transform: rotate(180deg);
+    }
+
+    .operations-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .ops-category {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .ops-label {
+      font-size: 0.775rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+    }
+
+    .ops-button-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .op-action-btn {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+
+    .op-action-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .op-action-btn.active {
+      background: var(--accent-gradient);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    .scalar-inline-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.2rem 0.5rem;
+    }
+
+    .scalar-input {
+      width: 48px;
+      height: 32px;
+      text-align: center;
+      font-size: 0.95rem;
+      font-weight: 700;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .result-display-section {
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.08) 0%, rgba(137, 170, 204, 0.03) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .result-matrix-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .result-cell-box {
+      min-width: 60px;
+      height: 48px;
+      display: grid;
+      place-content: center;
+      font-family: monospace;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--accent);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0 0.5rem;
+      text-align: center;
+    }
+
+    .step-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-bottom: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .step-badge {
+      font-size: 0.825rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .step-math {
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 0.95rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.6rem 0.85rem;
+      color: var(--text-primary);
+      overflow-x: auto;
+    }
+
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .preset-chip {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.85rem;
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .preset-chip:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -26,29 +400,173 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Matrix Calculator</h1>
-        <p class="tool-description">Addition, multiplication, and determinant of matrices.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Matrix Calculator Studio</h1>
+        <p class="tool-description">Interactive linear algebra studio for 2x2 and 3x3 matrices. Compute Matrix Addition, Subtraction, Multiplication, Determinant, Inverse, Transpose, and Trace with cell-by-cell step derivation.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Matrix Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Addition, multiplication, and determinant of matrices.</div>
-            <div><strong>Inputs:</strong> matrix, determinant, multiply, math</div>
-            <div><strong>Category:</strong> math</div>
+      <div class="matrix-studio">
+        <!-- Dimensions and Presets Bar -->
+        <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+          <div class="dimension-bar">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <span style="font-size: 0.875rem; font-weight: 700; color: var(--text-secondary);">Matrix Dimension:</span>
+              <div class="dim-btn-group">
+                <button type="button" class="dim-btn active" id="dim-2-btn" data-dim="2">2 &times; 2</button>
+                <button type="button" class="dim-btn" id="dim-3-btn" data-dim="3">3 &times; 3</button>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+              <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-tertiary);">Sample Problems:</span>
+              <button type="button" class="preset-chip" id="preset-standard">Standard Invertible</button>
+              <button type="button" class="preset-chip" id="preset-symmetric">Symmetric</button>
+              <button type="button" class="preset-chip" id="preset-singular">Singular (det = 0)</button>
+              <button type="button" class="preset-chip" id="preset-identity">Identity Matrices</button>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Matrix Grids Layout: Matrix A, Swap, Matrix B -->
+        <div class="matrices-layout">
+          <!-- Matrix A Card -->
+          <div class="matrix-card">
+            <div class="matrix-header">
+              <span class="matrix-name">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line></svg>
+                Matrix A
+              </span>
+              <span id="mat-a-det-badge" style="font-size: 0.8rem; color: var(--text-tertiary); font-family: monospace;">det(A) = 0</span>
+            </div>
+
+            <div class="matrix-bracket-box">
+              <div class="matrix-grid dim-2" id="grid-a">
+                <!-- Inputs for Matrix A -->
+              </div>
+            </div>
+
+            <div class="matrix-quick-actions">
+              <button type="button" class="matrix-mini-btn" id="a-action-identity">Identity</button>
+              <button type="button" class="matrix-mini-btn" id="a-action-zero">Zero</button>
+              <button type="button" class="matrix-mini-btn" id="a-action-random">Random</button>
+              <button type="button" class="matrix-mini-btn" id="a-action-transpose">Transpose</button>
+              <button type="button" class="matrix-mini-btn" id="a-action-negate">Negate</button>
+            </div>
+          </div>
+
+          <!-- Central Swap Control -->
+          <div class="inter-matrix-controls">
+            <button type="button" class="swap-matrices-btn" id="swap-matrices-btn" title="Swap Matrix A and Matrix B">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4m0 0L3 8m4-4l4 4m6 4v12m0 0l4-4m-4 4l-4-4"></path></svg>
+            </button>
+            <span style="font-size: 0.75rem; color: var(--text-tertiary); font-weight: 600;">SWAP</span>
+          </div>
+
+          <!-- Matrix B Card -->
+          <div class="matrix-card">
+            <div class="matrix-header">
+              <span class="matrix-name">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line></svg>
+                Matrix B
+              </span>
+              <span id="mat-b-det-badge" style="font-size: 0.8rem; color: var(--text-tertiary); font-family: monospace;">det(B) = 0</span>
+            </div>
+
+            <div class="matrix-bracket-box">
+              <div class="matrix-grid dim-2" id="grid-b">
+                <!-- Inputs for Matrix B -->
+              </div>
+            </div>
+
+            <div class="matrix-quick-actions">
+              <button type="button" class="matrix-mini-btn" id="b-action-identity">Identity</button>
+              <button type="button" class="matrix-mini-btn" id="b-action-zero">Zero</button>
+              <button type="button" class="matrix-mini-btn" id="b-action-random">Random</button>
+              <button type="button" class="matrix-mini-btn" id="b-action-transpose">Transpose</button>
+              <button type="button" class="matrix-mini-btn" id="b-action-negate">Negate</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Operations Controls Card -->
+        <div class="operations-card glass-panel">
+          <div class="ops-category">
+            <span class="ops-label">Binary Operations (Two Matrices):</span>
+            <div class="ops-button-grid">
+              <button type="button" class="op-action-btn active" data-op="add">A + B (Addition)</button>
+              <button type="button" class="op-action-btn" data-op="sub">A &minus; B (Subtraction)</button>
+              <button type="button" class="op-action-btn" data-op="sub-ba">B &minus; A</button>
+              <button type="button" class="op-action-btn" data-op="mul">A &times; B (Multiplication)</button>
+              <button type="button" class="op-action-btn" data-op="mul-ba">B &times; A</button>
+            </div>
+          </div>
+
+          <div class="ops-category">
+            <span class="ops-label">Single Matrix Operations:</span>
+            <div class="ops-button-grid">
+              <button type="button" class="op-action-btn" data-op="det-a">det(A)</button>
+              <button type="button" class="op-action-btn" data-op="det-b">det(B)</button>
+              <button type="button" class="op-action-btn" data-op="inv-a">A⁻¹ (Inverse)</button>
+              <button type="button" class="op-action-btn" data-op="inv-b">B⁻¹ (Inverse)</button>
+              <button type="button" class="op-action-btn" data-op="trans-a">Aᵀ (Transpose)</button>
+              <button type="button" class="op-action-btn" data-op="trans-b">Bᵀ (Transpose)</button>
+              <button type="button" class="op-action-btn" data-op="trace-a">Trace(A)</button>
+              <button type="button" class="op-action-btn" data-op="sq-a">A² (Square)</button>
+              
+              <div class="scalar-inline-wrap">
+                <button type="button" class="op-action-btn" data-op="scalar-a" style="padding: 0.35rem 0.65rem;">k &times; A</button>
+                <input type="number" id="scalar-k" class="scalar-input" value="2" step="any" title="Scalar value k">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="matrix-error" class="alert-error" style="display: none;"></div>
+
+        <!-- Result Matrix Display Section -->
+        <div class="result-display-section glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 0.5rem;">
+            <div style="font-size: 1.15rem; font-weight: 800; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;" id="result-operation-title">
+              Result of A + B
+            </div>
+
+            <div class="action-bar" style="margin-top: 0;">
+              <button type="button" id="copy-result-btn" class="btn btn-secondary" style="padding: 0.4rem 0.85rem; font-size: 0.825rem;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy Matrix
+              </button>
+              <button type="button" id="copy-latex-btn" class="btn btn-secondary" style="padding: 0.4rem 0.85rem; font-size: 0.825rem;">Copy LaTeX</button>
+              <button type="button" id="send-to-a-btn" class="btn btn-secondary" style="padding: 0.4rem 0.85rem; font-size: 0.825rem;">Set as Matrix A</button>
+            </div>
+          </div>
+
+          <div class="result-matrix-wrapper">
+            <!-- Bracketed result container -->
+            <div class="matrix-bracket-box" id="result-bracket-box">
+              <div class="matrix-grid dim-2" id="grid-result">
+                <!-- Rendered result cells -->
+              </div>
+            </div>
+
+            <!-- Single scalar value card if op is scalar like determinant or trace -->
+            <div id="result-scalar-box" style="display: none; text-align: center;">
+              <div style="font-size: 0.8rem; color: var(--text-tertiary); font-weight: 700; text-transform: uppercase;" id="scalar-label">Scalar Value</div>
+              <div style="font-size: 2.75rem; font-weight: 800; color: var(--accent); font-family: monospace;" id="scalar-val">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step-by-Step Calculation Breakdown -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            Step-by-Step Derivation
+          </div>
+
+          <div id="matrix-steps-container">
+            <!-- Step cards -->
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
 
@@ -62,7 +580,7 @@
     "@type": "WebApplication",
     "name": "Matrix Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/matrix-calculator/",
-    "description": "Addition, multiplication, and determinant of matrices.",
+    "description": "Addition, multiplication, determinant, inverse, and transpose of 2x2 and 3x3 matrices.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

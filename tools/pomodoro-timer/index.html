@@ -4,14 +4,337 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pomodoro Focus Timer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Focus sessions timing controls.">
-  <meta name="keywords" content="pomodoro, focus, timer, breaks, productivity, free, online, tool, utility">
+  <meta name="description" content="Boost productivity with a luxury Pomodoro focus timer featuring circular progress ring, audio chime, custom durations, cycle counters, and task tracking.">
+  <meta name="keywords" content="pomodoro timer, focus timer, productivity, interval timer, short break, long break, time management, task tracker">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/pomodoro-timer/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .pomodoro-container {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Mode Pill Switcher */
+    .timer-modes-bar {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      padding: 0.35rem;
+      border-radius: var(--radius-full);
+      max-width: 440px;
+      margin: 0 auto;
+    }
+    .mode-tab-btn {
+      flex: 1;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-full);
+      font-size: 0.875rem;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+    }
+    .mode-tab-btn:hover {
+      color: var(--text-primary);
+    }
+    .mode-tab-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    /* Timer Hero Card */
+    .timer-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.75rem;
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+
+    /* Circular SVG Ring Container */
+    .timer-ring-wrapper {
+      position: relative;
+      width: 290px;
+      height: 290px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .timer-svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    .timer-svg-bg {
+      fill: none;
+      stroke: var(--bg-tertiary);
+      stroke-width: 10;
+    }
+    .timer-svg-progress {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 10;
+      stroke-linecap: round;
+      stroke-dasharray: 816.8; /* 2 * pi * 130 */
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 0.8s linear, stroke 0.3s ease;
+    }
+
+    /* Timer Center Overlay Text */
+    .timer-center-info {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      pointer-events: none;
+    }
+    .timer-badge-mode {
+      font-size: 0.775rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 0.25rem;
+    }
+    .timer-digits-display {
+      font-size: 3.75rem;
+      font-weight: 800;
+      font-family: var(--font-sans);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      color: var(--text-primary);
+    }
+    .timer-focus-task-preview {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Controls Buttons Bar */
+    .timer-controls-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .btn-timer-primary {
+      padding: 0.85rem 2rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: var(--radius-full);
+      background: var(--accent-gradient);
+      color: #ffffff;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 16px var(--accent-glow);
+      transition: var(--transition);
+      min-width: 150px;
+      justify-content: center;
+    }
+    .btn-timer-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--accent-glow);
+    }
+    .btn-timer-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn-timer-icon:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+      transform: scale(1.06);
+    }
+
+    /* Cycles & Progress Indicator */
+    .cycle-tracker {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    .cycle-dots {
+      display: flex;
+      gap: 0.35rem;
+    }
+    .cycle-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: transparent;
+      transition: var(--transition);
+    }
+    .cycle-dot.completed {
+      background: var(--success);
+      border-color: var(--success);
+    }
+    .cycle-dot.current {
+      border-color: var(--accent);
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    /* Bottom Dual Panels */
+    .pomodoro-bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .pomodoro-bottom-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Task Tracker Card */
+    .task-tracker-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .task-input-bar {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .task-items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+    .task-item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 0.75rem;
+      transition: var(--transition);
+    }
+    .task-item-row.is-active {
+      border-color: var(--accent);
+      background: rgba(78, 133, 191, 0.08);
+    }
+    .task-item-row.is-completed {
+      opacity: 0.6;
+      text-decoration: line-through;
+    }
+
+    /* Settings Card */
+    .durations-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .durations-inputs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.65rem;
+    }
+
+    /* Stats Banner */
+    .stats-summary-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      text-align: center;
+    }
+    .stat-metric-val {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.1;
+    }
+    .stat-metric-lbl {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* Toast */
+    .toast-notification {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      color: var(--text-primary);
+      padding: 0.85rem 1.4rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      z-index: 9999;
+      transform: translateY(120%);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+    .toast-notification.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -25,32 +348,150 @@
   <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
-      <div class="tool-header">
+      <div class="tool-header" style="text-align: center; margin-bottom: 0.5rem;">
         <h1>Pomodoro Focus Timer</h1>
-        <p class="tool-description">Focus sessions timing controls.</p>
+        <p class="tool-description" style="margin: 0 auto;">Master your workflow with science-backed interval training. Alternate deep focus sessions with restorative breaks.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Pomodoro Focus Timer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Focus sessions timing controls.</div>
-            <div><strong>Inputs:</strong> pomodoro, focus, timer, breaks, productivity</div>
-            <div><strong>Category:</strong> utility</div>
+      <div class="pomodoro-container">
+        
+        <!-- Mode Tabs -->
+        <div class="timer-modes-bar">
+          <button class="mode-tab-btn active" data-mode="pomodoro" id="tab-pomodoro">Focus (25m)</button>
+          <button class="mode-tab-btn" data-mode="shortBreak" id="tab-short-break">Short Break (5m)</button>
+          <button class="mode-tab-btn" data-mode="longBreak" id="tab-long-break">Long Break (15m)</button>
+        </div>
+
+        <!-- Timer Stage Card -->
+        <div class="timer-card">
+          
+          <!-- Circular Progress Ring SVG -->
+          <div class="timer-ring-wrapper">
+            <svg class="timer-svg" viewBox="0 0 300 300">
+              <circle class="timer-svg-bg" cx="150" cy="150" r="130"></circle>
+              <circle class="timer-svg-progress" id="timer-progress-ring" cx="150" cy="150" r="130"></circle>
+            </svg>
+
+            <!-- Center overlay -->
+            <div class="timer-center-info">
+              <span class="timer-badge-mode" id="timer-badge-label">Focus Session</span>
+              <div class="timer-digits-display" id="timer-display">25:00</div>
+              <div class="timer-focus-task-preview" id="timer-active-task-name">No active task</div>
+            </div>
+          </div>
+
+          <!-- Controls Row -->
+          <div class="timer-controls-row">
+            <!-- Reset Button -->
+            <button class="btn-timer-icon" id="reset-btn" title="Reset Current Session">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            </button>
+
+            <!-- Main Start / Pause Toggle -->
+            <button class="btn-timer-primary" id="toggle-timer-btn">
+              <svg id="play-icon" viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              <svg id="pause-icon" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" style="display: none;"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+              <span id="start-btn-label">Start Focus</span>
+            </button>
+
+            <!-- Skip Session Button -->
+            <button class="btn-timer-icon" id="skip-btn" title="Skip to Next Session">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+            </button>
+
+            <!-- Audio Mute Toggle Button -->
+            <button class="btn-timer-icon" id="sound-toggle-btn" title="Toggle Sound Chime">
+              <svg id="sound-on-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+              <svg id="sound-off-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+            </button>
+          </div>
+
+          <!-- Cycle Tracker -->
+          <div class="cycle-tracker">
+            <span id="cycle-label">Cycle: 1 of 4</span>
+            <div class="cycle-dots" id="cycle-dots-container">
+              <div class="cycle-dot current"></div>
+              <div class="cycle-dot"></div>
+              <div class="cycle-dot"></div>
+              <div class="cycle-dot"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="stats-summary-bar">
+          <div>
+            <div class="stat-metric-val" id="stat-sessions-today">0</div>
+            <div class="stat-metric-lbl">Sessions Completed</div>
+          </div>
+          <div>
+            <div class="stat-metric-val" id="stat-minutes-today">0m</div>
+            <div class="stat-metric-lbl">Focus Time Today</div>
+          </div>
+          <div>
+            <div class="stat-metric-val" id="stat-tasks-done">0</div>
+            <div class="stat-metric-lbl">Tasks Finished</div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Task Tracker & Custom Settings Grid -->
+        <div class="pomodoro-bottom-grid">
+          
+          <!-- Task Tracker Card -->
+          <div class="task-tracker-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-weight: 700; font-size: 0.9rem;">Task Focus Tracker</span>
+              <span style="font-size: 0.775rem; color: var(--text-tertiary);" id="active-task-hint">Click task to focus</span>
+            </div>
+
+            <form id="add-task-form" class="task-input-bar">
+              <input type="text" id="new-task-input" class="form-input" placeholder="What are you working on?" style="padding: 0.5rem 0.85rem; font-size: 0.875rem;" required>
+              <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem; white-space: nowrap;">+ Add</button>
+            </form>
+
+            <div class="task-items-list" id="task-list-container">
+              <!-- Tasks rendered here -->
+            </div>
+          </div>
+
+          <!-- Durations & Audio Customization Card -->
+          <div class="durations-card">
+            <span style="font-weight: 700; font-size: 0.9rem;">Timer Settings (Minutes)</span>
+
+            <div class="durations-inputs-grid">
+              <div class="form-group">
+                <label for="dur-pomodoro" style="font-size: 0.75rem;">Focus</label>
+                <input type="number" id="dur-pomodoro" class="form-input" min="1" max="120" value="25" style="padding: 0.4rem 0.6rem;">
+              </div>
+              <div class="form-group">
+                <label for="dur-short" style="font-size: 0.75rem;">Short Break</label>
+                <input type="number" id="dur-short" class="form-input" min="1" max="60" value="5" style="padding: 0.4rem 0.6rem;">
+              </div>
+              <div class="form-group">
+                <label for="dur-long" style="font-size: 0.75rem;">Long Break</label>
+                <input type="number" id="dur-long" class="form-input" min="1" max="90" value="15" style="padding: 0.4rem 0.6rem;">
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; margin-top: auto;">
+              <button id="save-durations-btn" class="btn btn-secondary" style="flex: 1; padding: 0.45rem 0.75rem; font-size: 0.8rem;">Save Durations</button>
+              <button id="test-sound-btn" class="btn btn-secondary" style="padding: 0.45rem 0.75rem; font-size: 0.8rem;" title="Play Web Audio Chime">Test Sound</button>
+            </div>
+          </div>
+
+        </div>
+
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Toast Notification Feedback -->
+  <div id="toast" class="toast-notification">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">Focus session completed!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -63,7 +504,7 @@
     "name": "Pomodoro Focus Timer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/pomodoro-timer/",
     "description": "Focus sessions timing controls.",
-    "applicationCategory": "UtilityPage",
+    "applicationCategory": "ProductivityTool",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

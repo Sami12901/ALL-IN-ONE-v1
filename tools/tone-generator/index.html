@@ -3,15 +3,240 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Audio Tone Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Synthesizes wave frequencies via browser sound grids.">
-  <meta name="keywords" content="tone, frequency, sound, wave, audio, free, online, tool, utility">
+  <title>Audio Tone & Frequency Synthesizer - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Precision Web Audio API frequency generator. Sine, square, sawtooth, triangle waves, fine-tuning ±1Hz, musical presets, and binaural beat brainwave synthesis.">
+  <meta name="keywords" content="tone generator, frequency generator, sound synthesizer, sine wave generator, 440hz, binaural beats, solfeggio frequencies, web audio">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/tone-generator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Tone Generator Studio Specific Styles */
+    .synth-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    .synth-hero-stage {
+      background: radial-gradient(circle at center, rgba(30, 41, 59, 0.7) 0%, rgba(10, 14, 20, 0.95) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+      box-shadow: inset 0 2px 20px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+
+    .synth-scope-box {
+      width: 100%;
+      height: 160px;
+      position: relative;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    #scope-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .frequency-big-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .frequency-hz-number {
+      font-family: monospace;
+      font-size: clamp(2.5rem, 7vw, 4.2rem);
+      font-weight: 800;
+      color: var(--text-primary);
+      text-shadow: 0 0 30px rgba(78, 133, 191, 0.45);
+      line-height: 1;
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+    }
+
+    .frequency-hz-unit {
+      font-size: 1.5rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .note-info-pill {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      padding: 0.3rem 0.8rem;
+      border-radius: var(--radius-full);
+      font-family: monospace;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Waveform Selector Pills */
+    .waveform-buttons-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      width: 100%;
+      max-width: 580px;
+    }
+
+    @media (max-width: 600px) {
+      .waveform-buttons-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .btn-wave {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 0.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .btn-wave:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      transform: translateY(-2px);
+    }
+    .btn-wave.active {
+      background: rgba(78, 133, 191, 0.15);
+      border-color: var(--accent);
+      color: var(--text-primary);
+      box-shadow: 0 0 16px rgba(78, 133, 191, 0.25);
+    }
+
+    .btn-wave svg {
+      width: 32px;
+      height: 24px;
+    }
+
+    /* Mode Switcher Pills */
+    .mode-switcher-container {
+      display: inline-flex;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.25rem;
+      gap: 0.25rem;
+    }
+
+    .mode-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      padding: 0.4rem 1.1rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .mode-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(78, 133, 191, 0.35);
+    }
+
+    /* Stepper Buttons */
+    .stepper-btn-row {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-step {
+      padding: 0.35rem 0.65rem;
+      font-size: 0.8rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: monospace;
+    }
+    .btn-step:hover {
+      background: var(--border);
+      border-color: var(--accent);
+    }
+
+    /* Preset Tabs & Buttons */
+    .preset-pill-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .btn-preset {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.4rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.825rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.1rem;
+    }
+    .btn-preset:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      background: rgba(78, 133, 191, 0.1);
+    }
+    .btn-preset strong {
+      color: var(--text-primary);
+      font-size: 0.9rem;
+    }
+    .btn-preset span {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      font-family: monospace;
+    }
+
+    .brainwave-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .brainwave-card:hover, .brainwave-card.active {
+      border-color: var(--accent);
+      background: rgba(78, 133, 191, 0.12);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,29 +251,283 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Audio Tone Generator</h1>
-        <p class="tool-description">Synthesizes wave frequencies via browser sound grids.</p>
-      </div>
-
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Audio Tone Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Synthesizes wave frequencies via browser sound grids.</div>
-            <div><strong>Inputs:</strong> tone, frequency, sound, wave, audio</div>
-            <div><strong>Category:</strong> utility</div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>Audio Tone & Frequency Synthesizer</h1>
+            <p class="tool-description">High-precision Web Audio frequency generator. Pure sine, harmonic square, rich saw, and triangle waves. Includes binaural beat brainwave entrainment, solfeggio presets, and WAV tone export.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <div class="mode-switcher-container">
+              <button id="mode-single" class="mode-btn active">Single Tone</button>
+              <button id="mode-binaural" class="mode-btn">Binaural Beats</button>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- Main Workspace -->
+      <div class="synth-workspace">
+        
+        <!-- Hero Stage: Scope, Big Hz Display, Master Play/Pause -->
+        <div class="synth-hero-stage">
+          
+          <!-- Master Audio Play / Pause Trigger -->
+          <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+            <button id="btn-master-play" class="btn btn-primary" style="padding: 0.85rem 2.25rem; font-size: 1.1rem; border-radius: var(--radius-full); box-shadow: 0 4px 20px rgba(78, 133, 191, 0.4);">
+              <svg id="icon-play-state" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              <span id="text-play-state">Start Tone Generator</span>
+            </button>
+            <button id="btn-mute-toggle" class="btn btn-secondary" style="border-radius: var(--radius-full); padding: 0.85rem 1.25rem;" title="Mute Output">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+              <span>Mute</span>
+            </button>
+          </div>
+
+          <!-- Frequency Numerical Display -->
+          <div class="frequency-big-display">
+            <div class="frequency-hz-number">
+              <span id="hz-number-display">440.00</span>
+              <span class="frequency-hz-unit">Hz</span>
+            </div>
+            <div class="note-info-pill">
+              <span id="musical-note-label">A4 (Concert Pitch)</span>
+              <span style="color: var(--border);">|</span>
+              <span id="wavelength-label">λ = 77.3 cm</span>
+            </div>
+          </div>
+
+          <!-- Live Oscilloscope Canvas -->
+          <div class="synth-scope-box" id="scope-wrapper">
+            <canvas id="scope-canvas"></canvas>
+          </div>
+
+          <!-- Waveform Selector Grid -->
+          <div class="waveform-buttons-grid">
+            <button class="btn-wave active" data-wave="sine" title="Sine Wave (Pure Smooth Tone)">
+              <svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M 2 12 Q 11 0 20 12 T 38 12"></path></svg>
+              <span>Sine</span>
+            </button>
+            <button class="btn-wave" data-wave="square" title="Square Wave (Rich Odd Harmonics)">
+              <svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="2 18 2 6 20 6 20 18 38 18 38 6"></polyline></svg>
+              <span>Square</span>
+            </button>
+            <button class="btn-wave" data-wave="sawtooth" title="Sawtooth Wave (Full Brass Spectrum)">
+              <svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="2 18 20 6 20 18 38 6 38 18"></polyline></svg>
+              <span>Sawtooth</span>
+            </button>
+            <button class="btn-wave" data-wave="triangle" title="Triangle Wave (Warm Hollow Tone)">
+              <svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="2 18 11 6 20 18 29 6 38 18"></polyline></svg>
+              <span>Triangle</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Single Tone Controls Panel -->
+        <div id="panel-single-mode" class="tool-panel glass-panel">
+          <div class="panel-title">Frequency & Gain Studio</div>
+
+          <!-- Frequency Slider & Input Row -->
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+              <label for="freq-slider" style="font-weight: 600; color: var(--text-secondary); font-size: 0.9rem;">
+                Frequency Range (20 Hz - 20,000 Hz)
+              </label>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <input type="number" id="freq-input" class="form-input" min="20" max="20000" step="0.1" value="440" style="width: 120px; font-family: monospace; font-size: 1.1rem; font-weight: 700; text-align: right;">
+                <span style="font-weight: 600; color: var(--accent);">Hz</span>
+              </div>
+            </div>
+
+            <!-- Logarithmic Range Slider -->
+            <input type="range" id="freq-slider" min="0" max="1000" value="447" class="range-slider" style="width: 100%;">
+
+            <!-- Fine-Tuning Buttons Bar -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; background: var(--bg-tertiary); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+              <div style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">Fine-Tune:</div>
+              <div class="stepper-btn-row">
+                <button class="btn-step" id="btn-freq-sub-10">-10 Hz</button>
+                <button class="btn-step" id="btn-freq-sub-5">-5 Hz</button>
+                <button class="btn-step" id="btn-freq-sub-1">-1 Hz</button>
+                <button class="btn-step" id="btn-freq-sub-01">-0.1 Hz</button>
+                <button class="btn-step" id="btn-freq-add-01">+0.1 Hz</button>
+                <button class="btn-step" id="btn-freq-add-1">+1 Hz</button>
+                <button class="btn-step" id="btn-freq-add-5">+5 Hz</button>
+                <button class="btn-step" id="btn-freq-add-10">+10 Hz</button>
+              </div>
+              <div style="display: flex; gap: 0.4rem;">
+                <button class="btn-step" id="btn-octave-down" title="Half Frequency (1 Octave Down)">/ 2 Oct</button>
+                <button class="btn-step" id="btn-octave-up" title="Double Frequency (1 Octave Up)">* 2 Oct</button>
+              </div>
+            </div>
+
+            <!-- Volume Gain & Panning Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; margin-top: 0.5rem;">
+              
+              <!-- Volume Gain -->
+              <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Master Volume</span>
+                  <span id="volume-val-text" style="font-family: monospace; font-size: 0.9rem; font-weight: 700; color: var(--accent);">50%</span>
+                </div>
+                <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5" class="range-slider">
+              </div>
+
+              <!-- Stereo Pan -->
+              <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Stereo Balance</span>
+                  <span id="pan-val-text" style="font-family: monospace; font-size: 0.9rem; font-weight: 700; color: var(--accent);">Center</span>
+                </div>
+                <input type="range" id="pan-slider" min="-1" max="1" step="0.05" value="0" class="range-slider">
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Binaural Beats Studio Panel (Hidden by default, shown in binaural mode) -->
+        <div id="panel-binaural-mode" class="tool-panel glass-panel" style="display: none;">
+          <div class="panel-title">Binaural Beat Brainwave Generator</div>
+          <p style="font-size: 0.9rem; color: var(--text-secondary);">
+            Use stereo headphones. When two slightly different frequencies are sent to each ear, your brain perceives a third pulsing phantom beat equal to the difference, inducing altered neural states.
+          </p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem;">
+            <!-- Carrier Frequency Card -->
+            <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.75rem;">
+              <span style="font-weight: 600; font-size: 0.9rem; color: var(--text-primary);">Carrier Frequency (Base Tone)</span>
+              <input type="range" id="binaural-carrier-slider" min="50" max="800" value="210" class="range-slider">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.8rem; color: var(--text-tertiary);">Base Pitch:</span>
+                <span id="carrier-readout" style="font-family: monospace; font-weight: 700; color: var(--accent);">210.0 Hz</span>
+              </div>
+            </div>
+
+            <!-- Beat Frequency Difference Card -->
+            <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.75rem;">
+              <span style="font-weight: 600; font-size: 0.9rem; color: var(--text-primary);">Target Beat Frequency (Difference)</span>
+              <input type="range" id="binaural-beat-slider" min="0.5" max="45" step="0.1" value="7.8" class="range-slider">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.8rem; color: var(--text-tertiary);">Beat Speed:</span>
+                <span id="beat-readout" style="font-family: monospace; font-weight: 700; color: #10b981;">7.8 Hz (Theta)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ear Channel Breakdown -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem;">
+            <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: var(--radius-md); padding: 0.85rem; text-align: center;">
+              <div style="font-size: 0.8rem; color: #93c5fd; text-transform: uppercase; font-weight: 700;">Left Ear</div>
+              <div id="left-ear-hz" style="font-family: monospace; font-size: 1.3rem; font-weight: 800; color: #ffffff;">210.00 Hz</div>
+            </div>
+            <div style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: var(--radius-md); padding: 0.85rem; text-align: center;">
+              <div style="font-size: 0.8rem; color: #d8b4fe; text-transform: uppercase; font-weight: 700;">Right Ear</div>
+              <div id="right-ear-hz" style="font-family: monospace; font-size: 1.3rem; font-weight: 800; color: #ffffff;">217.80 Hz</div>
+            </div>
+          </div>
+
+          <!-- Brainwave Presets -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.75rem; margin-top: 0.5rem;">
+            <div class="brainwave-card" data-beat="2.5" data-name="Delta" title="0.5-4 Hz: Deep Sleep & Rejuvenation">
+              <strong style="color: #60a5fa; display: block;">Delta (2.5 Hz)</strong>
+              <span style="font-size: 0.75rem; color: var(--text-tertiary);">Deep Sleep, Healing</span>
+            </div>
+            <div class="brainwave-card active" data-beat="7.83" data-name="Schumann" title="7.83 Hz: Earth Resonance & Meditation">
+              <strong style="color: #34d399; display: block;">Theta (7.83 Hz)</strong>
+              <span style="font-size: 0.75rem; color: var(--text-tertiary);">Schumann Resonance</span>
+            </div>
+            <div class="brainwave-card" data-beat="10.0" data-name="Alpha" title="8-13 Hz: Relaxed Focus & Stress Relief">
+              <strong style="color: #fbbf24; display: block;">Alpha (10.0 Hz)</strong>
+              <span style="font-size: 0.75rem; color: var(--text-tertiary);">Calm Focus & Clarity</span>
+            </div>
+            <div class="brainwave-card" data-beat="18.0" data-name="Beta" title="13-30 Hz: Alert Problem Solving">
+              <strong style="color: #f87171; display: block;">Beta (18.0 Hz)</strong>
+              <span style="font-size: 0.75rem; color: var(--text-tertiary);">Active Concentration</span>
+            </div>
+            <div class="brainwave-card" data-beat="40.0" data-name="Gamma" title="30-50 Hz: High Cognition & Memory">
+              <strong style="color: #c084fc; display: block;">Gamma (40.0 Hz)</strong>
+              <span style="font-size: 0.75rem; color: var(--text-tertiary);">Peak Cognitive Processing</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Presets Vault: Musical Notes, Solfeggio, and Standards -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">Musical & Acoustic Presets</div>
+
+          <!-- Equal Temperament Musical Notes -->
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.05em;">Chromatic Octave (C4 - C5)</span>
+            <div class="preset-pill-grid">
+              <button class="btn-preset" data-freq="261.63"><strong>C4</strong><span>261.6 Hz</span></button>
+              <button class="btn-preset" data-freq="293.66"><strong>D4</strong><span>293.7 Hz</span></button>
+              <button class="btn-preset" data-freq="329.63"><strong>E4</strong><span>329.6 Hz</span></button>
+              <button class="btn-preset" data-freq="349.23"><strong>F4</strong><span>349.2 Hz</span></button>
+              <button class="btn-preset" data-freq="392.00"><strong>G4</strong><span>392.0 Hz</span></button>
+              <button class="btn-preset" data-freq="440.00"><strong>A4</strong><span>440.0 Hz</span></button>
+              <button class="btn-preset" data-freq="493.88"><strong>B4</strong><span>493.9 Hz</span></button>
+              <button class="btn-preset" data-freq="523.25"><strong>C5</strong><span>523.3 Hz</span></button>
+            </div>
+          </div>
+
+          <!-- Solfeggio Frequencies -->
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.75rem;">
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.05em;">Solfeggio Harmonic Frequencies</span>
+            <div class="preset-pill-grid">
+              <button class="btn-preset" data-freq="174.00"><strong>174 Hz</strong><span>Natural Anaesthetic</span></button>
+              <button class="btn-preset" data-freq="285.00"><strong>285 Hz</strong><span>Tissue Regeneration</span></button>
+              <button class="btn-preset" data-freq="396.00"><strong>396 Hz</strong><span>Liberation of Fear</span></button>
+              <button class="btn-preset" data-freq="417.00"><strong>417 Hz</strong><span>Undoing Situations</span></button>
+              <button class="btn-preset" data-freq="528.00"><strong>528 Hz</strong><span>Miracle / DNA Repair</span></button>
+              <button class="btn-preset" data-freq="639.00"><strong>639 Hz</strong><span>Connecting / Harmony</span></button>
+              <button class="btn-preset" data-freq="741.00"><strong>741 Hz</strong><span>Awakening Intuition</span></button>
+              <button class="btn-preset" data-freq="852.00"><strong>852 Hz</strong><span>Spiritual Order</span></button>
+              <button class="btn-preset" data-freq="963.00"><strong>963 Hz</strong><span>Higher Consciousness</span></button>
+            </div>
+          </div>
+
+          <!-- Test & Calibration Tones -->
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.75rem;">
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.05em;">Acoustic Calibration Tones</span>
+            <div class="preset-pill-grid">
+              <button class="btn-preset" data-freq="60.00"><strong>60 Hz</strong><span>Mains Hum Test</span></button>
+              <button class="btn-preset" data-freq="100.00"><strong>100 Hz</strong><span>Sub-Bass Test</span></button>
+              <button class="btn-preset" data-freq="1000.00"><strong>1 kHz</strong><span>Broadcast Reference</span></button>
+              <button class="btn-preset" data-freq="10000.00"><strong>10 kHz</strong><span>High Treble Limit</span></button>
+              <button class="btn-preset" data-freq="15000.00"><strong>15 kHz</strong><span>Ultrasonic Check</span></button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Tone Export Action Card -->
+        <div class="tool-panel glass-panel" style="padding: 1.25rem 1.75rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-primary);">Export Pure Audio File</div>
+              <div style="font-size: 0.85rem; color: var(--text-secondary);">
+                Synthesize a seamless, high-definition 16-bit PCM WAV audio file with your current frequency and waveform parameters.
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <select id="export-duration-select" class="form-select" style="width: 140px; font-size: 0.9rem;">
+                <option value="5">5 Seconds</option>
+                <option value="10" selected>10 Seconds</option>
+                <option value="30">30 Seconds</option>
+              </select>
+              <button id="btn-export-wav" class="btn btn-secondary">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download WAV
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </main>
 
@@ -63,9 +542,9 @@
     "name": "Audio Tone Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/tone-generator/",
     "description": "Synthesizes wave frequencies via browser sound grids.",
-    "applicationCategory": "UtilityPage",
+    "applicationCategory": "SoundSynthesizer",
     "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
+    "browserRequirements": "Requires JavaScript. Requires HTML5 Web Audio API."
   }
   </script>
 </body>

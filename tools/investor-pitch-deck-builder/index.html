@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Investor Pitch Deck Builder - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Design professional Company Overviews, Revenue, and Growth analysis.">
-  <meta name="keywords" content="slide, presentation, pitch, deck, investor pitch deck builder, free, online, tool, utility">
+  <meta name="description" content="Design standard 10-slide VC startup pitch decks with a structured form wizard, TAM/SAM/SOM calculators, traction metrics, and interactive fullscreen presentation mode.">
+  <meta name="keywords" content="slide, presentation, pitch, deck, investor pitch deck builder, startup deck, venture capital, tam sam som, free, online, tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/investor-pitch-deck-builder/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,277 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+
+  <style>
+    /* Pitch Deck Studio Styles */
+    .pitch-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Wizard Step Bar */
+    .wizard-steps-scroll {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      scrollbar-width: none;
+    }
+    .wizard-steps-scroll::-webkit-scrollbar { display: none; }
+
+    .wizard-step-pill {
+      flex-shrink: 0;
+      padding: 0.5rem 0.85rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: var(--transition);
+    }
+    .wizard-step-pill:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .wizard-step-pill.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+    .step-num-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.2);
+      font-size: 0.7rem;
+    }
+
+    /* Split Workspace: Editor Form Wizard + Live Slide Viewer */
+    .pitch-split-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    @media (min-width: 1080px) {
+      .pitch-split-grid {
+        grid-template-columns: 460px 1fr;
+      }
+    }
+    @media (min-width: 1320px) {
+      .pitch-split-grid {
+        grid-template-columns: 500px 1fr;
+      }
+    }
+
+    /* Slide Viewer Container */
+    .slide-viewer-box {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .slide-viewer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      padding: 0.65rem 1.25rem;
+      border-radius: var(--radius-md);
+    }
+
+    /* Slide Paper / Screen Proportions */
+    .deck-slide-frame {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: radial-gradient(circle at 80% 20%, #172554 0%, #030712 100%);
+      color: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+      padding: 3.5rem 4rem;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    @media (max-width: 650px) {
+      .deck-slide-frame {
+        padding: 1.5rem;
+      }
+    }
+
+    .slide-header-tag {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .slide-main-title {
+      font-family: var(--font-display), Georgia, serif;
+      font-size: clamp(1.8rem, 3.8vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.15;
+      color: #ffffff;
+      margin-bottom: 0.5rem;
+    }
+
+    .slide-tagline {
+      font-size: clamp(0.95rem, 1.8vw, 1.2rem);
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+
+    .slide-body-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin: 1rem 0;
+    }
+
+    .slide-deck-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: #64748b;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 0.75rem;
+      margin-top: auto;
+    }
+
+    /* Custom Cards on Slides (TAM, Traction, Problem points) */
+    .card-triad-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+    @media (max-width: 600px) {
+      .card-triad-grid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+    }
+
+    .deck-subcard {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      backdrop-filter: blur(8px);
+    }
+
+    .subcard-val {
+      font-family: var(--font-display), sans-serif;
+      font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+      font-weight: 800;
+      color: #60a5fa;
+      line-height: 1;
+    }
+    .subcard-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #cbd5e1;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .subcard-desc {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      line-height: 1.4;
+    }
+
+    /* FULLSCREEN PRESENTATION MODAL */
+    .pitch-present-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: #000000;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      user-select: none;
+      outline: none;
+    }
+    .pitch-present-modal.active {
+      display: flex;
+    }
+
+    .pitch-present-screen {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 4vmin;
+      box-sizing: border-box;
+    }
+
+    .pitch-present-slide-inner {
+      width: 100%;
+      max-width: 1600px;
+      aspect-ratio: 16 / 9;
+      border-radius: var(--radius-lg);
+      padding: 5rem 6rem;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      background: radial-gradient(circle at 80% 20%, #172554 0%, #030712 100%);
+      color: #f8fafc;
+      box-shadow: 0 0 100px rgba(0, 0, 0, 0.9);
+      animation: slideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Floating HUD */
+    .pitch-hud {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 0.4rem 1rem;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: #ffffff;
+      font-size: 0.85rem;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      z-index: 100000;
+      opacity: 0.3;
+      transition: opacity 0.2s ease;
+    }
+    .pitch-hud:hover {
+      opacity: 1;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -24,45 +295,137 @@
 
   <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
-      <div class="tool-header">
-        <h1>Investor Pitch Deck Builder</h1>
-        <p class="tool-description">Design professional Company Overviews, Revenue, and Growth analysis.</p>
-      </div>
-
-      <!-- Tool Workspace -->
+    <div class="container tool-container" style="max-width: 1400px;">
       
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Investor Pitch Deck Builder</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Design professional Company Overviews, Revenue, and Growth analysis.</div>
-            <div><strong>Inputs:</strong> slide, presentation, pitch, deck, investor pitch deck builder</div>
-            <div><strong>Category:</strong> slide</div>
+      <!-- Tool Header -->
+      <div class="tool-header">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Investor Pitch Deck Synthesizer</h1>
+            <p class="tool-description">Build a high-caliber 10-slide VC startup pitch deck with TAM/SAM/SOM market sizing, traction metrics, unit economics, and full-screen presenter mode.</p>
+          </div>
+          <div class="action-bar" style="margin-top: 0;">
+            <button id="btn-load-sample" class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              Load Sample Startup
+            </button>
+            <button id="btn-reset" class="btn btn-secondary" style="color: var(--error);">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+              Reset
+            </button>
+            <button id="btn-export-json" class="btn btn-secondary">
+              Export Deck
+            </button>
+            <label class="btn btn-secondary" style="cursor: pointer;">
+              Import <input type="file" id="file-import-deck" accept=".json" style="display: none;">
+            </label>
+            <button id="btn-present-fullscreen" class="btn btn-primary" style="font-weight: 700; box-shadow: 0 4px 14px var(--accent-glow);">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              Present (F5)
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- 10-Slide Wizard Step Bar -->
+      <nav class="wizard-steps-scroll" aria-label="Pitch Deck Slide Navigation">
+        <button class="wizard-step-pill active" data-step="0"><span class="step-num-badge">1</span> Title &amp; Mission</button>
+        <button class="wizard-step-pill" data-step="1"><span class="step-num-badge">2</span> The Problem</button>
+        <button class="wizard-step-pill" data-step="2"><span class="step-num-badge">3</span> The Solution</button>
+        <button class="wizard-step-pill" data-step="3"><span class="step-num-badge">4</span> Market Size</button>
+        <button class="wizard-step-pill" data-step="4"><span class="step-num-badge">5</span> Product Demo</button>
+        <button class="wizard-step-pill" data-step="5"><span class="step-num-badge">6</span> Business Model</button>
+        <button class="wizard-step-pill" data-step="6"><span class="step-num-badge">7</span> Traction</button>
+        <button class="wizard-step-pill" data-step="7"><span class="step-num-badge">8</span> Moat &amp; Rivals</button>
+        <button class="wizard-step-pill" data-step="8"><span class="step-num-badge">9</span> Team</button>
+        <button class="wizard-step-pill" data-step="9"><span class="step-num-badge">10</span> The Ask</button>
+      </nav>
+
+      <!-- Main Dual Studio Workspace -->
+      <div class="pitch-split-grid">
+        
+        <!-- Left: Form Wizard Panel for Active Slide -->
+        <div class="tool-panel glass-panel" style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;">
+            <h2 class="panel-title" style="margin-bottom: 0; border: none; padding: 0;" id="wizard-form-title">
+              Slide 1: Title &amp; Mission
+            </h2>
+            <span style="font-size: 0.75rem; color: var(--text-tertiary);" id="autosave-tag">Saved</span>
+          </div>
+
+          <!-- Dynamic Form Fields Injected by script based on current slide -->
+          <div id="slide-form-fields" style="display: flex; flex-direction: column; gap: 1rem;">
+            <!-- Injected via script -->
+          </div>
+
+          <!-- Wizard Prev / Next Controls -->
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 1rem; margin-top: 0.5rem;">
+            <button id="btn-wizard-prev" class="btn btn-secondary">
+              &larr; Previous Slide
+            </button>
+            <button id="btn-wizard-next" class="btn btn-primary">
+              Next Slide &rarr;
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Live Formatted Slide Viewer -->
+        <div class="slide-viewer-box">
+          <div class="slide-viewer-header">
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">Interactive Slide Preview</span>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span id="preview-slide-indicator" style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Slide 1 of 10</span>
+              <button id="btn-prev-slide-view" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;">◀</button>
+              <button id="btn-next-slide-view" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;">▶</button>
+            </div>
+          </div>
+
+          <!-- Slide Visual Frame -->
+          <div id="deck-slide-frame" class="deck-slide-frame" role="region" aria-label="Pitch Deck Slide Canvas">
+            <!-- Rendered via script -->
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </main>
+
+  <!-- Fullscreen Pitch Presenter Modal -->
+  <div id="pitch-present-modal" class="pitch-present-modal" tabindex="0">
+    <div class="pitch-present-screen">
+      <div id="pitch-present-slide-inner" class="pitch-present-slide-inner">
+        <!-- Injected via presenter script -->
+      </div>
+    </div>
+
+    <!-- Floating HUD -->
+    <div class="pitch-hud">
+      <button class="hud-btn" id="pitch-hud-prev" title="Previous Slide (← / ArrowLeft)">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <span id="pitch-hud-counter" style="font-weight: 600; font-size: 0.8rem; min-width: 60px; text-align: center;">1 / 10</span>
+      <button class="hud-btn" id="pitch-hud-next" title="Next Slide (→ / ArrowRight)">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+      <div style="width: 1px; height: 16px; background: rgba(255,255,255,0.2);"></div>
+      <button class="hud-btn" id="pitch-hud-exit" title="Exit Presentation (Esc)">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Investor Pitch Deck Builder",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/investor-pitch-deck-builder/",
-    "description": "Design professional Company Overviews, Revenue, and Growth analysis.",
+    "description": "Standard 10-slide VC startup pitch deck synthesizer with form wizard, TAM/SAM/SOM market sizing, traction metrics, and full-screen presenter mode.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

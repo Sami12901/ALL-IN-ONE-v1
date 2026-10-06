@@ -3,14 +3,178 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AES Encryption Simulator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Simulates symmetric cipher encryptions.">
-  <meta name="keywords" content="aes, encryption, decrypt, cipher, secret, free, online, tool, utility">
+  <title>AES-256-GCM Encryption Simulator - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Client-side AES-GCM 256-bit encryption and decryption with PBKDF2 key derivation, random IVs, and zero network transmission.">
+  <meta name="keywords" content="aes, encryption, aes-256-gcm, decrypt, cipher, pbkdf2, secret, security, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/aes-encryption/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <style>
+    /* Tool-specific styles for AES Encryption */
+    .aes-mode-tabs {
+      display: flex;
+      background: var(--bg-tertiary);
+      padding: 0.35rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      gap: 0.35rem;
+      max-width: 380px;
+      margin-bottom: 0.5rem;
+    }
+
+    .mode-tab-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1rem;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .mode-tab-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    .cipher-inspect-tabs {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .inspect-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0.3rem 0.6rem;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+    }
+    .inspect-tab-btn.active {
+      color: var(--accent);
+      background: var(--bg-secondary);
+    }
+
+    .input-wrapper-rel {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .passphrase-field {
+      padding-right: 5rem;
+      font-family: monospace, var(--font-sans);
+    }
+
+    .input-actions-inner {
+      position: absolute;
+      right: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .icon-action-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 0.4rem;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    .icon-action-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+    }
+
+    .crypto-meta-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.6rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem;
+      font-size: 0.8rem;
+    }
+    .crypto-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+    .crypto-meta-label {
+      color: var(--text-tertiary);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+    }
+    .crypto-meta-val {
+      font-family: monospace;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .error-alert-banner {
+      display: none;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #ef4444;
+      padding: 0.9rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.88rem;
+      align-items: flex-start;
+      gap: 0.65rem;
+      margin-top: 0.75rem;
+    }
+    .error-alert-banner.show {
+      display: flex;
+    }
+
+    /* Toast Notification */
+    .app-toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.9rem;
+      z-index: 1000;
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: all 0.25s ease;
+    }
+    .app-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+  </style>
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
@@ -26,31 +190,173 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>AES Encryption Simulator</h1>
-        <p class="tool-description">Simulates symmetric cipher encryptions.</p>
+        <h1>AES-256-GCM Encryption Simulator</h1>
+        <p class="tool-description">Authenticated client-side 256-bit AES encryption & decryption using native Web Cryptography (SubtleCrypto), PBKDF2 key derivation, and random IVs.</p>
+      </div>
+
+      <!-- Mode Selector Tabs -->
+      <div class="aes-mode-tabs" role="tablist">
+        <button type="button" id="tab-encrypt" class="mode-tab-btn active" role="tab" aria-selected="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          Encrypt Mode
+        </button>
+        <button type="button" id="tab-decrypt" class="mode-tab-btn" role="tab" aria-selected="false">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+          </svg>
+          Decrypt Mode
+        </button>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AES Encryption Simulator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Simulates symmetric cipher encryptions.</div>
-            <div><strong>Inputs:</strong> aes, encryption, decrypt, cipher, secret</div>
-            <div><strong>Category:</strong> security</div>
+      <div class="tool-workarea split-view">
+        
+        <!-- Left Panel: Input & Passphrase -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title" id="panel-input-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            Plaintext Message Input
+          </h2>
+
+          <!-- Passphrase Input -->
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label for="passphrase-input">Secret Passphrase / Key</label>
+              <button type="button" id="gen-key-btn" style="background: none; border: none; color: var(--accent); font-size: 0.8rem; cursor: pointer; text-decoration: underline;">Generate Random Key</button>
+            </div>
+            <div class="input-wrapper-rel">
+              <input type="password" id="passphrase-input" class="form-input passphrase-field" placeholder="Enter encryption passphrase..." autocomplete="off">
+              <div class="input-actions-inner">
+                <button type="button" id="toggle-pass-visibility-btn" class="icon-action-btn" title="Toggle visibility">
+                  <svg id="pass-eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
+
+          <!-- Main Text Area (Plaintext or Ciphertext depending on mode) -->
+          <div class="form-group" style="flex: 1; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label for="main-input" id="main-input-label">Plaintext Message</label>
+              <button type="button" id="load-sample-btn" style="background: none; border: none; color: var(--text-tertiary); font-size: 0.8rem; cursor: pointer;">Load Sample Text</button>
+            </div>
+            <textarea id="main-input" class="form-textarea" style="flex: 1; min-height: 220px;" placeholder="Type sensitive message to encrypt..."></textarea>
+          </div>
+
+          <!-- Error Alert Banner -->
+          <div id="error-banner" class="error-alert-banner">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <div id="error-message">Decryption failed. Please check your passphrase and ciphertext integrity.</div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-bar">
+            <button type="button" id="action-btn" class="btn btn-primary" style="flex: 1;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <span id="action-btn-text">Encrypt Message</span>
+            </button>
+            <button type="button" id="clear-all-btn" class="btn btn-secondary">Clear</button>
+          </div>
+
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Panel: Output & Cipher Breakdown -->
+        <div class="tool-panel glass-panel" style="position: relative;">
+          <h2 class="panel-title" id="panel-output-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+            Ciphertext Output (Base64)
+          </h2>
+
+          <!-- Output format tabs (Packed Base64 vs Structured JSON) in Encrypt mode -->
+          <div class="cipher-inspect-tabs" id="output-tabs-container">
+            <button type="button" id="tab-fmt-packed" class="inspect-tab-btn active">Standard Payload (Base64)</button>
+            <button type="button" id="tab-fmt-json" class="inspect-tab-btn">Detailed Envelope (JSON)</button>
+          </div>
+
+          <!-- Main Output Box -->
+          <div style="position: relative; flex: 1; display: flex; flex-direction: column;">
+            <textarea id="main-output" class="form-textarea" style="flex: 1; min-height: 220px; padding-right: 4.5rem; word-break: break-all;" readonly placeholder="Encrypted ciphertext will appear here..."></textarea>
+            <button type="button" id="copy-output-btn" class="copy-btn" style="top: 0.75rem; right: 0.75rem;">Copy</button>
+          </div>
+
+          <!-- Cryptographic Metadata Bar -->
+          <div class="crypto-meta-bar" id="crypto-meta-bar">
+            <div class="crypto-meta-item">
+              <span class="crypto-meta-label">Cipher</span>
+              <span class="crypto-meta-val">AES-GCM 256-bit</span>
+            </div>
+            <div class="crypto-meta-item">
+              <span class="crypto-meta-label">KDF</span>
+              <span class="crypto-meta-val">PBKDF2 SHA-256</span>
+            </div>
+            <div class="crypto-meta-item">
+              <span class="crypto-meta-label">Iterations</span>
+              <span class="crypto-meta-val">100,000</span>
+            </div>
+            <div class="crypto-meta-item">
+              <span class="crypto-meta-label">Auth Tag</span>
+              <span class="crypto-meta-val">128-bit GCM MAC</span>
+            </div>
+          </div>
+
+          <!-- Bottom Actions -->
+          <div class="action-bar">
+            <button type="button" id="download-output-btn" class="btn btn-secondary" style="flex: 1;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Download Output (.txt)
+            </button>
+          </div>
+
+        </div>
+
       </div>
-    
+
+      <!-- Security Guarantee Note -->
+      <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.25rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">
+        <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.5rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          Client-Side Zero-Knowledge Cryptography
+        </div>
+        <p>
+          Encryption and decryption execute completely inside your web browser via the W3C Web Cryptography API (<code>SubtleCrypto</code>).
+          The master key is derived dynamically using <strong>PBKDF2</strong> with 100,000 SHA-256 iterations and a cryptographically unique 16-byte salt per encryption.
+          Every encryption generates a fresh 12-byte initialization vector (IV) to prevent replay attacks.
+        </p>
+      </div>
+
     </div>
   </main>
+
+  <!-- Global Toast Notification -->
+  <div id="app-toast" class="app-toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span id="toast-message">Copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -60,9 +366,9 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "AES Encryption Simulator",
+    "name": "AES-256-GCM Encryption Simulator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/aes-encryption/",
-    "description": "Simulates symmetric cipher encryptions.",
+    "description": "Client-side AES-GCM 256-bit encryption & decryption using native SubtleCrypto and PBKDF2.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

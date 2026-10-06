@@ -4,14 +4,300 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Loan & Mortgage Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Computes payments and amortizations.">
-  <meta name="keywords" content="loan, mortgage, interest, payment, amortization, free, online, tool, utility">
+  <meta name="description" content="Calculate monthly loan and mortgage payments, total interest, extra payments savings, and explore full interactive amortization schedules.">
+  <meta name="keywords" content="loan calculator, mortgage calculator, interest payment, amortization schedule, extra payments, debt payoff, loan term">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/loan-calculator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .loan-workarea {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+    @media (min-width: 1024px) {
+      .loan-workarea {
+        grid-template-columns: 420px 1fr;
+      }
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+    @media (max-width: 540px) {
+      .form-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.35rem;
+    }
+    .chip-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-full);
+      padding: 0.25rem 0.65rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .chip-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .chip-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    .input-with-affix {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-affix {
+      position: absolute;
+      left: 0.85rem;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      pointer-events: none;
+      font-size: 0.95rem;
+    }
+    .input-affix-right {
+      position: absolute;
+      right: 0.85rem;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      pointer-events: none;
+      font-size: 0.95rem;
+    }
+    .input-with-affix input {
+      padding-left: 2rem;
+    }
+    .input-with-affix-right input {
+      padding-right: 2rem;
+    }
+
+    .kpi-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    .kpi-card:hover {
+      border-color: rgba(var(--accent-rgb), 0.4);
+      transform: translateY(-2px);
+    }
+    .kpi-card.highlight {
+      background: linear-gradient(145deg, rgba(var(--accent-rgb), 0.12), var(--bg-tertiary));
+      border-color: var(--accent);
+    }
+    .kpi-title {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .kpi-value {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .kpi-card.highlight .kpi-value {
+      color: var(--accent);
+    }
+    .kpi-subtext {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    .savings-banner {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .savings-icon {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .progress-bar-container {
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      height: 14px;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      border: 1px solid var(--border);
+      margin: 0.85rem 0 0.5rem 0;
+    }
+    .progress-bar-principal {
+      background: var(--accent);
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+    .progress-bar-interest {
+      background: #f59e0b;
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+    .bar-legend {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .table-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .toolbar-search {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+      max-width: 340px;
+    }
+    .toolbar-search input {
+      padding-left: 2rem;
+      height: 38px;
+    }
+    .toolbar-search svg {
+      position: absolute;
+      left: 0.65rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+    }
+
+    .schedule-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 0.86rem;
+    }
+    .schedule-table th {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 700;
+      padding: 0.75rem 0.85rem;
+      text-align: right;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .schedule-table th:first-child,
+    .schedule-table th:nth-child(2) {
+      text-align: left;
+    }
+    .schedule-table td {
+      padding: 0.65rem 0.85rem;
+      border-bottom: 1px solid var(--border);
+      text-align: right;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+    .schedule-table td:first-child,
+    .schedule-table td:nth-child(2) {
+      text-align: left;
+    }
+    .schedule-table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .schedule-table tbody tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.015);
+    }
+
+    .table-pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      flex-wrap: wrap;
+    }
+    .pagination-actions {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .page-btn {
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: var(--transition);
+    }
+    .page-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .page-btn:not(:disabled):hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,26 +313,248 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Loan & Mortgage Calculator</h1>
-        <p class="tool-description">Computes payments and amortizations.</p>
+        <p class="tool-description">Estimate your exact monthly payments, total loan interest, payoff timeframe, and preview the impact of extra monthly payments with a comprehensive amortization schedule.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Loan & Mortgage Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Computes payments and amortizations.</div>
-            <div><strong>Inputs:</strong> loan, mortgage, interest, payment, amortization</div>
-            <div><strong>Category:</strong> business</div>
+      <div class="loan-workarea">
+        <!-- Configuration Panel (Left) -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            Loan Parameters
+          </h2>
+
+          <!-- Principal / Loan Amount -->
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <label for="loan-amount">Loan Amount (Principal)</label>
+              <span id="loan-amount-badge" class="badge">$300,000</span>
+            </div>
+            <div class="input-with-affix">
+              <span class="input-affix">$</span>
+              <input type="number" id="loan-amount" class="form-input" min="500" max="10000000" step="1000" value="300000">
+            </div>
+            <div class="range-group">
+              <input type="range" id="loan-amount-range" min="10000" max="1000000" step="5000" value="300000" class="range-slider">
+            </div>
+            <div class="preset-chips">
+              <button type="button" class="chip-btn" data-preset-amount="50000">$50K</button>
+              <button type="button" class="chip-btn" data-preset-amount="150000">$150K</button>
+              <button type="button" class="chip-btn active" data-preset-amount="300000">$300K</button>
+              <button type="button" class="chip-btn" data-preset-amount="500000">$500K</button>
+              <button type="button" class="chip-btn" data-preset-amount="750000">$750K</button>
+              <button type="button" class="chip-btn" data-preset-amount="1000000">$1M</button>
+            </div>
+          </div>
+
+          <!-- Interest Rate -->
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <label for="interest-rate">Annual Interest Rate (%)</label>
+              <span id="interest-rate-badge" class="badge">5.50%</span>
+            </div>
+            <div class="input-with-affix input-with-affix-right">
+              <input type="number" id="interest-rate" class="form-input" min="0.01" max="30" step="0.05" value="5.50">
+              <span class="input-affix-right">%</span>
+            </div>
+            <div class="range-group">
+              <input type="range" id="interest-rate-range" min="1.0" max="15.0" step="0.1" value="5.5" class="range-slider">
+            </div>
+            <div class="preset-chips">
+              <button type="button" class="chip-btn" data-preset-rate="3.5">3.5%</button>
+              <button type="button" class="chip-btn" data-preset-rate="4.5">4.5%</button>
+              <button type="button" class="chip-btn active" data-preset-rate="5.5">5.5%</button>
+              <button type="button" class="chip-btn" data-preset-rate="6.5">6.5%</button>
+              <button type="button" class="chip-btn" data-preset-rate="7.5">7.5%</button>
+            </div>
+          </div>
+
+          <!-- Term Duration -->
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <label for="loan-term">Loan Term</label>
+              <span id="loan-term-badge" class="badge">30 Years</span>
+            </div>
+            <div class="form-grid-2">
+              <div>
+                <input type="number" id="loan-term" class="form-input" min="1" max="50" step="1" value="30">
+              </div>
+              <div>
+                <select id="loan-term-unit" class="form-select">
+                  <option value="years" selected>Years</option>
+                  <option value="months">Months</option>
+                </select>
+              </div>
+            </div>
+            <div class="preset-chips">
+              <button type="button" class="chip-btn" data-preset-term="10" data-unit="years">10 Yrs</button>
+              <button type="button" class="chip-btn" data-preset-term="15" data-unit="years">15 Yrs</button>
+              <button type="button" class="chip-btn" data-preset-term="20" data-unit="years">20 Yrs</button>
+              <button type="button" class="chip-btn active" data-preset-term="30" data-unit="years">30 Yrs</button>
+            </div>
+          </div>
+
+          <!-- Extra Payment -->
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <label for="extra-payment">Extra Monthly Payment</label>
+              <span id="extra-payment-badge" class="badge">$0</span>
+            </div>
+            <div class="input-with-affix">
+              <span class="input-affix">$</span>
+              <input type="number" id="extra-payment" class="form-input" min="0" max="50000" step="25" value="0" placeholder="0">
+            </div>
+            <div class="preset-chips">
+              <button type="button" class="chip-btn active" data-preset-extra="0">$0</button>
+              <button type="button" class="chip-btn" data-preset-extra="50">+$50</button>
+              <button type="button" class="chip-btn" data-preset-extra="100">+$100</button>
+              <button type="button" class="chip-btn" data-preset-extra="200">+$200</button>
+              <button type="button" class="chip-btn" data-preset-extra="500">+$500</button>
+            </div>
+          </div>
+
+          <!-- Start Date -->
+          <div class="form-group">
+            <label for="start-month-year">First Payment Date</label>
+            <input type="month" id="start-month-year" class="form-input">
+          </div>
+
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+            <button type="button" id="btn-reset-loan" class="btn btn-secondary" style="flex: 1;">Reset Defaults</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Results & Analysis Panel (Right) -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title" style="justify-content: space-between;">
+            <span style="display: flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+              Payment & Cost Summary
+            </span>
+            <span id="total-term-tag" style="font-size: 0.8rem; color: var(--text-tertiary); font-weight: normal;">360 Payments</span>
+          </h2>
+
+          <!-- KPI Cards -->
+          <div class="kpi-cards-grid">
+            <div class="kpi-card highlight">
+              <span class="kpi-title">Monthly Payment</span>
+              <span id="kpi-monthly-payment" class="kpi-value">$1,703.37</span>
+              <span id="kpi-payment-breakdown" class="kpi-subtext">Base P&I Payment</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-title">Total Interest</span>
+              <span id="kpi-total-interest" class="kpi-value">$313,211.72</span>
+              <span id="kpi-interest-ratio" class="kpi-subtext">104.4% of loan amount</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-title">Total Payment</span>
+              <span id="kpi-total-payment" class="kpi-value">$613,211.72</span>
+              <span class="kpi-subtext">Principal + Total Interest</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-title">Estimated Payoff</span>
+              <span id="kpi-payoff-date" class="kpi-value">Oct 2056</span>
+              <span id="kpi-payoff-sub" class="kpi-subtext">In 30 years</span>
+            </div>
+          </div>
+
+          <!-- Extra Payment Savings Alert (Dynamic) -->
+          <div id="savings-banner" class="savings-banner hidden">
+            <div class="savings-icon">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <div style="flex: 1;">
+              <div style="font-weight: 700; color: var(--success); font-size: 0.95rem; margin-bottom: 0.15rem;" id="savings-title">Extra Payments Acceleration</div>
+              <div style="font-size: 0.85rem; color: var(--text-secondary);" id="savings-details">
+                By paying an extra $100/mo, you will save <strong>$41,890</strong> in interest and pay off your loan <strong>3 years 8 months earlier</strong>!
+              </div>
+            </div>
+          </div>
+
+          <!-- Principal vs Interest Breakdown Visualizer -->
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600;">
+              <span>Loan Composition</span>
+              <span id="breakdown-ratio-text">Principal: 48.9% | Interest: 51.1%</span>
+            </div>
+            <div class="progress-bar-container">
+              <div id="bar-principal" class="progress-bar-principal" style="width: 49%;"></div>
+              <div id="bar-interest" class="progress-bar-interest" style="width: 51%;"></div>
+            </div>
+            <div class="bar-legend">
+              <div class="legend-item">
+                <span class="legend-dot" style="background: var(--accent);"></span>
+                <span>Principal: <strong id="legend-principal-val">$300,000</strong></span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot" style="background: #f59e0b;"></span>
+                <span>Total Interest: <strong id="legend-interest-val">$313,212</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Amortization Schedule -->
+          <div style="margin-top: 1.5rem;">
+            <div class="table-toolbar">
+              <div style="font-weight: 700; font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem;">
+                <span>Amortization Schedule</span>
+                <span id="schedule-count-badge" class="badge" style="font-size: 0.7rem;">360 Months</span>
+              </div>
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <div class="toolbar-search">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                  <input type="text" id="schedule-search" class="form-input" placeholder="Search year or payment #...">
+                </div>
+                <button type="button" id="btn-export-csv" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.85rem;">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                  Export CSV
+                </button>
+              </div>
+            </div>
+
+            <!-- Table Container -->
+            <div class="table-responsive" style="max-height: 480px; overflow-y: auto; border: 1px solid var(--border);">
+              <table class="schedule-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Date</th>
+                    <th>Payment</th>
+                    <th>Principal</th>
+                    <th>Interest</th>
+                    <th>Extra</th>
+                    <th>Total Interest</th>
+                    <th>Balance</th>
+                  </tr>
+                </thead>
+                <tbody id="schedule-tbody">
+                  <!-- Populated by script.js -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Table Pagination Controls -->
+            <div class="table-pagination">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span>Rows per page:</span>
+                <select id="schedule-page-size" class="form-select" style="width: 80px; padding: 0.25rem 0.5rem; font-size: 0.8rem;">
+                  <option value="12" selected>12</option>
+                  <option value="24">24</option>
+                  <option value="60">60</option>
+                  <option value="120">120</option>
+                  <option value="all">All</option>
+                </select>
+                <span id="pagination-info" style="margin-left: 0.5rem;">Showing 1-12 of 360</span>
+              </div>
+              <div class="pagination-actions">
+                <button type="button" id="btn-page-prev" class="page-btn" disabled>&larr; Prev</button>
+                <span id="current-page-num" style="font-weight: 700; color: var(--accent); padding: 0 0.25rem;">1</span>
+                <button type="button" id="btn-page-next" class="page-btn">Next &rarr;</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     
     </div>
@@ -62,8 +570,8 @@
     "@type": "WebApplication",
     "name": "Loan & Mortgage Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/loan-calculator/",
-    "description": "Computes payments and amortizations.",
-    "applicationCategory": "UtilityPage",
+    "description": "Calculate monthly loan payments, total interest, extra payments savings, and explore full interactive amortization schedules.",
+    "applicationCategory": "FinanceApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

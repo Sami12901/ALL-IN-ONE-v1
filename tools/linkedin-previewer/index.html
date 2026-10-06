@@ -3,14 +3,329 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LinkedIn Post Previewer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Visual sandbox mock of a LinkedIn platform post.">
-  <meta name="keywords" content="linkedin, preview, mock, post, social, free, online, tool, utility">
+  <title>LinkedIn Post Previewer & Simulator - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Simulate, format, and preview LinkedIn feed posts for desktop and mobile with exact 3-line truncation, hashtag highlighting, and PNG export.">
+  <meta name="keywords" content="linkedin, preview, mock, post simulator, see more truncation, hashtag, social, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/linkedin-previewer/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <style>
+    /* Tool-specific styles for LinkedIn Previewer */
+    .linkedin-workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .linkedin-workspace {
+        grid-template-columns: 1.05fr 0.95fr;
+      }
+    }
+
+    .controls-grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    /* Device View Switcher */
+    .device-view-bar {
+      display: flex;
+      background: var(--bg-tertiary);
+      padding: 0.25rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      gap: 0.25rem;
+      max-width: 280px;
+    }
+    .device-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      padding: 0.4rem 0.75rem;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.825rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .device-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    /* --- LinkedIn Feed Card Simulation --- */
+    .linkedin-stage-container {
+      background: #08090a;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow-x: auto;
+    }
+
+    .linkedin-card {
+      width: 100%;
+      max-width: 550px;
+      border-radius: 12px;
+      padding: 1rem 1.15rem;
+      font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, Oxygen-Sans, Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+      background-color: #1b1f23;
+      color: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    /* Mobile mode emulation */
+    .linkedin-card.mode-mobile {
+      max-width: 400px;
+      padding: 0.85rem;
+      font-size: 0.92rem;
+    }
+
+    /* Light Theme Variation */
+    .linkedin-card.theme-light {
+      background-color: #ffffff;
+      color: rgba(0, 0, 0, 0.9);
+      border-color: #e0e0e0;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Header */
+    .li-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    .li-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #333639;
+    }
+    .li-author-info {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-width: 0;
+      line-height: 1.3;
+    }
+    .li-name-row {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: inherit;
+    }
+    .li-degree-badge {
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    .linkedin-card.theme-light .li-degree-badge {
+      color: rgba(0, 0, 0, 0.6);
+    }
+    .li-headline {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.65);
+      line-height: 1.25;
+      margin-top: 0.1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .linkedin-card.theme-light .li-headline {
+      color: rgba(0, 0, 0, 0.6);
+    }
+    .li-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 0.15rem;
+    }
+    .linkedin-card.theme-light .li-meta-row {
+      color: rgba(0, 0, 0, 0.5);
+    }
+
+    .li-follow-btn {
+      color: #70b5f9;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      margin-left: auto;
+    }
+    .linkedin-card.theme-light .li-follow-btn {
+      color: #0a66c2;
+    }
+
+    /* Post Content */
+    .li-post-body {
+      margin-top: 0.85rem;
+      font-size: 0.925rem;
+      line-height: 1.48;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: inherit;
+    }
+    .li-highlight {
+      color: #70b5f9;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .linkedin-card.theme-light .li-highlight {
+      color: #0a66c2;
+    }
+
+    .li-see-more-btn {
+      color: rgba(255, 255, 255, 0.6);
+      cursor: pointer;
+      font-weight: 600;
+      margin-left: 0.25rem;
+    }
+    .linkedin-card.theme-light .li-see-more-btn {
+      color: rgba(0, 0, 0, 0.6);
+    }
+    .li-see-more-btn:hover {
+      text-decoration: underline;
+      color: #70b5f9;
+    }
+    .linkedin-card.theme-light .li-see-more-btn:hover {
+      color: #0a66c2;
+    }
+
+    /* Media Attachment */
+    .li-media-container {
+      margin-top: 0.85rem;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: none;
+      background: #000;
+      max-height: 380px;
+    }
+    .linkedin-card.theme-light .li-media-container {
+      border-color: #e0e0e0;
+    }
+    .li-media-img {
+      width: 100%;
+      height: 100%;
+      max-height: 380px;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Engagement Stats Bar */
+    .li-engagement-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.65rem 0;
+      margin-top: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    .linkedin-card.theme-light .li-engagement-bar {
+      border-color: #ebebeb;
+      color: rgba(0, 0, 0, 0.6);
+    }
+
+    .li-reactions-cluster {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .li-reaction-icons {
+      display: flex;
+      align-items: center;
+    }
+    .li-reaction-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      margin-right: -4px;
+      border: 1.5px solid #1b1f23;
+    }
+    .linkedin-card.theme-light .li-reaction-icon {
+      border-color: #ffffff;
+    }
+    .reaction-like { background: #0a66c2; }
+    .reaction-celebrate { background: #44712e; }
+    .reaction-love { background: #df704d; }
+
+    /* Action Buttons Row */
+    .li-actions-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 0.5rem;
+    }
+    .li-action-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 0.5rem;
+      border-radius: var(--radius-sm);
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.825rem;
+      font-weight: 600;
+      cursor: default;
+      transition: var(--transition);
+    }
+    .linkedin-card.theme-light .li-action-btn {
+      color: rgba(0, 0, 0, 0.65);
+    }
+
+    /* Toast Notification */
+    .app-toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.9rem;
+      z-index: 1000;
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: all 0.25s ease;
+    }
+    .app-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+  </style>
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
@@ -27,30 +342,246 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>LinkedIn Post Previewer</h1>
-        <p class="tool-description">Visual sandbox mock of a LinkedIn platform post.</p>
+        <p class="tool-description">Preview desktop and mobile feed rendering, audit the exact 3-line "~210 character" truncate limit, highlight hashtags, and export crisp PNG mockups.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>LinkedIn Post Previewer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Visual sandbox mock of a LinkedIn platform post.</div>
-            <div><strong>Inputs:</strong> linkedin, preview, mock, post, social</div>
-            <div><strong>Category:</strong> social</div>
+      <div class="linkedin-workspace">
+        
+        <!-- Left Panel: Content & Attributes Controls -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+              <rect x="2" y="9" width="4" height="12"></rect>
+              <circle cx="4" cy="4" r="2"></circle>
+            </svg>
+            Author & Post Content
+          </h2>
+
+          <!-- Author Info -->
+          <div class="controls-grid-2col">
+            <div class="form-group">
+              <label for="inp-author-name">Author Name</label>
+              <input type="text" id="inp-author-name" class="form-input" value="Sarah Jenkins" placeholder="Full Name">
+            </div>
+            <div class="form-group">
+              <label for="inp-headline">Headline / Bio</label>
+              <input type="text" id="inp-headline" class="form-input" value="Senior Product Architect | Building Modern AI & Web Systems" placeholder="Professional Headline">
+            </div>
           </div>
+
+          <!-- Avatar & Timestamp -->
+          <div class="controls-grid-2col">
+            <div class="form-group">
+              <label>Profile Avatar</label>
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <label class="btn btn-secondary" style="padding: 0.5rem 0.8rem; font-size: 0.8rem; cursor: pointer;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                  Upload
+                  <input type="file" id="inp-avatar-file" accept="image/*" style="display: none;">
+                </label>
+                <button type="button" id="btn-reset-avatar" class="btn btn-secondary" style="padding: 0.5rem 0.7rem; font-size: 0.8rem;">Reset</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="inp-timestamp">Post Timestamp</label>
+              <input type="text" id="inp-timestamp" class="form-input" value="2h • Edited • 🌐">
+            </div>
+          </div>
+
+          <!-- Post Text Body -->
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label for="inp-post-text">Post Content (Caption)</label>
+              <span id="char-counter" style="font-size: 0.8rem; font-family: monospace; color: var(--text-tertiary);">0 characters</span>
+            </div>
+            <textarea id="inp-post-text" class="form-textarea" style="min-height: 140px;" placeholder="Write your LinkedIn post here. Include #hashtags and @mentions...">Excited to announce our major breakthrough in client-side edge computing! We've managed to reduce web application load latency by 85% while guaranteeing zero telemetry overhead.
+
+Here is what we learned after migrating 40+ production services to pure browser-native WebAssembly and SubtleCrypto:
+
+1. Never underestimate the power of client compute.
+2. Zero-knowledge privacy builds instant user trust.
+3. Lightweight micro-bundles beat monolithic architectures every single time.
+
+Drop your thoughts below! 👇
+
+#SoftwareArchitecture #WebPerformance #TechInnovation #Leadership</textarea>
+            <div style="font-size: 0.78rem; color: var(--text-tertiary); margin-top: 0.25rem;">
+              💡 <strong>Hook Optimization:</strong> The first ~210 characters (3 lines) determine if viewers click "...see more" or scroll past.
+            </div>
+          </div>
+
+          <!-- Media Attachment Upload -->
+          <div class="form-group">
+            <label>Attached Image (Optional)</label>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <label class="btn btn-secondary" style="padding: 0.5rem 0.8rem; font-size: 0.8rem; cursor: pointer;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                Attach Media
+                <input type="file" id="inp-media-file" accept="image/*" style="display: none;">
+              </label>
+              <button type="button" id="btn-remove-media" class="btn btn-secondary" style="padding: 0.5rem 0.7rem; font-size: 0.8rem; display: none;">Remove Media</button>
+            </div>
+          </div>
+
+          <!-- Engagement Stats -->
+          <div class="controls-grid-2col">
+            <div class="form-group">
+              <label for="inp-reactions">Reactions Count</label>
+              <input type="text" id="inp-reactions" class="form-input" value="1,428">
+            </div>
+            <div class="form-group">
+              <label for="inp-comments-reposts">Comments & Reposts Text</label>
+              <input type="text" id="inp-comments-reposts" class="form-input" value="184 comments • 52 reposts">
+            </div>
+          </div>
+
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Panel: Live Feed Preview Stage & Export -->
+        <div class="tool-panel glass-panel" style="display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem;">
+            <h2 class="panel-title" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+              Feed Post Sandbox
+            </h2>
+
+            <!-- Device Mode Switcher -->
+            <div class="device-view-bar">
+              <button type="button" class="device-btn active" id="btn-view-desktop">Desktop</button>
+              <button type="button" class="device-btn" id="btn-view-mobile">Mobile</button>
+            </div>
+          </div>
+
+          <!-- Preview Stage Container -->
+          <div class="linkedin-stage-container">
+            <div class="linkedin-card" id="li-card-preview">
+              <!-- Header -->
+              <div class="li-header">
+                <img id="card-avatar" class="li-avatar" src="" alt="Avatar">
+                <div class="li-author-info">
+                  <div class="li-name-row">
+                    <span id="card-author-name">Sarah Jenkins</span>
+                    <span class="li-degree-badge">• 1st</span>
+                  </div>
+                  <div class="li-headline" id="card-headline">Senior Product Architect | Building Modern AI & Web Systems</div>
+                  <div class="li-meta-row">
+                    <span id="card-timestamp">2h • Edited • 🌐</span>
+                  </div>
+                </div>
+                <div class="li-follow-btn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  Follow
+                </div>
+              </div>
+
+              <!-- Post Body with Truncate & See More -->
+              <div class="li-post-body" id="card-post-body"></div>
+
+              <!-- Media Attachment -->
+              <div class="li-media-container" id="card-media-box">
+                <img id="card-media" class="li-media-img" src="" alt="Post Attachment">
+              </div>
+
+              <!-- Engagement Stats -->
+              <div class="li-engagement-bar">
+                <div class="li-reactions-cluster">
+                  <div class="li-reaction-icons">
+                    <div class="li-reaction-icon reaction-like">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="#ffffff"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3z"/></svg>
+                    </div>
+                    <div class="li-reaction-icon reaction-celebrate">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="#ffffff"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
+                    </div>
+                    <div class="li-reaction-icon reaction-love">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="#ffffff"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    </div>
+                  </div>
+                  <span id="card-reactions-count" style="margin-left: 6px;">1,428</span>
+                </div>
+                <div id="card-comments-reposts">184 comments • 52 reposts</div>
+              </div>
+
+              <!-- Bottom Action Bar -->
+              <div class="li-actions-row">
+                <!-- Like -->
+                <div class="li-action-btn">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3z"></path>
+                  </svg>
+                  <span>Like</span>
+                </div>
+
+                <!-- Comment -->
+                <div class="li-action-btn">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                  <span>Comment</span>
+                </div>
+
+                <!-- Repost -->
+                <div class="li-action-btn">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="17 1 21 5 17 9"></polyline>
+                    <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                    <polyline points="7 23 3 19 7 15"></polyline>
+                    <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                  </svg>
+                  <span>Repost</span>
+                </div>
+
+                <!-- Send -->
+                <div class="li-action-btn">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                  </svg>
+                  <span>Send</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Action Bar -->
+          <div class="action-bar" style="margin-top: 1.25rem;">
+            <button type="button" id="btn-download-png" class="btn btn-primary" style="flex: 1;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Download Preview PNG
+            </button>
+            <button type="button" id="btn-copy-text" class="btn btn-secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Text
+            </button>
+          </div>
+
+          <!-- Hidden Export Canvas -->
+          <canvas id="export-canvas" style="display: none;"></canvas>
+
+        </div>
+
       </div>
-    
     </div>
   </main>
+
+  <!-- Global Toast Notification -->
+  <div id="app-toast" class="app-toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span id="toast-message">Image exported successfully!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,7 +593,7 @@
     "@type": "WebApplication",
     "name": "LinkedIn Post Previewer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/linkedin-previewer/",
-    "description": "Visual sandbox mock of a LinkedIn platform post.",
+    "description": "Visual sandbox mock of a LinkedIn platform post with see more truncation and PNG generation.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

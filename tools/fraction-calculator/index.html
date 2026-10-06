@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fraction Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Add, subtract, multiply, and divide fractions.">
-  <meta name="keywords" content="fraction, divide, multiply, simplify, math, free, online, tool, utility">
+  <title>Fraction Calculator & Reducer - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Add, subtract, multiply, and divide fractions and mixed numbers with step-by-step LCD explanations, fraction simplification, decimal, and percentage conversions.">
+  <meta name="keywords" content="fraction calculator, mixed numbers, simplify fractions, common denominator, LCD, LCM, math tool, fraction reducer, free online tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/fraction-calculator/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,290 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+
+  <style>
+    .frac-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    .mode-nav {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--bg-tertiary);
+      padding: 0.35rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      width: fit-content;
+      margin-bottom: 0.5rem;
+    }
+
+    .mode-tab {
+      padding: 0.5rem 1.25rem;
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .mode-tab.active {
+      background: var(--bg-secondary);
+      color: var(--accent);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .frac-input-workspace {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+      padding: 1.5rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+
+    .frac-unit {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .mixed-whole-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .mixed-whole-input {
+      width: 60px;
+      height: 60px;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      font-family: monospace;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .frac-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .frac-input {
+      width: 75px;
+      height: 48px;
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: 700;
+      font-family: monospace;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .frac-input:focus, .mixed-whole-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .frac-bar {
+      width: 75px;
+      height: 3px;
+      background: var(--text-secondary);
+      border-radius: 2px;
+    }
+
+    .op-selector {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      align-items: center;
+    }
+
+    .op-btn-group {
+      display: flex;
+      gap: 0.35rem;
+    }
+
+    .op-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-size: 1.4rem;
+      font-weight: 700;
+      display: grid;
+      place-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .op-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .op-btn.active {
+      background: var(--accent-gradient);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    .results-banner {
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .result-frac-visual {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+      font-family: var(--font-sans);
+    }
+
+    .visual-frac-stack {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      vertical-align: middle;
+      line-height: 1.1;
+    }
+
+    .visual-num {
+      padding: 0 0.4rem;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .visual-den {
+      padding: 0 0.4rem;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      width: 100%;
+    }
+
+    .stat-tile {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      text-align: center;
+    }
+
+    .stat-tile-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-tile-val {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: monospace;
+      word-break: break-all;
+    }
+
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .preset-chip {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.85rem;
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .preset-chip:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .step-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-bottom: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .step-badge {
+      font-size: 0.825rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .step-math {
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 0.95rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.6rem 0.85rem;
+      color: var(--text-primary);
+      overflow-x: auto;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -26,29 +310,192 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Fraction Calculator</h1>
-        <p class="tool-description">Add, subtract, multiply, and divide fractions.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Fraction Calculator & Reducer</h1>
+        <p class="tool-description">Perform fraction arithmetic (+, −, ×, ÷) with mixed numbers, common denominator (LCD) step-by-step explanations, fraction simplification, and decimal/percent conversions.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Fraction Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Add, subtract, multiply, and divide fractions.</div>
-            <div><strong>Inputs:</strong> fraction, divide, multiply, simplify, math</div>
-            <div><strong>Category:</strong> math</div>
+      <div class="frac-container">
+        <!-- Mode Navigation Bar -->
+        <div class="mode-nav">
+          <button type="button" class="mode-tab active" id="mode-arithmetic">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><line x1="12" y1="5" x2="12" y2="19"></line></svg>
+            Fraction Arithmetic
+          </button>
+          <button type="button" class="mode-tab" id="mode-simplify">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 14 10 14 10 20"></polyline><polyline points="20 10 14 10 14 4"></polyline><line x1="14" y1="10" x2="21" y2="3"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+            Simplify / Reducer Mode
+          </button>
+        </div>
+
+        <!-- Mode 1: Arithmetic Section -->
+        <div id="arithmetic-panel" class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <div class="panel-title" style="margin: 0; padding: 0; border: none;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+              Fraction Equation
+            </div>
+            
+            <label class="checkbox-label" style="font-size: 0.85rem; font-weight: 600;">
+              <input type="checkbox" id="mixed-toggle">
+              Enable Mixed Numbers (Whole Parts)
+            </label>
+          </div>
+
+          <!-- Interactive Equation Workspace -->
+          <div class="frac-input-workspace">
+            <!-- Fraction 1 -->
+            <div class="frac-unit">
+              <div class="mixed-whole-box" id="whole1-container" style="display: none;">
+                <span style="font-size: 0.7rem; color: var(--text-tertiary); font-weight: 600;">WHOLE</span>
+                <input type="number" id="whole1" class="mixed-whole-input" placeholder="0" value="0">
+              </div>
+              <div class="frac-stack">
+                <span style="font-size: 0.7rem; color: var(--text-tertiary); font-weight: 600;">NUM</span>
+                <input type="number" id="num1" class="frac-input" value="1">
+                <div class="frac-bar"></div>
+                <input type="number" id="den1" class="frac-input" value="2">
+                <span style="font-size: 0.7rem; color: var(--text-tertiary); font-weight: 600;">DEN</span>
+              </div>
+            </div>
+
+            <!-- Operator Buttons -->
+            <div class="op-selector">
+              <span style="font-size: 0.7rem; color: var(--text-tertiary); font-weight: 600;">OPERATOR</span>
+              <div class="op-btn-group">
+                <button type="button" class="op-btn active" data-op="+">+</button>
+                <button type="button" class="op-btn" data-op="-">&minus;</button>
+                <button type="button" class="op-btn" data-op="*">&times;</button>
+                <button type="button" class="op-btn" data-op="/">&divide;</button>
+              </div>
+            </div>
+
+            <!-- Fraction 2 -->
+            <div class="frac-unit">
+              <div class="mixed-whole-box" id="whole2-container" style="display: none;">
+                <span style="font-size: 0.7rem; color: var(--text-tertiary); font-weight: 600;">WHOLE</span>
+                <input type="number" id="whole2" class="mixed-whole-input" placeholder="0" value="0">
+              </div>
+              <div class="frac-stack">
+                <span style="font-size: 0.7rem; color: var(--text-tertiary); font-weight: 600;">NUM</span>
+                <input type="number" id="num2" class="frac-input" value="3">
+                <div class="frac-bar"></div>
+                <input type="number" id="den2" class="frac-input" value="4">
+                <span style="font-size: 0.7rem; color: var(--text-tertiary); font-weight: 600;">DEN</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="frac-error" class="alert-error" style="display: none; margin-top: 0.5rem;"></div>
+
+          <!-- Presets -->
+          <div>
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-tertiary);">Quick Sample Presets:</span>
+            <div class="preset-chips">
+              <button type="button" class="preset-chip" data-preset="1/2 + 3/4">1/2 + 3/4</button>
+              <button type="button" class="preset-chip" data-preset="5/6 - 2/9">5/6 - 2/9</button>
+              <button type="button" class="preset-chip" data-preset="2 1/3 * 1 1/2">2 1/3 × 1 1/2 (Mixed)</button>
+              <button type="button" class="preset-chip" data-preset="7/8 / 3/4">7/8 ÷ 3/4</button>
+              <button type="button" class="preset-chip" data-preset="3/5 + 4/15">3/5 + 4/15 (Shared Multiples)</button>
+              <button type="button" class="preset-chip" data-preset="1 3/4 - 5/6">1 3/4 - 5/6 (Mixed Subtract)</button>
+            </div>
+          </div>
+
+          <div class="action-bar">
+            <button type="button" id="calc-frac-btn" class="btn btn-primary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              Calculate Result
+            </button>
+            <button type="button" id="swap-frac-btn" class="btn btn-secondary">Swap Fractions</button>
+            <button type="button" id="copy-frac-result-btn" class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Result
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Mode 2: Reducer Section -->
+        <div id="reducer-panel" class="tool-panel glass-panel" style="display: none;">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 14 10 14 10 20"></polyline><polyline points="20 10 14 10 14 4"></polyline><line x1="14" y1="10" x2="21" y2="3"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+            Simplify / Reduce Fraction
+          </div>
+
+          <div class="frac-input-workspace" style="max-width: 400px; margin: 0 auto;">
+            <div class="frac-unit">
+              <div class="mixed-whole-box" id="red-whole-container" style="display: none;">
+                <span style="font-size: 0.7rem; color: var(--text-tertiary); font-weight: 600;">WHOLE</span>
+                <input type="number" id="red-whole" class="mixed-whole-input" placeholder="0" value="0">
+              </div>
+              <div class="frac-stack">
+                <span style="font-size: 0.7rem; color: var(--text-tertiary); font-weight: 600;">NUMERATOR</span>
+                <input type="number" id="red-num" class="frac-input" value="48" style="width: 100px;">
+                <div class="frac-bar" style="width: 100px;"></div>
+                <input type="number" id="red-den" class="frac-input" value="180" style="width: 100px;">
+                <span style="font-size: 0.7rem; color: var(--text-tertiary); font-weight: 600;">DENOMINATOR</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="red-error" class="alert-error" style="display: none; margin-top: 0.5rem;"></div>
+
+          <div class="preset-chips">
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-tertiary); align-self: center;">Reducer Presets:</span>
+            <button type="button" class="preset-chip red-preset" data-num="48" data-den="180">48 / 180</button>
+            <button type="button" class="preset-chip red-preset" data-num="125" data-den="1000">125 / 1000</button>
+            <button type="button" class="preset-chip red-preset" data-num="36" data-den="84">36 / 84</button>
+            <button type="button" class="preset-chip red-preset" data-num="144" data-den="360">144 / 360</button>
+            <button type="button" class="preset-chip red-preset" data-num="19" data-den="57">19 / 57</button>
+          </div>
+
+          <div class="action-bar">
+            <button type="button" id="reduce-btn" class="btn btn-primary">Simplify Fraction</button>
+          </div>
+        </div>
+
+        <!-- Results Display Banner -->
+        <div class="results-banner glass-panel">
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em;">Calculated Result</span>
+          
+          <div class="result-frac-visual" id="result-visual-box">
+            <!-- Dynamic visual math display -->
+            5/4
+          </div>
+
+          <div class="stats-row">
+            <div class="stat-tile">
+              <span class="stat-tile-label">Simplified Fraction</span>
+              <div class="stat-tile-val" id="stat-simplified">5 / 4</div>
+            </div>
+
+            <div class="stat-tile">
+              <span class="stat-tile-label">Mixed Number</span>
+              <div class="stat-tile-val" id="stat-mixed">1 1/4</div>
+            </div>
+
+            <div class="stat-tile">
+              <span class="stat-tile-label">Decimal Value</span>
+              <div class="stat-tile-val" id="stat-decimal">1.25</div>
+            </div>
+
+            <div class="stat-tile">
+              <span class="stat-tile-label">Percentage</span>
+              <div class="stat-tile-val" id="stat-percent">125%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step-by-Step Derivation Breakdown -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            Step-by-Step Explanation
+          </div>
+
+          <div id="fraction-steps">
+            <!-- Step explanation cards -->
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
 
@@ -62,7 +509,7 @@
     "@type": "WebApplication",
     "name": "Fraction Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/fraction-calculator/",
-    "description": "Add, subtract, multiply, and divide fractions.",
+    "description": "Add, subtract, multiply, and divide fractions and mixed numbers with step-by-step common denominators.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

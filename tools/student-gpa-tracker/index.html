@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GPA Course Tracker - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Log letter grades to build GPA listings.">
-  <meta name="keywords" content="gpa, course, grades, average, credits, free, online, tool, utility">
+  <title>Student GPA Tracker & Planner - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Multi-semester student GPA tracker and academic standing calculator. Calculate semester and cumulative GPA, track total credits, set target GPA goals, and generate printable grade reports.">
+  <meta name="keywords" content="gpa tracker, college gpa calculator, cumulative gpa, semester gpa, academic standing, dean's list, credits, grade card, free student tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/student-gpa-tracker/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,308 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+
+  <style>
+    .gpa-container {
+      max-width: 1150px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    .cgpa-summary-card {
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.15) 0%, rgba(16, 185, 129, 0.08) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      align-items: center;
+      position: relative;
+    }
+
+    .cgpa-hero-box {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .cgpa-hero-val {
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      font-family: var(--font-sans);
+    }
+
+    .standing-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      font-size: 0.825rem;
+      font-weight: 700;
+      width: fit-content;
+      margin-top: 0.35rem;
+    }
+
+    .standing-badge.summa {
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .standing-badge.dean {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .standing-badge.good {
+      background: rgba(78, 133, 191, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(78, 133, 191, 0.3);
+    }
+
+    .standing-badge.warning {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .stat-metric {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .stat-metric-label {
+      font-size: 0.775rem;
+      color: var(--text-tertiary);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-metric-val {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .semester-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .semester-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      transition: var(--transition);
+    }
+
+    .semester-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+    }
+
+    .semester-title-input {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      padding: 0.2rem 0.5rem;
+      font-family: var(--font-sans);
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .semester-title-input:hover, .semester-title-input:focus {
+      background: var(--bg-tertiary);
+      border-color: var(--border);
+    }
+
+    .semester-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .courses-table-wrap {
+      overflow-x: auto;
+    }
+
+    .courses-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .courses-table th {
+      text-align: left;
+      padding: 0.6rem 0.75rem;
+      color: var(--text-tertiary);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .courses-table td {
+      padding: 0.5rem 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .course-name-input {
+      width: 100%;
+      min-width: 180px;
+      padding: 0.5rem 0.75rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .course-credit-input {
+      width: 80px;
+      padding: 0.5rem 0.5rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      text-align: center;
+      font-weight: 600;
+      outline: none;
+    }
+
+    .course-grade-select {
+      min-width: 100px;
+      padding: 0.5rem 0.75rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .course-points-val {
+      font-family: monospace;
+      font-weight: 700;
+      color: var(--accent);
+      min-width: 60px;
+      text-align: center;
+    }
+
+    .course-del-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 0.4rem;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .course-del-btn:hover {
+      color: var(--error);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .semester-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      padding-top: 0.5rem;
+    }
+
+    .scale-selector-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .target-planner-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .target-inputs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      app-header, app-breadcrumbs, app-footer, .action-bar, .course-del-btn, .semester-footer button, .scale-selector-bar, .target-planner-box, .preset-chips {
+        display: none !important;
+      }
+      .container {
+        max-width: 100% !important;
+        padding: 0 !important;
+      }
+      .tool-layout {
+        padding: 0 !important;
+      }
+      .semester-card, .cgpa-summary-card {
+        border: 1px solid #ccc !important;
+        background: #fff !important;
+        box-shadow: none !important;
+        page-break-inside: avoid;
+        color: #000 !important;
+      }
+      .cgpa-hero-val {
+        color: #000 !important;
+      }
+      .course-name-input, .course-credit-input, .course-grade-select {
+        border: none !important;
+        background: transparent !important;
+        color: #000 !important;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -26,29 +328,103 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>GPA Course Tracker</h1>
-        <p class="tool-description">Log letter grades to build GPA listings.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Student GPA Tracker & Planner</h1>
+        <p class="tool-description">Manage multi-semester academic coursework, compute real-time Semester & Cumulative GPA (CGPA), determine academic honors standing, simulate target GPA requirements, and print official grade cards.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>GPA Course Tracker</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Log letter grades to build GPA listings.</div>
-            <div><strong>Inputs:</strong> gpa, course, grades, average, credits</div>
-            <div><strong>Category:</strong> student</div>
+      <div class="gpa-container">
+        <!-- Live CGPA & Standing Hero Banner -->
+        <div class="cgpa-summary-card glass-panel" id="printable-summary">
+          <div class="cgpa-hero-box">
+            <span class="stat-metric-label">Cumulative GPA (CGPA)</span>
+            <div class="cgpa-hero-val" id="cgpa-val">0.00</div>
+            <div class="standing-badge good" id="standing-badge">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+              <span id="standing-text">Good Standing</span>
+            </div>
+          </div>
+
+          <div class="stat-metric">
+            <span class="stat-metric-label">Total Credits Earned</span>
+            <div class="stat-metric-val" id="total-credits-val">0.0</div>
+            <span style="font-size: 0.8rem; color: var(--text-secondary);">Across all completed terms</span>
+          </div>
+
+          <div class="stat-metric">
+            <span class="stat-metric-label">Total Quality Points</span>
+            <div class="stat-metric-val" id="total-points-val">0.00</div>
+            <span style="font-size: 0.8rem; color: var(--text-secondary);">Grade Points &times; Credits</span>
+          </div>
+
+          <div class="stat-metric">
+            <span class="stat-metric-label">Total Semesters</span>
+            <div class="stat-metric-val" id="total-terms-val">0</div>
+            <span style="font-size: 0.8rem; color: var(--text-secondary);">Recorded semesters</span>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Controls, Scale Configuration & Presets -->
+        <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+          <div class="scale-selector-bar">
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+              <span style="font-size: 0.875rem; font-weight: 700; color: var(--text-secondary);">Grading Scale:</span>
+              <select id="scale-selector" class="form-select" style="width: auto; padding: 0.4rem 0.85rem; font-size: 0.875rem;">
+                <option value="standard-4" selected>Standard 4.0 Scale (A=4.0, B=3.0, C=2.0...)</option>
+                <option value="plus-433">4.33 Scale (A+=4.33, A=4.0, A-=3.7...)</option>
+                <option value="weighted-5">5.0 Honors / Weighted Scale</option>
+              </select>
+            </div>
+
+            <div class="action-bar" style="margin-top: 0;">
+              <button type="button" id="load-sample-btn" class="btn btn-secondary" style="padding: 0.4rem 0.85rem; font-size: 0.825rem;">Load Sample Data</button>
+              <button type="button" id="add-semester-btn" class="btn btn-primary" style="padding: 0.4rem 0.85rem; font-size: 0.825rem;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Add Semester
+              </button>
+              <button type="button" id="print-report-btn" class="btn btn-secondary" style="padding: 0.4rem 0.85rem; font-size: 0.825rem;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                Print Grade Card
+              </button>
+              <button type="button" id="clear-all-btn" class="btn btn-secondary" style="padding: 0.4rem 0.85rem; font-size: 0.825rem; color: var(--error);">Clear All</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Semesters Container -->
+        <div class="semester-list" id="semester-container">
+          <!-- Dynamic semester cards -->
+        </div>
+
+        <!-- Target GPA Simulator & Goal Planner -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+            Target GPA Goal Planner
+          </div>
+
+          <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+            Calculate the average GPA you must maintain across upcoming courses to reach your target cumulative graduation GPA.
+          </p>
+
+          <div class="target-planner-box">
+            <div class="target-inputs-grid">
+              <div class="form-group">
+                <label for="target-desired-gpa">Desired Target CGPA:</label>
+                <input type="number" id="target-desired-gpa" class="form-input" value="3.80" step="0.01" min="0" max="5.0">
+              </div>
+
+              <div class="form-group">
+                <label for="target-future-credits">Upcoming Future Credits to Take:</label>
+                <input type="number" id="target-future-credits" class="form-input" value="30" step="1" min="1">
+              </div>
+            </div>
+
+            <div id="target-result-box" style="padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius-sm); border: 1px solid var(--border); font-size: 0.95rem;">
+              <!-- Target output -->
+            </div>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
 
@@ -62,7 +438,7 @@
     "@type": "WebApplication",
     "name": "GPA Course Tracker",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/student-gpa-tracker/",
-    "description": "Log letter grades to build GPA listings.",
+    "description": "Log letter grades to build GPA listings with multi-semester support.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

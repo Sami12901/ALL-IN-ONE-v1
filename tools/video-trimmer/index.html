@@ -3,15 +3,244 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Video Trimmer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Cut and trim videos easily by specifying Start and End times.">
-  <meta name="keywords" content="video, media, video trimmer, free, online, tool, utility">
+  <title>Video Trimmer & Frame Capture - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Trim video segments, preview cut boundaries frame-by-frame, capture full-resolution PNG frames, and export trim markers. 100% private and client-side.">
+  <meta name="keywords" content="video trimmer, cut video, trim mp4, video cutter, capture frame, snapshot png, ffmpeg trim, browser video editor">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/video-trimmer/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Video Trimmer Specific Styles */
+    .trimmer-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    .video-drop-area {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      background: var(--bg-tertiary);
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .video-drop-area.dragover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .video-stage-container {
+      background: rgba(10, 14, 20, 0.9);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .video-viewport {
+      width: 100%;
+      max-height: 480px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000000;
+      position: relative;
+    }
+
+    #main-video {
+      max-width: 100%;
+      max-height: 480px;
+      display: block;
+      outline: none;
+    }
+
+    /* Floating Video Info Overlay */
+    .video-info-overlay {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-family: monospace;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      gap: 0.6rem;
+      pointer-events: none;
+    }
+
+    /* Timeline Trimmer Track */
+    .timeline-scrubber-box {
+      width: 100%;
+      padding: 1.25rem 1.5rem;
+      background: var(--bg-tertiary);
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .timeline-track-bar {
+      width: 100%;
+      height: 28px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+      position: relative;
+      cursor: pointer;
+      user-select: none;
+      overflow: visible;
+    }
+
+    .timeline-active-range {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      background: rgba(78, 133, 191, 0.4);
+      border-top: 2px solid var(--accent);
+      border-bottom: 2px solid var(--accent);
+      pointer-events: none;
+    }
+
+    .timeline-handle {
+      position: absolute;
+      top: -4px;
+      bottom: -4px;
+      width: 14px;
+      border-radius: 4px;
+      cursor: ew-resize;
+      z-index: 5;
+      touch-action: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      transition: transform 0.1s;
+    }
+    .timeline-handle:hover {
+      transform: scaleY(1.15);
+    }
+    .timeline-handle.handle-start {
+      background: #10b981;
+      border: 2px solid #ffffff;
+    }
+    .timeline-handle.handle-end {
+      background: #f43f5e;
+      border: 2px solid #ffffff;
+    }
+
+    .timeline-playhead-cursor {
+      position: absolute;
+      top: -6px;
+      bottom: -6px;
+      width: 3px;
+      background: #ffffff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+      pointer-events: none;
+      z-index: 8;
+    }
+
+    /* Boundary Frame Previews */
+    .boundary-preview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+
+    @media (max-width: 650px) {
+      .boundary-preview-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .frame-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .frame-canvas-holder {
+      width: 100%;
+      height: 140px;
+      background: #000000;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .frame-canvas-holder canvas {
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+      object-fit: contain;
+    }
+
+    /* Duration Metrics Grid */
+    .metrics-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+    }
+
+    .metric-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .metric-card-title {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .metric-card-val {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: monospace;
+    }
+
+    .btn-step {
+      padding: 0.35rem 0.65rem;
+      font-size: 0.8rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: monospace;
+    }
+    .btn-step:hover {
+      background: var(--border);
+      border-color: var(--accent);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,29 +255,223 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Video Trimmer</h1>
-        <p class="tool-description">Cut and trim videos easily by specifying Start and End times.</p>
-      </div>
-
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Video Trimmer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Cut and trim videos easily by specifying Start and End times.</div>
-            <div><strong>Inputs:</strong> video, media, video trimmer</div>
-            <div><strong>Category:</strong> video</div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>Video Segment Trimmer</h1>
+            <p class="tool-description">Interactive video range trimmer. Scrub timeline markers, preview boundary frames in real time, capture high-res PNG snapshots, and export trim markers.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <button id="btn-load-demo" class="btn btn-secondary" title="Load synthetic animated test video">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+              Load Demo Video
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- Main Workspace -->
+      <div class="trimmer-workspace">
+        
+        <!-- Video Drag & Drop Upload Zone -->
+        <div id="video-drop-zone" class="video-drop-area">
+          <input type="file" id="video-file-input" accept="video/*,.mp4,.webm,.ogg,.mov" style="display: none;">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
+            <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.8" style="color: var(--accent);"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+            <div style="font-weight: 600; font-size: 1.1rem; color: var(--text-primary);">
+              Drag & Drop your video here or <span style="color: var(--accent); text-decoration: underline;">Browse Video</span>
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-tertiary);">
+              Supports MP4, WebM, MOV, OGG. 100% private client-side processing.
+            </div>
+          </div>
+        </div>
+
+        <!-- Video Studio Stage (Hidden initially until video is loaded) -->
+        <div id="video-studio-panel" class="tool-panel glass-panel" style="display: none; padding: 1.5rem;">
+          
+          <!-- Video Player Box -->
+          <div class="video-stage-container">
+            <div class="video-viewport">
+              <video id="main-video" playsinline preload="auto"></video>
+              
+              <div class="video-info-overlay">
+                <span id="badge-resolution">1920x1080</span>
+                <span>•</span>
+                <span id="badge-filesize">0 MB</span>
+              </div>
+            </div>
+
+            <!-- Timeline Scrubber & Marker Bar -->
+            <div class="timeline-scrubber-box">
+              <div style="display: flex; justify-content: space-between; align-items: center; font-family: monospace; font-size: 0.85rem;">
+                <span style="color: #10b981; font-weight: 700;">Start: <span id="label-start-time">00:00.000</span></span>
+                <span style="color: var(--text-secondary); font-weight: 600;">Playhead: <span id="label-current-time" style="color: #ffffff;">00:00.000</span> / <span id="label-total-time">00:00.000</span></span>
+                <span style="color: #f43f5e; font-weight: 700;">End: <span id="label-end-time">00:00.000</span></span>
+              </div>
+
+              <!-- Interactive Timeline Track Bar -->
+              <div class="timeline-track-bar" id="timeline-track">
+                <div class="timeline-active-range" id="track-active-range"></div>
+                <div class="timeline-handle handle-start" id="handle-start" title="Drag to adjust Start Marker"></div>
+                <div class="timeline-handle handle-end" id="handle-end" title="Drag to adjust End Marker"></div>
+                <div class="timeline-playhead-cursor" id="playhead-cursor"></div>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-tertiary); font-family: monospace;">
+                <span>00:00.0</span>
+                <span id="timeline-mid-tick">--:--.-</span>
+                <span id="timeline-end-tick">--:--.-</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Transport Controls & Snapshot Bar -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border); margin-top: 1rem;">
+            
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+              <button id="btn-play-pause" class="btn btn-secondary">
+                <svg id="icon-play" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                <span id="text-play">Play</span>
+              </button>
+              <button id="btn-play-range" class="btn btn-primary" title="Play from Start marker to End marker">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="6 4 18 12 6 20 6 4"></polygon></svg>
+                <span>Play Trimmed Range</span>
+              </button>
+              <label class="checkbox-label" style="min-height: auto; margin-left: 0.5rem;">
+                <input type="checkbox" id="check-loop-range">
+                <span>Loop Segment</span>
+              </label>
+            </div>
+
+            <!-- Frame Capture Button -->
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <button id="btn-snapshot-frame" class="btn btn-secondary" title="Capture active high-definition frame as lossless PNG image">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                Save Current Frame as PNG
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Precision Fine-Tuning Cards -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; margin-top: 1.25rem;">
+            
+            <!-- Start Time Card -->
+            <div class="control-card">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 700; color: #10b981; font-size: 0.95rem; display: flex; align-items: center; gap: 0.4rem;">
+                  <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #10b981;"></span>
+                  Start Time Marker
+                </span>
+                <button id="btn-set-start-curr" class="btn-step">Set to Current</button>
+              </div>
+              <input type="number" id="input-start-sec" class="form-input" min="0" step="0.01" value="0.00" style="font-family: monospace; font-size: 1.1rem; font-weight: 700;">
+              <div style="display: flex; gap: 0.35rem; justify-content: space-between;">
+                <button class="btn-step" id="btn-start-sub-1">-1.0s</button>
+                <button class="btn-step" id="btn-start-sub-01">-0.1s</button>
+                <button class="btn-step" id="btn-start-add-01">+0.1s</button>
+                <button class="btn-step" id="btn-start-add-1">+1.0s</button>
+              </div>
+            </div>
+
+            <!-- End Time Card -->
+            <div class="control-card">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 700; color: #f43f5e; font-size: 0.95rem; display: flex; align-items: center; gap: 0.4rem;">
+                  <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #f43f5e;"></span>
+                  End Time Marker
+                </span>
+                <button id="btn-set-end-curr" class="btn-step">Set to Current</button>
+              </div>
+              <input type="number" id="input-end-sec" class="form-input" min="0" step="0.01" value="0.00" style="font-family: monospace; font-size: 1.1rem; font-weight: 700;">
+              <div style="display: flex; gap: 0.35rem; justify-content: space-between;">
+                <button class="btn-step" id="btn-end-sub-1">-1.0s</button>
+                <button class="btn-step" id="btn-end-sub-01">-0.1s</button>
+                <button class="btn-step" id="btn-end-add-01">+0.1s</button>
+                <button class="btn-step" id="btn-end-add-1">+1.0s</button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Real-Time Boundary Frame Previews (Start & End) -->
+          <div style="margin-top: 1.25rem;">
+            <div class="panel-title" style="margin-bottom: 0.75rem;">Trim Boundary Frame Previews</div>
+            <div class="boundary-preview-grid">
+              
+              <!-- Start Frame -->
+              <div class="frame-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-weight: 600; font-size: 0.85rem; color: #10b981;">Start Boundary Frame</span>
+                  <span id="preview-start-ts" style="font-size: 0.8rem; font-family: monospace; color: var(--text-tertiary);">00:00.000</span>
+                </div>
+                <div class="frame-canvas-holder" id="holder-start-frame" title="Click to seek player here">
+                  <canvas id="canvas-start-frame"></canvas>
+                </div>
+              </div>
+
+              <!-- End Frame -->
+              <div class="frame-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-weight: 600; font-size: 0.85rem; color: #f43f5e;">End Boundary Frame</span>
+                  <span id="preview-end-ts" style="font-size: 0.8rem; font-family: monospace; color: var(--text-tertiary);">00:00.000</span>
+                </div>
+                <div class="frame-canvas-holder" id="holder-end-frame" title="Click to seek player here">
+                  <canvas id="canvas-end-frame"></canvas>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Duration Metric Cards -->
+          <div style="margin-top: 1.25rem;">
+            <div class="panel-title" style="margin-bottom: 0.75rem;">Segment Metrics & Calculations</div>
+            <div class="metrics-cards-grid">
+              <div class="metric-card">
+                <span class="metric-card-title">Original Duration</span>
+                <span id="metric-original" class="metric-card-val">00:00.000</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-card-title">Trimmed Duration</span>
+                <span id="metric-trimmed" class="metric-card-val" style="color: var(--accent);">00:00.000</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-card-title">Removed Time</span>
+                <span id="metric-removed" class="metric-card-val" style="color: #f43f5e;">00:00.000</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-card-title">Percentage Kept</span>
+                <span id="metric-percent" class="metric-card-val" style="color: #10b981;">100%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Segment Export & FFmpeg Code Panel -->
+          <div style="margin-top: 1.25rem; background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.75rem;">
+              <div style="font-weight: 700; font-size: 1rem; color: var(--text-primary);">
+                Segment Time Export & Command
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button id="btn-copy-ffmpeg" class="btn-step" style="background: var(--bg-secondary);">
+                  Copy FFmpeg Command
+                </button>
+                <button id="btn-export-json" class="btn-step" style="background: var(--bg-secondary);">
+                  Export JSON
+                </button>
+                <button id="btn-download-clip" class="btn btn-primary" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;">
+                  Export Video Clip (.webm)
+                </button>
+              </div>
+            </div>
+            <pre id="code-ffmpeg" style="background: rgba(0, 0, 0, 0.4); padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-family: monospace; font-size: 0.85rem; color: var(--accent); overflow-x: auto;">ffmpeg -ss 00:00:00.000 -to 00:00:00.000 -i input.mp4 -c copy output_trimmed.mp4</pre>
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   </main>
 
@@ -63,9 +486,9 @@
     "name": "Video Trimmer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/video-trimmer/",
     "description": "Cut and trim videos easily by specifying Start and End times.",
-    "applicationCategory": "UtilityPage",
+    "applicationCategory": "VideoEditor",
     "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
+    "browserRequirements": "Requires JavaScript. Requires HTML5 Video."
   }
   </script>
 </body>
