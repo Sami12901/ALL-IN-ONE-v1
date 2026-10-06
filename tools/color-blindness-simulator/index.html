@@ -3,15 +3,509 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Color Blindness Simulator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Simulates color blindness filters on images.">
-  <meta name="keywords" content="blindness, color, deuteranopia, protanopia, simulate, free, online, tool, utility">
+  <title>Color Blindness Simulator - Free Online CVD Tool - ALL IN ONE</title>
+  <meta name="description" content="Simulate color vision deficiencies in real-time. Test color palettes and upload images to preview Protanopia, Deuteranopia, Tritanopia, and Achromatopsia using accurate LMS color matrix transformations.">
+  <meta name="keywords" content="color blindness simulator, cvd simulator, protanopia, deuteranopia, tritanopia, achromatopsia, daltonism, color deficiency, accessibility, wcag contrast, color blindness test">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/color-blindness-simulator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Mode Navigation Tabs */
+    .simulator-nav {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--bg-tertiary);
+      padding: 0.35rem;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border);
+      width: fit-content;
+      margin: 0 auto 1.5rem auto;
+    }
+    .sim-tab-btn {
+      padding: 0.6rem 1.4rem;
+      border-radius: var(--radius-full);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+    .sim-tab-btn:hover {
+      color: var(--text-primary);
+    }
+    .sim-tab-btn.active {
+      background: var(--surface);
+      color: var(--accent);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Controls Header Bar */
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.25rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+    .controls-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* Severity Slider Container */
+    .severity-control {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--bg-secondary);
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    .severity-control label {
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    /* Comparison Cards Grid */
+    .cvd-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+      gap: 1.25rem;
+    }
+
+    .cvd-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+      position: relative;
+    }
+    .cvd-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .cvd-card.baseline {
+      border-color: rgba(78, 133, 191, 0.4);
+      background: linear-gradient(180deg, rgba(78, 133, 191, 0.05) 0%, var(--surface) 100%);
+    }
+
+    .cvd-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+    }
+    .cvd-card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .cvd-card-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      margin-top: 0.15rem;
+    }
+    .cvd-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    /* Palette Swatches Row inside CVD Card */
+    .cvd-swatches-row {
+      display: flex;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      min-height: 80px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+    }
+    .cvd-mini-swatch {
+      flex: 1;
+      min-height: 80px;
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0.4rem;
+      transition: flex 0.2s ease;
+    }
+    .cvd-mini-swatch:hover {
+      flex: 1.5;
+    }
+    .cvd-swatch-hex {
+      font-family: monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.55);
+      color: #fff;
+      padding: 0.15rem 0.3rem;
+      border-radius: 4px;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Palette Manager Workspace */
+    .palette-manager {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .palette-input-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--bg-secondary);
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    .color-picker-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.6rem;
+      border-radius: var(--radius-sm);
+    }
+    .native-color-input {
+      width: 32px;
+      height: 32px;
+      border: none;
+      padding: 0;
+      border-radius: 4px;
+      cursor: pointer;
+      background: transparent;
+    }
+    .hex-text-input {
+      width: 100px;
+      font-family: monospace;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .swatches-chip-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      min-height: 48px;
+      align-items: center;
+      padding: 0.5rem;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    .swatch-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.3rem 0.6rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-family: monospace;
+      color: var(--text-primary);
+    }
+    .swatch-chip-color {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .swatch-chip-remove {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+      padding: 0 0.15rem;
+      transition: color 0.2s;
+    }
+    .swatch-chip-remove:hover {
+      color: var(--error);
+    }
+
+    /* Preset Buttons List */
+    .preset-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .preset-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .preset-pill:hover {
+      background: var(--surface);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .preset-mini-dots {
+      display: flex;
+      gap: 3px;
+    }
+    .preset-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* Image Simulation View */
+    .image-mode-container {
+      display: none;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .image-mode-container.active {
+      display: flex;
+    }
+
+    .image-workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .image-workspace-grid.grid-view {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .canvas-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .canvas-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .canvas-card-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .canvas-viewport {
+      position: relative;
+      background: repeating-conic-gradient(rgba(255,255,255,0.04) 0% 25%, transparent 0% 50%) 50% / 16px 16px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 280px;
+      max-height: 480px;
+      border: 1px solid var(--border);
+    }
+    .canvas-viewport canvas {
+      max-width: 100%;
+      max-height: 480px;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* Split Comparison Slider Container */
+    .split-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      user-select: none;
+      touch-action: none;
+    }
+    .split-canvas-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .split-canvas-layer.simulated {
+      clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+    }
+    .split-divider-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 3px;
+      background: #ffffff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      cursor: ew-resize;
+      z-index: 10;
+      transform: translateX(-50%);
+    }
+    .split-divider-handle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 34px;
+      height: 34px;
+      background: #ffffff;
+      color: #111;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .split-label-original, .split-label-simulated {
+      position: absolute;
+      top: 12px;
+      padding: 0.3rem 0.65rem;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #fff;
+      z-index: 5;
+      pointer-events: none;
+    }
+    .split-label-original { left: 12px; }
+    .split-label-simulated { right: 12px; }
+
+    /* Sample Image Pills */
+    .sample-images-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .sample-img-pill {
+      font-size: 0.8rem;
+      padding: 0.35rem 0.75rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .sample-img-pill:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    /* Color Vision Info Section */
+    .info-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+    }
+    .info-card h3 {
+      font-size: 1.15rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .info-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+    }
+    .info-box h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+    }
+    .info-box p {
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Toast Notification */
+    .toast-notification {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      color: var(--text-primary);
+      padding: 0.85rem 1.4rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      z-index: 9999;
+      transform: translateY(120%);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+    .toast-notification.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,42 +521,337 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Color Blindness Simulator</h1>
-        <p class="tool-description">Simulates color blindness filters on images.</p>
+        <p class="tool-description">
+          Simulate how individuals with Color Vision Deficiencies (CVD) perceive color schemes, graphic interfaces, and photographs using mathematically precise linearized Brettel &amp; Viénot LMS transformations.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Color Blindness Simulator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Simulates color blindness filters on images.</div>
-            <div><strong>Inputs:</strong> blindness, color, deuteranopia, protanopia, simulate</div>
-            <div><strong>Category:</strong> color</div>
+      <!-- Mode Switcher Tabs -->
+      <div class="simulator-nav">
+        <button id="tab-palette-btn" class="sim-tab-btn active" type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.5 2 2 6.5 2 12c0 3.5 2 6.5 5 7.5.5.1.7-.2.7-.5v-1.5c0-.8.7-1.5 1.5-1.5h1.6c.8 0 1.5-.7 1.5-1.5 0-.4-.2-.8-.4-1.1-.3-.4-.5-.9-.5-1.4 0-1.1.9-2 2-2h1.5c2.8 0 5-2.2 5-5 0-4.4-3.6-8-8.4-8z"></path><circle cx="8.5" cy="8.5" r="1.5"></circle><circle cx="15.5" cy="8.5" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle></svg>
+          Palette &amp; Swatches
+        </button>
+        <button id="tab-image-btn" class="sim-tab-btn" type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          Image &amp; File Simulator
+        </button>
+      </div>
+
+      <!-- Global Severity Controller Bar -->
+      <div class="controls-bar">
+        <div class="controls-group">
+          <div class="severity-control">
+            <label for="severity-slider">Severity: <span id="severity-val" class="range-value" style="font-size: 0.875rem;">100%</span></label>
+            <input type="range" id="severity-slider" class="range-slider" min="0" max="100" value="100" style="width: 130px;">
+          </div>
+          <span style="font-size: 0.8rem; color: var(--text-tertiary);" class="hide-mobile">
+            (100% Dichromacy &bull; 50% Anomalous Trichromacy)
+          </span>
+        </div>
+        <div class="controls-group">
+          <button id="export-png-btn" class="btn btn-secondary" title="Export Comparison Image">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Export Sheet PNG
+          </button>
+        </div>
+      </div>
+
+      <!-- ================= SECTION 1: PALETTE SIMULATOR ================= -->
+      <div id="palette-workspace" class="palette-manager">
+        
+        <!-- Palette Creator Inputs -->
+        <div class="palette-input-bar">
+          <div class="color-picker-wrapper">
+            <input type="color" id="palette-color-picker" class="native-color-input" value="#3B82F6" title="Pick a color">
+            <input type="text" id="palette-hex-text" class="hex-text-input" value="#3B82F6" maxlength="7" spellcheck="false">
+          </div>
+          <button id="add-color-btn" class="btn btn-primary" type="button">
+            + Add Swatch
+          </button>
+          <button id="random-palette-btn" class="btn btn-secondary" type="button" title="Generate random harmonious colors">
+            🎲 Randomize
+          </button>
+          <button id="clear-palette-btn" class="btn btn-secondary" type="button" title="Reset swatches">
+            Clear
+          </button>
+
+          <!-- Preset Palettes Bar -->
+          <div style="margin-left: auto; display: flex; align-items: center; gap: 0.5rem;" class="hide-mobile">
+            <span style="font-size: 0.8rem; color: var(--text-tertiary);">Presets:</span>
+            <div class="preset-pills" id="preset-pills-list"></div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Current Swatches List Strip -->
+        <div class="swatches-chip-list" id="swatches-chip-list">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- CVD Simulation Cards Grid -->
+        <div class="cvd-grid" id="cvd-cards-grid">
+          
+          <!-- 1. Normal Vision -->
+          <div class="cvd-card baseline" data-type="normal">
+            <div class="cvd-card-header">
+              <div>
+                <div class="cvd-card-title">Normal Trichromacy</div>
+                <div class="cvd-card-subtitle">Standard Human Vision (L, M, S Cones)</div>
+              </div>
+              <span class="cvd-badge">Reference Baseline</span>
+            </div>
+            <div class="cvd-swatches-row" id="swatches-normal"></div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4;">
+              Full trichromatic perception with standard operational L (red), M (green), and S (blue) photoreceptor cones.
+            </div>
+            <button class="btn btn-secondary copy-palette-card-btn" data-type="normal" style="font-size: 0.8rem; padding: 0.4rem 0.75rem;">
+              Copy Hex Values
+            </button>
+          </div>
+
+          <!-- 2. Protanopia -->
+          <div class="cvd-card" data-type="protanopia">
+            <div class="cvd-card-header">
+              <div>
+                <div class="cvd-card-title">Protanopia / Protanomaly</div>
+                <div class="cvd-card-subtitle">Red-Blind &bull; L-Cone Deficient</div>
+              </div>
+              <span class="cvd-badge">~1.3% Males &bull; 0.02% Females</span>
+            </div>
+            <div class="cvd-swatches-row" id="swatches-protanopia"></div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4;">
+              Long-wavelength (red) cone photoreceptors are missing or anomalous. Reds appear dark, brownish, or indistinguishable from olive greens.
+            </div>
+            <button class="btn btn-secondary copy-palette-card-btn" data-type="protanopia" style="font-size: 0.8rem; padding: 0.4rem 0.75rem;">
+              Copy Hex Values
+            </button>
+          </div>
+
+          <!-- 3. Deuteranopia -->
+          <div class="cvd-card" data-type="deuteranopia">
+            <div class="cvd-card-header">
+              <div>
+                <div class="cvd-card-title">Deuteranopia / Deuteranomaly</div>
+                <div class="cvd-card-subtitle">Green-Blind &bull; M-Cone Deficient</div>
+              </div>
+              <span class="cvd-badge">~5.0% Males &bull; 0.4% Females</span>
+            </div>
+            <div class="cvd-swatches-row" id="swatches-deuteranopia"></div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4;">
+              Medium-wavelength (green) cone photoreceptors are missing or altered. Most common CVD type; difficulty distinguishing reds, yellows, and greens.
+            </div>
+            <button class="btn btn-secondary copy-palette-card-btn" data-type="deuteranopia" style="font-size: 0.8rem; padding: 0.4rem 0.75rem;">
+              Copy Hex Values
+            </button>
+          </div>
+
+          <!-- 4. Tritanopia -->
+          <div class="cvd-card" data-type="tritanopia">
+            <div class="cvd-card-header">
+              <div>
+                <div class="cvd-card-title">Tritanopia / Tritanomaly</div>
+                <div class="cvd-card-subtitle">Blue-Blind &bull; S-Cone Deficient</div>
+              </div>
+              <span class="cvd-badge">~0.01% Population (Rare)</span>
+            </div>
+            <div class="cvd-swatches-row" id="swatches-tritanopia"></div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4;">
+              Short-wavelength (blue) cone photoreceptors are missing. Blues look greenish, yellows look pinkish or violet.
+            </div>
+            <button class="btn btn-secondary copy-palette-card-btn" data-type="tritanopia" style="font-size: 0.8rem; padding: 0.4rem 0.75rem;">
+              Copy Hex Values
+            </button>
+          </div>
+
+          <!-- 5. Achromatopsia -->
+          <div class="cvd-card" data-type="achromatopsia">
+            <div class="cvd-card-header">
+              <div>
+                <div class="cvd-card-title">Achromatopsia</div>
+                <div class="cvd-card-subtitle">Complete Color Blindness &bull; Rod Vision</div>
+              </div>
+              <span class="cvd-badge">~0.003% Population</span>
+            </div>
+            <div class="cvd-swatches-row" id="swatches-achromatopsia"></div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4;">
+              Complete absence of functional cone cells; vision is mediated solely by rod photoreceptors in shades of gray based on luminance.
+            </div>
+            <button class="btn btn-secondary copy-palette-card-btn" data-type="achromatopsia" style="font-size: 0.8rem; padding: 0.4rem 0.75rem;">
+              Copy Hex Values
+            </button>
+          </div>
+
+        </div>
       </div>
-    
+
+      <!-- ================= SECTION 2: IMAGE SIMULATOR ================= -->
+      <div id="image-workspace" class="image-mode-container">
+        
+        <!-- File Drag Area -->
+        <div class="file-drag-area" id="image-drop-area">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+          <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 0.35rem; color: var(--text-primary);">
+            Drop an image here or click to browse
+          </div>
+          <p style="color: var(--text-secondary); font-size: 0.875rem;">
+            Supports PNG, JPEG, WebP, SVG, and clipboard paste (Ctrl+V) &bull; Processed 100% locally on your device.
+          </p>
+          <input type="file" id="image-file-input" accept="image/*" style="display: none;">
+        </div>
+
+        <!-- Sample Images Selector -->
+        <div class="sample-images-bar">
+          <span style="font-size: 0.825rem; color: var(--text-secondary); font-weight: 600;">Try sample images:</span>
+          <button class="sample-img-pill" data-sample="rainbow">🎨 Color Spectrum &amp; Rainbow</button>
+          <button class="sample-img-pill" data-sample="traffic">🚦 Traffic Lights &amp; Signs</button>
+          <button class="sample-img-pill" data-sample="fruit">🍎 Fruit &amp; Berries</button>
+          <button class="sample-img-pill" data-sample="ui">💻 UI Dashboard Badges</button>
+        </div>
+
+        <!-- Image Controls Bar -->
+        <div class="controls-bar">
+          <div class="controls-group">
+            <label for="image-cvd-select" style="font-size: 0.875rem; font-weight: 600; color: var(--text-secondary);">Deficiency Type:</label>
+            <select id="image-cvd-select" class="form-select" style="width: auto; min-width: 180px; padding: 0.45rem 0.8rem;">
+              <option value="deuteranopia">Deuteranopia (Green-Blind)</option>
+              <option value="protanopia">Protanopia (Red-Blind)</option>
+              <option value="tritanopia">Tritanopia (Blue-Blind)</option>
+              <option value="achromatopsia">Achromatopsia (Monochrome)</option>
+              <option value="all-grid">All 4 Deficiencies (Side-by-Side)</option>
+            </select>
+          </div>
+          <div class="controls-group">
+            <button id="view-mode-split-btn" class="btn btn-secondary active" type="button" title="Interactive Before/After Slider">
+              ↔ Interactive Split Slider
+            </button>
+            <button id="view-mode-dual-btn" class="btn btn-secondary" type="button" title="Side-by-side Dual Cards">
+              ⊞ Dual Cards
+            </button>
+            <button id="download-simulated-img-btn" class="btn btn-primary" type="button">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download Simulated PNG
+            </button>
+          </div>
+        </div>
+
+        <!-- Split Slider View (Default for Single Type) -->
+        <div id="image-split-view-container" class="canvas-card">
+          <div class="canvas-card-top">
+            <div class="canvas-card-title">Interactive Split Comparison (Drag divider left &harr; right)</div>
+            <span id="current-sim-badge" class="cvd-badge">Deuteranopia</span>
+          </div>
+          <div class="canvas-viewport" id="split-viewport">
+            <div class="split-container" id="split-slider-box">
+              <span class="split-label-original">Original (Trichromacy)</span>
+              <span class="split-label-simulated" id="split-label-sim-text">Deuteranopia</span>
+              <canvas id="split-original-canvas" class="split-canvas-layer"></canvas>
+              <canvas id="split-simulated-canvas" class="split-canvas-layer simulated"></canvas>
+              <div class="split-divider-line" id="split-divider">
+                <div class="split-divider-handle">&harr;</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dual Cards / Multi-Grid View -->
+        <div id="image-grid-view-container" class="image-workspace-grid grid-view" style="display: none;">
+          <!-- Card 1: Original -->
+          <div class="canvas-card">
+            <div class="canvas-card-top">
+              <div class="canvas-card-title">Original (Trichromatic)</div>
+              <span class="cvd-badge">Baseline</span>
+            </div>
+            <div class="canvas-viewport">
+              <canvas id="grid-original-canvas"></canvas>
+            </div>
+          </div>
+          <!-- Card 2: Simulated Primary -->
+          <div class="canvas-card">
+            <div class="canvas-card-top">
+              <div class="canvas-card-title" id="grid-sim-title">Simulated</div>
+              <span class="cvd-badge" id="grid-sim-badge">Deuteranopia</span>
+            </div>
+            <div class="canvas-viewport">
+              <canvas id="grid-simulated-canvas"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4-Way Multi Grid (When "All 4 Deficiencies" is chosen) -->
+        <div id="image-quad-grid-container" class="cvd-grid" style="display: none;">
+          <div class="canvas-card">
+            <div class="canvas-card-top"><div class="canvas-card-title">Protanopia (Red-Blind)</div></div>
+            <div class="canvas-viewport"><canvas id="quad-canvas-protan"></canvas></div>
+          </div>
+          <div class="canvas-card">
+            <div class="canvas-card-top"><div class="canvas-card-title">Deuteranopia (Green-Blind)</div></div>
+            <div class="canvas-viewport"><canvas id="quad-canvas-deutan"></canvas></div>
+          </div>
+          <div class="canvas-card">
+            <div class="canvas-card-top"><div class="canvas-card-title">Tritanopia (Blue-Blind)</div></div>
+            <div class="canvas-viewport"><canvas id="quad-canvas-tritan"></canvas></div>
+          </div>
+          <div class="canvas-card">
+            <div class="canvas-card-top"><div class="canvas-card-title">Achromatopsia (Monochrome)</div></div>
+            <div class="canvas-viewport"><canvas id="quad-canvas-achromat"></canvas></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Educational & Accessibility Guidelines -->
+      <div class="info-card">
+        <h3>Designing for Color Vision Deficiency (WCAG &amp; Usability)</h3>
+        <p style="color: var(--text-secondary); line-height: 1.6; font-size: 0.9rem;">
+          Approximately 1 in 12 men (8%) and 1 in 200 women (0.5%) worldwide have some degree of color vision deficiency. Color alone should never be the sole indicator for conveying critical state, errors, or navigation cues.
+        </p>
+        <div class="info-grid">
+          <div class="info-box">
+            <h4>1. Double Encoding</h4>
+            <p>Combine color cues with icons, shapes, or visible textual labels so meaning is clear even when colors blur together.</p>
+          </div>
+          <div class="info-box">
+            <h4>2. Contrast Ratio</h4>
+            <p>Ensure WCAG AA contrast of at least 4.5:1 for body copy and 3:1 for large typography and active UI controls against backgrounds.</p>
+          </div>
+          <div class="info-box">
+            <h4>3. Dangerous Pairings</h4>
+            <p>Avoid red/green and blue/purple adjacent pairs in dashboards, charts, and buttons without distinct luminance or boundary borders.</p>
+          </div>
+          <div class="info-box">
+            <h4>4. Pattern &amp; Hatching</h4>
+            <p>For data visualizations, bar charts, and heatmaps, use dotted, striped, or textured fills alongside color codes.</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- Hidden Canvas for Composite PNG Export -->
+  <canvas id="export-composite-canvas" style="display: none;"></canvas>
+
+  <!-- Toast Notification -->
+  <div class="toast-notification" id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">Copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Color Blindness Simulator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/color-blindness-simulator/",
-    "description": "Simulates color blindness filters on images.",
+    "description": "Simulate color vision deficiencies in real-time on custom palettes and uploaded images using Brettel/Viénot LMS matrices.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

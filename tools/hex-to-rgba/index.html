@@ -3,15 +3,383 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hex to RGBA Converter - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Convert hex colors to RGBA/HSLA with alpha.">
-  <meta name="keywords" content="hex, rgba, hsla, convert, alpha, free, online, tool, utility">
+  <title>HEX to RGBA Converter - Two-Way Color & Alpha Converter - ALL IN ONE</title>
+  <meta name="description" content="Free two-way HEX to RGBA and RGBA to HEX color converter. Supports 3, 4, 6, and 8-digit HEX with interactive alpha opacity slider, checkerboard preview, and instant CSS export.">
+  <meta name="keywords" content="hex to rgba, rgba to hex, hex converter, alpha transparency, 8-digit hex, css rgba, hsla converter, checkerboard preview, color tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/hex-to-rgba/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .converter-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 960px) {
+      .converter-layout {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .glass-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .card-heading {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+    }
+
+    .hex-input-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.5rem 0.85rem;
+      transition: var(--transition);
+    }
+    .hex-input-wrapper:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .color-picker-box {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      cursor: pointer;
+    }
+    .color-picker-box input[type="color"] {
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      width: 60px;
+      height: 60px;
+      border: none;
+      cursor: pointer;
+      background: transparent;
+    }
+
+    .hex-input-field {
+      background: transparent;
+      border: none;
+      font-family: monospace;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      outline: none;
+      width: 100%;
+      letter-spacing: 0.05em;
+    }
+
+    /* Channel Sliders & Inputs */
+    .channel-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .channel-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .channel-inputs-line {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+    .channel-range {
+      flex: 1;
+      height: 6px;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      cursor: pointer;
+    }
+    .channel-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: 2px solid var(--surface);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      transition: transform 0.15s ease;
+    }
+    .channel-range::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+    .channel-number {
+      width: 72px;
+      padding: 0.4rem 0.5rem;
+      font-family: monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-align: center;
+      border-radius: var(--radius-sm);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+    }
+    .channel-number:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    /* Quick Alpha Pills */
+    .alpha-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.25rem;
+    }
+    .alpha-pill {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.25rem 0.65rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .alpha-pill:hover, .alpha-pill.active {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      background: var(--accent-glow);
+    }
+
+    /* Checkerboard Preview Display */
+    .checkerboard-display {
+      position: relative;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      min-height: 200px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1.25rem;
+      background-color: #1e2530;
+      background-image: 
+        linear-gradient(45deg, #131720 25%, transparent 25%), 
+        linear-gradient(-45deg, #131720 25%, transparent 25%), 
+        linear-gradient(45deg, transparent 75%, #131720 75%), 
+        linear-gradient(-45deg, transparent 75%, #131720 75%);
+      background-size: 24px 24px;
+      background-position: 0 0, 0 12px, 12px -12px, -12px 0px;
+    }
+
+    .checkerboard-color-fill {
+      position: absolute;
+      inset: 0;
+      transition: background-color 0.15s ease;
+    }
+
+    .preview-overlay-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .preview-badges-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .solid-vs-alpha-chip {
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.85rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .swatch-pip {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .contrast-test-boxes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .contrast-box {
+      border-radius: var(--radius-sm);
+      padding: 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .contrast-dark {
+      background: #0f172a;
+      color: #f8fafc;
+    }
+    .contrast-light {
+      background: #ffffff;
+      color: #0f172a;
+    }
+
+    /* Output Formats Grid */
+    .formats-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .format-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      transition: var(--transition);
+    }
+    .format-card:hover {
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+    }
+
+    .format-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      overflow: hidden;
+    }
+    .format-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .format-value {
+      font-family: monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .copy-action-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.45rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-shrink: 0;
+      transition: var(--transition);
+    }
+    .copy-action-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    /* Preset color chips */
+    .color-preset-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .preset-chip {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: transform 0.15s ease;
+    }
+    .preset-chip:hover {
+      transform: scale(1.15);
+      border-color: #ffffff;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,43 +394,273 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Hex to RGBA Converter</h1>
-        <p class="tool-description">Convert hex colors to RGBA/HSLA with alpha.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">HEX to RGBA Converter</h1>
+        <p class="tool-description">Two-way color format converter. Convert HEX (3, 6, or 8 digits with alpha) to RGBA and RGBA back to HEX with interactive alpha transparency controls, checkerboard preview, and 1-click CSS code export.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Hex to RGBA Converter</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Convert hex colors to RGBA/HSLA with alpha.</div>
-            <div><strong>Inputs:</strong> hex, rgba, hsla, convert, alpha</div>
-            <div><strong>Category:</strong> color</div>
+      <!-- Main Workspace -->
+      <div class="converter-layout">
+        
+        <!-- Left Column: Interactive Inputs & Controls -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- HEX Input Card -->
+          <div class="glass-card">
+            <div class="card-heading">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+              HEX Color Input
+            </div>
+
+            <div class="form-group">
+              <label for="hex-code-input">HEX Color Code (3, 4, 6, or 8 digits)</label>
+              <div class="hex-input-wrapper">
+                <div class="color-picker-box" title="Pick RGB Color">
+                  <input type="color" id="native-picker" value="#3b82f6" aria-label="Color Picker">
+                </div>
+                <span style="font-weight: 700; color: var(--text-tertiary); font-size: 1.25rem;">#</span>
+                <input type="text" id="hex-code-input" class="hex-input-field" value="3B82F680" maxlength="9" spellcheck="false" placeholder="3B82F680">
+              </div>
+              <span style="font-size: 0.75rem; color: var(--text-tertiary);">Supports #RGB, #RGBA, #RRGGBB, and #RRGGBBAA</span>
+            </div>
+
+            <div class="form-group">
+              <label>Curated Palette Presets</label>
+              <div class="color-preset-strip" id="preset-strip">
+                <!-- Preset color chips generated by JS -->
+              </div>
+            </div>
           </div>
+
+          <!-- RGBA Channel Sliders Card -->
+          <div class="glass-card">
+            <div class="card-heading">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+              RGBA Channel Sliders (Two-Way)
+            </div>
+
+            <!-- Red Channel -->
+            <div class="channel-row">
+              <div class="channel-meta">
+                <span>Red (R)</span>
+                <span id="label-red-hex" style="font-family: monospace;">HEX: 3B</span>
+              </div>
+              <div class="channel-inputs-line">
+                <input type="range" id="range-red" class="channel-range" min="0" max="255" value="59">
+                <input type="number" id="num-red" class="channel-number" min="0" max="255" value="59">
+              </div>
+            </div>
+
+            <!-- Green Channel -->
+            <div class="channel-row">
+              <div class="channel-meta">
+                <span>Green (G)</span>
+                <span id="label-green-hex" style="font-family: monospace;">HEX: 82</span>
+              </div>
+              <div class="channel-inputs-line">
+                <input type="range" id="range-green" class="channel-range" min="0" max="255" value="130">
+                <input type="number" id="num-green" class="channel-number" min="0" max="255" value="130">
+              </div>
+            </div>
+
+            <!-- Blue Channel -->
+            <div class="channel-row">
+              <div class="channel-meta">
+                <span>Blue (B)</span>
+                <span id="label-blue-hex" style="font-family: monospace;">HEX: F6</span>
+              </div>
+              <div class="channel-inputs-line">
+                <input type="range" id="range-blue" class="channel-range" min="0" max="255" value="246">
+                <input type="number" id="num-blue" class="channel-number" min="0" max="255" value="246">
+              </div>
+            </div>
+
+            <!-- Alpha Channel -->
+            <div class="channel-row" style="margin-top: 0.5rem; padding-top: 0.75rem; border-top: 1px solid var(--border);">
+              <div class="channel-meta">
+                <span>Alpha Opacity (A)</span>
+                <span id="label-alpha-meta" style="font-family: monospace;">50% | Hex: 80</span>
+              </div>
+              <div class="channel-inputs-line">
+                <input type="range" id="range-alpha" class="channel-range" min="0" max="100" value="50">
+                <input type="number" id="num-alpha" class="channel-number" min="0" max="1" step="0.01" value="0.50">
+              </div>
+              <!-- Quick Alpha Preset Buttons -->
+              <div class="alpha-presets">
+                <button type="button" class="alpha-pill" data-alpha="0">0% (Clear)</button>
+                <button type="button" class="alpha-pill" data-alpha="0.10">10%</button>
+                <button type="button" class="alpha-pill" data-alpha="0.25">25%</button>
+                <button type="button" class="alpha-pill active" data-alpha="0.50">50%</button>
+                <button type="button" class="alpha-pill" data-alpha="0.75">75%</button>
+                <button type="button" class="alpha-pill" data-alpha="0.90">90%</button>
+                <button type="button" class="alpha-pill" data-alpha="1.0">100% (Solid)</button>
+              </div>
+            </div>
+
+          </div>
+
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Column: Previews & Code Outputs -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Checkerboard Preview Card -->
+          <div class="glass-card">
+            <div class="card-heading">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10"></path></svg>
+              Live Alpha Preview
+            </div>
+
+            <!-- Checkerboard Background with Color Fill -->
+            <div class="checkerboard-display">
+              <div class="checkerboard-color-fill" id="preview-color-fill"></div>
+              
+              <div class="preview-overlay-content">
+                <div class="preview-badges-row">
+                  <div class="solid-vs-alpha-chip">
+                    <span class="swatch-pip" id="preview-solid-pip"></span>
+                    <span>Solid RGB: <strong id="preview-solid-hex">#3B82F6</strong></span>
+                  </div>
+                  <div class="solid-vs-alpha-chip">
+                    <span class="swatch-pip" id="preview-alpha-pip"></span>
+                    <span>Alpha: <strong id="preview-alpha-pct">50%</strong></span>
+                  </div>
+                </div>
+
+                <!-- Contrast Reading Sample -->
+                <div class="contrast-test-boxes">
+                  <div class="contrast-box contrast-dark">
+                    <span>Over Dark Layer</span>
+                    <span style="opacity: 0.7; font-size: 0.72rem;">Background readability</span>
+                  </div>
+                  <div class="contrast-box contrast-light">
+                    <span>Over Light Layer</span>
+                    <span style="opacity: 0.7; font-size: 0.72rem;">Background readability</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Output Formats (1-Click Copy) -->
+          <div class="glass-card">
+            <div class="card-heading">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Output Formats (1-Click Copy)
+            </div>
+
+            <div class="formats-list">
+              <!-- CSS RGBA -->
+              <div class="format-card">
+                <div class="format-info">
+                  <span class="format-title">CSS RGBA</span>
+                  <span class="format-value" id="val-css-rgba">rgba(59, 130, 246, 0.5)</span>
+                </div>
+                <button class="copy-action-btn" data-target="val-css-rgba">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                  Copy
+                </button>
+              </div>
+
+              <!-- Modern CSS RGB -->
+              <div class="format-card">
+                <div class="format-info">
+                  <span class="format-title">Modern CSS RGB / Alpha</span>
+                  <span class="format-value" id="val-css-rgb-modern">rgb(59 130 246 / 0.5)</span>
+                </div>
+                <button class="copy-action-btn" data-target="val-css-rgb-modern">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                  Copy
+                </button>
+              </div>
+
+              <!-- 8-Digit HEX -->
+              <div class="format-card">
+                <div class="format-info">
+                  <span class="format-title">8-Digit HEX (#RRGGBBAA)</span>
+                  <span class="format-value" id="val-hex-8">#3B82F680</span>
+                </div>
+                <button class="copy-action-btn" data-target="val-hex-8">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                  Copy
+                </button>
+              </div>
+
+              <!-- 6-Digit HEX (Solid) -->
+              <div class="format-card">
+                <div class="format-info">
+                  <span class="format-title">6-Digit HEX (#RRGGBB)</span>
+                  <span class="format-value" id="val-hex-6">#3B82F6</span>
+                </div>
+                <button class="copy-action-btn" data-target="val-hex-6">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                  Copy
+                </button>
+              </div>
+
+              <!-- CSS Custom Property -->
+              <div class="format-card">
+                <div class="format-info">
+                  <span class="format-title">CSS Custom Property</span>
+                  <span class="format-value" id="val-css-var">--color-alpha: rgba(59, 130, 246, 0.5);</span>
+                </div>
+                <button class="copy-action-btn" data-target="val-css-var">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                  Copy
+                </button>
+              </div>
+
+              <!-- CSS HSLA -->
+              <div class="format-card">
+                <div class="format-info">
+                  <span class="format-title">CSS HSLA</span>
+                  <span class="format-value" id="val-css-hsla">hsla(217, 91%, 60%, 0.5)</span>
+                </div>
+                <button class="copy-action-btn" data-target="val-css-hsla">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                  Copy
+                </button>
+              </div>
+
+              <!-- Android ARGB -->
+              <div class="format-card">
+                <div class="format-info">
+                  <span class="format-title">Android Hex (#AARRGGBB)</span>
+                  <span class="format-value" id="val-hex-android">#803B82F6</span>
+                </div>
+                <button class="copy-action-btn" data-target="val-hex-android">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                  Copy
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Toast Notification Element -->
+  <div id="toast" class="toast">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">Copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Hex to RGBA Converter",
+    "name": "HEX to RGBA Converter",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/hex-to-rgba/",
-    "description": "Convert hex colors to RGBA/HSLA with alpha.",
+    "description": "Convert HEX color codes with alpha transparency to RGBA, RGB, and CSS custom properties.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

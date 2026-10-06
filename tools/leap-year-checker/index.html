@@ -3,15 +3,196 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Leap Year Checker - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Checks if specified years are leap years.">
-  <meta name="keywords" content="leap, year, calendar, checker, free, online, tool, utility">
+  <title>Leap Year Checker &amp; Gregorian Calculator - ALL IN ONE</title>
+  <meta name="description" content="Check if any year is a leap year. Interactive 3-step Gregorian rule breakdown, next 10 leap years list, multi-year range explorer, and astronomical calendar facts.">
+  <meta name="keywords" content="leap year checker, is it a leap year, gregorian calendar rules, next leap year, leap year calculator, february 29 calendar">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/leap-year-checker/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .mode-tab-group {
+      display: inline-flex;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.25rem;
+      gap: 0.25rem;
+    }
+    .mode-tab-btn {
+      padding: 0.4rem 1rem;
+      border-radius: var(--radius-full);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .mode-tab-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+    }
+    /* Hero Result Card */
+    .leap-hero-card {
+      border-radius: var(--radius-lg);
+      padding: 2.25rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    .leap-hero-is-leap {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(20, 20, 20, 0.75) 100%);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+    .leap-hero-not-leap {
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.12) 0%, rgba(20, 20, 20, 0.75) 100%);
+      border: 1px solid rgba(78, 133, 191, 0.3);
+    }
+    .hero-verdict-title {
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin: 0.5rem 0;
+    }
+    /* 3-Step Rule Step Cards */
+    .step-rule-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+      gap: 1rem;
+    }
+    .step-rule-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: relative;
+    }
+    .step-badge {
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      width: fit-content;
+    }
+    .step-passed {
+      border-left: 4px solid var(--success);
+    }
+    .step-failed {
+      border-left: 4px solid var(--warning);
+    }
+    .step-neutral {
+      border-left: 4px solid var(--border);
+      opacity: 0.7;
+    }
+    .math-formula {
+      font-family: monospace;
+      font-size: 0.95rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 0.75rem;
+      color: var(--text-primary);
+    }
+    .upcoming-leap-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+      gap: 0.6rem;
+    }
+    .year-pill-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.65rem 0.5rem;
+      text-align: center;
+      font-family: monospace;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .year-pill-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .year-pill-btn.is-leap-tag {
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #6ee7b7;
+      background: rgba(16, 185, 129, 0.08);
+    }
+    .preset-chip {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .preset-chip:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+    .preset-chip.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+    /* Range Explorer Grid */
+    .range-tiles-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+      gap: 0.4rem;
+      max-height: 420px;
+      overflow-y: auto;
+      padding: 0.5rem;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    .range-tile {
+      padding: 0.5rem 0.25rem;
+      border-radius: var(--radius-sm);
+      text-align: center;
+      font-family: monospace;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 1px solid transparent;
+    }
+    .range-tile:hover {
+      transform: scale(1.08);
+      z-index: 2;
+    }
+    .range-tile.tile-leap {
+      background: rgba(16, 185, 129, 0.2);
+      color: #6ee7b7;
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+    .range-tile.tile-common {
+      background: var(--bg-secondary);
+      color: var(--text-tertiary);
+      border-color: var(--border);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,29 +207,268 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Leap Year Checker</h1>
-        <p class="tool-description">Checks if specified years are leap years.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Leap Year Checker &amp; Gregorian Calculator</h1>
+        <p class="tool-description">Verify astronomical leap years using the 3-step Gregorian rule, explore upcoming leap cycles, inspect multi-year ranges, and understand leap seconds &amp; solar drift.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Leap Year Checker</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Checks if specified years are leap years.</div>
-            <div><strong>Inputs:</strong> leap, year, calendar, checker</div>
-            <div><strong>Category:</strong> utility</div>
+      <!-- Mode Switcher -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+        <div class="mode-tab-group">
+          <button id="tab-single" class="mode-tab-btn active">Single Year Analyzer</button>
+          <button id="tab-range" class="mode-tab-btn">Multi-Year Range Explorer</button>
+        </div>
+        <div id="quick-preset-years" style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+          <span style="font-size: 0.8rem; color: var(--text-tertiary); align-self: center;">Test Cases:</span>
+          <button class="preset-chip btn-set-year" data-year="2024">2024</button>
+          <button class="preset-chip btn-set-year" data-year="2026">2026</button>
+          <button class="preset-chip btn-set-year" data-year="2000">2000 (Leap)</button>
+          <button class="preset-chip btn-set-year" data-year="1900">1900 (Common)</button>
+          <button class="preset-chip btn-set-year" data-year="2100">2100 (Common)</button>
+          <button class="preset-chip btn-set-year" data-year="2400">2400 (Leap)</button>
+        </div>
+      </div>
+
+      <!-- VIEW 1: Single Year Analyzer -->
+      <div id="view-single-year" class="tool-workarea">
+
+        <!-- Input Bar Panel -->
+        <div class="tool-panel glass-panel" style="padding: 1.5rem 1.75rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+              <label for="input-year" style="font-size: 1rem; font-weight: 700; color: var(--text-primary);">Enter Year:</label>
+              <div style="display: flex; align-items: center; gap: 0.35rem;">
+                <button id="btn-year-prev-10" class="stepper-btn" style="width: 38px; height: 38px; font-size: 0.8rem;" title="-10 Years">-10</button>
+                <button id="btn-year-prev-1" class="stepper-btn" style="width: 38px; height: 38px;" title="-1 Year">−</button>
+                <input type="number" id="input-year" class="form-input" value="2026" min="1" max="9999" style="width: 120px; font-size: 1.35rem; font-weight: 800; text-align: center; font-family: monospace;">
+                <button id="btn-year-next-1" class="stepper-btn" style="width: 38px; height: 38px;" title="+1 Year">+</button>
+                <button id="btn-year-next-10" class="stepper-btn" style="width: 38px; height: 38px; font-size: 0.8rem;" title="+10 Years">+10</button>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem;">
+              <button id="btn-current-year" class="preset-chip">Current Year</button>
+              <button id="btn-random-year" class="preset-chip">Random Year</button>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Hero Result Banner -->
+        <div id="hero-result-card" class="leap-hero-card leap-hero-not-leap">
+          <span class="meta-chip" id="hero-badge-tag" style="background: rgba(255,255,255,0.1); margin-bottom: 0.5rem; display: inline-block;">
+            Gregorian Calendar Evaluation
+          </span>
+          <div id="hero-verdict-title" class="hero-verdict-title" style="color: var(--text-primary);">
+            2026 is NOT a Leap Year
+          </div>
+          <p id="hero-verdict-desc" style="font-size: 1.15rem; color: var(--text-secondary); max-width: 650px; margin: 0 auto;">
+            2026 is a standard common year with 365 calendar days. February has 28 days.
+          </p>
+        </div>
+
+        <!-- 3-Step Gregorian Rule Breakdown -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <h2 class="panel-title" style="border: none; padding: 0; margin: 0;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+              The 3-Step Gregorian Leap Year Algorithm
+            </h2>
+            <span style="font-size: 0.8rem; color: var(--text-tertiary);">Introduced by Pope Gregory XIII in 1582</span>
+          </div>
+
+          <div class="step-rule-grid">
+            <!-- Step 1 -->
+            <div id="step-card-1" class="step-rule-card step-passed">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="step-badge" id="step-badge-1" style="background: rgba(78, 133, 191, 0.2); color: var(--accent);">Step 1: Rule of 4</span>
+                <span id="step-status-icon-1" style="font-weight: 800; font-size: 1.1rem;">✓</span>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+                Is the year evenly divisible by 4?
+              </p>
+              <div class="math-formula" id="step-math-1">2026 ÷ 4 = 506.5 (Remainder 2)</div>
+              <span style="font-size: 0.78rem;" id="step-desc-1">Must be divisible by 4 to qualify.</span>
+            </div>
+
+            <!-- Step 2 -->
+            <div id="step-card-2" class="step-rule-card step-neutral">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="step-badge" id="step-badge-2" style="background: rgba(245, 158, 11, 0.2); color: var(--warning);">Step 2: Century Rule</span>
+                <span id="step-status-icon-2" style="font-weight: 800; font-size: 1.1rem;">—</span>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+                Is it divisible by 100? (Century year)
+              </p>
+              <div class="math-formula" id="step-math-2">2026 ÷ 100 = 20.26</div>
+              <span style="font-size: 0.78rem;" id="step-desc-2">Centuries are NOT leap years unless divisible by 400.</span>
+            </div>
+
+            <!-- Step 3 -->
+            <div id="step-card-3" class="step-rule-card step-neutral">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="step-badge" id="step-badge-3" style="background: rgba(16, 185, 129, 0.2); color: var(--success);">Step 3: 400 Exception</span>
+                <span id="step-status-icon-3" style="font-weight: 800; font-size: 1.1rem;">—</span>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+                Is it divisible by 400?
+              </p>
+              <div class="math-formula" id="step-math-3">2026 ÷ 400 = 5.065</div>
+              <span style="font-size: 0.78rem;" id="step-desc-3">Overrides century rule (e.g. 1600, 2000, 2400 are leap).</span>
+            </div>
+          </div>
+
+          <!-- Plain english verdict explanation callout -->
+          <div id="rule-verdict-callout" style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem; font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+        <!-- Calendar Statistics for this Year -->
+        <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));">
+          <!-- Total Days -->
+          <div class="metric-card">
+            <span class="metric-title">Calendar Days</span>
+            <div class="metric-value" id="val-year-days">365</div>
+            <span class="metric-sub" id="sub-year-days">Common year</span>
+          </div>
+
+          <!-- February Days -->
+          <div class="metric-card">
+            <span class="metric-title">Days in February</span>
+            <div class="metric-value" id="val-feb-days" style="color: var(--accent);">28</div>
+            <span class="metric-sub" id="sub-feb-days">Feb 28 is Sunday</span>
+          </div>
+
+          <!-- Total Hours -->
+          <div class="metric-card">
+            <span class="metric-title">Total Hours</span>
+            <div class="metric-value" id="val-year-hours">8,760</div>
+            <span class="metric-sub">hours in year</span>
+          </div>
+
+          <!-- Total Minutes -->
+          <div class="metric-card">
+            <span class="metric-title">Total Minutes</span>
+            <div class="metric-value" id="val-year-minutes">525,600</div>
+            <span class="metric-sub">minutes in year</span>
+          </div>
+
+          <!-- Total Seconds -->
+          <div class="metric-card">
+            <span class="metric-title">Total Seconds</span>
+            <div class="metric-value" id="val-year-seconds">31,536,000</div>
+            <span class="metric-sub">seconds in year</span>
+          </div>
+        </div>
+
+        <!-- Next 10 Upcoming Leap Years -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <h2 class="panel-title" style="border: none; padding: 0; margin: 0;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg>
+              Next 10 Leap Years (Click to analyze)
+            </h2>
+            <span style="font-size: 0.8rem; color: var(--text-tertiary);">Calculated relative to evaluated year</span>
+          </div>
+          <div id="upcoming-leap-list" class="upcoming-leap-grid">
+            <!-- Dynamically populated year pills -->
+          </div>
+        </div>
+
+        <!-- Astronomical Science Note -->
+        <div class="tool-panel glass-panel" style="background: rgba(20, 20, 20, 0.4);">
+          <h2 class="panel-title" style="font-size: 1.1rem;">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+            Why Do Leap Years Exist? The Astronomical Solar Year
+          </h2>
+          <div style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.7; display: flex; flex-direction: column; gap: 0.75rem;">
+            <p>
+              It takes the Earth approximately <strong>365 days, 5 hours, 48 minutes, and 45.25 seconds</strong> (365.24219 solar days) to complete one orbit around the Sun.
+            </p>
+            <p>
+              If our calendar year remained strictly 365 days, our calendar would drift by about 6 hours each year, shifting the seasons by roughly 24 days every century. Julius Caesar introduced the <strong>Julian Calendar</strong> (adding 1 day every 4 years), but that assumed a solar year of exactly 365.25 days, overcorrecting by 11 minutes per year.
+            </p>
+            <p>
+              By 1582, the calendar had drifted by 10 whole days. <strong>Pope Gregory XIII</strong> introduced the Gregorian Reform: century years (divisible by 100) are only leap years if they are also divisible by 400. This brings the average calendar year to <strong>365.2425 days</strong>, accurate to within 1 day every 3,030 years!
+            </p>
+          </div>
+        </div>
+
       </div>
-    
+
+      <!-- VIEW 2: Multi-Year Range Explorer (Hidden by default) -->
+      <div id="view-range-explorer" class="tool-workarea" style="display: none;">
+
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">Range Parameters</h2>
+          <div style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
+            <div class="form-group" style="flex: 1; min-width: 140px;">
+              <label for="range-start-year">Start Year</label>
+              <input type="number" id="range-start-year" class="form-input" value="1980" min="1" max="9999" style="font-family: monospace; font-size: 1.1rem; font-weight: 700;">
+            </div>
+
+            <div class="form-group" style="flex: 1; min-width: 140px;">
+              <label for="range-end-year">End Year</label>
+              <input type="number" id="range-end-year" class="form-input" value="2050" min="1" max="9999" style="font-family: monospace; font-size: 1.1rem; font-weight: 700;">
+            </div>
+
+            <div style="display: flex; gap: 0.4rem; padding-bottom: 2px;">
+              <button class="preset-chip btn-set-range" data-start="1900" data-end="2000">1900–2000</button>
+              <button class="preset-chip btn-set-range" data-start="2000" data-end="2100">2000–2100</button>
+              <button class="preset-chip btn-set-range" data-start="2020" data-end="2060">2020–2060</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Range Stats Grid -->
+        <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));">
+          <div class="metric-card">
+            <span class="metric-title">Total Years</span>
+            <div class="metric-value" id="range-total-years">0</div>
+            <span class="metric-sub">evaluated in range</span>
+          </div>
+
+          <div class="metric-card">
+            <span class="metric-title">Leap Years</span>
+            <div class="metric-value" id="range-leap-count" style="color: var(--success);">0</div>
+            <span class="metric-sub" id="range-leap-pct">0% of years</span>
+          </div>
+
+          <div class="metric-card">
+            <span class="metric-title">Common Years</span>
+            <div class="metric-value" id="range-common-count">0</div>
+            <span class="metric-sub">365-day years</span>
+          </div>
+
+          <div class="metric-card">
+            <span class="metric-title">Total Calendar Days</span>
+            <div class="metric-value" id="range-total-days">0</div>
+            <span class="metric-sub">across full span</span>
+          </div>
+        </div>
+
+        <!-- Interactive Tiles Grid -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary);">Filter:</span>
+              <button id="filter-all" class="preset-chip active">All Years</button>
+              <button id="filter-leap-only" class="preset-chip">Leap Years Only</button>
+              <button id="filter-centuries" class="preset-chip">Centuries Only</button>
+            </div>
+
+            <button id="btn-copy-leap-list" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">
+              Copy Leap Years List
+            </button>
+          </div>
+
+          <!-- Tiles Container -->
+          <div id="range-tiles-container" class="range-tiles-container">
+            <!-- Tiles rendered via JS -->
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </main>
 
@@ -62,7 +482,7 @@
     "@type": "WebApplication",
     "name": "Leap Year Checker",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/leap-year-checker/",
-    "description": "Checks if specified years are leap years.",
+    "description": "Checks if specified years are leap years with interactive 3-step Gregorian algorithm breakdown.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

@@ -3,15 +3,147 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JS Code Obfuscator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Encodes strings and structures to mask code logic.">
-  <meta name="keywords" content="obfuscate, js, protect, encode, mask, free, online, tool, utility">
+  <title>JS Code Obfuscator & Protector - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Client-side JavaScript code protector. Obfuscate JS with identifier mangling, hex string encoding, string splitting, dead code injection, and base64 eval wrapper.">
+  <meta name="keywords" content="javascript obfuscator, js protect, code minifier, hex encode strings, mangle identifiers, dead code injection, free online tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/js-obfuscator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .obfuscator-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .obfuscator-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .preset-pill-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .preset-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .preset-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .preset-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    .options-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .options-card-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.25rem 0.65rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-family: monospace;
+      color: var(--text-secondary);
+    }
+    .stat-badge strong {
+      color: var(--accent);
+    }
+
+    .console-terminal {
+      background: #0d1117;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-md);
+      font-family: 'Fira Code', Consolas, Monaco, monospace;
+      font-size: 0.85rem;
+      color: #c9d1d9;
+      padding: 1rem;
+      min-height: 180px;
+      max-height: 320px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      line-height: 1.5;
+    }
+    .console-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 0.75rem;
+      font-size: 0.75rem;
+      color: #8b949e;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .log-entry { margin-bottom: 0.25rem; }
+    .log-info { color: #58a6ff; }
+    .log-warn { color: #d29922; }
+    .log-error { color: #f85149; font-weight: 600; }
+    .log-done { color: #3fb950; font-style: italic; }
+
+    .toast-popup {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      color: var(--text);
+      font-size: 0.875rem;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .toast-popup.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,31 +158,167 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>JS Code Obfuscator</h1>
-        <p class="tool-description">Encodes strings and structures to mask code logic.</p>
+        <h1>JavaScript Code Obfuscator & Protector</h1>
+        <p class="tool-description">Harden and protect client-side JavaScript logic using identifier mangling, hex string encoding, string splitting, dead code injection, and base64 self-executing wrappers. Test obfuscated code directly in a safe sandboxed environment.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>JS Code Obfuscator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Encodes strings and structures to mask code logic.</div>
-            <div><strong>Inputs:</strong> obfuscate, js, protect, encode, mask</div>
-            <div><strong>Category:</strong> security</div>
+      <!-- Quick Preset Selection -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+          <span style="font-size: 0.825rem; font-weight: 600; color: var(--text-secondary);">Security Level:</span>
+          <div class="preset-pill-group" style="margin-bottom: 0;">
+            <button id="preset-light" class="preset-btn">Lightweight</button>
+            <button id="preset-medium" class="preset-btn active">Balanced (Recommended)</button>
+            <button id="preset-hard" class="preset-btn">Heavy Stealth</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+        <div style="display: flex; gap: 0.5rem;">
+          <button id="sample-code-btn" class="btn btn-outline" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">Load Sample Code</button>
+          <button id="clear-all-btn" class="btn btn-outline" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">Clear All</button>
+        </div>
       </div>
-    
+
+      <!-- Obfuscation Configuration Panel -->
+      <div class="options-card">
+        <div class="options-card-title">Active Obfuscation Techniques</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.75rem;">
+          <label class="checkbox-label" style="min-height: auto;">
+            <input type="checkbox" id="opt-mangle" checked>
+            <span><strong>Identifier Mangling</strong> (Rename vars & functions to _0x...)</span>
+          </label>
+          <label class="checkbox-label" style="min-height: auto;">
+            <input type="checkbox" id="opt-hex-strings" checked>
+            <span><strong>Hex String Encoding</strong> (e.g. \x68\x65\x6c\x6c\x6f)</span>
+          </label>
+          <label class="checkbox-label" style="min-height: auto;">
+            <input type="checkbox" id="opt-string-split" checked>
+            <span><strong>String Splitting & Array Table</strong> (Extract to dictionary)</span>
+          </label>
+          <label class="checkbox-label" style="min-height: auto;">
+            <input type="checkbox" id="opt-dead-code">
+            <span><strong>Dead Code Insertion</strong> (Inject opaque predicates)</span>
+          </label>
+          <label class="checkbox-label" style="min-height: auto;">
+            <input type="checkbox" id="opt-base64-wrapper">
+            <span><strong>Base64 Eval Wrapper</strong> (eval(atob(...)) self-executor)</span>
+          </label>
+          <label class="checkbox-label" style="min-height: auto;">
+            <input type="checkbox" id="opt-minify" checked>
+            <span><strong>Minify & Strip Comments</strong> (Remove spacing & comments)</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Work Area: Source Code vs Obfuscated Code -->
+      <div class="obfuscator-grid">
+        <!-- Input Panel -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+            <h2 class="panel-title" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">Original JavaScript</h2>
+            <div style="display: flex; gap: 0.5rem;">
+              <span id="input-stats" class="stat-badge">0 bytes | 0 lines</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <textarea id="source-code" class="form-textarea" placeholder="// Paste your JavaScript source code here...
+function calculateTotal(price, taxRate) {
+  const tax = price * taxRate;
+  console.log('Calculated Tax: ' + tax);
+  return price + tax;
+}
+console.log('Total:', calculateTotal(100, 0.08));" style="min-height: 280px; font-family: monospace; font-size: 0.875rem;" spellcheck="false"></textarea>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+            <button id="obfuscate-btn" class="btn btn-primary" style="display: flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              Obfuscate Code
+            </button>
+            <button id="format-source-btn" class="btn btn-outline" style="font-size: 0.8rem;">Auto-Indent</button>
+          </div>
+        </div>
+
+        <!-- Output Panel -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+            <h2 class="panel-title" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">Protected Output</h2>
+            <div style="display: flex; gap: 0.5rem;">
+              <span id="output-stats" class="stat-badge">0 bytes | 0% change</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <textarea id="obfuscated-code" class="form-textarea" readonly placeholder="// Obfuscated output will appear here after clicking Obfuscate..." style="min-height: 280px; font-family: monospace; font-size: 0.875rem; background: var(--bg-secondary);" spellcheck="false"></textarea>
+          </div>
+          <div class="action-bar" style="justify-content: space-between; margin-top: 0.5rem;">
+            <div style="display: flex; gap: 0.5rem;">
+              <button id="copy-output-btn" class="btn btn-secondary">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy Code
+              </button>
+              <button id="download-output-btn" class="btn btn-outline">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download .js
+              </button>
+            </div>
+            <button id="run-test-btn" class="btn btn-primary" style="background: linear-gradient(90deg, #10b981 0%, #059669 100%); border-color: #10b981;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              Test in Sandbox
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Safe Sandboxed Execution Console -->
+      <div class="tool-panel glass-panel" style="margin-top: 0.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <h2 class="panel-title" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">Safe Sandboxed Execution Console</h2>
+            <span style="font-size: 0.75rem; background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 0.15rem 0.5rem; border-radius: var(--radius-full); border: 1px solid rgba(16, 185, 129, 0.3);">Isolated iframe sandbox</span>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="clear-console-btn" class="btn btn-outline" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;">Clear Terminal</button>
+          </div>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">
+          Tests obfuscated code in an isolated sub-frame without access to cookies, parent DOM, or network storage. Captures all <code>console.log</code>, errors, and output values in real-time.
+        </p>
+        <div class="console-terminal" id="sandbox-terminal">
+          <div class="console-header">
+            <span>Terminal Output</span>
+            <span id="sandbox-status">Status: Idle</span>
+          </div>
+          <div id="terminal-content">
+            <div class="log-entry log-info">[Sandbox Console Ready - Click "Test in Sandbox" above to execute]</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hidden Sandboxed Iframe Container -->
+      <div id="sandbox-container" style="display: none;"></div>
+
+      <!-- Guide & FAQ -->
+      <div class="tool-panel glass-panel" style="margin-top: 1rem;">
+        <h2 class="panel-title">Obfuscation Security Best Practices</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; font-size: 0.85rem; color: var(--text-secondary);">
+          <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+            <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">Identifier Mangling</strong>
+            <p>Converts meaningful variable, parameter, and function names into randomized hexadecimal tokens, disrupting human readability while preserving logic flow.</p>
+          </div>
+          <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+            <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">Hex Encoding & Table Splitting</strong>
+            <p>Converts ASCII string literals into raw escape codes (<code style="color:var(--accent);">\x68\x65...</code>) and relocates them into a dynamically dereferenced lookup table.</p>
+          </div>
+          <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+            <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">Sandboxed Verification</strong>
+            <p>Never deploy obfuscated code without runtime testing. Always verify that console outputs and return values match your original code's expected behavior.</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- Toast Notification -->
+  <div id="app-toast" class="toast-popup">Copied to clipboard!</div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>

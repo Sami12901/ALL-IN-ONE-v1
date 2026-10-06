@@ -3,15 +3,307 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ad Budget Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your Ad Budget Calculator online.">
-  <meta name="keywords" content="marketing, digital, advertising, free, online, tool, utility">
+  <title>Ad Budget Calculator - Multi-Channel Advertising Optimizer - ALL IN ONE</title>
+  <meta name="description" content="Optimize advertising budget allocations across Google Search, Meta Ads, TikTok, YouTube, and LinkedIn. Calculate estimated impressions, clicks, CPC, and conversions.">
+  <meta name="keywords" content="ad budget calculator, media spend allocator, google ads budget, meta ads budget, tiktok ad spend, linkedin ads roi, cpc estimator">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ad-budget-calculator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .budget-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+
+    @media (min-width: 1050px) {
+      .budget-layout {
+        grid-template-columns: 500px 1fr;
+      }
+    }
+
+    .strategy-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+    }
+
+    .preset-pill {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.8rem;
+      font-size: 0.775rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .preset-pill:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    .preset-pill.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    /* Total Percentage Indicator */
+    .allocation-meter {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .allocation-meter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .meter-progress-track {
+      height: 10px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      display: flex;
+    }
+
+    .meter-slice {
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+
+    /* Channel Cards */
+    .channel-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      margin-bottom: 0.85rem;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .channel-card:hover {
+      border-color: var(--stroke);
+    }
+
+    .channel-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+
+    .channel-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .channel-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .channel-pct-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      width: 90px;
+    }
+
+    .channel-pct-input-wrap input {
+      padding: 0.3rem 0.5rem;
+      text-align: right;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .channel-benchmarks-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px dashed var(--border);
+      font-size: 0.75rem;
+    }
+
+    .benchmark-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .benchmark-field input {
+      padding: 0.25rem 0.4rem;
+      font-size: 0.785rem;
+    }
+
+    /* KPI Display Grid */
+    .kpi-aggregate-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .kpi-stat-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+
+    .kpi-stat-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      margin-bottom: 0.25rem;
+    }
+
+    .kpi-stat-val {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .kpi-stat-sub {
+      font-size: 0.775rem;
+      color: var(--text-tertiary);
+      margin-top: 0.25rem;
+    }
+
+    /* Donut Chart Visual */
+    .chart-container-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .donut-svg-wrap {
+      position: relative;
+      width: 240px;
+      height: 240px;
+      margin: 1rem 0;
+    }
+
+    .donut-center-info {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .donut-center-total {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .donut-center-sub {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .donut-legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      width: 100%;
+      margin-top: 0.75rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* Channel Performance Breakdown Table */
+    .performance-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.825rem;
+    }
+
+    .performance-table th {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 600;
+      padding: 0.65rem 0.75rem;
+      text-align: right;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .performance-table th:first-child {
+      text-align: left;
+    }
+
+    .performance-table td {
+      padding: 0.65rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      text-align: right;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    .performance-table td:first-child {
+      text-align: left;
+    }
+
+    .performance-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,28 +319,302 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Ad Budget Calculator</h1>
-        <p class="tool-description">Create, analyze, and manage your Ad Budget Calculator online.</p>
+        <p class="tool-description">Multi-channel digital advertising budget optimizer. Allocate spend across Google Search, Meta Ads, TikTok, YouTube, and LinkedIn, forecast impressions, clicks, CPC, and conversions with real-time donut visualization.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Ad Budget Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your Ad Budget Calculator online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, advertising</div>
-            <div><strong>Category:</strong> digital-marketing</div>
+      <div class="budget-layout">
+        <!-- Left: Allocator Controls -->
+        <div class="budget-controls-col">
+          <!-- Total Budget & Presets -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem; margin-bottom: 1.25rem;">
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
+              <div class="form-group">
+                <label for="campaign-budget">Total Monthly Ad Budget *</label>
+                <div style="position: relative; display: flex; align-items: center;">
+                  <span id="currency-symbol-label" style="position: absolute; left: 0.85rem; color: var(--text-tertiary); font-weight: 600;">$</span>
+                  <input type="number" id="campaign-budget" class="form-input" min="100" step="500" value="10000" style="padding-left: 2rem; font-size: 1.15rem; font-weight: 700;">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="currency-select">Currency</label>
+                <select id="currency-select" class="form-select">
+                  <option value="USD">USD ($)</option>
+                  <option value="EUR">EUR (€)</option>
+                  <option value="GBP">GBP (£)</option>
+                  <option value="AUD">AUD (A$)</option>
+                  <option value="CAD">CAD (C$)</option>
+                  <option value="AED">AED (AED)</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">
+              Allocation Strategy Presets:
+            </div>
+            <div class="strategy-presets">
+              <button type="button" class="preset-pill active" id="preset-ecom">E-Commerce Growth</button>
+              <button type="button" class="preset-pill" id="preset-b2b">B2B SaaS Lead Gen</button>
+              <button type="button" class="preset-pill" id="preset-brand">Brand Awareness</button>
+              <button type="button" class="preset-pill" id="preset-balanced">Equal Split (20% Each)</button>
+            </div>
+          </div>
+
+          <!-- Total Allocation Bar -->
+          <div class="allocation-meter">
+            <div class="allocation-meter-header">
+              <span>Budget Allocated: <strong id="meter-total-pct" style="color: var(--success);">100%</strong></span>
+              <button type="button" id="btn-auto-balance" class="btn btn-secondary" style="padding: 0.2rem 0.6rem; font-size: 0.75rem;">
+                Auto-Balance to 100%
+              </button>
+            </div>
+            <div class="meter-progress-track" id="meter-progress-track">
+              <!-- Rendered via JS -->
+            </div>
+            <div id="meter-alert" style="font-size: 0.75rem; color: var(--error); margin-top: 0.35rem; display: none;">
+              Allocations must equal 100% to calculate realistic campaign projections.
+            </div>
+          </div>
+
+          <!-- 5 Channel Allocation Sliders -->
+          <div id="channels-container">
+            <!-- 1. Google Search -->
+            <div class="channel-card" data-channel="google">
+              <div class="channel-card-header">
+                <div class="channel-brand">
+                  <span class="channel-indicator" style="background: #4285F4;"></span>
+                  <span>Google Search Ads</span>
+                </div>
+                <div class="channel-pct-input-wrap">
+                  <input type="number" class="form-input channel-pct-input" min="0" max="100" value="40">
+                  <span style="font-size: 0.85rem; color: var(--text-secondary);">%</span>
+                </div>
+              </div>
+              <input type="range" class="range-slider channel-range" min="0" max="100" value="40" style="width: 100%;">
+              <div class="channel-benchmarks-row">
+                <div class="benchmark-field">
+                  <label>Benchmark CPC ($)</label>
+                  <input type="number" class="form-input benchmark-cpc" value="2.50" step="0.10" min="0.10">
+                </div>
+                <div class="benchmark-field">
+                  <label>Benchmark CTR (%)</label>
+                  <input type="number" class="form-input benchmark-ctr" value="3.50" step="0.10" min="0.10">
+                </div>
+                <div class="benchmark-field">
+                  <label>Conversion Rate (%)</label>
+                  <input type="number" class="form-input benchmark-cvr" value="4.00" step="0.10" min="0.10">
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. Meta Ads -->
+            <div class="channel-card" data-channel="meta">
+              <div class="channel-card-header">
+                <div class="channel-brand">
+                  <span class="channel-indicator" style="background: #0668E1;"></span>
+                  <span>Meta Ads (FB / IG)</span>
+                </div>
+                <div class="channel-pct-input-wrap">
+                  <input type="number" class="form-input channel-pct-input" min="0" max="100" value="35">
+                  <span style="font-size: 0.85rem; color: var(--text-secondary);">%</span>
+                </div>
+              </div>
+              <input type="range" class="range-slider channel-range" min="0" max="100" value="35" style="width: 100%;">
+              <div class="channel-benchmarks-row">
+                <div class="benchmark-field">
+                  <label>Benchmark CPC ($)</label>
+                  <input type="number" class="form-input benchmark-cpc" value="1.20" step="0.10" min="0.10">
+                </div>
+                <div class="benchmark-field">
+                  <label>Benchmark CTR (%)</label>
+                  <input type="number" class="form-input benchmark-ctr" value="1.80" step="0.10" min="0.10">
+                </div>
+                <div class="benchmark-field">
+                  <label>Conversion Rate (%)</label>
+                  <input type="number" class="form-input benchmark-cvr" value="3.00" step="0.10" min="0.10">
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. TikTok Ads -->
+            <div class="channel-card" data-channel="tiktok">
+              <div class="channel-card-header">
+                <div class="channel-brand">
+                  <span class="channel-indicator" style="background: #FE2C55;"></span>
+                  <span>TikTok Ads</span>
+                </div>
+                <div class="channel-pct-input-wrap">
+                  <input type="number" class="form-input channel-pct-input" min="0" max="100" value="15">
+                  <span style="font-size: 0.85rem; color: var(--text-secondary);">%</span>
+                </div>
+              </div>
+              <input type="range" class="range-slider channel-range" min="0" max="100" value="15" style="width: 100%;">
+              <div class="channel-benchmarks-row">
+                <div class="benchmark-field">
+                  <label>Benchmark CPC ($)</label>
+                  <input type="number" class="form-input benchmark-cpc" value="0.80" step="0.05" min="0.05">
+                </div>
+                <div class="benchmark-field">
+                  <label>Benchmark CTR (%)</label>
+                  <input type="number" class="form-input benchmark-ctr" value="1.50" step="0.10" min="0.10">
+                </div>
+                <div class="benchmark-field">
+                  <label>Conversion Rate (%)</label>
+                  <input type="number" class="form-input benchmark-cvr" value="2.20" step="0.10" min="0.10">
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. YouTube Ads -->
+            <div class="channel-card" data-channel="youtube">
+              <div class="channel-card-header">
+                <div class="channel-brand">
+                  <span class="channel-indicator" style="background: #FF0000;"></span>
+                  <span>YouTube Ads</span>
+                </div>
+                <div class="channel-pct-input-wrap">
+                  <input type="number" class="form-input channel-pct-input" min="0" max="100" value="10">
+                  <span style="font-size: 0.85rem; color: var(--text-secondary);">%</span>
+                </div>
+              </div>
+              <input type="range" class="range-slider channel-range" min="0" max="100" value="10" style="width: 100%;">
+              <div class="channel-benchmarks-row">
+                <div class="benchmark-field">
+                  <label>Benchmark CPC ($)</label>
+                  <input type="number" class="form-input benchmark-cpc" value="1.80" step="0.10" min="0.10">
+                </div>
+                <div class="benchmark-field">
+                  <label>Benchmark CTR (%)</label>
+                  <input type="number" class="form-input benchmark-ctr" value="0.90" step="0.10" min="0.10">
+                </div>
+                <div class="benchmark-field">
+                  <label>Conversion Rate (%)</label>
+                  <input type="number" class="form-input benchmark-cvr" value="2.00" step="0.10" min="0.10">
+                </div>
+              </div>
+            </div>
+
+            <!-- 5. LinkedIn Ads -->
+            <div class="channel-card" data-channel="linkedin">
+              <div class="channel-card-header">
+                <div class="channel-brand">
+                  <span class="channel-indicator" style="background: #0A66C2;"></span>
+                  <span>LinkedIn Ads</span>
+                </div>
+                <div class="channel-pct-input-wrap">
+                  <input type="number" class="form-input channel-pct-input" min="0" max="100" value="0">
+                  <span style="font-size: 0.85rem; color: var(--text-secondary);">%</span>
+                </div>
+              </div>
+              <input type="range" class="range-slider channel-range" min="0" max="100" value="0" style="width: 100%;">
+              <div class="channel-benchmarks-row">
+                <div class="benchmark-field">
+                  <label>Benchmark CPC ($)</label>
+                  <input type="number" class="form-input benchmark-cpc" value="6.50" step="0.25" min="0.50">
+                </div>
+                <div class="benchmark-field">
+                  <label>Benchmark CTR (%)</label>
+                  <input type="number" class="form-input benchmark-ctr" value="0.75" step="0.05" min="0.10">
+                </div>
+                <div class="benchmark-field">
+                  <label>Conversion Rate (%)</label>
+                  <input type="number" class="form-input benchmark-cvr" value="5.50" step="0.10" min="0.10">
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right: Donut Chart & Performance Projections -->
+        <div class="budget-results-col">
+          <!-- Aggregate KPIs -->
+          <div class="kpi-aggregate-grid">
+            <div class="kpi-stat-card">
+              <div class="kpi-stat-title">Total Budget</div>
+              <div class="kpi-stat-val" id="kpi-total-budget">$10,000</div>
+              <div class="kpi-stat-sub">Across active channels</div>
+            </div>
+
+            <div class="kpi-stat-card">
+              <div class="kpi-stat-title">Est. Total Impressions</div>
+              <div class="kpi-stat-val" id="kpi-total-impressions">0</div>
+              <div class="kpi-stat-sub" id="kpi-blended-ctr">Blended CTR: 0%</div>
+            </div>
+
+            <div class="kpi-stat-card">
+              <div class="kpi-stat-title">Est. Total Clicks</div>
+              <div class="kpi-stat-val" id="kpi-total-clicks">0</div>
+              <div class="kpi-stat-sub" id="kpi-blended-cpc">Blended CPC: $0.00</div>
+            </div>
+
+            <div class="kpi-stat-card">
+              <div class="kpi-stat-title">Est. Total Conversions</div>
+              <div class="kpi-stat-val" id="kpi-total-conversions">0</div>
+              <div class="kpi-stat-sub" id="kpi-blended-cpa">Blended CPA: $0.00</div>
+            </div>
+          </div>
+
+          <!-- Donut Chart Card -->
+          <div class="chart-container-card">
+            <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">
+              Budget Allocation Distribution
+            </div>
+            
+            <div class="donut-svg-wrap">
+              <svg id="donut-svg" viewBox="0 0 200 200" width="200" height="200">
+                <!-- SVG Paths injected via JS -->
+              </svg>
+              <div class="donut-center-info">
+                <div class="donut-center-total" id="donut-center-budget">$10,000</div>
+                <div class="donut-center-sub" id="donut-center-label">Total Spend</div>
+              </div>
+            </div>
+
+            <div class="donut-legend" id="donut-legend">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Performance Breakdown Table -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <div class="panel-title" style="margin-bottom: 0; border: none; padding: 0;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                Channel Performance Projections
+              </div>
+              <div style="display: flex; gap: 0.4rem;">
+                <button type="button" id="btn-export-budget-csv" class="btn btn-secondary" style="padding: 0.3rem 0.65rem; font-size: 0.75rem;">
+                  Export CSV
+                </button>
+                <button type="button" id="btn-copy-budget-plan" class="btn btn-secondary" style="padding: 0.3rem 0.65rem; font-size: 0.75rem;">
+                  Copy Plan
+                </button>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="performance-table" id="performance-table">
+                <thead>
+                  <tr>
+                    <th>Channel</th>
+                    <th>Budget</th>
+                    <th>Share</th>
+                    <th>CPC</th>
+                    <th>Est. Clicks</th>
+                    <th>Est. Impressions</th>
+                    <th>CVR</th>
+                    <th>Conversions</th>
+                    <th>Est. CPA</th>
+                  </tr>
+                </thead>
+                <tbody id="performance-tbody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
 
@@ -62,8 +628,8 @@
     "@type": "WebApplication",
     "name": "Ad Budget Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ad-budget-calculator/",
-    "description": "Create, analyze, and manage your Ad Budget Calculator online.",
-    "applicationCategory": "UtilityPage",
+    "description": "Multi-channel digital advertising budget optimizer. Allocate spend across Google Search, Meta Ads, TikTok, YouTube, and LinkedIn.",
+    "applicationCategory": "MarketingUtility",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

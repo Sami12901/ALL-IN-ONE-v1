@@ -4,14 +4,320 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Marketing Funnel Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your Marketing Funnel Calculator online.">
-  <meta name="keywords" content="marketing, digital, advertising, free, online, tool, utility">
+  <meta name="description" content="Interactive multi-stage marketing funnel solver. Calculate conversion rates, CAC, CPL, drop-off leakage, and visualize your conversion pipeline with interactive SVG charts.">
+  <meta name="keywords" content="marketing funnel calculator, conversion rate calculator, CAC, CPL, CPC, ROAS, sales pipeline, drop-off leakage, digital marketing">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/marketing-funnel-calculator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Marketing Funnel Specific Styles */
+    .funnel-layout-grid {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      .funnel-layout-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .preset-pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .preset-btn {
+      font-size: 0.8rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .preset-btn:hover, .preset-btn.active {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      background: var(--accent-glow);
+    }
+
+    .stage-input-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.9rem;
+      margin-bottom: 0.75rem;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .stage-input-card:hover {
+      border-color: rgba(137, 170, 204, 0.4);
+    }
+
+    .stage-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .stage-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+    }
+
+    .stage-badge .step-num {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #0b0f19;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 800;
+    }
+
+    .stage-metrics-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.4rem;
+      padding-top: 0.4rem;
+      border-top: 1px dashed var(--border);
+    }
+
+    .kpi-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      box-shadow: 0 4px 16px var(--accent-glow);
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+
+    .kpi-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .kpi-value {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+    }
+
+    .kpi-sub {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    .svg-funnel-wrapper {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .funnel-svg {
+      width: 100%;
+      max-width: 680px;
+      height: auto;
+      filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.35));
+    }
+
+    .funnel-trapezoid {
+      cursor: pointer;
+      transition: filter 0.2s, opacity 0.2s, transform 0.2s;
+    }
+
+    .funnel-trapezoid:hover {
+      filter: brightness(1.25) drop-shadow(0 0 10px var(--accent));
+      opacity: 1;
+    }
+
+    .funnel-stage-text {
+      pointer-events: none;
+      font-family: var(--font-sans);
+    }
+
+    .bottleneck-banner {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .bottleneck-icon {
+      flex-shrink: 0;
+      color: #ef4444;
+      margin-top: 0.2rem;
+    }
+
+    .bottleneck-title {
+      font-weight: 700;
+      color: #fca5a5;
+      font-size: 0.95rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .bottleneck-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .funnel-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    .funnel-table th, .funnel-table td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .funnel-table th {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .funnel-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .leakage-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+    }
+
+    .leakage-badge.low {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+    }
+
+    .leakage-badge.medium {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+    }
+
+    .tab-nav {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+
+    .tab-btn {
+      padding: 0.5rem 1rem;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .tooltip-float {
+      position: absolute;
+      pointer-events: none;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      padding: 0.6rem 0.9rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      color: var(--text-primary);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      display: none;
+      z-index: 100;
+      max-width: 260px;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,28 +333,276 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Marketing Funnel Calculator</h1>
-        <p class="tool-description">Create, analyze, and manage your Marketing Funnel Calculator online.</p>
+        <p class="tool-description">
+          Model, diagnose, and optimize your 5-stage customer acquisition funnel. Track step conversion rates, unit economics (CAC, CPL, CPC), leakage drop-offs, and visualize pipeline dynamics in real-time.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Marketing Funnel Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your Marketing Funnel Calculator online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, advertising</div>
-            <div><strong>Category:</strong> digital-marketing</div>
+      <!-- Preset Selection Bar -->
+      <div class="preset-pill-group">
+        <span style="font-size: 0.8rem; color: var(--text-tertiary); display: flex; align-items: center; margin-right: 0.5rem;">Quick Presets:</span>
+        <button type="button" class="preset-btn" data-preset="b2b-saas">💻 B2B SaaS</button>
+        <button type="button" class="preset-btn" data-preset="ecommerce">🛍️ E-Commerce / D2C</button>
+        <button type="button" class="preset-btn" data-preset="agency-leadgen">🎯 Agency & Lead Gen</button>
+        <button type="button" class="preset-btn" data-preset="high-ticket">💎 High-Ticket Coaching</button>
+        <button type="button" class="preset-btn" data-preset="mobile-app">📱 Mobile App</button>
+      </div>
+
+      <!-- Tool Workspace Layout -->
+      <div class="funnel-layout-grid">
+        
+        <!-- Left Panel: Inputs & Financial Controls -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+            Funnel Parameters
+          </div>
+
+          <!-- Financial Budget & Currency -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <div class="form-group">
+              <label for="currency-select">Currency</label>
+              <select id="currency-select" class="form-select">
+                <option value="$" selected>USD ($)</option>
+                <option value="€">EUR (€)</option>
+                <option value="£">GBP (£)</option>
+                <option value="SAR ">SAR (﷼)</option>
+                <option value="AED ">AED (د.إ)</option>
+                <option value="C$">CAD ($)</option>
+                <option value="A$">AUD ($)</option>
+                <option value="₹">INR (₹)</option>
+                <option value="৳">BDT (৳)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="total-budget">Total Ad Spend / Budget</label>
+              <input type="number" id="total-budget" class="form-input" min="0" step="100" value="5000">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label for="customer-ltv">Avg. Customer Value / LTV / AOV</label>
+            <input type="number" id="customer-ltv" class="form-input" min="0" step="10" value="350" placeholder="Revenue per customer">
+          </div>
+
+          <div style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-tertiary); margin-top: 0.25rem; margin-bottom: 0.5rem;">
+            5-Stage Acquisition Pipeline
+          </div>
+
+          <!-- Stage 1 -->
+          <div class="stage-input-card" data-stage="1">
+            <div class="stage-header-row">
+              <span class="stage-badge"><span class="step-num">1</span> Impressions / Reach</span>
+              <span id="rate-stage-1" style="font-size: 0.75rem; color: var(--text-tertiary);">Top of Funnel</span>
+            </div>
+            <div class="form-group">
+              <input type="number" id="input-stage-1" class="form-input stage-input" min="1" step="1000" value="100000">
+            </div>
+            <div class="stage-metrics-row">
+              <span id="cost-stage-1">CPM: $50.00</span>
+              <span id="drop-stage-1" style="text-align: right;">Baseline 100%</span>
+            </div>
+          </div>
+
+          <!-- Stage 2 -->
+          <div class="stage-input-card" data-stage="2">
+            <div class="stage-header-row">
+              <span class="stage-badge"><span class="step-num">2</span> Visitors / Clicks</span>
+              <span id="rate-stage-2" style="font-size: 0.75rem; color: var(--accent); font-weight: 600;">CTR: 3.50%</span>
+            </div>
+            <div class="form-group">
+              <input type="number" id="input-stage-2" class="form-input stage-input" min="1" step="100" value="3500">
+            </div>
+            <div class="stage-metrics-row">
+              <span id="cost-stage-2">CPC: $1.43</span>
+              <span id="drop-stage-2" style="text-align: right; color:#ef4444;">Drop: 96.50%</span>
+            </div>
+          </div>
+
+          <!-- Stage 3 -->
+          <div class="stage-input-card" data-stage="3">
+            <div class="stage-header-row">
+              <span class="stage-badge"><span class="step-num">3</span> Leads / Signups</span>
+              <span id="rate-stage-3" style="font-size: 0.75rem; color: var(--accent); font-weight: 600;">Conv: 10.00%</span>
+            </div>
+            <div class="form-group">
+              <input type="number" id="input-stage-3" class="form-input stage-input" min="1" step="10" value="350">
+            </div>
+            <div class="stage-metrics-row">
+              <span id="cost-stage-3">CPL: $14.29</span>
+              <span id="drop-stage-3" style="text-align: right; color:#ef4444;">Drop: 90.00%</span>
+            </div>
+          </div>
+
+          <!-- Stage 4 -->
+          <div class="stage-input-card" data-stage="4">
+            <div class="stage-header-row">
+              <span class="stage-badge"><span class="step-num">4</span> Marketing Qualified (MQL)</span>
+              <span id="rate-stage-4" style="font-size: 0.75rem; color: var(--accent); font-weight: 600;">Qual: 30.00%</span>
+            </div>
+            <div class="form-group">
+              <input type="number" id="input-stage-4" class="form-input stage-input" min="1" step="5" value="105">
+            </div>
+            <div class="stage-metrics-row">
+              <span id="cost-stage-4">CP-MQL: $47.62</span>
+              <span id="drop-stage-4" style="text-align: right; color:#ef4444;">Drop: 70.00%</span>
+            </div>
+          </div>
+
+          <!-- Stage 5 -->
+          <div class="stage-input-card" data-stage="5">
+            <div class="stage-header-row">
+              <span class="stage-badge"><span class="step-num">5</span> Paying Customers</span>
+              <span id="rate-stage-5" style="font-size: 0.75rem; color: var(--accent); font-weight: 600;">Close: 23.81%</span>
+            </div>
+            <div class="form-group">
+              <input type="number" id="input-stage-5" class="form-input stage-input" min="1" step="1" value="25">
+            </div>
+            <div class="stage-metrics-row">
+              <span id="cost-stage-5">CAC: $200.00</span>
+              <span id="drop-stage-5" style="text-align: right; color:#ef4444;">Drop: 76.19%</span>
+            </div>
+          </div>
+
+          <!-- Action buttons -->
+          <div class="action-bar" style="margin-top: 1rem;">
+            <button type="button" id="btn-recalculate" class="btn btn-primary" style="flex: 1;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              Recalculate
+            </button>
+            <button type="button" id="btn-reset" class="btn btn-secondary" title="Reset to Defaults">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Panel: Visualization, KPIs & Analysis -->
+        <div>
+
+          <!-- KPI Summary Cards -->
+          <div class="kpi-cards-grid">
+            <div class="kpi-card">
+              <span class="kpi-label">Overall Conversion</span>
+              <span class="kpi-value" id="kpi-overall-rate">0.025%</span>
+              <span class="kpi-sub" id="kpi-visitor-to-cust">0.71% of site visitors</span>
+            </div>
+
+            <div class="kpi-card">
+              <span class="kpi-label">Acquisition Cost (CAC)</span>
+              <span class="kpi-value" id="kpi-cac">$200.00</span>
+              <span class="kpi-sub" id="kpi-cpl-sub">CPL: $14.29 | CPC: $1.43</span>
+            </div>
+
+            <div class="kpi-card">
+              <span class="kpi-label">Estimated Revenue</span>
+              <span class="kpi-value" id="kpi-revenue">$8,750</span>
+              <span class="kpi-sub" id="kpi-roas">ROAS: 1.75x (175%)</span>
+            </div>
+
+            <div class="kpi-card">
+              <span class="kpi-label">Net Return / Profit</span>
+              <span class="kpi-value" id="kpi-net-profit" style="color: #34d399;">+$3,750</span>
+              <span class="kpi-sub" id="kpi-roi">ROI: +75.0% on spend</span>
+            </div>
+          </div>
+
+          <!-- Bottleneck Leakage Diagnostic Banner -->
+          <div class="bottleneck-banner" id="bottleneck-banner">
+            <div class="bottleneck-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div>
+              <div class="bottleneck-title" id="bottleneck-title">Primary Funnel Leakage Detected</div>
+              <div class="bottleneck-desc" id="bottleneck-desc">
+                Analyzing drop-off points...
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive SVG Funnel Card -->
+          <div class="svg-funnel-wrapper">
+            <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <span style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                Visual Pipeline Geometry
+              </span>
+              <span style="font-size: 0.75rem; color: var(--text-tertiary);">Hover or click sections for inspection</span>
+            </div>
+
+            <!-- SVG Container -->
+            <div id="funnel-chart-container" style="width: 100%; position: relative;">
+              <svg id="funnel-svg" class="funnel-svg" viewBox="0 0 680 400" preserveAspectRatio="xMidYMid meet">
+                <!-- Dynamically populated via JS -->
+              </svg>
+              <div id="funnel-tooltip" class="tooltip-float"></div>
+            </div>
+          </div>
+
+          <!-- Comprehensive Stage Breakdown Table -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <div class="panel-title" style="margin-bottom: 0; border: none; padding: 0;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                Stage-by-Stage Performance & Leakage Audit
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button type="button" id="btn-export-csv" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Export CSV
+                </button>
+                <button type="button" id="btn-copy-summary" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copy Report
+                </button>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="funnel-table">
+                <thead>
+                  <tr>
+                    <th>Funnel Stage</th>
+                    <th>Volume</th>
+                    <th>Step Conversion</th>
+                    <th>Drop-off Loss</th>
+                    <th>Cost Per Unit</th>
+                    <th>Leakage Severity</th>
+                  </tr>
+                </thead>
+                <tbody id="funnel-table-body">
+                  <!-- Populated via script.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Reverse Funnel Target Calculator Section -->
+          <div class="tool-panel glass-panel" style="margin-top: 1.5rem; padding: 1.25rem;">
+            <div class="panel-title" style="margin-bottom: 0.5rem;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+              Reverse Goal Solver: Target Customers Required
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+              Enter your desired target customer volume to back-calculate required traffic, leads, and budget based on your current funnel conversion velocity.
+            </p>
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end;">
+              <div class="form-group" style="min-width: 200px;">
+                <label for="target-customers-input">Desired Target Customers</label>
+                <input type="number" id="target-customers-input" class="form-input" min="1" step="5" value="50">
+              </div>
+              <button type="button" id="btn-calc-target" class="btn btn-primary" style="margin-bottom: 0.1rem;">
+                Calculate Pipeline Needed
+              </button>
+            </div>
+            <div id="target-solver-results" style="margin-top: 1rem; font-size: 0.85rem; line-height: 1.6; color: var(--text-secondary); display: none;">
+              <!-- Populated via script.js -->
+            </div>
+          </div>
+
+        </div>
+
       </div>
-    
+
     </div>
   </main>
 
@@ -62,8 +616,8 @@
     "@type": "WebApplication",
     "name": "Marketing Funnel Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/marketing-funnel-calculator/",
-    "description": "Create, analyze, and manage your Marketing Funnel Calculator online.",
-    "applicationCategory": "UtilityPage",
+    "description": "Multi-stage customer acquisition funnel solver with conversion rates, CAC, CPL, leakage detection, and interactive SVG pipeline visualization.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

@@ -3,17 +3,170 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scientific Units Converter - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Convert units across physics and chemistry bounds.">
-  <meta name="keywords" content="scientific, units, conversion, physics, chemistry, free, online, tool, utility">
+  <title>Scientific Physics Unit Converter - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Convert scientific units across Energy, Pressure, Power, Force, Density, and Frequency with real-time multi-unit table and scientific notation.">
+  <meta name="keywords" content="scientific unit converter, physics converter, energy joules ev btu, pressure pascal bar psi atm, power watts hp, force newtons dyne lbf, density, frequency hz">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/scientific-unit-converter/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+
+  <style>
+    .category-tabs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.5rem;
+      background: var(--bg-tertiary);
+      padding: 0.4rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+
+    .category-tab-btn {
+      padding: 0.65rem 0.5rem;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: var(--transition);
+    }
+
+    .category-tab-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .category-tab-btn.active {
+      background: var(--surface);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .conversion-bridge {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    @media (max-width: 640px) {
+      .conversion-bridge {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .bridge-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .bridge-input {
+      font-family: monospace;
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+
+    .btn-swap {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      justify-self: center;
+      transition: var(--transition);
+    }
+
+    .btn-swap:hover {
+      background: var(--accent);
+      color: #ffffff;
+      transform: rotate(180deg);
+    }
+
+    .all-units-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+
+    .all-units-table th, .all-units-table td {
+      padding: 0.65rem 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .all-units-table th {
+      background: var(--surface);
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+    }
+
+    .all-units-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .unit-copy-cell {
+      font-family: monospace;
+      font-weight: 700;
+      color: var(--text-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .unit-copy-cell:hover {
+      color: var(--accent);
+    }
+
+    .presets-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      margin-top: 0.75rem;
+    }
+
+    .preset-chip {
+      font-size: 0.75rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .preset-chip:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,28 +180,154 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Scientific Units Converter</h1>
-        <p class="tool-description">Convert units across physics and chemistry bounds.</p>
+        <p class="tool-description">
+          Convert scientific and physical engineering units with high precision, real-time multi-unit matrix calculations, and scientific notation support.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Scientific Units Converter</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Convert units across physics and chemistry bounds.</div>
-            <div><strong>Inputs:</strong> scientific, units, conversion, physics, chemistry</div>
-            <div><strong>Category:</strong> student</div>
+      <!-- Category Navigation Tabs -->
+      <div class="category-tabs" role="tablist">
+        <button type="button" class="category-tab-btn active" data-category="energy" role="tab">
+          <span>⚡ Energy</span>
+        </button>
+        <button type="button" class="category-tab-btn" data-category="pressure" role="tab">
+          <span>⏲️ Pressure</span>
+        </button>
+        <button type="button" class="category-tab-btn" data-category="power" role="tab">
+          <span>💡 Power</span>
+        </button>
+        <button type="button" class="category-tab-btn" data-category="force" role="tab">
+          <span>🎯 Force</span>
+        </button>
+        <button type="button" class="category-tab-btn" data-category="density" role="tab">
+          <span>🧊 Density</span>
+        </button>
+        <button type="button" class="category-tab-btn" data-category="frequency" role="tab">
+          <span>📻 Frequency</span>
+        </button>
+      </div>
+
+      <!-- Main Work Area -->
+      <div class="tool-workarea split-view">
+        <!-- Direct Converter Workspace -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title" style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="16 3 21 3 21 8"></polyline>
+                <line x1="4" y1="20" x2="21" y2="3"></line>
+                <polyline points="21 16 21 21 16 21"></polyline>
+                <line x1="15" y1="15" x2="21" y2="21"></line>
+                <line x1="4" y1="4" x2="9" y2="9"></line>
+              </svg>
+              <span id="category-title">Energy Unit Converter</span>
+            </div>
+            <span id="category-si-badge" class="badge" style="font-size: 0.75rem;">Base: Joules (J)</span>
+          </div>
+
+          <!-- Dual Conversion Bridge -->
+          <div class="conversion-bridge">
+            <!-- Source Card -->
+            <div class="bridge-card">
+              <label for="input-from-val" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">From Value:</label>
+              <input type="text" id="input-from-val" class="form-input bridge-input" value="1" placeholder="Value">
+              <select id="select-from-unit" class="form-select" style="margin-top: 0.35rem; font-weight: 600;">
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+
+            <!-- Swap Button -->
+            <button type="button" id="btn-swap-units" class="btn-swap" title="Swap From and To Units">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="17 1 21 5 17 9"></polyline>
+                <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                <polyline points="7 23 3 19 7 15"></polyline>
+                <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+              </svg>
+            </button>
+
+            <!-- Target Card -->
+            <div class="bridge-card">
+              <label for="input-to-val" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">Converted Result:</label>
+              <input type="text" id="input-to-val" class="form-input bridge-input" readonly style="background: var(--bg-tertiary); color: var(--accent);">
+              <select id="select-to-unit" class="form-select" style="margin-top: 0.35rem; font-weight: 600;">
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+          </div>
+
+          <!-- Formatting & Scientific Options -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem;">
+            <div class="form-group">
+              <label for="precision-option">Display Precision:</label>
+              <select id="precision-option" class="form-select">
+                <option value="auto" selected>Auto Adaptive</option>
+                <option value="2">2 Decimal Places</option>
+                <option value="4">4 Decimal Places</option>
+                <option value="6">6 Decimal Places</option>
+                <option value="8">8 Decimal Places</option>
+                <option value="sci">Scientific Notation (1.23e4)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="notation-style">Format Style:</label>
+              <select id="notation-style" class="form-select">
+                <option value="standard" selected>Standard / Clean</option>
+                <option value="engineering">Engineering (10^x)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Category Presets -->
+          <div class="presets-bar">
+            <span style="font-size: 0.75rem; color: var(--text-tertiary); font-weight: 600;">Quick Presets:</span>
+            <div id="presets-container" style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
+              <!-- Populated dynamically per category -->
+            </div>
+          </div>
+
+          <div class="action-bar" style="margin-top: 1rem;">
+            <button type="button" id="btn-copy-result" class="btn btn-primary" style="flex: 1;">Copy Converted Result</button>
+            <button type="button" id="btn-reset-converter" class="btn btn-secondary">Reset</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Real-Time Multi-Unit Matrix Panel -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title" style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="3" y1="9" x2="21" y2="9"></line>
+                <line x1="9" y1="21" x2="9" y2="9"></line>
+              </svg>
+              <span>Instant Category Conversion Matrix</span>
+            </div>
+            <span style="font-size: 0.75rem; color: var(--text-tertiary);">Click any row to copy</span>
+          </div>
+
+          <p style="font-size: 0.825rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+            Equivalent values across all standardized units for the currently entered quantity:
+          </p>
+
+          <div class="table-responsive">
+            <table class="all-units-table">
+              <thead>
+                <tr>
+                  <th>Unit</th>
+                  <th>Symbol</th>
+                  <th>Equivalent Value</th>
+                </tr>
+              </thead>
+              <tbody id="matrix-table-body">
+                <!-- Dynamically populated rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-    
+
     </div>
   </main>
 
@@ -62,7 +341,7 @@
     "@type": "WebApplication",
     "name": "Scientific Units Converter",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/scientific-unit-converter/",
-    "description": "Convert units across physics and chemistry bounds.",
+    "description": "Convert scientific units across physics and engineering with full category tables.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

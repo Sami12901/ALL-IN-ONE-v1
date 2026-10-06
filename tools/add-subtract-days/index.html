@@ -4,14 +4,209 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Date Offset Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Calculate date schedules by adding/subtracting offsets.">
-  <meta name="keywords" content="date, offset, add, subtract, days, free, online, tool, utility">
+  <meta name="description" content="Add or subtract days, weeks, months, and years from any date. Calculate target dates with business days mode and interactive calendar preview.">
+  <meta name="keywords" content="date offset, add days to date, subtract days from date, target date calculator, business days offset, calendar date planner">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/add-subtract-days/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .op-toggle-group {
+      display: inline-flex;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.25rem;
+      gap: 0.25rem;
+      width: 100%;
+    }
+    .op-toggle-btn {
+      flex: 1;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-full);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .op-toggle-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(78, 133, 191, 0.4);
+    }
+    .units-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 0.75rem;
+    }
+    .unit-input-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .unit-stepper {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .stepper-btn {
+      width: 32px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    .stepper-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .unit-number-input {
+      width: 100%;
+      text-align: center;
+      font-family: monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      padding: 0.4rem 0.2rem;
+    }
+    .target-hero-card {
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.12) 0%, rgba(20, 20, 20, 0.7) 100%);
+      border: 1px solid rgba(78, 133, 191, 0.3);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      position: relative;
+    }
+    .target-date-title {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.2;
+      font-family: var(--font-sans);
+    }
+    .target-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.25rem;
+    }
+    .meta-chip {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .preset-chip {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .preset-chip:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+    /* Calendar Styling */
+    .calendar-container {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      text-align: center;
+    }
+    .cal-weekday {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      padding: 0.4rem 0;
+      text-transform: uppercase;
+    }
+    .cal-day {
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+    }
+    .cal-day:hover:not(.empty) {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+    }
+    .cal-day.empty {
+      cursor: default;
+      opacity: 0.2;
+    }
+    .cal-day.is-weekend {
+      color: var(--text-tertiary);
+    }
+    .cal-day.is-today {
+      border: 1px dashed var(--border);
+    }
+    .cal-day.is-start {
+      border: 2px solid var(--text-secondary);
+      font-weight: 700;
+    }
+    .cal-day.is-target {
+      background: var(--accent);
+      color: #ffffff !important;
+      font-weight: 800;
+      box-shadow: 0 0 12px rgba(78, 133, 191, 0.6);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,29 +221,194 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Date Offset Calculator</h1>
-        <p class="tool-description">Calculate date schedules by adding/subtracting offsets.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Date Offset Calculator</h1>
+        <p class="tool-description">Add or subtract any combination of days, weeks, months, or years with business days filtering and live interactive calendar preview.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Date Offset Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Calculate date schedules by adding/subtracting offsets.</div>
-            <div><strong>Inputs:</strong> date, offset, add, subtract, days</div>
-            <div><strong>Category:</strong> utility</div>
+      <!-- Tool Workspace (Split View) -->
+      <div class="tool-workarea split-view">
+
+        <!-- LEFT PANEL: Controls & Inputs -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            Offset Parameters
+          </h2>
+
+          <!-- Operation Toggle (Add vs Subtract) -->
+          <div class="form-group">
+            <label>Operation</label>
+            <div class="op-toggle-group">
+              <button id="btn-op-add" class="op-toggle-btn active" data-op="add">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Add to Date (+)
+              </button>
+              <button id="btn-op-sub" class="op-toggle-btn" data-op="sub">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Subtract from Date (−)
+              </button>
+            </div>
           </div>
+
+          <!-- Start Date Input -->
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label for="start-date">Starting Reference Date</label>
+              <button id="btn-today" class="preset-chip" style="font-size: 0.75rem; padding: 0.2rem 0.6rem;">Today</button>
+            </div>
+            <input type="date" id="start-date" class="form-input" style="font-family: monospace; font-size: 1rem; font-weight: 600;">
+            <div id="start-day-text" style="font-size: 0.8rem; color: var(--text-tertiary);"></div>
+          </div>
+
+          <!-- Offset Units Grid: Years, Months, Weeks, Days -->
+          <div class="form-group">
+            <label>Offset Duration</label>
+            <div class="units-grid">
+              <!-- Years -->
+              <div class="unit-input-card">
+                <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-tertiary);">YEARS</span>
+                <div class="unit-stepper">
+                  <button class="stepper-btn" data-target="offset-years" data-delta="-1">−</button>
+                  <input type="number" id="offset-years" class="form-input unit-number-input" min="0" max="999" value="0">
+                  <button class="stepper-btn" data-target="offset-years" data-delta="1">+</button>
+                </div>
+              </div>
+
+              <!-- Months -->
+              <div class="unit-input-card">
+                <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-tertiary);">MONTHS</span>
+                <div class="unit-stepper">
+                  <button class="stepper-btn" data-target="offset-months" data-delta="-1">−</button>
+                  <input type="number" id="offset-months" class="form-input unit-number-input" min="0" max="999" value="0">
+                  <button class="stepper-btn" data-target="offset-months" data-delta="1">+</button>
+                </div>
+              </div>
+
+              <!-- Weeks -->
+              <div class="unit-input-card">
+                <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-tertiary);">WEEKS</span>
+                <div class="unit-stepper">
+                  <button class="stepper-btn" data-target="offset-weeks" data-delta="-1">−</button>
+                  <input type="number" id="offset-weeks" class="form-input unit-number-input" min="0" max="999" value="0">
+                  <button class="stepper-btn" data-target="offset-weeks" data-delta="1">+</button>
+                </div>
+              </div>
+
+              <!-- Days -->
+              <div class="unit-input-card">
+                <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-tertiary);">DAYS</span>
+                <div class="unit-stepper">
+                  <button class="stepper-btn" data-target="offset-days" data-delta="-1">−</button>
+                  <input type="number" id="offset-days" class="form-input unit-number-input" min="0" max="9999" value="30">
+                  <button class="stepper-btn" data-target="offset-days" data-delta="1">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Business Days Toggle -->
+          <div style="padding-top: 0.5rem; border-top: 1px solid var(--border);">
+            <label class="checkbox-label" for="toggle-business-days">
+              <input type="checkbox" id="toggle-business-days">
+              <span><strong>Business days only</strong> (skip Saturdays &amp; Sundays)</span>
+            </label>
+            <p style="font-size: 0.78rem; color: var(--text-tertiary); margin-left: 2rem; margin-top: -0.25rem;">
+              When checked, increments step only through Monday to Friday workdays.
+            </p>
+          </div>
+
+          <!-- Quick Offset Presets -->
+          <div>
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-tertiary); display: block; margin-bottom: 0.5rem;">Quick Presets:</span>
+            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+              <button class="preset-chip btn-quick-preset" data-days="7">+7 Days</button>
+              <button class="preset-chip btn-quick-preset" data-days="14">+14 Days</button>
+              <button class="preset-chip btn-quick-preset" data-days="30">+30 Days</button>
+              <button class="preset-chip btn-quick-preset" data-days="60">+60 Days</button>
+              <button class="preset-chip btn-quick-preset" data-days="90">+90 Days</button>
+              <button class="preset-chip btn-quick-preset" data-days="180">+180 Days</button>
+              <button class="preset-chip btn-quick-preset" data-years="1">+1 Year</button>
+              <button class="preset-chip btn-quick-preset" data-clear="true" style="color: var(--error);">Reset to 0</button>
+            </div>
+          </div>
+
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- RIGHT PANEL: Target Date Result & Calendar View -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+
+          <!-- Hero Target Result Card -->
+          <div class="target-hero-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+              <span class="meta-chip" id="result-op-label" style="background: rgba(78, 133, 191, 0.2); color: var(--accent);">Target Date</span>
+              <div style="display: flex; gap: 0.4rem;">
+                <button id="btn-copy-iso" class="preset-chip" title="Copy YYYY-MM-DD" style="font-size: 0.75rem;">Copy ISO</button>
+                <button id="btn-copy-long" class="preset-chip" title="Copy Full Date" style="font-size: 0.75rem;">Copy Full</button>
+              </div>
+            </div>
+
+            <div id="target-date-title" class="target-date-title">
+              <!-- Formatted Date e.g. Thursday, November 12, 2026 -->
+            </div>
+
+            <div id="target-countdown-badge" style="font-size: 1rem; color: var(--accent); font-weight: 600;">
+              <!-- Countdown text -->
+            </div>
+
+            <!-- Meta details row -->
+            <div class="target-meta-row">
+              <span class="meta-chip" id="meta-day-of-year">Day of Year: --</span>
+              <span class="meta-chip" id="meta-week-num">Week: --</span>
+              <span class="meta-chip" id="meta-quarter">Quarter: --</span>
+              <span class="meta-chip" id="meta-leap-year">Year: --</span>
+            </div>
+          </div>
+
+          <!-- Mini Calendar View -->
+          <div class="calendar-container">
+            <div class="calendar-header">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <button id="cal-prev-month" class="stepper-btn" style="width: 28px; height: 28px;" title="Previous Month">&larr;</button>
+                <h3 id="cal-month-title" style="font-size: 1.05rem; font-weight: 700; margin: 0; min-width: 140px; text-align: center;">--</h3>
+                <button id="cal-next-month" class="stepper-btn" style="width: 28px; height: 28px;" title="Next Month">&rarr;</button>
+              </div>
+              <button id="cal-jump-target" class="preset-chip" style="font-size: 0.75rem; padding: 0.2rem 0.6rem;">Jump to Target</button>
+            </div>
+
+            <!-- Calendar Days Grid -->
+            <div class="calendar-grid">
+              <div class="cal-weekday">Sun</div>
+              <div class="cal-weekday">Mon</div>
+              <div class="cal-weekday">Tue</div>
+              <div class="cal-weekday">Wed</div>
+              <div class="cal-weekday">Thu</div>
+              <div class="cal-weekday">Fri</div>
+              <div class="cal-weekday">Sat</div>
+            </div>
+            <div id="cal-days-grid" class="calendar-grid">
+              <!-- Rendered via JS -->
+            </div>
+
+            <!-- Calendar Legend -->
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.5rem; justify-content: center;">
+              <div style="display: flex; align-items: center; gap: 0.35rem;">
+                <span style="width: 10px; height: 10px; border-radius: 2px; background: var(--accent); display: inline-block;"></span>
+                Target Date
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.35rem;">
+                <span style="width: 10px; height: 10px; border-radius: 2px; border: 2px solid var(--text-secondary); display: inline-block;"></span>
+                Start Date
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.35rem;">
+                <span style="width: 10px; height: 10px; border-radius: 2px; border: 1px dashed var(--border); display: inline-block;"></span>
+                Today
+              </div>
+            </div>
+          </div>
+
+        </div>
+
       </div>
-    
     </div>
   </main>
 
@@ -62,7 +422,7 @@
     "@type": "WebApplication",
     "name": "Date Offset Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/add-subtract-days/",
-    "description": "Calculate date schedules by adding/subtracting offsets.",
+    "description": "Calculate date schedules by adding/subtracting offsets with business days and calendar view.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

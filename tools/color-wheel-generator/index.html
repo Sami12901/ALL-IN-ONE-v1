@@ -3,15 +3,345 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Color Wheel Explorer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Interactive HSL color wheel visualization tool.">
-  <meta name="keywords" content="wheel, color, hsl, explorer, angles, free, online, tool, utility">
+  <title>Color Wheel Explorer &amp; Harmony Generator - ALL IN ONE</title>
+  <meta name="description" content="Interactive 360° chromatic color wheel and color harmony explorer. Generate complementary, analogous, triadic, tetradic, split-complementary, and monochromatic palettes with real-time draggable markers and 1-click code export.">
+  <meta name="keywords" content="color wheel, color wheel generator, color harmony explorer, complementary colors, analogous colors, triadic color wheel, tetradic palette, split complementary, chromatic wheel, hsl color picker">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/color-wheel-generator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Workspace Grid */
+    .wheel-workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .wheel-workspace-grid {
+        grid-template-columns: 420px 1fr;
+        align-items: start;
+      }
+    }
+
+    /* Wheel Canvas Stage */
+    .wheel-stage-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+    .wheel-canvas-container {
+      position: relative;
+      width: 340px;
+      height: 340px;
+      max-width: 100%;
+      user-select: none;
+      touch-action: none;
+      cursor: crosshair;
+    }
+    @media (max-width: 400px) {
+      .wheel-canvas-container {
+        width: 280px;
+        height: 280px;
+      }
+    }
+    #wheel-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border-radius: 50%;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+    .wheel-center-preview {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 3px solid #ffffff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      pointer-events: none;
+      transition: background-color 0.15s ease;
+    }
+
+    /* Base Color Quick Inputs Below Wheel */
+    .wheel-quick-inputs {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.85rem;
+      border-radius: var(--radius-md);
+    }
+    .wheel-picker-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .base-picker-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      background: transparent;
+    }
+    .base-picker-circle::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+    .base-picker-circle::-webkit-color-swatch {
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+    }
+    .base-hex-text {
+      font-family: monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      width: 85px;
+      outline: none;
+    }
+
+    /* Harmony Modes Selector Pills */
+    .harmony-modes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.65rem;
+    }
+    .harmony-mode-btn {
+      padding: 0.75rem 0.6rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      font-size: 0.825rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      transition: var(--transition);
+      text-align: center;
+    }
+    .harmony-mode-btn svg {
+      color: var(--text-tertiary);
+      transition: color 0.2s;
+    }
+    .harmony-mode-btn:hover {
+      background: var(--surface);
+      color: var(--text-primary);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .harmony-mode-btn.active {
+      background: var(--surface);
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+    .harmony-mode-btn.active svg {
+      color: var(--accent);
+    }
+
+    /* Sliders Rack */
+    .sliders-rack {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+    }
+    .slider-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .slider-row-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .slider-rainbow-track {
+      background: linear-gradient(90deg, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%) !important;
+    }
+
+    /* Harmony Swatches Ribbon */
+    .harmony-palette-strip {
+      display: flex;
+      width: 100%;
+      min-height: 110px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1), var(--shadow-md);
+    }
+    .harmony-swatch-item {
+      flex: 1;
+      min-width: 0;
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0.35rem;
+      transition: flex 0.2s ease, transform 0.2s ease;
+      user-select: none;
+    }
+    .harmony-swatch-item:hover {
+      flex: 1.6;
+      z-index: 5;
+    }
+    .harmony-swatch-role {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.15rem 0.45rem;
+      border-radius: var(--radius-full);
+      background: rgba(0, 0, 0, 0.55);
+      color: #ffffff;
+      backdrop-filter: blur(4px);
+    }
+    .harmony-swatch-hex {
+      font-family: monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.45rem;
+      border-radius: 4px;
+      background: rgba(0, 0, 0, 0.65);
+      color: #ffffff;
+      backdrop-filter: blur(4px);
+      text-align: center;
+      pointer-events: none;
+    }
+
+    /* Detailed Cards Grid */
+    .swatches-detailed-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 160px), 1fr));
+      gap: 0.85rem;
+    }
+    .harmony-card-detail {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .harmony-card-detail:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+    }
+    .harmony-card-color-top {
+      height: 70px;
+      width: 100%;
+      position: relative;
+      padding: 0.4rem;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+    .harmony-card-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+    }
+    .harmony-card-body {
+      padding: 0.65rem 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      background: var(--bg-tertiary);
+    }
+    .harmony-card-hex-title {
+      font-family: monospace;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+    }
+    .harmony-card-meta {
+      font-family: monospace;
+      font-size: 0.72rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Export Format Tabs */
+    .tab-export-btn {
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .tab-export-btn:hover {
+      color: var(--text-primary);
+    }
+    .tab-export-btn.active {
+      background: var(--bg-tertiary);
+      border-color: var(--border);
+      color: var(--accent);
+    }
+
+    /* Toast Notification */
+    .toast-notification {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      color: var(--text-primary);
+      padding: 0.85rem 1.4rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      z-index: 9999;
+      transform: translateY(120%);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+    .toast-notification.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,42 +357,230 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Color Wheel Explorer</h1>
-        <p class="tool-description">Interactive HSL color wheel visualization tool.</p>
+        <p class="tool-description">
+          Interactive chromatic color wheel and color harmony generator. Drag pointers directly on the 360° color wheel to explore classic color relationships (Complementary, Analogous, Triadic, Tetradic, Split-Complementary, Monochromatic) with real-time palette export.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Color Wheel Explorer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Interactive HSL color wheel visualization tool.</div>
-            <div><strong>Inputs:</strong> wheel, color, hsl, explorer, angles</div>
-            <div><strong>Category:</strong> color</div>
+      <!-- Main Workspace: Wheel Canvas + Controls -->
+      <div class="wheel-workspace-grid">
+        
+        <!-- Left Column: Interactive Color Wheel Stage -->
+        <div class="wheel-stage-card">
+          <div class="wheel-canvas-container" id="wheel-canvas-container" title="Click or drag to rotate wheel">
+            <canvas id="wheel-canvas" width="340" height="340"></canvas>
+            <div id="wheel-center-preview" class="wheel-center-preview" title="Active Base Color"></div>
+          </div>
+
+          <div style="font-size: 0.78rem; color: var(--text-tertiary); text-align: center;">
+            &bull; Drag anywhere on the wheel to adjust Hue &amp; Saturation &bull;
+          </div>
+
+          <!-- Base Color Quick Controls -->
+          <div class="wheel-quick-inputs">
+            <div class="wheel-picker-wrap">
+              <input type="color" id="base-color-picker" class="base-picker-circle" value="#3B82F6" title="Pick base color">
+              <input type="text" id="base-hex-input" class="base-hex-text" value="#3B82F6" maxlength="7" spellcheck="false">
+            </div>
+            <button id="random-wheel-btn" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.35rem 0.7rem;" title="Randomize Base Hue">
+              🎲 Random
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Column: Harmony Rules & Sliders -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            Color Harmony Rule
+          </div>
+
+          <!-- Harmony Modes Buttons -->
+          <div class="harmony-modes-grid" id="harmony-modes-grid">
+            
+            <button class="harmony-mode-btn" data-mode="complementary">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="3" x2="12" y2="21"></line><circle cx="12" cy="3" r="2.5" fill="currentColor"></circle><circle cx="12" cy="21" r="2.5" fill="currentColor"></circle></svg>
+              <span>Complementary</span>
+            </button>
+
+            <button class="harmony-mode-btn active" data-mode="triadic">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><polygon points="12 3 20 17 4 17"></polygon></svg>
+              <span>Triadic</span>
+            </button>
+
+            <button class="harmony-mode-btn" data-mode="analogous">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="M12 3 A9 9 0 0 1 18.5 6"></path><circle cx="12" cy="3" r="2" fill="currentColor"></circle><circle cx="15.5" cy="4.2" r="2" fill="currentColor"></circle><circle cx="18.5" cy="6" r="2" fill="currentColor"></circle></svg>
+              <span>Analogous</span>
+            </button>
+
+            <button class="harmony-mode-btn" data-mode="split-complementary">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="3" x2="7" y2="20"></line><line x1="12" y1="3" x2="17" y2="20"></line></svg>
+              <span>Split-Comp</span>
+            </button>
+
+            <button class="harmony-mode-btn" data-mode="tetradic">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><rect x="6.5" y="6.5" width="11" height="11"></rect></svg>
+              <span>Tetradic</span>
+            </button>
+
+            <button class="harmony-mode-btn" data-mode="monochromatic">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="3" fill="currentColor"></circle></svg>
+              <span>Monochromatic</span>
+            </button>
+
+          </div>
+
+          <!-- Harmony Description Callout -->
+          <div id="harmony-explainer-box" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.75rem 1rem; font-size: 0.825rem; color: var(--text-secondary); line-height: 1.5;">
+            Triadic harmonies balance three vibrant hues spaced evenly at 120&deg; angles across the color wheel, creating dynamic yet visually balanced palettes.
+          </div>
+
+          <!-- Color Tuning Sliders -->
+          <div class="sliders-rack">
+            
+            <!-- Hue Slider -->
+            <div class="slider-row">
+              <div class="slider-row-header">
+                <span>Base Hue Angle:</span>
+                <span id="hue-val" class="range-value" style="font-size: 0.85rem;">217&deg;</span>
+              </div>
+              <input type="range" id="hue-slider" class="range-slider slider-rainbow-track" min="0" max="360" value="217">
+            </div>
+
+            <!-- Saturation Slider -->
+            <div class="slider-row">
+              <div class="slider-row-header">
+                <span>Saturation:</span>
+                <span id="sat-val" class="range-value" style="font-size: 0.85rem;">91%</span>
+              </div>
+              <input type="range" id="sat-slider" class="range-slider" min="5" max="100" value="91">
+            </div>
+
+            <!-- Lightness Slider -->
+            <div class="slider-row">
+              <div class="slider-row-header">
+                <span>Lightness:</span>
+                <span id="light-val" class="range-value" style="font-size: 0.85rem;">60%</span>
+              </div>
+              <input type="range" id="light-slider" class="range-slider" min="10" max="90" value="60">
+            </div>
+
+            <!-- Angle Spread Slider (For Analogous & Split-Comp) -->
+            <div class="slider-row" id="spread-slider-container">
+              <div class="slider-row-header">
+                <span>Harmony Spread Angle:</span>
+                <span id="spread-val" class="range-value" style="font-size: 0.85rem;">30&deg;</span>
+              </div>
+              <input type="range" id="spread-slider" class="range-slider" min="15" max="60" value="30">
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
-    
+
+      <!-- Generated Harmony Swatch Palette -->
+      <div class="tool-panel glass-panel">
+        <div class="panel-title" style="justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            Generated Harmony Swatch Palette
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="copy-palette-btn" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">
+              Copy Palette Array
+            </button>
+            <button id="export-wheel-png-btn" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">
+              Export Wheel &amp; Palette PNG
+            </button>
+          </div>
+        </div>
+
+        <!-- Horizontal Swatch Strip -->
+        <div class="harmony-palette-strip" id="harmony-palette-strip">
+          <!-- Rendered by JS -->
+        </div>
+
+        <!-- Detailed Swatches Grid -->
+        <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.75rem;">
+          <span style="font-size: 0.825rem; font-weight: 600; color: var(--text-secondary);">Swatch Details &bull; Click to copy individual color:</span>
+          <div class="swatches-detailed-grid" id="swatches-detailed-grid">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Export Code Formats -->
+      <div class="tool-panel glass-panel">
+        <div class="panel-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+          Export Palette Code
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem;">
+          <button class="tab-export-btn active" data-tab="css-vars">CSS Variables</button>
+          <button class="tab-export-btn" data-tab="tailwind">Tailwind CSS</button>
+          <button class="tab-export-btn" data-tab="scss">SCSS</button>
+          <button class="tab-export-btn" data-tab="json">JSON Array</button>
+          <button class="tab-export-btn" data-tab="hex-list">HEX List</button>
+        </div>
+
+        <div style="position: relative;">
+          <button id="copy-code-btn" class="copy-btn" title="Copy code">Copy</button>
+          <div id="export-code-box" class="output-box" style="min-height: 120px;"></div>
+        </div>
+      </div>
+
+      <!-- Harmony Theory Educational Guide -->
+      <div class="info-card" style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem;">
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.75rem; color: var(--text-primary);">Color Theory &amp; Harmony Archetypes</h3>
+        <p style="color: var(--text-secondary); line-height: 1.6; font-size: 0.875rem;">
+          Color harmonies define geometric relationships on the chromatic color wheel that human eyes perceive as natural, engaging, and aesthetically balanced:
+        </p>
+        <div class="info-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1rem;">
+          <div class="info-box" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem;">
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--accent); margin-bottom: 0.35rem;">Complementary (180&deg;)</h4>
+            <p style="font-size: 0.825rem; color: var(--text-secondary); line-height: 1.5;">Colors directly opposite each other on the wheel. Yields maximum visual contrast and energy; excellent for call-to-action buttons.</p>
+          </div>
+          <div class="info-box" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem;">
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--accent); margin-bottom: 0.35rem;">Analogous (&plusmn;30&deg;)</h4>
+            <p style="font-size: 0.825rem; color: var(--text-secondary); line-height: 1.5;">Adjacent hues sitting side-by-side. Creates serene, comfortable, nature-inspired transitions often seen in cohesive brand systems.</p>
+          </div>
+          <div class="info-box" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem;">
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--accent); margin-bottom: 0.35rem;">Triadic (120&deg;)</h4>
+            <p style="font-size: 0.825rem; color: var(--text-secondary); line-height: 1.5;">Three hues forming an equilateral triangle. Offers high vibrancy and diversity while preserving optical harmony.</p>
+          </div>
+          <div class="info-box" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem;">
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--accent); margin-bottom: 0.35rem;">Split-Complementary</h4>
+            <p style="font-size: 0.825rem; color: var(--text-secondary); line-height: 1.5;">Uses the base color plus the two colors flanking its complement. Delivers strong contrast without the visual tension of pure complements.</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- Hidden Canvas for Composite PNG Export -->
+  <canvas id="export-png-canvas" style="display: none;"></canvas>
+
+  <!-- Toast Notification -->
+  <div class="toast-notification" id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">Copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Color Wheel Explorer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/color-wheel-generator/",
-    "description": "Interactive HSL color wheel visualization tool.",
+    "description": "Interactive chromatic color wheel and harmony explorer with draggable markers.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

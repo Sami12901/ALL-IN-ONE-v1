@@ -3,15 +3,187 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Instagram Spacer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Formats captions with clean carriage space buffers.">
-  <meta name="keywords" content="instagram, spacer, caption, format, breaks, free, online, tool, utility">
+  <title>Instagram Caption Line Spacer & Formatter - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Generate clean, beautiful line breaks for Instagram, TikTok, and Facebook captions using invisible spaces without ugly dots, periods, or symbols.">
+  <meta name="keywords" content="instagram spacer, instagram line breaks, tiktok caption formatter, invisible line break, braille blank, zero width space, social media caption tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/instagram-spacer/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .spacer-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .spacer-grid {
+        grid-template-columns: 1.15fr 0.85fr;
+      }
+    }
+
+    .emoji-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      padding: 0.5rem;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      margin-bottom: 0.75rem;
+      align-items: center;
+    }
+    .emoji-pill {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      padding: 0.25rem 0.45rem;
+      font-size: 1.1rem;
+      cursor: pointer;
+      line-height: 1;
+      transition: var(--transition);
+    }
+    .emoji-pill:hover {
+      background: var(--surface);
+      border-color: var(--border);
+      transform: scale(1.15);
+    }
+
+    .limit-meters-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .limit-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 0.75rem;
+    }
+    .limit-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      margin-bottom: 0.35rem;
+      font-weight: 600;
+    }
+    .progress-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      border-radius: 999px;
+      transition: width 0.2s ease, background-color 0.2s ease;
+    }
+    .progress-bar-fill.warning {
+      background: var(--warning);
+    }
+    .progress-bar-fill.danger {
+      background: var(--error);
+    }
+
+    /* Instagram Phone Mockup */
+    .ig-mockup-frame {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+    .ig-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+    .ig-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      padding: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ig-avatar-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--bg-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--text-primary);
+    }
+    .ig-username {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+    }
+    .ig-handle {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    .ig-caption-body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      color: var(--text-primary);
+      white-space: pre-wrap;
+      word-break: break-word;
+      min-height: 160px;
+      max-height: 360px;
+      overflow-y: auto;
+      padding: 0.5rem;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    .ig-caption-body .hashtag {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .toast-popup {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      color: var(--text);
+      font-size: 0.875rem;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .toast-popup.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,31 +198,166 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Instagram Spacer</h1>
-        <p class="tool-description">Formats captions with clean carriage space buffers.</p>
+        <h1>Instagram Caption Spacer & Line Breaker</h1>
+        <p class="tool-description">Create clean, spacious paragraphs and line breaks for Instagram and TikTok. Converts collapsed blank lines into invisible space characters without annoying dots, dashes, or periods.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Instagram Spacer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Formats captions with clean carriage space buffers.</div>
-            <div><strong>Inputs:</strong> instagram, spacer, caption, format, breaks</div>
-            <div><strong>Category:</strong> social</div>
+      <!-- Quick Action Toolbar -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+          <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Spacer Technique:</span>
+          <select id="spacer-char-select" class="form-select" style="width: auto; padding: 0.35rem 0.85rem; font-size: 0.85rem;">
+            <option value="braille" selected>Braille Blank (U+2800) - Most Reliable</option>
+            <option value="zws">Zero-Width Space (U+200B)</option>
+            <option value="zwnj">Zero-Width Non-Joiner (U+200C)</option>
+            <option value="hangul">Hangul Invisible Filler (U+3164)</option>
+          </select>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <button id="btn-load-sample" class="btn btn-outline" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">Load Sample Caption</button>
+          <button id="btn-clear" class="btn btn-outline" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">Clear</button>
+        </div>
+      </div>
+
+      <!-- Main Workarea -->
+      <div class="spacer-grid">
+        <!-- Editor Input Panel -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+            <h2 class="panel-title" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">Compose Caption</h2>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <span id="stat-words" class="stat-badge" style="font-size: 0.75rem;">0 Words</span>
+              <span id="stat-chars" class="stat-badge" style="font-size: 0.75rem;">0 Chars</span>
+            </div>
+          </div>
+
+          <!-- Quick Emoji Toolbar -->
+          <div class="emoji-bar">
+            <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-tertiary); margin-right: 0.25rem;">Emojis:</span>
+            <button class="emoji-pill" data-emoji="✨" title="Sparkles">✨</button>
+            <button class="emoji-pill" data-emoji="🔥" title="Fire">🔥</button>
+            <button class="emoji-pill" data-emoji="🚀" title="Rocket">🚀</button>
+            <button class="emoji-pill" data-emoji="❤️" title="Heart">❤️</button>
+            <button class="emoji-pill" data-emoji="💡" title="Idea">💡</button>
+            <button class="emoji-pill" data-emoji="📸" title="Camera">📸</button>
+            <button class="emoji-pill" data-emoji="🎯" title="Target">🎯</button>
+            <button class="emoji-pill" data-emoji="👇" title="Down">👇</button>
+            <button class="emoji-pill" data-emoji="💬" title="Chat">💬</button>
+            <button class="emoji-pill" data-emoji="🔗" title="Link">🔗</button>
+            <button class="emoji-pill" data-emoji="📌" title="Pin">📌</button>
+            <button class="emoji-pill" data-emoji="☕️" title="Coffee">☕️</button>
+            <button class="emoji-pill" data-emoji="🌿" title="Plant">🌿</button>
+            <button class="emoji-pill" data-emoji="⚡️" title="Zap">⚡️</button>
+          </div>
+
+          <div class="form-group">
+            <textarea id="caption-input" class="form-textarea" placeholder="Write or paste your caption here...
+
+Leave blank empty lines between paragraphs freely!
+
+Our tool automatically fills them with invisible characters so Instagram won't collapse your line breaks.
+
+#aesthetic #socialmedia #creators" style="min-height: 260px; font-size: 0.95rem; line-height: 1.6;"></textarea>
+          </div>
+
+          <!-- Formatting Toggles -->
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.25rem;">
+            <label class="checkbox-label" style="min-height: auto;">
+              <input type="checkbox" id="opt-trim-trailing" checked>
+              <span>Trim invisible trailing whitespace at ends of lines</span>
+            </label>
+            <label class="checkbox-label" style="min-height: auto;">
+              <input type="checkbox" id="opt-convert-double-breaks" checked>
+              <span>Insert invisible space for every empty blank line</span>
+            </label>
+          </div>
+
+          <!-- Platform Character & Limit Gauges -->
+          <div class="limit-meters-container">
+            <div class="limit-card">
+              <div class="limit-label">
+                <span>Instagram</span>
+                <span id="meter-ig-text">0/2,200</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div id="meter-ig-fill" class="progress-bar-fill"></div>
+              </div>
+            </div>
+
+            <div class="limit-card">
+              <div class="limit-label">
+                <span>Hashtags</span>
+                <span id="meter-ht-text">0/30</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div id="meter-ht-fill" class="progress-bar-fill"></div>
+              </div>
+            </div>
+
+            <div class="limit-card">
+              <div class="limit-label">
+                <span>TikTok</span>
+                <span id="meter-tt-text">0/4,000</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div id="meter-tt-fill" class="progress-bar-fill"></div>
+              </div>
+            </div>
+
+            <div class="limit-card">
+              <div class="limit-label">
+                <span>X / Twitter</span>
+                <span id="meter-x-text">0/280</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div id="meter-x-fill" class="progress-bar-fill"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 1.25rem; display: flex; gap: 0.75rem;">
+            <button id="btn-copy-caption" class="btn btn-primary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Formatted Caption
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Live Preview Phone Mockup -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+            <h2 class="panel-title" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">Post Preview</h2>
+            <span style="font-size: 0.75rem; color: var(--text-tertiary);">Live Feed Rendering</span>
+          </div>
+
+          <div class="ig-mockup-frame">
+            <div class="ig-header">
+              <div class="ig-avatar">
+                <div class="ig-avatar-inner">IG</div>
+              </div>
+              <div>
+                <div class="ig-username">your_brand_official</div>
+                <div class="ig-handle">Original Post</div>
+              </div>
+            </div>
+
+            <div id="preview-caption-body" class="ig-caption-body">Your formatted caption with spaced paragraphs will render here exactly as it will look on Instagram and TikTok feeds.</div>
+          </div>
+
+          <div style="margin-top: 1rem; background: var(--bg-tertiary); padding: 0.85rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border); font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">
+            <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">💡 How to Use:</strong>
+            1. Paste or type your caption with empty lines between paragraphs.<br>
+            2. Click <strong>"Copy Formatted Caption"</strong>.<br>
+            3. Open Instagram or TikTok and paste directly into the caption box. Your spacing will stay intact!
+          </div>
+        </div>
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Toast Notification -->
+  <div id="app-toast" class="toast-popup">Caption copied to clipboard!</div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,7 +369,7 @@
     "@type": "WebApplication",
     "name": "Instagram Spacer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/instagram-spacer/",
-    "description": "Formats captions with clean carriage space buffers.",
+    "description": "Formats captions with clean carriage space buffers and invisible line breaks.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

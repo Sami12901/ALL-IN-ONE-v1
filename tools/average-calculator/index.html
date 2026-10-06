@@ -3,17 +3,188 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Average Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Calculates mean, median, and mode for data sets.">
-  <meta name="keywords" content="average, mean, median, mode, math, free, online, tool, utility">
+  <title>Average & Statistics Calculator - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Calculate mean, median, mode, geometric mean, harmonic mean, quadratic mean (RMS), range, sum, standard deviation, and IQR outlier detection.">
+  <meta name="keywords" content="average calculator, mean, median, mode, geometric mean, harmonic mean, RMS, range, outliers IQR, statistics calculator">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/average-calculator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+
+  <style>
+    .stat-hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .hero-stat-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .hero-stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+      opacity: 0.8;
+    }
+
+    .hero-stat-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .hero-stat-value {
+      font-size: 1.85rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      word-break: break-all;
+    }
+
+    .hero-stat-sub {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    .presets-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+
+    .preset-chip {
+      font-size: 0.75rem;
+      padding: 0.3rem 0.65rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .preset-chip:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .stats-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .stats-table tr {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .stats-table tr:last-child {
+      border-bottom: none;
+    }
+
+    .stats-table td {
+      padding: 0.75rem 0.5rem;
+    }
+
+    .stats-table td.label-col {
+      color: var(--text-secondary);
+      font-weight: 500;
+      width: 55%;
+    }
+
+    .stats-table td.value-col {
+      font-family: monospace;
+      font-weight: 600;
+      text-align: right;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+    }
+
+    .chips-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      max-height: 160px;
+      overflow-y: auto;
+      padding: 0.5rem;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+
+    .num-chip {
+      font-size: 0.8rem;
+      font-family: monospace;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+    }
+
+    .num-chip.outlier {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: var(--error);
+      color: var(--error);
+      font-weight: 700;
+    }
+
+    .outlier-alert {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+    }
+
+    .outlier-alert.has-outliers {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      color: var(--error);
+    }
+
+    .outlier-alert.no-outliers {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      color: var(--success);
+    }
+
+    .options-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.75rem 0;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -26,29 +197,212 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Average Calculator</h1>
-        <p class="tool-description">Calculates mean, median, and mode for data sets.</p>
+        <h1>Average & Statistics Calculator</h1>
+        <p class="tool-description">
+          Compute Mean, Median, Mode, Geometric Mean, Harmonic Mean, RMS, Range, Sum, and detect statistical outliers with IQR analysis.
+        </p>
+      </div>
+
+      <!-- Hero Stat Cards -->
+      <div class="stat-hero-grid">
+        <div class="hero-stat-card">
+          <div class="hero-stat-label">Arithmetic Mean (Average)</div>
+          <div class="hero-stat-value" id="hero-mean">-</div>
+          <div class="hero-stat-sub" id="hero-mean-sub">&Sigma;x / N</div>
+        </div>
+        <div class="hero-stat-card">
+          <div class="hero-stat-label">Median</div>
+          <div class="hero-stat-value" id="hero-median">-</div>
+          <div class="hero-stat-sub" id="hero-median-sub">50th percentile</div>
+        </div>
+        <div class="hero-stat-card">
+          <div class="hero-stat-label">Mode</div>
+          <div class="hero-stat-value" id="hero-mode">-</div>
+          <div class="hero-stat-sub" id="hero-mode-sub">Most frequent</div>
+        </div>
+        <div class="hero-stat-card">
+          <div class="hero-stat-label">Range</div>
+          <div class="hero-stat-value" id="hero-range">-</div>
+          <div class="hero-stat-sub" id="hero-range-sub">Max - Min</div>
+        </div>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Average Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Calculates mean, median, and mode for data sets.</div>
-            <div><strong>Inputs:</strong> average, mean, median, mode, math</div>
-            <div><strong>Category:</strong> math</div>
+      <div class="tool-workarea split-view">
+        <!-- Input Panel -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+            <span>Input Dataset</span>
+          </div>
+
+          <div class="form-group">
+            <label for="numbers-input">Enter numbers (separated by commas, spaces, or line breaks):</label>
+            <textarea id="numbers-input" class="form-textarea" rows="7" placeholder="e.g. 14, 22, 19, 24, 30, 18, 22, 95, 21&#10;Or paste multi-line columns from spreadsheets..."></textarea>
+          </div>
+
+          <div class="presets-bar">
+            <span style="font-size: 0.75rem; color: var(--text-tertiary); font-weight: 600;">Presets:</span>
+            <button type="button" class="preset-chip" data-preset="exam-grades">Exam Grades</button>
+            <button type="button" class="preset-chip" data-preset="with-outliers">Outliers Dataset</button>
+            <button type="button" class="preset-chip" data-preset="temperatures">Temperatures</button>
+            <button type="button" class="preset-chip" data-preset="growth-rates">Growth Rates (%)</button>
+          </div>
+
+          <div class="options-row">
+            <div class="form-group" style="flex: 1; min-width: 140px;">
+              <label for="decimal-precision">Decimal Precision:</label>
+              <select id="decimal-precision" class="form-select">
+                <option value="2" selected>2 decimal places</option>
+                <option value="4">4 decimal places</option>
+                <option value="6">6 decimal places</option>
+                <option value="0">0 (Whole numbers)</option>
+                <option value="auto">Auto (Full precision)</option>
+              </select>
+            </div>
+
+            <div class="checkbox-group" style="padding-top: 1rem;">
+              <label class="checkbox-label">
+                <input type="checkbox" id="exclude-outliers-toggle">
+                <span>Exclude Outliers from calculations</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="action-bar">
+            <button type="button" id="btn-calculate" class="btn btn-primary" style="flex: 1;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="m9 12 2 2 4-4"></path>
+              </svg>
+              <span>Calculate Statistics</span>
+            </button>
+            <button type="button" id="btn-clear" class="btn btn-secondary">Clear</button>
+            <button type="button" id="btn-copy-report" class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span>Copy Report</span>
+            </button>
+          </div>
+
+          <!-- Outlier Alert Banner -->
+          <div id="outlier-alert-box" class="outlier-alert" style="display: none; margin-top: 1rem;">
+            <svg id="outlier-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
+            <div id="outlier-text" style="line-height: 1.4;"></div>
+          </div>
+
+          <!-- Sorted numbers chips preview -->
+          <div style="margin-top: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Sorted Values Preview:</label>
+              <span id="sorted-count-badge" class="badge" style="font-size: 0.7rem;">0 numbers</span>
+            </div>
+            <div id="sorted-chips-list" class="chips-container">
+              <span style="font-size: 0.8rem; color: var(--text-tertiary); font-style: italic;">Enter numbers above to see sorted list...</span>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Detailed Results Panel -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+            <span>Detailed Statistical Metrics</span>
+          </div>
+
+          <table class="stats-table">
+            <tbody>
+              <tr>
+                <td class="label-col">Count (N)</td>
+                <td class="value-col" id="stat-count">-</td>
+              </tr>
+              <tr>
+                <td class="label-col">Sum (&Sigma;x)</td>
+                <td class="value-col" id="stat-sum">-</td>
+              </tr>
+              <tr>
+                <td class="label-col">Arithmetic Mean (&mu; or x&#772;)</td>
+                <td class="value-col" id="stat-mean">-</td>
+              </tr>
+              <tr>
+                <td class="label-col">Median (Q2)</td>
+                <td class="value-col" id="stat-median">-</td>
+              </tr>
+              <tr>
+                <td class="label-col">Mode</td>
+                <td class="value-col" id="stat-mode">-</td>
+              </tr>
+              <tr>
+                <td class="label-col">Geometric Mean</td>
+                <td class="value-col" id="stat-geom-mean">-</td>
+              </tr>
+              <tr>
+                <td class="label-col">Harmonic Mean</td>
+                <td class="value-col" id="stat-harm-mean">-</td>
+              </tr>
+              <tr>
+                <td class="label-col">Quadratic Mean (RMS)</td>
+                <td class="value-col" id="stat-rms">-</td>
+              </tr>
+              <tr>
+                <td class="label-col">Minimum Value</td>
+                <td class="value-col" id="stat-min">-</td>
+              </tr>
+              <tr>
+                <td class="label-col">Maximum Value</td>
+                <td class="value-col" id="stat-max">-</td>
+              </tr>
+              <tr>
+                <td class="label-col">Range (Max - Min)</td>
+                <td class="value-col" id="stat-range">-</td>
+              </tr>
+              <tr>
+                <td class="label-col">First Quartile (Q1)</td>
+                <td class="value-col" id="stat-q1">-</td>
+              </tr>
+              <tr>
+                <td class="label-col">Third Quartile (Q3)</td>
+                <td class="value-col" id="stat-q3">-</td>
+              </tr>
+              <tr>
+                <td class="label-col">Interquartile Range (IQR)</td>
+                <td class="value-col" id="stat-iqr">-</td>
+              </tr>
+              <tr>
+                <td class="label-col">Sample Std Dev (s)</td>
+                <td class="value-col" id="stat-sample-std">-</td>
+              </tr>
+              <tr>
+                <td class="label-col">Population Std Dev (&sigma;)</td>
+                <td class="value-col" id="stat-pop-std">-</td>
+              </tr>
+              <tr>
+                <td class="label-col">Sample Variance (s&sup2;)</td>
+                <td class="value-col" id="stat-sample-var">-</td>
+              </tr>
+              <tr>
+                <td class="label-col">Population Variance (&sigma;&sup2;)</td>
+                <td class="value-col" id="stat-pop-var">-</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="margin-top: 1rem; padding: 0.85rem; background: var(--bg-tertiary); border-radius: var(--radius-sm); border: 1px solid var(--border); font-size: 0.8rem; color: var(--text-tertiary);">
+            <strong>IQR Outlier Rule:</strong> Outliers are defined as values strictly less than <code>Q1 - 1.5&times;IQR</code> or greater than <code>Q3 + 1.5&times;IQR</code>.
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
 
@@ -60,9 +414,9 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Average Calculator",
+    "name": "Average & Statistics Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/average-calculator/",
-    "description": "Calculates mean, median, and mode for data sets.",
+    "description": "Calculates mean, median, mode, geometric mean, harmonic mean, quadratic mean (RMS), range, and IQR outliers for datasets.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

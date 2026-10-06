@@ -3,17 +3,535 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Metronome Beat Guide - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Audio-visual beat metronome speed guides.">
-  <meta name="keywords" content="metronome, tempo, bpm, beat, clicks, free, online, tool, utility">
+  <title>Metronome Beat Guide - Precision Online Tempo Tool - ALL IN ONE</title>
+  <meta name="description" content="Precision audio-visual metronome with microsecond-accurate Web Audio timing, visual swinging pendulum, customizable time signatures, subdivisions, tap tempo, and Italian tempo markings.">
+  <meta name="keywords" content="metronome, tempo, bpm, beat guide, online metronome, tap tempo, time signatures, subdivisions, web audio, italian tempo markings">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/metronome/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+
+  <style>
+    /* Metronome Workspace Custom Styles */
+    .metronome-visual-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: linear-gradient(180deg, rgba(20, 24, 32, 0.75) 0%, rgba(12, 14, 20, 0.85) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem 1rem;
+      overflow: hidden;
+      min-height: 380px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .flash-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(137, 170, 204, 0.25) 0%, transparent 70%);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.08s ease-out;
+      z-index: 1;
+    }
+
+    .flash-overlay.flash-downbeat {
+      background: radial-gradient(circle at center, rgba(245, 158, 11, 0.35) 0%, transparent 70%);
+      opacity: 1;
+    }
+
+    .flash-overlay.flash-beat {
+      background: radial-gradient(circle at center, rgba(137, 170, 204, 0.25) 0%, transparent 70%);
+      opacity: 1;
+    }
+
+    #pendulum-canvas {
+      display: block;
+      width: 100%;
+      max-width: 340px;
+      height: 270px;
+      z-index: 2;
+    }
+
+    /* Beat Dots LED Strip */
+    .beat-led-strip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+      z-index: 2;
+      width: 100%;
+      padding: 0.5rem;
+    }
+
+    .beat-dot {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--bg-tertiary);
+      border: 2px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.1s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+    }
+
+    .beat-dot:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .beat-dot .dot-number {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      line-height: 1;
+    }
+
+    .beat-dot .dot-type-icon {
+      font-size: 0.6rem;
+      color: var(--text-tertiary);
+      line-height: 1;
+      margin-top: 2px;
+    }
+
+    /* Beat Dot States */
+    .beat-dot.accent-downbeat {
+      border-color: rgba(245, 158, 11, 0.6);
+      background: rgba(245, 158, 11, 0.12);
+    }
+    .beat-dot.accent-downbeat .dot-number {
+      color: #f59e0b;
+    }
+
+    .beat-dot.accent-muted {
+      opacity: 0.45;
+      border-style: dashed;
+    }
+
+    .beat-dot.accent-sub {
+      opacity: 0.75;
+      transform: scale(0.9);
+    }
+
+    /* Active Beat Pulsing */
+    .beat-dot.active-beat {
+      transform: scale(1.18);
+      background: var(--accent);
+      border-color: #ffffff;
+      box-shadow: 0 0 20px var(--accent), 0 0 35px var(--accent-glow);
+    }
+
+    .beat-dot.active-beat .dot-number {
+      color: #ffffff;
+    }
+    .beat-dot.active-beat .dot-type-icon {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .beat-dot.active-beat.accent-downbeat {
+      background: #f59e0b;
+      border-color: #fef3c7;
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.9), 0 0 45px rgba(245, 158, 11, 0.5);
+    }
+
+    /* Giant BPM Console */
+    .bpm-hero-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 1.5rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      text-align: center;
+      position: relative;
+    }
+
+    .bpm-number-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .bpm-number-input {
+      font-size: 4rem;
+      font-weight: 800;
+      font-family: var(--font-sans);
+      color: var(--text-primary);
+      background: transparent;
+      border: none;
+      border-bottom: 2px dashed transparent;
+      text-align: center;
+      width: 170px;
+      outline: none;
+      line-height: 1;
+      padding: 0;
+      transition: border-color 0.2s ease, color 0.2s ease;
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
+    .bpm-number-input::-webkit-outer-spin-button,
+    .bpm-number-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .bpm-number-input:focus {
+      border-bottom-color: var(--accent);
+      color: var(--accent-light);
+    }
+
+    .bpm-label {
+      font-size: 1.25rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-secondary);
+    }
+
+    .italian-marking-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      font-size: 0.875rem;
+      font-weight: 600;
+      background: var(--accent-glow);
+      border: 1px solid var(--accent);
+      color: var(--accent-light);
+      letter-spacing: 0.03em;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .italian-marking-badge:hover {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .italian-marking-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-style: italic;
+      min-height: 1.2rem;
+    }
+
+    /* Slider Bar */
+    .tempo-slider-container {
+      width: 100%;
+      padding: 0.75rem 0.25rem;
+    }
+
+    .tempo-range-slider {
+      width: 100%;
+      appearance: none;
+      -webkit-appearance: none;
+      height: 8px;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      outline: none;
+      cursor: pointer;
+      border: 1px solid var(--border);
+    }
+
+    .tempo-range-slider::-webkit-slider-thumb {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid #ffffff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .tempo-range-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .tempo-range-slider::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid #ffffff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+
+    .tempo-range-slider::-moz-range-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    /* Quick Tempo Step Buttons */
+    .tempo-step-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    @media (max-width: 600px) {
+      .tempo-step-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .step-btn {
+      padding: 0.55rem 0.25rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      font-family: monospace;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+    }
+
+    .step-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--bg-secondary);
+    }
+
+    /* Primary Action Row */
+    .primary-actions-row {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 0.75rem;
+      width: 100%;
+    }
+
+    @media (max-width: 480px) {
+      .primary-actions-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .btn-play-metronome {
+      padding: 1rem 1.5rem;
+      font-size: 1.15rem;
+      font-weight: 700;
+      border-radius: var(--radius-md);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.65rem;
+      background: var(--accent-gradient);
+      color: #ffffff;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 16px var(--accent-glow);
+      transition: var(--transition);
+    }
+
+    .btn-play-metronome:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px var(--accent-glow);
+    }
+
+    .btn-play-metronome.is-playing {
+      background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+      box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-tap-tempo {
+      padding: 1rem 1rem;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: var(--radius-md);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0.2rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: transform 0.08s ease, background 0.15s ease, border-color 0.15s ease;
+      user-select: none;
+    }
+
+    .btn-tap-tempo:active,
+    .btn-tap-tempo.tapped-active {
+      transform: scale(0.95);
+      border-color: var(--accent);
+      background: var(--accent-glow);
+      color: var(--accent);
+    }
+
+    /* Quick Preset Chips */
+    .preset-chips-scroll {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding: 0.25rem 0;
+      scrollbar-width: thin;
+    }
+
+    .preset-pill {
+      font-size: 0.78rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .preset-pill:hover,
+    .preset-pill.active {
+      border-color: var(--accent);
+      color: var(--accent-light);
+      background: var(--accent-glow);
+    }
+
+    /* Option Selector Button Groups */
+    .button-selector-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .select-toggle-btn {
+      flex: 1;
+      min-width: 60px;
+      padding: 0.55rem 0.65rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+    }
+
+    .select-toggle-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--stroke);
+    }
+
+    .select-toggle-btn.active {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: var(--accent-light);
+      font-weight: 700;
+    }
+
+    /* Trainer & Status Card */
+    .trainer-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .trainer-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      color: var(--text-tertiary);
+    }
+
+    .trainer-status-badge.active {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    /* Reference Table */
+    .tempo-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      margin-top: 0.75rem;
+    }
+
+    .tempo-table th, .tempo-table td {
+      padding: 0.75rem 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tempo-table th {
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .tempo-table tr.clickable-row {
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .tempo-table tr.clickable-row:hover {
+      background: var(--accent-glow);
+    }
+
+    .tempo-table tr.active-tempo-row {
+      background: rgba(137, 170, 204, 0.12);
+      font-weight: 600;
+    }
+
+    .tempo-table tr.active-tempo-row td:first-child {
+      color: var(--accent-light);
+    }
+
+    /* Flash Screen Mode */
+    body.flash-active {
+      background-color: #1e293b !important;
+      transition: background-color 0.05s ease-out;
+    }
+
+    /* Sound pitch & volume rows */
+    .controls-split-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .controls-split-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,28 +545,415 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Metronome Beat Guide</h1>
-        <p class="tool-description">Audio-visual beat metronome speed guides.</p>
+        <p class="tool-description">
+          Audio-visual precision metronome powered by drift-free Web Audio API timing. Features realistic pendulum oscillation, interactive beat LED accents, tap tempo, customizable time signatures, subdivisions, and speed training.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Metronome Beat Guide</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Audio-visual beat metronome speed guides.</div>
-            <div><strong>Inputs:</strong> metronome, tempo, bpm, beat, clicks</div>
-            <div><strong>Category:</strong> utility</div>
+      <!-- Main Tool Workarea -->
+      <div class="tool-workarea split-view">
+        
+        <!-- LEFT PANEL: Visual Metronome & Beat Display -->
+        <div class="tool-panel glass-panel" style="gap: 1.5rem;">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v20"></path>
+              <path d="m17 7-5 5-5-5"></path>
+              <circle cx="12" cy="12" r="9"></circle>
+            </svg>
+            <span>Audio-Visual Pendulum & Beat Tracker</span>
+          </div>
+
+          <!-- Pendulum Visual Card -->
+          <div class="metronome-visual-card" id="metronome-card">
+            <!-- Screen flash layer -->
+            <div class="flash-overlay" id="flash-overlay"></div>
+
+            <!-- Canvas Pendulum -->
+            <canvas id="pendulum-canvas" width="340" height="270" aria-label="Animated Metronome Pendulum"></canvas>
+
+            <!-- Current Beat Details readout -->
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 320px; font-size: 0.8rem; color: var(--text-tertiary); z-index: 2; margin-top: 0.25rem;">
+              <span>Bar: <strong id="bar-counter" style="color: var(--text-primary); font-family: monospace;">1</strong></span>
+              <span id="meter-counter-display">Beat <strong id="beat-counter" style="color: var(--accent); font-family: monospace;">1</strong> of 4</span>
+              <span>Sub: <strong id="sub-counter" style="color: var(--text-secondary); font-family: monospace;">1/4</strong></span>
+            </div>
+
+            <!-- Dynamic Beat LED Dots Strip -->
+            <div class="beat-led-strip" id="beat-indicators" role="region" aria-label="Beat accent indicators">
+              <!-- Rendered dynamically by script.js -->
+            </div>
+
+            <p style="font-size: 0.72rem; color: var(--text-tertiary); margin-top: 0.5rem; text-align: center; z-index: 2;">
+              Tip: Click any beat dot to cycle accent: <strong>Accented (&starf;) &rarr; Regular (&bull;) &rarr; Soft (&minus;) &rarr; Mute (&cross;)</strong>
+            </p>
+          </div>
+
+          <!-- Secondary Quick Adjustments: Presets Bar -->
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">
+              Quick Italian Tempo Presets:
+            </label>
+            <div class="preset-chips-scroll">
+              <button type="button" class="preset-pill" data-bpm="35">Grave (35)</button>
+              <button type="button" class="preset-pill" data-bpm="50">Largo (50)</button>
+              <button type="button" class="preset-pill" data-bpm="70">Adagio (70)</button>
+              <button type="button" class="preset-pill" data-bpm="92">Andante (92)</button>
+              <button type="button" class="preset-pill" data-bpm="112">Moderato (112)</button>
+              <button type="button" class="preset-pill" data-bpm="135">Allegro (135)</button>
+              <button type="button" class="preset-pill" data-bpm="180">Presto (180)</button>
+              <button type="button" class="preset-pill" data-bpm="220">Prestissimo (220)</button>
+            </div>
+          </div>
+
+          <!-- Practice Timer & Bar Counter Status -->
+          <div class="trainer-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 0.4rem;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                Practice Session Timer
+              </span>
+              <span class="trainer-status-badge" id="practice-timer-badge">Inactive</span>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap;">
+              <div style="font-family: monospace; font-size: 1.5rem; font-weight: 700; color: var(--accent);" id="practice-timer-display">00:00</div>
+              <div style="display: flex; gap: 0.4rem; align-items: center;">
+                <select id="practice-timer-select" class="form-select" style="padding: 0.4rem 0.6rem; font-size: 0.8rem; width: auto;">
+                  <option value="0">Stopwatch (Count Up)</option>
+                  <option value="3">3 Minutes</option>
+                  <option value="5">5 Minutes</option>
+                  <option value="10">10 Minutes</option>
+                  <option value="15">15 Minutes</option>
+                  <option value="20">20 Minutes</option>
+                  <option value="30">30 Minutes</option>
+                </select>
+                <button type="button" id="btn-reset-timer" class="btn btn-secondary" style="padding: 0.4rem 0.7rem; font-size: 0.8rem;">Reset</button>
+              </div>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- RIGHT PANEL: Tempo, Rhythm & Audio Engine Controls -->
+        <div class="tool-panel glass-panel" style="gap: 1.5rem;">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            </svg>
+            <span>Tempo & Rhythm Engine</span>
+          </div>
+
+          <!-- Hero BPM Display -->
+          <div class="bpm-hero-display">
+            <div class="bpm-number-row">
+              <input type="number" id="bpm-input" class="bpm-number-input" min="30" max="300" value="120" aria-label="BPM Tempo Value" />
+              <span class="bpm-label">BPM</span>
+            </div>
+
+            <!-- Italian Marking Badge & Subtitle -->
+            <button type="button" class="italian-marking-badge" id="tempo-marking-badge" title="Click to view full tempo table">
+              Allegro (120–168)
+            </button>
+            <div class="italian-marking-desc" id="tempo-marking-desc">Fast, quickly, and bright</div>
+
+            <!-- Tempo Slider -->
+            <div class="tempo-slider-container">
+              <input type="range" id="bpm-slider" class="tempo-range-slider" min="30" max="300" value="120" aria-label="Tempo Slider" />
+              <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.35rem; font-family: monospace;">
+                <span>30 Largo</span>
+                <span>120 Moderato</span>
+                <span>300 Presto</span>
+              </div>
+            </div>
+
+            <!-- Step ± Buttons -->
+            <div class="tempo-step-grid">
+              <button type="button" class="step-btn" data-step="-10">&minus;10</button>
+              <button type="button" class="step-btn" data-step="-5">&minus;5</button>
+              <button type="button" class="step-btn" data-step="-1">&minus;1</button>
+              <button type="button" class="step-btn" data-step="1">+1</button>
+              <button type="button" class="step-btn" data-step="5">+5</button>
+              <button type="button" class="step-btn" data-step="10">+10</button>
+            </div>
+          </div>
+
+          <!-- Primary Actions (Start/Stop + Tap Tempo) -->
+          <div class="primary-actions-row">
+            <button type="button" id="btn-toggle-play" class="btn-play-metronome" aria-label="Start or Stop Metronome">
+              <svg id="play-icon" viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              <svg id="stop-icon" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" style="display: none;">
+                <rect x="6" y="6" width="12" height="12"></rect>
+              </svg>
+              <span id="play-btn-text">Start Metronome</span>
+              <kbd style="font-size: 0.75rem; opacity: 0.8; font-family: monospace; background: rgba(0,0,0,0.25); padding: 0.15rem 0.4rem; border-radius: 4px;">Space</kbd>
+            </button>
+
+            <button type="button" id="btn-tap-tempo" class="btn-tap-tempo" aria-label="Tap Tempo">
+              <span style="font-size: 1.05rem; font-weight: 700;">TAP TEMPO</span>
+              <span id="tap-tempo-subtext" style="font-size: 0.7rem; color: var(--text-secondary); font-family: monospace;">Tap 4 times</span>
+            </button>
+          </div>
+
+          <!-- Time Signatures & Subdivisions Configuration -->
+          <div style="display: flex; flex-direction: column; gap: 1rem; background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            
+            <!-- Time Signature -->
+            <div class="form-group">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label>Time Signature (Meter):</label>
+                <span id="meter-label" style="font-size: 0.8rem; font-family: monospace; color: var(--accent);">4/4 Common Time</span>
+              </div>
+              <div class="button-selector-group" id="time-signature-selector">
+                <button type="button" class="select-toggle-btn" data-beats="2" data-unit="4">2/4</button>
+                <button type="button" class="select-toggle-btn" data-beats="3" data-unit="4">3/4</button>
+                <button type="button" class="select-toggle-btn active" data-beats="4" data-unit="4">4/4</button>
+                <button type="button" class="select-toggle-btn" data-beats="5" data-unit="4">5/4</button>
+                <button type="button" class="select-toggle-btn" data-beats="6" data-unit="8">6/8</button>
+                <button type="button" class="select-toggle-btn" data-beats="7" data-unit="8">7/8</button>
+              </div>
+            </div>
+
+            <!-- Subdivisions -->
+            <div class="form-group">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label>Beat Subdivisions:</label>
+                <span id="subdivision-label" style="font-size: 0.8rem; font-family: monospace; color: var(--accent);">Quarter Notes (1&times;)</span>
+              </div>
+              <div class="button-selector-group" id="subdivision-selector">
+                <button type="button" class="select-toggle-btn active" data-sub="1">&Quarter; Quarter (1)</button>
+                <button type="button" class="select-toggle-btn" data-sub="2">&Eighth; Eighths (2)</button>
+                <button type="button" class="select-toggle-btn" data-sub="3">&sung; Triplets (3)</button>
+                <button type="button" class="select-toggle-btn" data-sub="4">&approx; 16ths (4)</button>
+              </div>
+            </div>
+
+            <!-- Sound Preset, Frequency Pitch & Volume -->
+            <div class="controls-split-row">
+              <div class="form-group">
+                <label for="sound-preset-select">Sound Tone:</label>
+                <select id="sound-preset-select" class="form-select">
+                  <option value="woodblock" selected>Classic Woodblock (Acoustic)</option>
+                  <option value="beep">Digital Beep (Clean Sine Wave)</option>
+                  <option value="rimshot">Drum Rimshot (Stick Click)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="pitch-level-select">Pitch Tuning:</label>
+                <select id="pitch-level-select" class="form-select">
+                  <option value="high">High Pitch (+20%)</option>
+                  <option value="medium" selected>Standard Medium</option>
+                  <option value="low">Low Pitch (-20%)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Volume Slider & Visual Flash Toggles -->
+            <div class="controls-split-row" style="align-items: center; margin-top: 0.25rem;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <label for="volume-slider">Volume:</label>
+                  <span id="volume-value" style="font-size: 0.8rem; font-family: monospace; color: var(--text-secondary);">80%</span>
+                </div>
+                <div class="range-group">
+                  <input type="range" id="volume-slider" class="range-slider" min="0" max="100" value="80" />
+                  <button type="button" id="btn-toggle-mute" class="btn btn-secondary" style="padding: 0.4rem 0.6rem; font-size: 0.75rem;" title="Mute audio">Mute</button>
+                </div>
+              </div>
+
+              <div class="checkbox-group" style="margin-top: 0.75rem;">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="check-visual-flash" checked />
+                  <span>Visual Beat Flash</span>
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" id="check-accent-downbeat" checked />
+                  <span>Chime Accent on Beat 1</span>
+                </label>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Speed Trainer Expansion -->
+          <div class="trainer-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <input type="checkbox" id="check-speed-trainer" style="cursor: pointer; width: 1.1rem; height: 1.1rem;" />
+                <label for="check-speed-trainer" style="font-weight: 700; font-size: 0.9rem; color: var(--text-primary); cursor: pointer;">
+                  Tempo Speed Trainer (Gradual Acceleration)
+                </label>
+              </div>
+              <span class="trainer-status-badge" id="trainer-status-badge">Disabled</span>
+            </div>
+            
+            <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0;">
+              Automatically increase tempo over time to build speed, accuracy, and muscle memory.
+            </p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;">
+              <div class="form-group">
+                <label style="font-size: 0.75rem;">Increase By:</label>
+                <select id="trainer-step-select" class="form-select" style="padding: 0.4rem 0.5rem; font-size: 0.8rem;">
+                  <option value="1">+1 BPM</option>
+                  <option value="2" selected>+2 BPM</option>
+                  <option value="3">+3 BPM</option>
+                  <option value="5">+5 BPM</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label style="font-size: 0.75rem;">Every:</label>
+                <select id="trainer-bars-select" class="form-select" style="padding: 0.4rem 0.5rem; font-size: 0.8rem;">
+                  <option value="2">2 Bars</option>
+                  <option value="4" selected>4 Bars</option>
+                  <option value="8">8 Bars</option>
+                  <option value="16">16 Bars</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label style="font-size: 0.75rem;">Target BPM:</label>
+                <input type="number" id="trainer-target-bpm" class="form-input" min="40" max="300" value="160" style="padding: 0.4rem 0.5rem; font-size: 0.8rem;" />
+              </div>
+            </div>
+          </div>
+
+        </div>
+
       </div>
-    
+
+      <!-- Educational & Reference Section -->
+      <div class="tool-workarea" style="margin-top: 1.5rem;">
+        
+        <!-- Italian Tempo Guide Reference Table -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            <span>Italian Tempo Markings Master Reference Table</span>
+          </div>
+          <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5;">
+            Click on any Italian tempo row below to instantly configure the metronome to that classic musical tempo range.
+          </p>
+
+          <div style="overflow-x: auto;">
+            <table class="tempo-table" id="tempo-reference-table">
+              <thead>
+                <tr>
+                  <th>Italian Term</th>
+                  <th>BPM Range</th>
+                  <th>Literal Meaning</th>
+                  <th>Musical Feel & Application</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="clickable-row" data-bpm="35">
+                  <td><strong>Larghissimo / Grave</strong></td>
+                  <td><code>30 &ndash; 39</code></td>
+                  <td>Very slow and solemn</td>
+                  <td>Extremely slow, dark, sustained funeral marches or symphonic intros.</td>
+                </tr>
+                <tr class="clickable-row" data-bpm="50">
+                  <td><strong>Largo</strong></td>
+                  <td><code>40 &ndash; 60</code></td>
+                  <td>Broadly, dignified</td>
+                  <td>Slow, majestic, breathing room. Examples: Dvořák New World Symphony Largo.</td>
+                </tr>
+                <tr class="clickable-row" data-bpm="63">
+                  <td><strong>Larghetto</strong></td>
+                  <td><code>61 &ndash; 65</code></td>
+                  <td>Rather broadly</td>
+                  <td>Slightly less solemn than Largo, graceful warmth.</td>
+                </tr>
+                <tr class="clickable-row" data-bpm="70">
+                  <td><strong>Adagio</strong></td>
+                  <td><code>66 &ndash; 76</code></td>
+                  <td>Slow, at ease with expression</td>
+                  <td>Lyrical, singing, expressive slow movements (Beethoven Moonlight Sonata 1st mvt).</td>
+                </tr>
+                <tr class="clickable-row" data-bpm="92">
+                  <td><strong>Andante</strong></td>
+                  <td><code>76 &ndash; 108</code></td>
+                  <td>At a walking pace</td>
+                  <td>Flowing, gentle stroll, peaceful natural motion.</td>
+                </tr>
+                <tr class="clickable-row" data-bpm="114">
+                  <td><strong>Moderato</strong></td>
+                  <td><code>108 &ndash; 120</code></td>
+                  <td>Moderately</td>
+                  <td>Balanced tempo, neither fast nor slow. Very common in marches and pop ballads.</td>
+                </tr>
+                <tr class="clickable-row" data-bpm="135">
+                  <td><strong>Allegro</strong></td>
+                  <td><code>120 &ndash; 168</code></td>
+                  <td>Fast, quick, and bright</td>
+                  <td>Joyful, lively, brisk energy. The standard tempo for sonata-allegro first movements.</td>
+                </tr>
+                <tr class="clickable-row" data-bpm="180">
+                  <td><strong>Presto</strong></td>
+                  <td><code>168 &ndash; 200</code></td>
+                  <td>Very, very fast</td>
+                  <td>Frantic, agile, virtuosic speed. Often used in concert finales and scherzos.</td>
+                </tr>
+                <tr class="clickable-row" data-bpm="220">
+                  <td><strong>Prestissimo</strong></td>
+                  <td><code>200 &ndash; 300</code></td>
+                  <td>Extremely fast</td>
+                  <td>Maximum human speed, lightning-fast cadenzas, furious codas.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Practice Tips & Guide -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <span>Keyboard Shortcuts & Professional Practice Techniques</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top: 0.5rem;">
+            <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+              <h3 style="font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--accent);">Essential Keyboard Shortcuts</h3>
+              <ul style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.8; list-style: none; padding-left: 0;">
+                <li><kbd style="padding: 0.1rem 0.35rem; background: var(--surface); border: 1px solid var(--border); border-radius: 4px;">Space</kbd> : Start / Stop Metronome</li>
+                <li><kbd style="padding: 0.1rem 0.35rem; background: var(--surface); border: 1px solid var(--border); border-radius: 4px;">T</kbd> : Tap Tempo calculation</li>
+                <li><kbd style="padding: 0.1rem 0.35rem; background: var(--surface); border: 1px solid var(--border); border-radius: 4px;">&uarr;</kbd> / <kbd style="padding: 0.1rem 0.35rem; background: var(--surface); border: 1px solid var(--border); border-radius: 4px;">&darr;</kbd> : Adjust tempo &plusmn;1 BPM</li>
+                <li><kbd style="padding: 0.1rem 0.35rem; background: var(--surface); border: 1px solid var(--border); border-radius: 4px;">Shift</kbd> + <kbd style="padding: 0.1rem 0.35rem; background: var(--surface); border: 1px solid var(--border); border-radius: 4px;">&uarr;</kbd> / <kbd style="padding: 0.1rem 0.35rem; background: var(--surface); border: 1px solid var(--border); border-radius: 4px;">&darr;</kbd> : Adjust tempo &plusmn;5 BPM</li>
+                <li><kbd style="padding: 0.1rem 0.35rem; background: var(--surface); border: 1px solid var(--border); border-radius: 4px;">M</kbd> : Toggle Audio Mute</li>
+              </ul>
+            </div>
+
+            <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+              <h3 style="font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--accent);">The Gap Metronome Method</h3>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">
+                Click individual beat dots to mute Beats 2, 3, or 4. Practicing against only Beat 1 tests your internal rhythmic clock and prevents relying on the click for every note.
+              </p>
+            </div>
+
+            <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+              <h3 style="font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--accent);">Speed Trainer Discipline</h3>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">
+                Start difficult etudes or scale runs at 60% of goal speed. Enable the <strong>Tempo Speed Trainer</strong> with +2 BPM every 4 bars. If tension creeps into your hands, dial back 5 BPM and stabilize before advancing.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </main>
 
@@ -62,10 +967,10 @@
     "@type": "WebApplication",
     "name": "Metronome Beat Guide",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/metronome/",
-    "description": "Audio-visual beat metronome speed guides.",
-    "applicationCategory": "UtilityPage",
+    "description": "Audio-visual precision metronome powered by drift-free Web Audio API timing. Features realistic pendulum oscillation, interactive beat LED accents, tap tempo, customizable time signatures, subdivisions, and speed training.",
+    "applicationCategory": "MusicApplication",
     "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
+    "browserRequirements": "Requires JavaScript. Requires Web Audio API."
   }
   </script>
 </body>

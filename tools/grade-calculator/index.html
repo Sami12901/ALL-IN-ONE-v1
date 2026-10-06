@@ -3,17 +3,152 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Grade Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Computes weighted average assignment grades.">
-  <meta name="keywords" content="grade, average, weighted, assignment, math, free, online, tool, utility">
+  <title>Weighted Grade Calculator - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Calculate weighted semester grades, GPA letter grade scales, and solve for required final exam scores to achieve target grades (A, B, C).">
+  <meta name="keywords" content="grade calculator, weighted grade calculator, final exam calculator, college grade calculator, semester gpa, final exam target score">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/grade-calculator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+
+  <style>
+    .grade-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 40px;
+      gap: 0.75rem;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.5rem;
+      transition: var(--transition);
+    }
+
+    @media (max-width: 600px) {
+      .grade-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+      }
+      .grade-row .col-name {
+        grid-column: 1 / -1;
+      }
+      .grade-row .col-del {
+        grid-column: 1 / -1;
+        justify-self: end;
+      }
+    }
+
+    .grade-row:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-icon-del {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+    }
+
+    .btn-icon-del:hover {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--error);
+    }
+
+    .grade-badge-huge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #ffffff;
+      background: var(--accent-gradient);
+      box-shadow: 0 4px 16px var(--accent-glow);
+    }
+
+    .target-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .target-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+
+    .target-chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .target-chip-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+
+    .target-chip-val {
+      font-family: monospace;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .target-chip.achieved .target-chip-val {
+      color: var(--success);
+    }
+
+    .target-chip.unreachable .target-chip-val {
+      color: var(--error);
+    }
+
+    .weight-progress-wrap {
+      margin-top: 0.5rem;
+    }
+
+    .weight-progress-bar {
+      height: 8px;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      overflow: hidden;
+      margin-top: 0.35rem;
+      border: 1px solid var(--border);
+    }
+
+    .weight-progress-fill {
+      height: 100%;
+      background: var(--accent-gradient);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .weight-progress-fill.exceeded {
+      background: var(--error);
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -26,29 +161,160 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Grade Calculator</h1>
-        <p class="tool-description">Computes weighted average assignment grades.</p>
+        <h1>Weighted Grade Calculator</h1>
+        <p class="tool-description">
+          Calculate your overall weighted semester average, track cumulative course weights, and calculate exactly what score you need on the final exam to achieve an A, B, or C.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Grade Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Computes weighted average assignment grades.</div>
-            <div><strong>Inputs:</strong> grade, average, weighted, assignment, math</div>
-            <div><strong>Category:</strong> student</div>
+      <!-- Main Work Area -->
+      <div class="tool-workarea split-view">
+        <!-- Input Assessment Rows Panel -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title" style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              </svg>
+              <span>Assessments & Weights</span>
+            </div>
+            <button type="button" id="btn-add-row" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+              + Add Item
+            </button>
+          </div>
+
+          <!-- Header Labels for Table -->
+          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 40px; gap: 0.75rem; padding: 0 1rem; font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">
+            <span>Category Name</span>
+            <span>Weight (%)</span>
+            <span>Score (%)</span>
+            <span></span>
+          </div>
+
+          <!-- Dynamic Assessment Rows Container -->
+          <div id="grades-container">
+            <!-- Populated via Javascript -->
+          </div>
+
+          <!-- Weight Tracker -->
+          <div class="weight-progress-wrap">
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600;">
+              <span>Total Weight Allocated:</span>
+              <span id="total-weight-text">0% / 100%</span>
+            </div>
+            <div class="weight-progress-bar">
+              <div id="weight-progress-fill" class="weight-progress-fill"></div>
+            </div>
+            <div id="weight-warning" style="font-size: 0.75rem; color: var(--warning); margin-top: 0.25rem; display: none;">
+              Note: Weights do not sum to 100%. Calculations normalize proportionally or factor into remaining final exam.
+            </div>
+          </div>
+
+          <!-- Presets -->
+          <div class="presets-bar" style="margin-top: 1rem;">
+            <span style="font-size: 0.75rem; color: var(--text-tertiary); font-weight: 600;">Course Presets:</span>
+            <button type="button" class="preset-chip grade-preset" data-preset="college">Standard College</button>
+            <button type="button" class="preset-chip grade-preset" data-preset="highschool">High School</button>
+            <button type="button" class="preset-chip grade-preset" data-preset="stem">STEM Lab Course</button>
+          </div>
+
+          <div class="action-bar" style="margin-top: 1.25rem;">
+            <button type="button" id="btn-reset-grades" class="btn btn-secondary">Reset All</button>
+            <button type="button" id="btn-copy-grades" class="btn btn-secondary" style="flex: 1;">Copy Summary Report</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Grade Summary & Final Exam Solver Panel -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            <span>Current Standing & Final Exam Solver</span>
+          </div>
+
+          <!-- Overall Current Grade Hero Card -->
+          <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem;">
+            <div>
+              <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); font-weight: 600;">
+                Weighted Current Grade
+              </div>
+              <div id="current-grade-val" style="font-size: 2.25rem; font-weight: 800; color: var(--text-primary); font-family: var(--font-sans); margin: 0.25rem 0;">
+                -
+              </div>
+              <div id="current-gpa-val" style="font-size: 0.85rem; color: var(--text-secondary);">
+                GPA Points: - (4.0 Scale)
+              </div>
+            </div>
+            <div id="letter-grade-badge" class="grade-badge-huge">
+              -
+            </div>
+          </div>
+
+          <!-- Final Exam Target Solver -->
+          <div class="target-card">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <strong style="font-size: 0.9rem; text-transform: uppercase; color: var(--text-secondary);">
+                Final Exam Target Solver
+              </strong>
+              <div style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.8rem;">
+                <label for="final-weight-input" style="color: var(--text-secondary);">Final Weight (%):</label>
+                <input type="number" id="final-weight-input" class="form-input" style="width: 70px; padding: 0.25rem 0.5rem; font-size: 0.85rem; text-align: center;" value="30" min="1" max="99">
+              </div>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-tertiary); margin-top: 0.35rem;">
+              Minimum score required on the remaining final exam to secure each letter grade in the course:
+            </p>
+
+            <div class="target-grid">
+              <div class="target-chip" id="chip-target-a">
+                <span class="target-chip-label">Target A (90%)</span>
+                <span class="target-chip-val" id="target-score-a">-</span>
+              </div>
+              <div class="target-chip" id="chip-target-b">
+                <span class="target-chip-label">Target B (80%)</span>
+                <span class="target-chip-val" id="target-score-b">-</span>
+              </div>
+              <div class="target-chip" id="chip-target-c">
+                <span class="target-chip-label">Target C (70%)</span>
+                <span class="target-chip-val" id="target-score-c">-</span>
+              </div>
+              <div class="target-chip" id="chip-target-d">
+                <span class="target-chip-label">Target D (60%)</span>
+                <span class="target-chip-val" id="target-score-d">-</span>
+              </div>
+            </div>
+
+            <!-- Custom Target Row -->
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--border);">
+              <span style="font-size: 0.85rem; color: var(--text-secondary); white-space: nowrap;">Custom Target (%):</span>
+              <input type="number" id="custom-target-input" class="form-input" style="width: 80px; padding: 0.35rem 0.5rem; font-size: 0.85rem;" value="85" min="1" max="100">
+              <span style="font-size: 0.85rem; color: var(--text-secondary);">&rarr; Need:</span>
+              <span id="custom-target-result" style="font-family: monospace; font-size: 1rem; font-weight: 700; color: var(--accent);">-</span>
+            </div>
+          </div>
+
+          <!-- Letter Grade Scale Reference -->
+          <div style="margin-top: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.75rem;">
+            <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); display: block; margin-bottom: 0.35rem;">
+              Grading Scale Reference:
+            </span>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.75rem; color: var(--text-tertiary);">
+              <span><strong>A:</strong> 93-100% (4.0)</span>
+              <span><strong>A-:</strong> 90-92% (3.7)</span>
+              <span><strong>B+:</strong> 87-89% (3.3)</span>
+              <span><strong>B:</strong> 83-86% (3.0)</span>
+              <span><strong>B-:</strong> 80-82% (2.7)</span>
+              <span><strong>C+:</strong> 77-79% (2.3)</span>
+              <span><strong>C:</strong> 73-76% (2.0)</span>
+              <span><strong>D:</strong> 60-69% (1.0)</span>
+              <span><strong>F:</strong> &lt;60% (0.0)</span>
+            </div>
+          </div>
+
+        </div>
       </div>
-    
     </div>
   </main>
 
@@ -60,9 +326,9 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Grade Calculator",
+    "name": "Weighted Grade Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/grade-calculator/",
-    "description": "Computes weighted average assignment grades.",
+    "description": "Computes weighted average assignment grades and calculates required final exam score targets.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

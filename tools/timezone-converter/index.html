@@ -3,15 +3,215 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Time Zone Converter - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Compare meeting times across timezone parameters.">
-  <meta name="keywords" content="timezone, converter, time, date, gmt, free, online, tool, utility">
+  <title>Time Zone Converter & Meeting Planner - ALL IN ONE</title>
+  <meta name="description" content="Compare world time zones and plan global meetings. Interactive time slider, work hours indicators (green/yellow/red), and 1-click meeting time exporter.">
+  <meta name="keywords" content="timezone converter, world clock, meeting planner, time zone difference, work hours comparison, global meeting schedule">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/timezone-converter/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    /* Timezone Tool Specific Styling */
+    .master-slider-panel {
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.12) 0%, rgba(20, 20, 20, 0.7) 100%);
+      border: 1px solid rgba(78, 133, 191, 0.3);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .slider-time-display {
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: monospace;
+      line-height: 1;
+    }
+    .tz-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+      gap: 1rem;
+    }
+    .tz-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+      position: relative;
+      transition: var(--transition);
+      border-left: 4px solid var(--border);
+    }
+    .tz-card:hover {
+      border-color: rgba(78, 133, 191, 0.4);
+      transform: translateY(-2px);
+    }
+    .tz-card.status-work {
+      border-left-color: var(--success);
+    }
+    .tz-card.status-shoulder {
+      border-left-color: var(--warning);
+    }
+    .tz-card.status-night {
+      border-left-color: #64748b;
+    }
+    .tz-time-big {
+      font-size: 2rem;
+      font-weight: 800;
+      font-family: monospace;
+      color: var(--text-primary);
+      line-height: 1.1;
+    }
+    .tz-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.25rem 0.6rem;
+      border-radius: var(--radius-full);
+      width: fit-content;
+    }
+    .status-badge-work {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+    }
+    .status-badge-shoulder {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+    }
+    .status-badge-night {
+      background: rgba(100, 116, 139, 0.15);
+      color: #94a3b8;
+    }
+    .tz-day-diff-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.15rem 0.45rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .day-ahead {
+      color: var(--accent);
+      border-color: rgba(78, 133, 191, 0.4);
+    }
+    .day-behind {
+      color: var(--warning);
+      border-color: rgba(245, 158, 11, 0.4);
+    }
+    /* 24-Hour Visual Schedule Planner */
+    .timeline-container {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      overflow-x: auto;
+    }
+    .timeline-row {
+      display: grid;
+      grid-template-columns: 140px repeat(24, 1fr);
+      gap: 2px;
+      align-items: center;
+      margin-bottom: 6px;
+      min-width: 720px;
+    }
+    .timeline-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding-right: 0.5rem;
+    }
+    .timeline-cell {
+      height: 28px;
+      border-radius: 2px;
+      font-size: 0.65rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: monospace;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.1s, outline 0.1s;
+    }
+    .timeline-cell:hover {
+      transform: scale(1.15);
+      z-index: 2;
+    }
+    .timeline-cell.active-hour {
+      outline: 2px solid #ffffff;
+      outline-offset: -1px;
+      z-index: 3;
+      font-weight: 800;
+    }
+    .cell-work {
+      background: rgba(16, 185, 129, 0.35);
+      color: #6ee7b7;
+    }
+    .cell-shoulder {
+      background: rgba(245, 158, 11, 0.3);
+      color: #fde047;
+    }
+    .cell-night {
+      background: rgba(15, 23, 42, 0.6);
+      color: #64748b;
+    }
+    .preset-chip {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .preset-chip:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+    .preset-chip.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+    .card-remove-btn {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 0.25rem;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    .card-remove-btn:hover {
+      color: var(--error);
+      background: rgba(239, 68, 68, 0.1);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,29 +226,181 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Time Zone Converter</h1>
-        <p class="tool-description">Compare meeting times across timezone parameters.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Time Zone Converter &amp; Meeting Planner</h1>
+        <p class="tool-description">Synchronize global clocks with a live 24-hour slider, identify overlapping business hours, and copy structured multi-timezone meeting invites.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Time Zone Converter</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Compare meeting times across timezone parameters.</div>
-            <div><strong>Inputs:</strong> timezone, converter, time, date, gmt</div>
-            <div><strong>Category:</strong> utility</div>
+      <div class="tool-workarea">
+
+        <!-- Top Controls: Date & Source & Mode -->
+        <div class="tool-panel glass-panel" style="padding: 1.25rem 1.75rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <!-- Date Picker -->
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+              <label for="meeting-date" style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary);">Meeting Date:</label>
+              <input type="date" id="meeting-date" class="form-input" style="width: auto; padding: 0.4rem 0.8rem; font-family: monospace;">
+              <button id="btn-date-today" class="preset-chip" style="padding: 0.3rem 0.6rem; font-size: 0.75rem;">Today</button>
+            </div>
+
+            <!-- Source Timezone Selector -->
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+              <label for="source-tz-select" style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary);">Base Timezone:</label>
+              <select id="source-tz-select" class="form-select" style="width: auto; padding: 0.4rem 0.8rem; font-weight: 600;">
+                <option value="UTC">UTC (Universal Coordinated Time)</option>
+                <option value="America/New_York" selected>New York (EST/EDT, UTC-5/-4)</option>
+                <option value="Europe/London">London (GMT/BST, UTC+0/+1)</option>
+                <option value="Europe/Paris">Paris (CET/CEST, UTC+1/+2)</option>
+                <option value="Asia/Dubai">Dubai (GST, UTC+4)</option>
+                <option value="Asia/Dhaka">Dhaka (BST, UTC+6)</option>
+                <option value="Asia/Tokyo">Tokyo (JST, UTC+9)</option>
+                <option value="Australia/Sydney">Sydney (AEST/AEDT, UTC+10/+11)</option>
+                <option value="America/Los_Angeles">Los Angeles (PST/PDT, UTC-8/-7)</option>
+              </select>
+            </div>
+
+            <!-- Clock Format Toggle & Snap to Now -->
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <button id="btn-format-12h" class="preset-chip active">12H</button>
+              <button id="btn-format-24h" class="preset-chip">24H</button>
+              <button id="btn-snap-now" class="preset-chip" style="background: rgba(78, 133, 191, 0.2); color: var(--accent);">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                Current Time
+              </button>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Master Slider & Synchronization Panel -->
+        <div class="master-slider-panel">
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <span style="font-size: 0.8rem; text-transform: uppercase; font-weight: 700; color: var(--text-tertiary); letter-spacing: 0.05em;" id="slider-source-label">Base Time (New York)</span>
+              <div id="slider-time-text" class="slider-time-display">12:00 PM</div>
+              <div id="slider-date-text" style="font-size: 0.95rem; color: var(--text-secondary); margin-top: 0.25rem;">Tuesday, October 6, 2026</div>
+            </div>
+
+            <!-- Meeting Suitability Rating -->
+            <div style="text-align: right;">
+              <span id="meeting-quality-badge" class="tz-status-badge status-badge-work" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">
+                Meeting Window: Optimal
+              </span>
+              <div id="meeting-quality-desc" style="font-size: 0.78rem; color: var(--text-tertiary); margin-top: 0.35rem;">
+                Most participants in core work hours
+              </div>
+            </div>
+          </div>
+
+          <!-- Master 24-Hour Slider -->
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <div class="range-group">
+              <input type="range" id="master-time-slider" min="0" max="95" step="1" value="48" class="range-slider" style="height: 10px;">
+            </div>
+            <!-- Slider step buttons & quick hours -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+              <div style="display: flex; gap: 0.35rem;">
+                <button class="preset-chip btn-step-time" data-step="-4">-1 Hour</button>
+                <button class="preset-chip btn-step-time" data-step="-1">-15 Min</button>
+                <button class="preset-chip btn-step-time" data-step="1">+15 Min</button>
+                <button class="preset-chip btn-step-time" data-step="4">+1 Hour</button>
+              </div>
+
+              <!-- Quick Time Anchors -->
+              <div style="display: flex; gap: 0.35rem;">
+                <button class="preset-chip btn-anchor-time" data-quarter="36">9:00 AM</button>
+                <button class="preset-chip btn-anchor-time" data-quarter="48">12:00 PM</button>
+                <button class="preset-chip btn-anchor-time" data-quarter="56">2:00 PM</button>
+                <button class="preset-chip btn-anchor-time" data-quarter="68">5:00 PM</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 24-Hour Multi-Timezone Visual Schedule Grid -->
+        <div class="timeline-container">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+            <h3 style="font-size: 0.95rem; font-weight: 700; margin: 0; color: var(--text-primary);">
+              24-Hour Global Working Hours Visualizer (Click any block to set time)
+            </h3>
+            <!-- Legend -->
+            <div style="display: flex; gap: 0.75rem; font-size: 0.75rem; align-items: center;">
+              <div style="display: flex; align-items: center; gap: 0.3rem;">
+                <span style="width: 12px; height: 12px; border-radius: 2px; background: rgba(16, 185, 129, 0.6); display: inline-block;"></span>
+                <span>Work (9am - 5pm)</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.3rem;">
+                <span style="width: 12px; height: 12px; border-radius: 2px; background: rgba(245, 158, 11, 0.6); display: inline-block;"></span>
+                <span>Shoulder (7-9am, 5-9pm)</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.3rem;">
+                <span style="width: 12px; height: 12px; border-radius: 2px; background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; display: inline-block;"></span>
+                <span>Off / Night</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Timeline Rows Grid -->
+          <div id="timeline-rows-container">
+            <!-- Dynamically populated rows -->
+          </div>
+        </div>
+
+        <!-- Active Timezone Clocks & Cards -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <h2 class="panel-title" style="border: none; padding: 0; margin: 0;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              World Clocks &amp; Locations
+            </h2>
+
+            <!-- Add City Dropdown -->
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <select id="add-city-select" class="form-select" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+                <option value="">+ Add Location...</option>
+                <option value="Europe/Berlin">Berlin / Frankfurt (CET/CEST)</option>
+                <option value="Asia/Singapore">Singapore (SGT, UTC+8)</option>
+                <option value="Asia/Hong_Kong">Hong Kong (HKT, UTC+8)</option>
+                <option value="Asia/Kolkata">Mumbai / New Delhi (IST, UTC+5:30)</option>
+                <option value="America/Chicago">Chicago (CST/CDT, UTC-6/-5)</option>
+                <option value="America/Toronto">Toronto (EST/EDT, UTC-5/-4)</option>
+                <option value="America/Sao_Paulo">São Paulo (BRT, UTC-3)</option>
+                <option value="Pacific/Auckland">Auckland (NZST/NZDT, UTC+12/+13)</option>
+              </select>
+              <button id="btn-reset-default-tzs" class="preset-chip" style="font-size: 0.75rem;">Reset Default 9</button>
+            </div>
+          </div>
+
+          <!-- Timezone Cards Grid -->
+          <div id="tz-cards-grid" class="tz-card-grid">
+            <!-- Dynamically generated timezone cards -->
+          </div>
+        </div>
+
+        <!-- 1-Click Copy Meeting Section -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <div>
+              <h2 class="panel-title" style="border: none; padding: 0; margin: 0;">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                Export Meeting Schedule
+              </h2>
+              <span style="font-size: 0.8rem; color: var(--text-tertiary);">Ready to paste directly into Slack, email invites, Google Calendar or Zoom description</span>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem;">
+              <button id="btn-copy-formatted" class="btn btn-primary" style="padding: 0.4rem 1rem; font-size: 0.85rem;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy Meeting Schedule
+              </button>
+            </div>
+          </div>
+
+          <div id="meeting-preview-text" class="output-box" style="min-height: 120px; font-size: 0.85rem; line-height: 1.6;">
+            <!-- Generated invite text preview -->
+          </div>
+        </div>
+
       </div>
-    
     </div>
   </main>
 
@@ -60,9 +412,9 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Time Zone Converter",
+    "name": "Time Zone Converter & Meeting Planner",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/timezone-converter/",
-    "description": "Compare meeting times across timezone parameters.",
+    "description": "Compare world time zones and plan global meetings with 24-hour synchronized slider and business hours visualizer.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

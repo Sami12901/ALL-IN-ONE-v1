@@ -4,16 +4,668 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Theme Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Generate Light, Dark, Corporate, Luxury, and Travel themes.">
-  <meta name="keywords" content="slide, presentation, pitch, deck, theme generator, free, online, tool, utility">
+  <meta name="description" content="Design, harmonize, and export 8-token presentation and UI design themes with live keynote slides, UI cards, and one-click code exports.">
+  <meta name="keywords" content="theme generator, color palette, design tokens, presentation theme, pitch deck styling, tailwind config, css variables, dark mode ui">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/theme-generator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <style>
+    /* Theme Generator Workspace Styles */
+    .tg-workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+      margin-top: 1rem;
+    }
+
+    @media (min-width: 1100px) {
+      .tg-workspace {
+        grid-template-columns: 460px 1fr;
+        align-items: start;
+      }
+    }
+
+    /* Preset Themes Bar */
+    .preset-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .preset-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 0.9rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .preset-chip:hover {
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+      transform: translateY(-1px);
+    }
+
+    .preset-chip.active {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+      color: var(--text-primary);
+      font-weight: 600;
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .preset-dots {
+      display: flex;
+      gap: 3px;
+    }
+
+    .preset-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* Token Editor Panel */
+    .token-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+
+    @media (min-width: 500px) {
+      .token-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .token-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .token-item:hover, .token-item:focus-within {
+      border-color: var(--accent);
+    }
+
+    .color-swatch-wrapper {
+      position: relative;
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 2px solid var(--border);
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .color-swatch-wrapper input[type="color"] {
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      width: 65px;
+      height: 65px;
+      border: none;
+      cursor: pointer;
+      opacity: 0;
+    }
+
+    .color-swatch-display {
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+    }
+
+    .token-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .token-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 0.25rem;
+    }
+
+    .token-hex-input {
+      width: 100%;
+      font-family: monospace;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      padding: 0.25rem 0.5rem;
+    }
+
+    .token-hex-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .harmonizer-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .contrast-badge-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 0.5rem;
+    }
+
+    .contrast-chip {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.35rem 0.65rem;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-secondary);
+    }
+
+    .contrast-chip.pass {
+      border-color: rgba(16, 185, 129, 0.4);
+      color: var(--success);
+    }
+
+    /* Live Preview Container */
+    #live-theme-stage {
+      /* Scoped CSS custom properties will be injected here */
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Keynote Slide Mockup */
+    .slide-mockup {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: var(--theme-dark-surface, #0f0f11);
+      border: 1px solid var(--theme-border, #2f2f38);
+      border-radius: var(--radius-lg);
+      padding: clamp(1.2rem, 3vw, 2.2rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+      color: var(--theme-text-primary, #ffffff);
+      user-select: none;
+    }
+
+    .slide-ambient-glow {
+      position: absolute;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: var(--theme-dominant-brand, #d4af37);
+      opacity: 0.12;
+      filter: blur(70px);
+      pointer-events: none;
+      top: -50px;
+      right: -50px;
+    }
+
+    .slide-ambient-glow-2 {
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: var(--theme-accent-glow, #f3e5ab);
+      opacity: 0.08;
+      filter: blur(60px);
+      pointer-events: none;
+      bottom: -40px;
+      left: 10%;
+    }
+
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .slide-tag {
+      font-size: clamp(0.65rem, 1.2vw, 0.75rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.7rem;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--theme-border, #2f2f38);
+      color: var(--theme-dominant-brand, #d4af37);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .slide-title-wrap {
+      margin: clamp(0.5rem, 1.5vw, 1.25rem) 0;
+      position: relative;
+      z-index: 2;
+    }
+
+    .slide-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 3.2vw, 2.4rem);
+      line-height: 1.15;
+      font-weight: 700;
+      color: var(--theme-text-primary, #ffffff);
+      margin-bottom: 0.4rem;
+    }
+
+    .slide-subtitle {
+      font-size: clamp(0.75rem, 1.4vw, 0.95rem);
+      color: var(--theme-muted-text, #a0a0a8);
+      line-height: 1.45;
+      max-width: 85%;
+    }
+
+    .slide-metrics-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(0.5rem, 1.5vw, 1rem);
+      position: relative;
+      z-index: 2;
+    }
+
+    .slide-kpi-card {
+      background: var(--theme-card-bg, #1a1a1f);
+      border: 1px solid var(--theme-border, #2f2f38);
+      border-radius: var(--radius-md);
+      padding: clamp(0.6rem, 1.5vw, 1rem);
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      backdrop-filter: blur(8px);
+    }
+
+    .slide-kpi-value {
+      font-size: clamp(1.1rem, 2.2vw, 1.7rem);
+      font-weight: 700;
+      color: var(--theme-dominant-brand, #d4af37);
+      letter-spacing: -0.02em;
+    }
+
+    .slide-kpi-label {
+      font-size: clamp(0.65rem, 1.1vw, 0.75rem);
+      color: var(--theme-muted-text, #a0a0a8);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .slide-kpi-bar {
+      width: 100%;
+      height: 4px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+      margin-top: 0.2rem;
+    }
+
+    .slide-kpi-fill {
+      height: 100%;
+      border-radius: 9999px;
+      background: linear-gradient(90deg, var(--theme-dominant-brand, #d4af37), var(--theme-accent-glow, #f3e5ab));
+    }
+
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: clamp(0.65rem, 1vw, 0.75rem);
+      color: var(--theme-muted-text, #a0a0a8);
+      border-top: 1px solid var(--theme-border, #2f2f38);
+      padding-top: clamp(0.4rem, 1vw, 0.75rem);
+      position: relative;
+      z-index: 2;
+    }
+
+    /* UI Card & Component Showcase */
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .showcase-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Dynamic UI Card */
+    .theme-ui-card {
+      background: var(--theme-card-bg, #1a1a1f);
+      border: 1px solid var(--theme-border, #2f2f38);
+      border-radius: var(--radius-lg);
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      position: relative;
+    }
+
+    .ui-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .ui-profile-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .ui-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--theme-dominant-brand, #d4af37), var(--theme-accent-glow, #f3e5ab));
+      color: var(--theme-dark-surface, #0f0f11);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .ui-profile-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--theme-text-primary, #ffffff);
+    }
+
+    .ui-profile-sub {
+      font-size: 0.75rem;
+      color: var(--theme-muted-text, #a0a0a8);
+    }
+
+    .ui-badge-success {
+      background: rgba(56, 239, 125, 0.12);
+      border: 1px solid var(--theme-success-alert, #38ef7d);
+      color: var(--theme-success-alert, #38ef7d);
+      border-radius: var(--radius-full);
+      padding: 0.2rem 0.65rem;
+      font-size: 0.725rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .ui-stats-box {
+      background: var(--theme-dark-surface, #0f0f11);
+      border: 1px solid var(--theme-border, #2f2f38);
+      border-radius: var(--radius-md);
+      padding: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .ui-stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .ui-stat-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--theme-muted-text, #a0a0a8);
+    }
+
+    .ui-stat-val {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--theme-text-primary, #ffffff);
+    }
+
+    /* Buttons Kit */
+    .button-kit-card {
+      background: var(--theme-card-bg, #1a1a1f);
+      border: 1px solid var(--theme-border, #2f2f38);
+      border-radius: var(--radius-lg);
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .kit-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--theme-text-primary, #ffffff);
+      border-bottom: 1px solid var(--theme-border, #2f2f38);
+      padding-bottom: 0.5rem;
+    }
+
+    .kit-btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+    }
+
+    /* Dynamic Buttons styled with theme tokens */
+    .theme-btn-brand {
+      background: var(--theme-dominant-brand, #d4af37);
+      color: var(--theme-dark-surface, #0f0f11);
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 0.6rem 1.1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .theme-btn-brand:hover {
+      filter: brightness(1.15);
+      box-shadow: 0 4px 15px var(--theme-accent-glow, rgba(212, 175, 55, 0.4));
+      transform: translateY(-1px);
+    }
+
+    .theme-btn-glow {
+      background: transparent;
+      color: var(--theme-accent-glow, #f3e5ab);
+      border: 1px solid var(--theme-accent-glow, #f3e5ab);
+      border-radius: var(--radius-md);
+      padding: 0.6rem 1.1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 0 12px var(--theme-accent-glow, rgba(243, 229, 171, 0.25));
+      transition: all 0.2s ease;
+    }
+
+    .theme-btn-glow:hover {
+      background: var(--theme-accent-glow, #f3e5ab);
+      color: var(--theme-dark-surface, #0f0f11);
+    }
+
+    .theme-btn-outline {
+      background: transparent;
+      color: var(--theme-text-primary, #ffffff);
+      border: 1px solid var(--theme-border, #2f2f38);
+      border-radius: var(--radius-md);
+      padding: 0.6rem 1.1rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .theme-btn-outline:hover {
+      border-color: var(--theme-dominant-brand, #d4af37);
+      color: var(--theme-dominant-brand, #d4af37);
+    }
+
+    .theme-btn-ghost {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--theme-muted-text, #a0a0a8);
+      border: 1px solid transparent;
+      border-radius: var(--radius-md);
+      padding: 0.6rem 1.1rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .theme-btn-ghost:hover {
+      color: var(--theme-text-primary, #ffffff);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Export Code Panel */
+    .export-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    .export-tabs {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+      margin-bottom: 1rem;
+      overflow-x: auto;
+    }
+
+    .export-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .export-tab-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+
+    .export-tab-btn.active {
+      color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .code-container {
+      position: relative;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .code-editor {
+      margin: 0;
+      padding: 1.25rem;
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: var(--text-primary);
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    .export-action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      justify-content: flex-end;
+    }
+
+    /* Toast notification */
+    .toast-pill {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      color: var(--text-primary);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-full);
+      padding: 0.65rem 1.4rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+      transition: all 0.25s ease;
+    }
+
+    .toast-pill.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,30 +679,387 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Theme Generator</h1>
-        <p class="tool-description">Generate Light, Dark, Corporate, Luxury, and Travel themes.</p>
+        <p class="tool-description">
+          Synthesize 8 coordinated luxury color tokens for keynote presentation decks, executive UI dashboards, and software applications.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Theme Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Generate Light, Dark, Corporate, Luxury, and Travel themes.</div>
-            <div><strong>Inputs:</strong> slide, presentation, pitch, deck, theme generator</div>
-            <div><strong>Category:</strong> slide</div>
+      <!-- Preset Bar -->
+      <div class="preset-bar">
+        <span style="font-size: 0.825rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); margin-right: 0.4rem;">Presets:</span>
+        <button class="preset-chip active" data-preset="dark-luxury-gold">
+          <span class="preset-dots">
+            <span class="preset-dot" style="background: #d4af37;"></span>
+            <span class="preset-dot" style="background: #0f0f11;"></span>
+          </span>
+          Dark Luxury Gold
+        </button>
+        <button class="preset-chip" data-preset="midnight-cyber">
+          <span class="preset-dots">
+            <span class="preset-dot" style="background: #00f0ff;"></span>
+            <span class="preset-dot" style="background: #080811;"></span>
+          </span>
+          Midnight Cyber
+        </button>
+        <button class="preset-chip" data-preset="emerald-executive">
+          <span class="preset-dots">
+            <span class="preset-dot" style="background: #10b981;"></span>
+            <span class="preset-dot" style="background: #06140f;"></span>
+          </span>
+          Emerald Executive
+        </button>
+        <button class="preset-chip" data-preset="royal-amethyst">
+          <span class="preset-dots">
+            <span class="preset-dot" style="background: #8b5cf6;"></span>
+            <span class="preset-dot" style="background: #0d0a1a;"></span>
+          </span>
+          Royal Amethyst
+        </button>
+        <button class="preset-chip" data-preset="sunset-coral">
+          <span class="preset-dots">
+            <span class="preset-dot" style="background: #ff5e62;"></span>
+            <span class="preset-dot" style="background: #160c10;"></span>
+          </span>
+          Sunset Coral
+        </button>
+        <button class="preset-chip" data-preset="nordic-frost">
+          <span class="preset-dots">
+            <span class="preset-dot" style="background: #38bdf8;"></span>
+            <span class="preset-dot" style="background: #0b1320;"></span>
+          </span>
+          Nordic Frost
+        </button>
+        <button id="randomize-theme-btn" class="preset-chip" style="margin-left: auto;">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          Harmonic Randomizer
+        </button>
+      </div>
+
+      <!-- Main Workspace -->
+      <div class="tg-workspace">
+        
+        <!-- Left Column: Controls & Tokens -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          
+          <!-- Harmonizer Engine Card -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a7 7 0 0 0 7 7c0 7-7 13-7 13s-7-6-7-13a7 7 0 0 1 7-7z"/></svg>
+              Theme Harmonizer Engine
+            </div>
+            
+            <div class="harmonizer-box">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;">
+                <div style="display: flex; align-items: center; gap: 0.6rem;">
+                  <div class="color-swatch-wrapper" style="width: 32px; height: 32px;">
+                    <input type="color" id="base-brand-color-picker" value="#d4af37">
+                    <div class="color-swatch-display" id="base-brand-swatch" style="background: #d4af37;"></div>
+                  </div>
+                  <div>
+                    <span style="font-size: 0.75rem; color: var(--text-secondary); display: block;">Base Seed Color</span>
+                    <input type="text" id="base-brand-hex" value="#D4AF37" class="token-hex-input" style="width: 90px; padding: 0.15rem 0.4rem;">
+                  </div>
+                </div>
+
+                <div style="flex: 1; max-width: 170px;">
+                  <span style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.2rem;">Harmony Model</span>
+                  <select id="harmony-model-select" class="form-select" style="padding: 0.35rem 0.5rem; font-size: 0.8rem;">
+                    <option value="luxury-contrast">Luxury Contrast</option>
+                    <option value="complementary">Complementary</option>
+                    <option value="analogous">Analogous</option>
+                    <option value="triadic">Triadic</option>
+                    <option value="monochrome">Monochrome Glow</option>
+                  </select>
+                </div>
+              </div>
+
+              <button id="btn-synthesize-tokens" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.85rem; width: 100%;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                Synthesize 8 Coordinated Tokens
+              </button>
+            </div>
+
+            <!-- Readability & Contrast Badges -->
+            <div style="margin-top: 0.5rem;">
+              <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-secondary);">WCAG Contrast Health:</span>
+              <div class="contrast-badge-bar" id="contrast-badge-bar">
+                <span class="contrast-chip pass" id="contrast-text-surface">
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                  Text / Surface: <strong>16.2:1 (AAA)</strong>
+                </span>
+                <span class="contrast-chip pass" id="contrast-text-card">
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                  Text / Card: <strong>13.4:1 (AAA)</strong>
+                </span>
+                <span class="contrast-chip pass" id="contrast-brand-surface">
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                  Brand Accent: <strong>4.9:1 (AA)</strong>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 8 Coordinated Color Tokens Editor -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+              8 Design Tokens
+            </div>
+
+            <div class="token-grid">
+              <!-- Token 1: Dominant Brand -->
+              <div class="token-item">
+                <div class="color-swatch-wrapper">
+                  <input type="color" id="token-input-dominant-brand" value="#d4af37">
+                  <div class="color-swatch-display" id="token-swatch-dominant-brand" style="background: #d4af37;"></div>
+                </div>
+                <div class="token-info">
+                  <span class="token-label">1. Dominant Brand</span>
+                  <input type="text" id="token-hex-dominant-brand" value="#D4AF37" class="token-hex-input" maxlength="7">
+                </div>
+              </div>
+
+              <!-- Token 2: Accent Glow -->
+              <div class="token-item">
+                <div class="color-swatch-wrapper">
+                  <input type="color" id="token-input-accent-glow" value="#f3e5ab">
+                  <div class="color-swatch-display" id="token-swatch-accent-glow" style="background: #f3e5ab;"></div>
+                </div>
+                <div class="token-info">
+                  <span class="token-label">2. Accent Glow</span>
+                  <input type="text" id="token-hex-accent-glow" value="#F3E5AB" class="token-hex-input" maxlength="7">
+                </div>
+              </div>
+
+              <!-- Token 3: Dark Surface -->
+              <div class="token-item">
+                <div class="color-swatch-wrapper">
+                  <input type="color" id="token-input-dark-surface" value="#0f0f11">
+                  <div class="color-swatch-display" id="token-swatch-dark-surface" style="background: #0f0f11;"></div>
+                </div>
+                <div class="token-info">
+                  <span class="token-label">3. Dark Surface</span>
+                  <input type="text" id="token-hex-dark-surface" value="#0F0F11" class="token-hex-input" maxlength="7">
+                </div>
+              </div>
+
+              <!-- Token 4: Card Background -->
+              <div class="token-item">
+                <div class="color-swatch-wrapper">
+                  <input type="color" id="token-input-card-background" value="#1a1a1f">
+                  <div class="color-swatch-display" id="token-swatch-card-background" style="background: #1a1a1f;"></div>
+                </div>
+                <div class="token-info">
+                  <span class="token-label">4. Card Background</span>
+                  <input type="text" id="token-hex-card-background" value="#1A1A1F" class="token-hex-input" maxlength="7">
+                </div>
+              </div>
+
+              <!-- Token 5: Primary Text -->
+              <div class="token-item">
+                <div class="color-swatch-wrapper">
+                  <input type="color" id="token-input-primary-text" value="#fbfbfb">
+                  <div class="color-swatch-display" id="token-swatch-primary-text" style="background: #fbfbfb;"></div>
+                </div>
+                <div class="token-info">
+                  <span class="token-label">5. Primary Text</span>
+                  <input type="text" id="token-hex-primary-text" value="#FBFBFB" class="token-hex-input" maxlength="7">
+                </div>
+              </div>
+
+              <!-- Token 6: Muted Text -->
+              <div class="token-item">
+                <div class="color-swatch-wrapper">
+                  <input type="color" id="token-input-muted-text" value="#a0a0a8">
+                  <div class="color-swatch-display" id="token-swatch-muted-text" style="background: #a0a0a8;"></div>
+                </div>
+                <div class="token-info">
+                  <span class="token-label">6. Muted Text</span>
+                  <input type="text" id="token-hex-muted-text" value="#A0A0A8" class="token-hex-input" maxlength="7">
+                </div>
+              </div>
+
+              <!-- Token 7: Border Color -->
+              <div class="token-item">
+                <div class="color-swatch-wrapper">
+                  <input type="color" id="token-input-border-color" value="#2f2f38">
+                  <div class="color-swatch-display" id="token-swatch-border-color" style="background: #2f2f38;"></div>
+                </div>
+                <div class="token-info">
+                  <span class="token-label">7. Border Color</span>
+                  <input type="text" id="token-hex-border-color" value="#2F2F38" class="token-hex-input" maxlength="7">
+                </div>
+              </div>
+
+              <!-- Token 8: Success/Alert -->
+              <div class="token-item">
+                <div class="color-swatch-wrapper">
+                  <input type="color" id="token-input-success-alert" value="#38ef7d">
+                  <div class="color-swatch-display" id="token-swatch-success-alert" style="background: #38ef7d;"></div>
+                </div>
+                <div class="token-info">
+                  <span class="token-label">8. Success / Alert</span>
+                  <input type="text" id="token-hex-success-alert" value="#38EF7D" class="token-hex-input" maxlength="7">
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Column: Live Mockups & Code Exports -->
+        <div>
+          <!-- Live Preview Stage -->
+          <div id="live-theme-stage">
+            
+            <!-- Mockup 1: Sample Presentation Slide -->
+            <div class="slide-mockup">
+              <div class="slide-ambient-glow"></div>
+              <div class="slide-ambient-glow-2"></div>
+              
+              <div class="slide-header">
+                <div class="slide-tag">
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  Series A Pitch Deck
+                </div>
+                <span style="font-size: clamp(0.65rem, 1vw, 0.75rem); color: var(--theme-muted-text, #a0a0a8);">Confidential · 2026</span>
+              </div>
+
+              <div class="slide-title-wrap">
+                <div class="slide-title">Autonomous AI Infrastructure</div>
+                <div class="slide-subtitle">
+                  Synthesizing coordinated multi-token design systems with deterministic client-side rendering and glassmorphic precision.
+                </div>
+              </div>
+
+              <div class="slide-metrics-row">
+                <div class="slide-kpi-card">
+                  <span class="slide-kpi-value">99.98%</span>
+                  <span class="slide-kpi-label">Uptime SLA</span>
+                  <div class="slide-kpi-bar"><div class="slide-kpi-fill" style="width: 95%;"></div></div>
+                </div>
+                <div class="slide-kpi-card">
+                  <span class="slide-kpi-value">4.8&times;</span>
+                  <span class="slide-kpi-label">Workflow Velocity</span>
+                  <div class="slide-kpi-bar"><div class="slide-kpi-fill" style="width: 82%;"></div></div>
+                </div>
+                <div class="slide-kpi-card">
+                  <span class="slide-kpi-value">14.2M</span>
+                  <span class="slide-kpi-label">Daily Events</span>
+                  <div class="slide-kpi-bar"><div class="slide-kpi-fill" style="width: 70%;"></div></div>
+                </div>
+              </div>
+
+              <div class="slide-footer">
+                <span>ALL IN ONE PLATFORM</span>
+                <span>Slide 04 / 24</span>
+              </div>
+            </div>
+
+            <!-- Mockup 2 & 3: UI Card & Component Kit -->
+            <div class="showcase-grid">
+              
+              <!-- Sample UI Card -->
+              <div class="theme-ui-card">
+                <div class="ui-card-header">
+                  <div class="ui-profile-wrap">
+                    <div class="ui-avatar">A</div>
+                    <div>
+                      <div class="ui-profile-name">DevOps Cluster Node</div>
+                      <div class="ui-profile-sub">Region: eu-west-1 &bull; v2.4.0</div>
+                    </div>
+                  </div>
+                  <span class="ui-badge-success">
+                    <span style="width: 6px; height: 6px; border-radius: 50%; background: currentColor;"></span>
+                    Active
+                  </span>
+                </div>
+
+                <div class="ui-stats-box">
+                  <div class="ui-stat-item">
+                    <span class="ui-stat-label">Throughput</span>
+                    <span class="ui-stat-val">3,840 req/s</span>
+                  </div>
+                  <div class="ui-stat-item" style="text-align: right;">
+                    <span class="ui-stat-label">Latency</span>
+                    <span class="ui-stat-val" style="color: var(--theme-dominant-brand, #d4af37);">12.4 ms</span>
+                  </div>
+                </div>
+
+                <div style="display: flex; gap: 0.6rem;">
+                  <button class="theme-btn-brand" style="flex: 1; justify-content: center;">
+                    Deploy Changes
+                  </button>
+                  <button class="theme-btn-outline" style="padding: 0.6rem 0.85rem;" title="Settings">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Sample Button & Component Kit -->
+              <div class="button-kit-card">
+                <div class="kit-title">UI Component States</div>
+                
+                <div class="kit-btn-group">
+                  <button class="theme-btn-brand">Brand Primary</button>
+                  <button class="theme-btn-glow">Accent Glow</button>
+                  <button class="theme-btn-outline">Outline</button>
+                  <button class="theme-btn-ghost">Ghost</button>
+                </div>
+
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.25rem;">
+                  <span style="font-size: 0.725rem; padding: 0.25rem 0.65rem; border-radius: var(--radius-full); background: var(--theme-dark-surface, #0f0f11); border: 1px solid var(--theme-border, #2f2f38); color: var(--theme-text-primary, #ffffff);">
+                    Default Tag
+                  </span>
+                  <span style="font-size: 0.725rem; padding: 0.25rem 0.65rem; border-radius: var(--radius-full); background: var(--theme-dominant-brand, #d4af37); color: var(--theme-dark-surface, #0f0f11); font-weight: 600;">
+                    Brand Badge
+                  </span>
+                  <span style="font-size: 0.725rem; padding: 0.25rem 0.65rem; border-radius: var(--radius-full); background: rgba(56, 239, 125, 0.12); color: var(--theme-success-alert, #38ef7d); border: 1px solid var(--theme-success-alert, #38ef7d); font-weight: 600;">
+                    Alert OK
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Export Suite Card -->
+          <div class="export-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <h2 style="font-size: 1.15rem; font-weight: 700; margin: 0;">Export Theme System</h2>
+              <span style="font-size: 0.8rem; color: var(--text-secondary);">Synchronized in real-time</span>
+            </div>
+
+            <div class="export-tabs">
+              <button class="export-tab-btn active" data-export-tab="css">CSS Variables (:root)</button>
+              <button class="export-tab-btn" data-export-tab="tailwind">Tailwind Config</button>
+              <button class="export-tab-btn" data-export-tab="json">Theme JSON</button>
+            </div>
+
+            <div class="code-container">
+              <pre class="code-editor" id="code-output-display"></pre>
+            </div>
+
+            <div class="export-action-row">
+              <button id="btn-copy-code" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <span id="copy-btn-label">Copy CSS Variables (:root)</span>
+              </button>
+              <button id="btn-download-json" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Export Theme JSON
+              </button>
+            </div>
+          </div>
+
+        </div>
       </div>
-    
     </div>
   </main>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast-pill">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    <span id="toast-message">Copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,7 +1071,7 @@
     "@type": "WebApplication",
     "name": "Theme Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/theme-generator/",
-    "description": "Generate Light, Dark, Corporate, Luxury, and Travel themes.",
+    "description": "Generate Light, Dark, Corporate, Luxury, and Travel themes with 8 coordinated color tokens and one-click code export.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

@@ -3,15 +3,216 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Audio Compressor - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Reduce audio file size, adjust quality and bitrate.">
-  <meta name="keywords" content="audio, music, sound, audio compressor, free, online, tool, utility">
+  <title>Audio Compressor Studio - Dynamic Range Compressor - ALL IN ONE</title>
+  <meta name="description" content="Professional client-side Web Audio dynamic range compressor with real-time gain reduction metering, A/B bypass comparison, and 16-bit WAV export.">
+  <meta name="keywords" content="audio compressor, dynamic range compression, sound limiter, web audio api, gain reduction meter, master compressor, wav export">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/audio-compressor/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .compressor-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    .audio-upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      background: var(--bg-tertiary);
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+    }
+    .audio-upload-zone:hover, .audio-upload-zone.dragover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+
+    .meta-badge {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-family: monospace;
+    }
+
+    .preset-pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .preset-pill {
+      font-size: 0.8rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .preset-pill:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+    .preset-pill.active {
+      color: #ffffff;
+      background: var(--accent-gradient);
+      border-color: transparent;
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    .meter-container {
+      background: rgba(8, 12, 18, 0.85);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .meter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .meter-value-readout {
+      font-family: monospace;
+      font-weight: 700;
+      color: var(--accent-light);
+      font-size: 0.95rem;
+    }
+
+    .meter-bar-track {
+      height: 20px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-sm);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: row-reverse;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .meter-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ef4444 0%, #f59e0b 40%, #10b981 100%);
+      transition: width 0.05s ease-out;
+      border-radius: var(--radius-sm);
+    }
+
+    .meter-scale {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+      font-family: monospace;
+      padding: 0 2px;
+    }
+
+    .visualizer-canvas-wrapper {
+      position: relative;
+      width: 100%;
+      height: 120px;
+      border-radius: var(--radius-md);
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    #visualizer-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .ab-switch-group {
+      display: inline-flex;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 3px;
+      gap: 4px;
+    }
+
+    .ab-btn {
+      padding: 0.4rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+    .ab-btn.active {
+      background: var(--accent-gradient);
+      color: #ffffff;
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    .transport-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      background: var(--bg-tertiary);
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+
+    .timeline-range {
+      flex: 1;
+      min-width: 150px;
+    }
+
+    .time-readout {
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .export-result-box {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,29 +227,224 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Audio Compressor</h1>
-        <p class="tool-description">Reduce audio file size, adjust quality and bitrate.</p>
+        <h1>Audio Compressor Studio</h1>
+        <p class="tool-description">Professional Web Audio dynamic range compressor with live gain reduction metering, real-time A/B bypass auditioning, and 16-bit WAV export.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Audio Compressor</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Reduce audio file size, adjust quality and bitrate.</div>
-            <div><strong>Inputs:</strong> audio, music, sound, audio compressor</div>
-            <div><strong>Category:</strong> audio</div>
+      <div class="compressor-workspace">
+        <!-- Upload Zone -->
+        <div id="drop-zone" class="audio-upload-zone">
+          <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent); margin-bottom: 0.75rem;">
+            <path d="M9 18V5l12-2v13"></path>
+            <circle cx="6" cy="18" r="3"></circle>
+            <circle cx="18" cy="16" r="3"></circle>
+          </svg>
+          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">Drop Audio Track Here</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.25rem;">Supports WAV, MP3, OGG, AAC, FLAC, and WebM files</p>
+          <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+            <button type="button" id="btn-browse-file" class="btn btn-primary">Browse Audio File</button>
+            <button type="button" id="btn-demo-sound" class="btn btn-secondary">Load Demo Track</button>
+          </div>
+          <input type="file" id="audio-file-input" accept="audio/*" style="display: none;">
+        </div>
+
+        <!-- Studio Workspace (Shown once audio is loaded) -->
+        <div id="studio-workspace" style="display: none; flex-direction: column; gap: 1.5rem;">
+          <!-- Track Info Bar -->
+          <div class="tool-panel glass-panel" style="padding: 1rem 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+              <div>
+                <h4 id="track-name" style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem; word-break: break-all;">track.wav</h4>
+                <div class="meta-bar">
+                  <span id="badge-duration" class="meta-badge">0:00</span>
+                  <span id="badge-samplerate" class="meta-badge">44.1 kHz</span>
+                  <span id="badge-channels" class="meta-badge">Stereo</span>
+                  <span id="badge-size" class="meta-badge">0 MB</span>
+                </div>
+              </div>
+              <button type="button" id="btn-replace-track" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Change Audio</button>
+            </div>
+          </div>
+
+          <!-- Main Controls Grid -->
+          <div class="tool-workarea split-view">
+            <!-- Left: Compressor Controls -->
+            <div class="tool-panel glass-panel">
+              <div class="panel-title">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+                Compressor Parameters
+              </div>
+
+              <!-- Presets -->
+              <div>
+                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.4rem; display: block;">Studio Presets:</label>
+                <div class="preset-pill-group">
+                  <button type="button" class="preset-pill" data-preset="vocal">Vocal Leveler</button>
+                  <button type="button" class="preset-pill" data-preset="drums">Punchy Drums</button>
+                  <button type="button" class="preset-pill" data-preset="master">Gentle Master</button>
+                  <button type="button" class="preset-pill" data-preset="heavy">Heavy Squash</button>
+                  <button type="button" class="preset-pill" data-preset="broadcast">Broadcast Radio</button>
+                  <button type="button" class="preset-pill" data-preset="reset">Reset</button>
+                </div>
+              </div>
+
+              <!-- Threshold Slider -->
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <label for="threshold-slider">Threshold (dB)</label>
+                  <span id="threshold-val" class="range-value">-24 dB</span>
+                </div>
+                <div class="range-group">
+                  <input type="range" id="threshold-slider" class="range-slider" min="-60" max="0" step="1" value="-24">
+                </div>
+                <span style="font-size: 0.75rem; color: var(--text-tertiary);">Signal level above which compression begins.</span>
+              </div>
+
+              <!-- Knee Slider -->
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <label for="knee-slider">Knee (dB)</label>
+                  <span id="knee-val" class="range-value">30 dB</span>
+                </div>
+                <div class="range-group">
+                  <input type="range" id="knee-slider" class="range-slider" min="0" max="40" step="1" value="30">
+                </div>
+                <span style="font-size: 0.75rem; color: var(--text-tertiary);">Soft transition range around threshold.</span>
+              </div>
+
+              <!-- Ratio Slider -->
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <label for="ratio-slider">Ratio</label>
+                  <span id="ratio-val" class="range-value">12:1</span>
+                </div>
+                <div class="range-group">
+                  <input type="range" id="ratio-slider" class="range-slider" min="1" max="20" step="0.5" value="12">
+                </div>
+                <span style="font-size: 0.75rem; color: var(--text-tertiary);">Amount of gain reduction applied above threshold.</span>
+              </div>
+
+              <!-- Attack Slider -->
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <label for="attack-slider">Attack (sec)</label>
+                  <span id="attack-val" class="range-value">3.0 ms</span>
+                </div>
+                <div class="range-group">
+                  <input type="range" id="attack-slider" class="range-slider" min="0.001" max="1.000" step="0.001" value="0.003">
+                </div>
+                <span style="font-size: 0.75rem; color: var(--text-tertiary);">How fast compressor clamps down on sudden peaks.</span>
+              </div>
+
+              <!-- Release Slider -->
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <label for="release-slider">Release (sec)</label>
+                  <span id="release-val" class="range-value">250 ms</span>
+                </div>
+                <div class="range-group">
+                  <input type="range" id="release-slider" class="range-slider" min="0.05" max="1.00" step="0.01" value="0.25">
+                </div>
+                <span style="font-size: 0.75rem; color: var(--text-tertiary);">Speed at which gain returns to uncompressed level.</span>
+              </div>
+
+              <!-- Makeup Gain Slider -->
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <label for="makeup-slider">Makeup Gain (dB)</label>
+                  <span id="makeup-val" class="range-value">+3.0 dB</span>
+                </div>
+                <div class="range-group">
+                  <input type="range" id="makeup-slider" class="range-slider" min="0" max="24" step="0.5" value="3.0">
+                </div>
+                <span style="font-size: 0.75rem; color: var(--text-tertiary);">Compensates for perceived volume loss after compression.</span>
+              </div>
+            </div>
+
+            <!-- Right: Metering & Audition -->
+            <div class="tool-panel glass-panel">
+              <div class="panel-title">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h5l2-6 6 12 2-6h5"></path></svg>
+                Audition & Metering Studio
+              </div>
+
+              <!-- A/B Comparison Toggle -->
+              <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.25); padding: 0.75rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+                <div>
+                  <span style="font-weight: 700; font-size: 0.9rem; display: block;">Audition Mode:</span>
+                  <span id="audition-mode-desc" style="font-size: 0.8rem; color: var(--text-secondary);">Currently listening to Compressed Audio</span>
+                </div>
+                <div class="ab-switch-group">
+                  <button type="button" id="ab-btn-compressed" class="ab-btn active">Compressed</button>
+                  <button type="button" id="ab-btn-original" class="ab-btn">Bypass (Orig)</button>
+                </div>
+              </div>
+
+              <!-- Real-time Gain Reduction Meter -->
+              <div class="meter-container">
+                <div class="meter-header">
+                  <span>Gain Reduction (GR):</span>
+                  <span id="gr-meter-readout" class="meter-value-readout">0.0 dB</span>
+                </div>
+                <div class="meter-bar-track">
+                  <div id="gr-meter-fill" class="meter-bar-fill"></div>
+                </div>
+                <div class="meter-scale">
+                  <span>-30 dB</span>
+                  <span>-24 dB</span>
+                  <span>-18 dB</span>
+                  <span>-12 dB</span>
+                  <span>-6 dB</span>
+                  <span>0 dB</span>
+                </div>
+              </div>
+
+              <!-- Live Audio Visualizer Canvas -->
+              <div class="visualizer-canvas-wrapper">
+                <canvas id="visualizer-canvas"></canvas>
+              </div>
+
+              <!-- Audio Player Controls -->
+              <div class="transport-bar">
+                <button type="button" id="btn-play-pause" class="btn btn-primary" style="padding: 0.5rem 1.25rem;">
+                  <span id="play-btn-label">▶ Play</span>
+                </button>
+                <button type="button" id="btn-stop" class="btn btn-secondary" style="padding: 0.5rem 1rem;">■ Stop</button>
+                
+                <input type="range" id="timeline-slider" class="range-slider timeline-range" min="0" max="100" value="0" step="0.1">
+                <span id="time-display" class="time-readout">00:00 / 00:00</span>
+
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-left: auto;">
+                  <label class="checkbox-label" style="font-size: 0.85rem; min-height: unset;">
+                    <input type="checkbox" id="check-loop"> Loop
+                  </label>
+                  <span style="font-size: 0.8rem; color: var(--text-secondary);">Vol:</span>
+                  <input type="range" id="volume-slider" class="range-slider" min="0" max="1" step="0.05" value="0.9" style="width: 70px;">
+                </div>
+              </div>
+
+              <!-- Action / Download Button -->
+              <div style="margin-top: 0.5rem;">
+                <button type="button" id="btn-download-wav" class="btn btn-primary" style="width: 100%; padding: 0.85rem 1.5rem; font-size: 1rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                  Download Compressed Audio WAV
+                </button>
+                <div id="export-status" style="font-size: 0.85rem; color: var(--text-secondary); text-align: center; margin-top: 0.5rem;"></div>
+              </div>
+
+              <!-- Export Result Preview -->
+              <div id="export-result" class="export-result-box" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                  <span style="font-weight: 700; color: var(--success); font-size: 0.95rem;">✓ Compressed WAV Generated</span>
+                  <span id="export-file-meta" style="font-size: 0.8rem; font-family: monospace; color: var(--text-secondary);">16-bit PCM • 0 MB</span>
+                </div>
+                <audio id="export-audio-player" controls style="width: 100%; height: 40px; border-radius: var(--radius-sm);"></audio>
+                <a id="btn-direct-download" href="#" class="btn btn-secondary" style="text-align: center; justify-content: center; font-size: 0.85rem;">Save File Again</a>
+              </div>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
     </div>
   </main>
 
@@ -60,12 +456,12 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Audio Compressor",
+    "name": "Audio Compressor Studio",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/audio-compressor/",
-    "description": "Reduce audio file size, adjust quality and bitrate.",
-    "applicationCategory": "UtilityPage",
+    "description": "Professional Web Audio dynamic range compressor with live gain reduction metering, real-time A/B bypass auditioning, and 16-bit WAV export.",
+    "applicationCategory": "AudioApplication",
     "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
+    "browserRequirements": "Requires JavaScript. Requires HTML5 Audio."
   }
   </script>
 </body>

@@ -4,14 +4,186 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hourly to Salary Wage Converter - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Converts hourly wages to annual salaries.">
-  <meta name="keywords" content="wage, hourly, salary, income, convert, free, online, tool, utility">
+  <meta name="description" content="Multi-frequency salary & wage calculator. Convert hourly, daily, weekly, bi-weekly, semi-monthly, monthly, and annual pay with overtime and vacation adjustments.">
+  <meta name="keywords" content="wage, hourly, salary, income, convert, overtime, paycheck, calculator, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/wage-converter/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .wage-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 1024px) {
+      .wage-grid {
+        grid-template-columns: 420px 1fr;
+      }
+    }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .kpi-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .kpi-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent);
+    }
+    .kpi-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+    }
+    .kpi-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+    .kpi-sub {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .preset-chip {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .preset-chip:hover {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .wage-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    .wage-table th {
+      background: var(--bg-tertiary);
+      padding: 0.85rem 1rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    .wage-table td {
+      padding: 0.85rem 1rem;
+      font-size: 0.95rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-primary);
+    }
+    .wage-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .wage-table tr.highlighted td {
+      background: var(--accent-glow);
+      font-weight: 600;
+    }
+    .wage-table td.amount-cell {
+      font-family: monospace;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--accent);
+    }
+    .badge-freq {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.75rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .tab-toggle-group {
+      display: flex;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      padding: 0.25rem;
+      border: 1px solid var(--border);
+      gap: 0.25rem;
+    }
+    .tab-toggle-btn {
+      flex: 1;
+      padding: 0.5rem;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+    }
+    .tab-toggle-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+    }
+    .copy-icon-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      padding: 0.3rem 0.5rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .copy-icon-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,26 +199,226 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Hourly to Salary Wage Converter</h1>
-        <p class="tool-description">Converts hourly wages to annual salaries.</p>
+        <p class="tool-description">Real-time multi-frequency wage & salary calculator with overtime compensation, paid vacation adjustments, and a side-by-side pay schedule comparison.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Hourly to Salary Wage Converter</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Converts hourly wages to annual salaries.</div>
-            <div><strong>Inputs:</strong> wage, hourly, salary, income, convert</div>
-            <div><strong>Category:</strong> business</div>
+      <div class="wage-grid">
+        <!-- Input Panel -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            Pay & Work Schedule
+          </h2>
+
+          <!-- Currency & Pay Input -->
+          <div style="display: grid; grid-template-columns: 90px 1fr; gap: 0.5rem;">
+            <div class="form-group">
+              <label for="currency-select">Currency</label>
+              <select id="currency-select" class="form-select">
+                <option value="$" selected>$ (USD)</option>
+                <option value="€">€ (EUR)</option>
+                <option value="£">£ (GBP)</option>
+                <option value="C$">C$ (CAD)</option>
+                <option value="A$">A$ (AUD)</option>
+                <option value="¥">¥ (JPY)</option>
+                <option value="₹">₹ (INR)</option>
+                <option value="CHF">CHF</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="wage-amount">Pay Amount</label>
+              <input type="number" id="wage-amount" class="form-input" min="0" step="any" value="35" placeholder="e.g. 35.00">
+            </div>
+          </div>
+
+          <!-- Frequency Selector -->
+          <div class="form-group">
+            <label for="frequency-select">Pay Frequency</label>
+            <select id="frequency-select" class="form-select">
+              <option value="hourly" selected>Hourly (per hour)</option>
+              <option value="daily">Daily (per day)</option>
+              <option value="weekly">Weekly (per week)</option>
+              <option value="biweekly">Bi-Weekly (every 2 weeks)</option>
+              <option value="semimonthly">Semi-Monthly (twice a month / 24x)</option>
+              <option value="monthly">Monthly (per month / 12x)</option>
+              <option value="annually">Annually (per year)</option>
+            </select>
+          </div>
+
+          <!-- Quick Presets -->
+          <div class="form-group">
+            <label>Popular Benchmarks</label>
+            <div class="preset-chips">
+              <button type="button" class="preset-chip" data-amt="7.25" data-freq="hourly">$7.25/hr (Fed Min)</button>
+              <button type="button" class="preset-chip" data-amt="20" data-freq="hourly">$20/hr</button>
+              <button type="button" class="preset-chip" data-amt="35" data-freq="hourly">$35/hr</button>
+              <button type="button" class="preset-chip" data-amt="50000" data-freq="annually">$50k/yr</button>
+              <button type="button" class="preset-chip" data-amt="75000" data-freq="annually">$75k/yr</button>
+              <button type="button" class="preset-chip" data-amt="100000" data-freq="annually">$100k/yr</button>
+              <button type="button" class="preset-chip" data-amt="150000" data-freq="annually">$150k/yr</button>
+            </div>
+          </div>
+
+          <div style="border-top: 1px solid var(--border); margin: 0.5rem 0;"></div>
+
+          <!-- Working Hours Config -->
+          <div class="form-group">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <label for="hours-per-week">Hours per Week</label>
+              <span id="hours-val" class="range-value" style="font-size:0.95rem;">40 hrs</span>
+            </div>
+            <div class="range-group">
+              <input type="range" id="hours-per-week" min="1" max="80" step="1" value="40" class="range-slider">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <label for="days-per-week">Days worked per Week</label>
+              <span id="days-val" class="range-value" style="font-size:0.95rem;">5 days</span>
+            </div>
+            <div class="range-group">
+              <input type="range" id="days-per-week" min="1" max="7" step="1" value="5" class="range-slider">
+            </div>
+          </div>
+
+          <!-- Paid Vacation Weeks -->
+          <div class="form-group">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <label for="vacation-weeks">Paid Vacation Weeks / Year</label>
+              <span id="vacation-val" class="range-value" style="font-size:0.95rem;">2 wks</span>
+            </div>
+            <div class="range-group">
+              <input type="range" id="vacation-weeks" min="0" max="12" step="1" value="2" class="range-slider">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Vacation Compensation Type</label>
+            <div class="tab-toggle-group">
+              <button type="button" class="tab-toggle-btn active" id="vacation-paid-btn" data-type="paid">Paid PTO</button>
+              <button type="button" class="tab-toggle-btn" id="vacation-unpaid-btn" data-type="unpaid">Unpaid Leave</button>
+            </div>
+          </div>
+
+          <div style="border-top: 1px solid var(--border); margin: 0.5rem 0;"></div>
+
+          <!-- Overtime Calculator -->
+          <div class="form-group">
+            <div class="toggle-row">
+              <label for="enable-ot" style="cursor:pointer; display:flex; align-items:center; gap:0.5rem;">
+                <input type="checkbox" id="enable-ot" style="width:1.1rem; height:1.1rem; accent-color:var(--accent);">
+                <span>Include Overtime (1.5x)</span>
+              </label>
+              <span class="badge" id="ot-status-badge" style="background:var(--bg-secondary);">Off</span>
+            </div>
+          </div>
+
+          <div id="ot-controls" style="display:none; flex-direction:column; gap:1rem; padding:0.75rem; background:var(--bg-tertiary); border-radius:var(--radius-md); border:1px solid var(--border);">
+            <div class="form-group">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <label for="ot-hours">Overtime Hours / Week</label>
+                <span id="ot-hours-val" class="range-value" style="font-size:0.95rem;">5 hrs</span>
+              </div>
+              <div class="range-group">
+                <input type="range" id="ot-hours" min="1" max="40" step="0.5" value="5" class="range-slider">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="ot-multiplier">Overtime Multiplier Rate</label>
+              <select id="ot-multiplier" class="form-select">
+                <option value="1.5" selected>1.5x (Time and a half)</option>
+                <option value="2.0">2.0x (Double time)</option>
+                <option value="1.25">1.25x</option>
+                <option value="2.5">2.5x</option>
+              </select>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Results & Comparison Panel -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;">
+            <h2 class="panel-title" style="border:none; margin:0; padding:0;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+              Calculated Wage Breakdown
+            </h2>
+            <div class="action-bar" style="margin:0;">
+              <button id="copy-summary-btn" class="btn btn-secondary" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy Summary
+              </button>
+            </div>
+          </div>
+
+          <!-- Metric Cards -->
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <span class="kpi-label">Hourly Rate</span>
+              <span class="kpi-value" id="kpi-hourly">$35.00</span>
+              <span class="kpi-sub" id="kpi-hourly-sub">Standard base rate</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">Weekly Gross</span>
+              <span class="kpi-value" id="kpi-weekly">$1,400.00</span>
+              <span class="kpi-sub" id="kpi-weekly-sub">40 hrs / week</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">Monthly Gross</span>
+              <span class="kpi-value" id="kpi-monthly">$6,066.67</span>
+              <span class="kpi-sub" id="kpi-monthly-sub">Avg 173.3 hrs / mo</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">Annual Salary</span>
+              <span class="kpi-value" id="kpi-annual">$72,800.00</span>
+              <span class="kpi-sub" id="kpi-annual-sub">52 work weeks</span>
+            </div>
+          </div>
+
+          <!-- Overtime Breakdown Box (shows when OT is enabled) -->
+          <div id="ot-summary-box" style="display:none; background:rgba(78, 133, 191, 0.08); border:1px solid var(--accent); border-radius:var(--radius-md); padding:1rem; margin-bottom:1rem;">
+            <div style="font-weight:700; font-size:0.9rem; color:var(--accent); margin-bottom:0.5rem; display:flex; align-items:center; gap:0.5rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              Overtime Compensation Included
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:0.75rem; font-size:0.85rem;">
+              <div>Regular Base Pay: <strong id="ot-regular-weekly" style="color:var(--text-primary);">$1,400.00</strong>/wk</div>
+              <div>OT Rate: <strong id="ot-rate-display" style="color:var(--accent);">$52.50</strong>/hr</div>
+              <div>Weekly OT Earnings: <strong id="ot-weekly-earnings" style="color:var(--success);">$262.50</strong>/wk</div>
+              <div>Annual Total w/ OT: <strong id="ot-annual-total" style="color:var(--accent);">$86,450.00</strong>/yr</div>
+            </div>
+          </div>
+
+          <!-- Comparison Table -->
+          <div class="table-responsive">
+            <table class="wage-table">
+              <thead>
+                <tr>
+                  <th>Pay Frequency</th>
+                  <th>Pay Periods</th>
+                  <th>Equivalent Hours</th>
+                  <th>Standard Pay</th>
+                  <th id="th-adjusted">With OT / Adjusted</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="wage-table-body">
+                <!-- Dynamically populated rows -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Insights / Quick Reference Guide -->
+          <div style="margin-top: 1rem; padding: 1rem; background: var(--bg-tertiary); border-radius: var(--radius-md); border: 1px solid var(--border); font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">
+            <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem;">Working Calculation Methodology:</div>
+            <ul style="padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.25rem;">
+              <li><strong>Standard Working Year:</strong> 52 weeks = 2,080 working hours (at 40 hrs/week).</li>
+              <li><strong>Monthly Pay:</strong> Calculated as Annual Salary divided by 12 months (not 4 weeks per month, as an average month contains 4.33 weeks).</li>
+              <li><strong>Semi-Monthly vs. Bi-Weekly:</strong> Semi-monthly has 24 paychecks per year (e.g. the 15th and 30th), whereas bi-weekly has 26 paychecks every two weeks.</li>
+            </ul>
+          </div>
+        </div>
       </div>
     
     </div>
@@ -62,7 +434,7 @@
     "@type": "WebApplication",
     "name": "Hourly to Salary Wage Converter",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/wage-converter/",
-    "description": "Converts hourly wages to annual salaries.",
+    "description": "Multi-frequency salary & wage calculator. Convert hourly, daily, weekly, bi-weekly, semi-monthly, monthly, and annual pay with overtime and vacation adjustments.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

@@ -4,14 +4,438 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Screen Recorder - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Capture screen and tab video streams client-side.">
-  <meta name="keywords" content="screen, record, video, capture, media, free, online, tool, utility">
+  <meta name="description" content="Capture screen, browser tabs, system audio, microphone, and webcam PiP overlay. Pure client-side zero server uploads.">
+  <meta name="keywords" content="screen recorder, record screen online, free screen recording, capture tab, screen capture with audio, webcam pip, webm recorder">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/screen-recorder/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    /* Scoped Styles for Screen Recorder Studio */
+    .recorder-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+
+    @media (min-width: 992px) {
+      .recorder-grid {
+        grid-template-columns: 340px 1fr;
+      }
+    }
+
+    /* Configuration Sidebar */
+    .recorder-config-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .config-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .config-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.65rem;
+    }
+
+    .config-card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0;
+    }
+
+    /* Privacy Banner */
+    .privacy-badge-banner {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 78, 59, 0.15) 100%);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .privacy-badge-banner strong {
+      color: var(--success);
+      display: block;
+      margin-bottom: 0.15rem;
+    }
+
+    /* Stage Area */
+    .recorder-stage-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* Live Control Bar */
+    .control-deck-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .status-timer-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .rec-status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .rec-status-indicator.recording {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #ef4444;
+    }
+
+    .rec-status-indicator.paused {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: rgba(245, 158, 11, 0.4);
+      color: #f59e0b;
+    }
+
+    .rec-status-indicator.completed {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #10b981;
+    }
+
+    .rec-pulse-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .rec-status-indicator.recording .rec-pulse-dot {
+      animation: pulse-red 1.2s infinite ease-in-out;
+    }
+
+    @keyframes pulse-red {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.4);
+        opacity: 0.4;
+      }
+    }
+
+    .timer-clock {
+      font-family: monospace;
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: 0.05em;
+    }
+
+    .control-actions-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-record-main {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+      font-weight: 700;
+    }
+
+    .btn-record-main:hover:not(:disabled) {
+      background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
+    }
+
+    .btn-pause-main {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+    }
+
+    .btn-stop-main {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #ef4444;
+    }
+
+    .btn-stop-main:hover:not(:disabled) {
+      background: #ef4444;
+      color: #ffffff;
+    }
+
+    /* Video Display Stage */
+    .stage-monitor-frame {
+      background: #090c10;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0.75rem;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .stage-monitor-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.25rem 0.5rem 0.65rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 0.75rem;
+    }
+
+    .video-viewport-box {
+      width: 100%;
+      position: relative;
+      aspect-ratio: 16 / 9;
+      background: #000;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #live-video-element, #playback-video-element {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* Camera PiP Floating Overlay */
+    .camera-pip-overlay {
+      position: absolute;
+      z-index: 10;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      transition: all 0.3s var(--ease);
+      display: none;
+    }
+
+    .camera-pip-overlay.active {
+      display: block;
+    }
+
+    .camera-pip-overlay.pos-bottom-right {
+      bottom: 24px;
+      right: 24px;
+    }
+
+    .camera-pip-overlay.pos-bottom-left {
+      bottom: 24px;
+      left: 24px;
+    }
+
+    .camera-pip-overlay.pos-top-right {
+      top: 24px;
+      right: 24px;
+    }
+
+    .camera-pip-overlay.pos-top-left {
+      top: 24px;
+      left: 24px;
+    }
+
+    .camera-pip-overlay.shape-rounded {
+      border-radius: var(--radius-md);
+      width: 220px;
+      height: 135px;
+    }
+
+    .camera-pip-overlay.shape-circle {
+      border-radius: 50%;
+      width: 160px;
+      height: 160px;
+    }
+
+    #live-camera-element {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1); /* mirror camera for intuitive look */
+    }
+
+    /* Standby Prompt in Screen Viewport */
+    .standby-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 2.5rem 1rem;
+      text-align: center;
+      color: var(--text-secondary);
+    }
+
+    .standby-icon-ring {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(78, 133, 191, 0.1);
+      border: 1px solid rgba(78, 133, 191, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+    }
+
+    /* Audio Meter Bar */
+    .audio-meter-wrap {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0.75rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 0.8rem;
+    }
+
+    .audio-meter-track {
+      flex: 1;
+      height: 6px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+
+    .audio-meter-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #10b981 0%, #f59e0b 70%, #ef4444 100%);
+      transition: width 0.08s ease-out;
+      border-radius: var(--radius-full);
+    }
+
+    /* Result & Export Section */
+    .playback-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: none;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .playback-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .stat-pill-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      padding: 0.6rem 0.85rem;
+      border-radius: var(--radius-md);
+    }
+
+    .stat-pill-box .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    .stat-pill-box .stat-val {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: monospace;
+    }
+
+    /* Feature Cards */
+    .features-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .feature-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      display: flex;
+      gap: 0.85rem;
+    }
+
+    .feature-card svg {
+      flex-shrink: 0;
+      color: var(--accent);
+      margin-top: 0.2rem;
+    }
+
+    .feature-card h4 {
+      font-size: 0.95rem;
+      margin-bottom: 0.25rem;
+      color: var(--text-primary);
+    }
+
+    .feature-card p {
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.4;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,30 +451,273 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Screen Recorder</h1>
-        <p class="tool-description">Capture screen and tab video streams client-side.</p>
+        <p class="tool-description">Capture entire screen, application windows, or browser tabs with system audio, microphone commentary, and camera PiP overlay. 100% private in-browser studio with zero server uploads.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Screen Recorder</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Capture screen and tab video streams client-side.</div>
-            <div><strong>Inputs:</strong> screen, record, video, capture, media</div>
-            <div><strong>Category:</strong> utility</div>
+      <!-- Studio Layout -->
+      <div class="recorder-grid">
+        
+        <!-- Left Sidebar: Configuration & Options -->
+        <div class="recorder-config-panel">
+          
+          <!-- Audio Settings -->
+          <div class="config-card">
+            <div class="config-card-header">
+              <h3 class="config-card-title">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                Audio Sources
+              </h3>
+            </div>
+
+            <div class="checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="opt-system-audio" checked>
+                <div>
+                  <strong style="color: var(--text-primary); display: block; font-size: 0.875rem;">System / Tab Audio</strong>
+                  <span style="font-size: 0.775rem; color: var(--text-tertiary);">Record computer audio, games & tabs</span>
+                </div>
+              </label>
+
+              <label class="checkbox-label">
+                <input type="checkbox" id="opt-mic-audio">
+                <div>
+                  <strong style="color: var(--text-primary); display: block; font-size: 0.875rem;">Microphone Voiceover</strong>
+                  <span style="font-size: 0.775rem; color: var(--text-tertiary);">Record your voice via headset or mic</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Camera PiP Overlay Settings -->
+          <div class="config-card">
+            <div class="config-card-header">
+              <h3 class="config-card-title">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"></path><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                Camera PiP Overlay
+              </h3>
+            </div>
+
+            <label class="checkbox-label">
+              <input type="checkbox" id="opt-enable-pip">
+              <div>
+                <strong style="color: var(--text-primary); display: block; font-size: 0.875rem;">Enable Webcam PiP</strong>
+                <span style="font-size: 0.775rem; color: var(--text-tertiary);">Show your facecam inside video</span>
+              </div>
+            </label>
+
+            <div id="pip-options-box" style="display: none; flex-direction: column; gap: 0.75rem; border-top: 1px solid var(--border); padding-top: 0.75rem;">
+              <div class="form-group">
+                <label for="pip-position" style="font-size: 0.8rem;">PiP Position</label>
+                <select id="pip-position" class="form-select" style="padding: 0.45rem 0.75rem; font-size: 0.85rem;">
+                  <option value="pos-bottom-right" selected>Bottom Right</option>
+                  <option value="pos-bottom-left">Bottom Left</option>
+                  <option value="pos-top-right">Top Right</option>
+                  <option value="pos-top-left">Top Left</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="pip-shape" style="font-size: 0.8rem;">PiP Frame Shape</label>
+                <select id="pip-shape" class="form-select" style="padding: 0.45rem 0.75rem; font-size: 0.85rem;">
+                  <option value="shape-rounded" selected>Rounded Rectangle (16:9)</option>
+                  <option value="shape-circle">Circle Avatar</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quality & Codec Settings -->
+          <div class="config-card">
+            <div class="config-card-header">
+              <h3 class="config-card-title">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                Output Quality
+              </h3>
+            </div>
+
+            <div class="form-group">
+              <label for="opt-resolution" style="font-size: 0.8rem;">Resolution & FPS</label>
+              <select id="opt-resolution" class="form-select" style="padding: 0.45rem 0.75rem; font-size: 0.85rem;">
+                <option value="1080p-60" selected>1080p Full HD (60 FPS Smooth)</option>
+                <option value="1080p-30">1080p Full HD (30 FPS Standard)</option>
+                <option value="720p-30">720p HD (30 FPS Compact)</option>
+              </select>
+            </div>
+
+            <div style="font-size: 0.75rem; color: var(--text-tertiary);">
+              Format: <span id="codec-label" style="color: var(--accent); font-weight: 600;">WebM (VP9/VP8)</span>
+            </div>
+          </div>
+
+          <!-- Privacy Guarantee Card -->
+          <div class="privacy-badge-banner">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--success); flex-shrink: 0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <div>
+              <strong>100% Client-Side Privacy</strong>
+              No recordings ever touch an external server or cloud. Data resides exclusively in browser memory and saves straight to your machine.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: Studio Stage & Controls -->
+        <div class="recorder-stage-panel">
+          
+          <!-- Live Control Deck -->
+          <div class="control-deck-card">
+            <div class="status-timer-group">
+              <div class="rec-status-indicator" id="status-badge">
+                <span class="rec-pulse-dot"></span>
+                <span id="status-text">Standby</span>
+              </div>
+
+              <div class="timer-clock" id="timer-display">
+                00:00:00
+              </div>
+            </div>
+
+            <div class="control-actions-group">
+              <!-- Start Recording -->
+              <button type="button" class="btn btn-record-main" id="btn-start-record">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="12" cy="12" r="9"></circle></svg>
+                Start Recording
+              </button>
+
+              <!-- Pause / Resume -->
+              <button type="button" class="btn btn-pause-main" id="btn-pause-record" disabled>
+                <span id="pause-icon">&#10074;&#10074;</span>
+                <span id="pause-text">Pause</span>
+              </button>
+
+              <!-- Stop Recording -->
+              <button type="button" class="btn btn-stop-main" id="btn-stop-record" disabled>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"></rect></svg>
+                Stop Recording
+              </button>
+            </div>
+          </div>
+
+          <!-- Audio Level Indicator (shown while recording) -->
+          <div class="audio-meter-wrap" id="audio-meter-panel" style="display: none;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path></svg>
+            <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600;">Audio Input Activity:</span>
+            <div class="audio-meter-track">
+              <div class="audio-meter-fill" id="audio-meter-bar"></div>
+            </div>
+            <span id="audio-active-label" style="font-size: 0.75rem; color: var(--text-tertiary); font-family: monospace;">0%</span>
+          </div>
+
+          <!-- Live Monitor Stage -->
+          <div class="stage-monitor-frame" id="live-stage-frame">
+            <div class="stage-monitor-header">
+              <span style="font-weight: 600; display: flex; align-items: center; gap: 0.4rem;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                Live Screen Stream Monitor
+              </span>
+              <span id="stream-dimensions" style="font-size: 0.75rem; font-family: monospace; color: var(--accent);">Ready to capture</span>
+            </div>
+
+            <div class="video-viewport-box">
+              <!-- Placeholder when not recording -->
+              <div class="standby-placeholder" id="stage-placeholder">
+                <div class="standby-icon-ring">
+                  <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                </div>
+                <div>
+                  <h3 style="font-size: 1.15rem; color: var(--text-primary); margin-bottom: 0.25rem;">Studio Ready</h3>
+                  <p style="font-size: 0.85rem; max-width: 440px; margin: 0;">Click "Start Recording" above and select your screen, window, or Chrome tab to begin streaming.</p>
+                </div>
+              </div>
+
+              <!-- Live Screen Video Player -->
+              <video id="live-video-element" autoplay playsinline muted style="display: none;"></video>
+
+              <!-- Floating Camera PiP Container -->
+              <div class="camera-pip-overlay pos-bottom-right shape-rounded" id="camera-pip-wrap">
+                <video id="live-camera-element" autoplay playsinline muted></video>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recorded Result & Playback Card -->
+          <div class="playback-card" id="playback-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h3 style="font-size: 1.1rem; color: var(--text-primary); margin-bottom: 0.2rem;">Recording Finished</h3>
+                <p style="font-size: 0.825rem; color: var(--text-secondary); margin: 0;">Review your captured screen recording and download the high-definition WebM file.</p>
+              </div>
+              <button type="button" class="btn btn-secondary" id="btn-record-again" style="padding: 0.45rem 0.85rem; font-size: 0.825rem;">
+                New Recording
+              </button>
+            </div>
+
+            <div class="video-viewport-box" style="background: #000; border-radius: var(--radius-md);">
+              <video id="playback-video-element" controls playsinline></video>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="playback-stats-grid">
+              <div class="stat-pill-box">
+                <span class="stat-label">Duration</span>
+                <span class="stat-val" id="stat-duration">00:00:00</span>
+              </div>
+              <div class="stat-pill-box">
+                <span class="stat-label">File Size</span>
+                <span class="stat-val" id="stat-size">0.0 MB</span>
+              </div>
+              <div class="stat-pill-box">
+                <span class="stat-label">Format</span>
+                <span class="stat-val">WebM Video</span>
+              </div>
+              <div class="stat-pill-box">
+                <span class="stat-label">Resolution</span>
+                <span class="stat-val" id="stat-res">1920×1080</span>
+              </div>
+            </div>
+
+            <!-- Download Button -->
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem;">
+              <button type="button" class="btn btn-primary" id="btn-download-recording" style="flex: 1; padding: 0.85rem 1.5rem; font-size: 1rem;">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download Screen Recording (.webm)
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Feature Highlights -->
+      <div class="features-row">
+        <div class="feature-card">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+          <div>
+            <h4>Entire Screen or Tab</h4>
+            <p>Select your entire desktop monitor, a single application window, or a specific browser tab for seamless capture.</p>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+        <div class="feature-card">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+          <div>
+            <h4>Dual Audio Mixing</h4>
+            <p>Combine system audio (application sounds, tabs, video playback) and microphone audio commentary through Web Audio.</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"></path><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+          <div>
+            <h4>Camera PiP Facecam</h4>
+            <p>Add a live webcam picture-in-picture stream positioned in your favorite corner with clean rounded borders.</p>
+          </div>
+        </div>
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Offscreen canvas for PiP compositing -->
+  <canvas id="pip-compositor-canvas" width="1920" height="1080" style="display: none;"></canvas>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>

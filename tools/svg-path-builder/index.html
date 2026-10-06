@@ -4,16 +4,373 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SVG Path Builder - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Visually generate custom SVG path strings.">
-  <meta name="keywords" content="svg, path, draw, vector, code, free, online, tool, utility">
+  <meta name="description" content="Visual interactive SVG path editor and curve generator. Plot Move To, Lines, Cubic and Quadratic Bézier curves, and Arcs with live code export.">
+  <meta name="keywords" content="svg path builder, svg path editor, bezier curve generator, cubic bezier, quadratic bezier, svg vector tool, svg path d generator">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/svg-path-builder/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+  <style>
+    /* SVG Path Builder Workspace Styles */
+    .spb-workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    @media (min-width: 1100px) {
+      .spb-workspace {
+        grid-template-columns: 1fr 380px;
+        align-items: start;
+      }
+    }
+
+    /* Top Mode & Controls Bar */
+    .spb-topbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0.85rem 1.25rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .mode-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      align-items: center;
+    }
+
+    .mode-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.825rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .mode-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+    }
+
+    .mode-btn.active {
+      background: var(--accent-gradient);
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    .mode-badge {
+      font-family: monospace;
+      font-size: 0.85rem;
+      padding: 0.1rem 0.35rem;
+      border-radius: var(--radius-sm);
+      background: rgba(0, 0, 0, 0.25);
+    }
+
+    .spb-aux-actions {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    /* Canvas Stage Container */
+    .canvas-stage-wrapper {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-md);
+    }
+
+    .canvas-stage-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+    }
+
+    .coords-readout {
+      font-family: monospace;
+      font-weight: 600;
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .canvas-viewport {
+      position: relative;
+      width: 100%;
+      height: 520px;
+      background: #090b10;
+      overflow: hidden;
+      user-select: none;
+      cursor: crosshair;
+    }
+
+    @media (max-width: 768px) {
+      .canvas-viewport {
+        height: 380px;
+      }
+    }
+
+    #svg-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Canvas SVG Element Styling */
+    .grid-line-minor {
+      stroke: rgba(255, 255, 255, 0.04);
+      stroke-width: 1;
+    }
+
+    .grid-line-major {
+      stroke: rgba(255, 255, 255, 0.09);
+      stroke-width: 1.5;
+    }
+
+    .grid-axis {
+      stroke: rgba(78, 133, 191, 0.25);
+      stroke-width: 2;
+    }
+
+    .guide-line {
+      stroke: #f59e0b;
+      stroke-width: 1.5;
+      stroke-dasharray: 4 4;
+      pointer-events: none;
+    }
+
+    .guide-line-c2 {
+      stroke: #8b5cf6;
+      stroke-width: 1.5;
+      stroke-dasharray: 4 4;
+      pointer-events: none;
+    }
+
+    /* Node Handles */
+    .handle-anchor {
+      fill: #4e85bf;
+      stroke: #ffffff;
+      stroke-width: 2.5;
+      cursor: grab;
+      transition: r 0.15s ease, fill 0.15s ease;
+    }
+
+    .handle-anchor:hover, .handle-anchor.active {
+      fill: #38ef7d;
+      r: 8;
+    }
+
+    .handle-control {
+      fill: #f59e0b;
+      stroke: #ffffff;
+      stroke-width: 2;
+      cursor: grab;
+      transition: r 0.15s ease;
+    }
+
+    .handle-control:hover, .handle-control.active {
+      fill: #fbbf24;
+      r: 7;
+    }
+
+    .handle-control-2 {
+      fill: #8b5cf6;
+      stroke: #ffffff;
+      stroke-width: 2;
+      cursor: grab;
+      transition: r 0.15s ease;
+    }
+
+    .handle-control-2:hover, .handle-control-2.active {
+      fill: #a78bfa;
+      r: 7;
+    }
+
+    .handle-dragging {
+      cursor: grabbing !important;
+    }
+
+    /* Canvas Floating Overlay Controls */
+    .canvas-overlay-hints {
+      position: absolute;
+      bottom: 1rem;
+      left: 1rem;
+      background: rgba(15, 20, 30, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-sm);
+      padding: 0.4rem 0.8rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      pointer-events: none;
+    }
+
+    /* Side Panel Tabs & Controls */
+    .spb-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .style-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .color-swatch-mini {
+      position: relative;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .color-swatch-mini input[type="color"] {
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      width: 50px;
+      height: 50px;
+      border: none;
+      cursor: pointer;
+      opacity: 0;
+    }
+
+    .color-swatch-mini-fill {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Points & Command Inspector */
+    .points-list {
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .point-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.45rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      font-family: monospace;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .point-item:last-child {
+      border-bottom: none;
+    }
+
+    .point-item:hover {
+      background: var(--bg-secondary);
+    }
+
+    .point-item.active {
+      background: var(--accent-glow);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .point-cmd-badge {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+      text-align: center;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+      margin-right: 0.5rem;
+      font-weight: bold;
+    }
+
+    /* Output Code Viewer */
+    .code-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem;
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      color: var(--text-primary);
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 160px;
+      overflow-y: auto;
+    }
+
+    /* Toast */
+    .toast-pill {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      color: var(--text-primary);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-full);
+      padding: 0.65rem 1.4rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+      transition: all 0.25s ease;
+    }
+
+    .toast-pill.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -27,30 +384,283 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>SVG Path Builder</h1>
-        <p class="tool-description">Visually generate custom SVG path strings.</p>
+        <p class="tool-description">
+          Visual interactive vector editor and Bézier curve synthesizer. Click to plot points, drag control handles to bend smooth curves, and generate clean SVG code.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>SVG Path Builder</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Visually generate custom SVG path strings.</div>
-            <div><strong>Inputs:</strong> svg, path, draw, vector, code</div>
-            <div><strong>Category:</strong> color</div>
+      <!-- Top Mode Selection & Utility Bar -->
+      <div class="spb-topbar">
+        <div class="mode-group">
+          <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); margin-right: 0.25rem;">Mode:</span>
+          <button class="mode-btn active" data-mode="M" title="Move To (Start new subpath)">
+            <span class="mode-badge">M</span> Move To
+          </button>
+          <button class="mode-btn" data-mode="L" title="Line To (Straight segment)">
+            <span class="mode-badge">L</span> Line To
+          </button>
+          <button class="mode-btn" data-mode="C" title="Cubic Bézier (Two control handles)">
+            <span class="mode-badge">C</span> Cubic Bézier
+          </button>
+          <button class="mode-btn" data-mode="Q" title="Quadratic Bézier (Single control handle)">
+            <span class="mode-badge">Q</span> Quad Bézier
+          </button>
+          <button class="mode-btn" data-mode="A" title="Arc (Elliptical curve segment)">
+            <span class="mode-badge">A</span> Arc
+          </button>
+          <button class="mode-btn" data-mode="Z" title="Close Path (Connect back to start)">
+            <span class="mode-badge">Z</span> Close Path
+          </button>
+        </div>
+
+        <div class="spb-aux-actions">
+          <div style="display: flex; align-items: center; gap: 0.4rem;">
+            <label for="snap-select" style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Snap:</label>
+            <select id="snap-select" class="form-select" style="padding: 0.35rem 0.5rem; font-size: 0.8rem; width: 95px;">
+              <option value="0">None</option>
+              <option value="10" selected>10 px</option>
+              <option value="25">25 px</option>
+              <option value="50">50 px</option>
+            </select>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0.4rem;">
+            <label for="preset-shape-select" style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Presets:</label>
+            <select id="preset-shape-select" class="form-select" style="padding: 0.35rem 0.6rem; font-size: 0.8rem; width: 140px;">
+              <option value="" disabled selected>Load Preset...</option>
+              <option value="wave">Smooth Wave (C)</option>
+              <option value="heart">Heart Shape (M, C, Z)</option>
+              <option value="star">Geometric Star (L)</option>
+              <option value="shield">Executive Shield (Q)</option>
+              <option value="infinity">Infinity Loop (C)</option>
+              <option value="capsule">Pill Capsule (A)</option>
+            </select>
+          </div>
+
+          <button id="btn-undo" class="btn btn-secondary" style="padding: 0.4rem 0.75rem; font-size: 0.8rem;" title="Undo (Ctrl+Z)">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+            Undo
+          </button>
+          
+          <button id="btn-clear-canvas" class="btn btn-secondary" style="padding: 0.4rem 0.75rem; font-size: 0.8rem; color: var(--error);" title="Clear Canvas">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Clear
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Stage Workspace -->
+      <div class="spb-workspace">
+        
+        <!-- Left: Interactive Canvas Viewport -->
+        <div class="canvas-stage-wrapper">
+          <div class="canvas-stage-header">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <span>Canvas Coordinate System (800 &times; 600)</span>
+              <span class="coords-readout">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                <span id="coords-display">X: 0, Y: 0</span>
+              </span>
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <span id="segment-count-badge" style="font-weight: 600; color: var(--text-primary);">0 Segments</span>
+            </div>
+          </div>
+
+          <div class="canvas-viewport" id="canvas-container">
+            <svg id="svg-canvas" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <!-- Grid pattern -->
+                <pattern id="grid-pattern-minor" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <path d="M 20 0 L 0 0 0 20" fill="none" class="grid-line-minor" />
+                </pattern>
+                <pattern id="grid-pattern-major" width="100" height="100" patternUnits="userSpaceOnUse">
+                  <rect width="100" height="100" fill="url(#grid-pattern-minor)" />
+                  <path d="M 100 0 L 0 0 0 100" fill="none" class="grid-line-major" />
+                </pattern>
+              </defs>
+
+              <!-- Grid Background Rect -->
+              <rect width="800" height="600" fill="url(#grid-pattern-major)" />
+              
+              <!-- Center Axes -->
+              <line x1="0" y1="300" x2="800" y2="300" class="grid-axis" />
+              <line x1="400" y1="0" x2="400" y2="600" class="grid-axis" />
+
+              <!-- Rendered User SVG Path -->
+              <path id="rendered-path" d="" fill="rgba(78, 133, 191, 0.2)" stroke="#4e85bf" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+
+              <!-- Interactive Guide Lines Layer -->
+              <g id="guide-lines-layer"></g>
+
+              <!-- Interactive Handles Layer -->
+              <g id="handles-layer"></g>
+            </svg>
+
+            <div class="canvas-overlay-hints">
+              <span>Click to add segment &bull; Drag handles to bend curves &bull; Select mode from top bar</span>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right: Inspector, Styling & Code Generator -->
+        <div class="spb-sidebar">
+          
+          <!-- Styling Card -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+              Stroke &amp; Fill Styling
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+              <!-- Fill Color -->
+              <div class="style-row">
+                <div style="display: flex; align-items: center; gap: 0.6rem;">
+                  <div class="color-swatch-mini">
+                    <input type="color" id="fill-color-picker" value="#4e85bf">
+                    <div class="color-swatch-mini-fill" id="fill-swatch-disp" style="background: #4e85bf;"></div>
+                  </div>
+                  <label for="fill-color-picker" style="font-size: 0.85rem; font-weight: 600;">Fill Color</label>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <label class="checkbox-label" style="font-size: 0.8rem;">
+                    <input type="checkbox" id="fill-none-toggle">
+                    <span>None</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Fill Opacity Slider -->
+              <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary);">
+                  <span>Fill Opacity</span>
+                  <span id="fill-opacity-val" style="font-family: monospace; font-weight: 700;">20%</span>
+                </div>
+                <input type="range" id="fill-opacity-slider" min="0" max="100" value="20" class="range-slider">
+              </div>
+
+              <!-- Stroke Color -->
+              <div class="style-row">
+                <div style="display: flex; align-items: center; gap: 0.6rem;">
+                  <div class="color-swatch-mini">
+                    <input type="color" id="stroke-color-picker" value="#4e85bf">
+                    <div class="color-swatch-mini-fill" id="stroke-swatch-disp" style="background: #4e85bf;"></div>
+                  </div>
+                  <label for="stroke-color-picker" style="font-size: 0.85rem; font-weight: 600;">Stroke Color</label>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <label class="checkbox-label" style="font-size: 0.8rem;">
+                    <input type="checkbox" id="stroke-none-toggle">
+                    <span>None</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Stroke Width Slider -->
+              <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary);">
+                  <span>Stroke Width</span>
+                  <span id="stroke-width-val" style="font-family: monospace; font-weight: 700;">3px</span>
+                </div>
+                <input type="range" id="stroke-width-slider" min="1" max="24" value="3" class="range-slider">
+              </div>
+
+              <!-- Linecap & Linejoin -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
+                <div class="form-group">
+                  <label style="font-size: 0.75rem;">Line Cap</label>
+                  <select id="stroke-linecap-select" class="form-select" style="padding: 0.35rem; font-size: 0.8rem;">
+                    <option value="round" selected>Round</option>
+                    <option value="butt">Butt</option>
+                    <option value="square">Square</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label style="font-size: 0.75rem;">Line Join</label>
+                  <select id="stroke-linejoin-select" class="form-select" style="padding: 0.35rem; font-size: 0.8rem;">
+                    <option value="round" selected>Round</option>
+                    <option value="miter">Miter</option>
+                    <option value="bevel">Bevel</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Segments Inspector -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <div class="panel-title" style="justify-content: space-between;">
+              <span style="display: flex; align-items: center; gap: 0.4rem;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+                Segments Inspector
+              </span>
+              <button id="btn-delete-segment" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;" title="Delete selected segment">
+                Delete
+              </button>
+            </div>
+
+            <div class="points-list" id="segments-list-container">
+              <!-- Dynamically populated segments -->
+            </div>
+          </div>
+
+          <!-- Code Export Panel -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary);">Live SVG Code</span>
+              <div style="display: flex; gap: 0.25rem;">
+                <button class="export-tab-btn active" id="tab-svg-code" style="padding: 0.25rem 0.55rem; font-size: 0.75rem;">&lt;svg&gt;</button>
+                <button class="export-tab-btn" id="tab-path-d" style="padding: 0.25rem 0.55rem; font-size: 0.75rem;">d="..."</button>
+              </div>
+            </div>
+
+            <pre class="code-box" id="code-output-box"></pre>
+
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.75rem;">
+              <div style="display: flex; gap: 0.5rem;">
+                <button id="btn-copy-svg" class="btn btn-primary" style="flex: 1; font-size: 0.8rem; padding: 0.5rem; justify-content: center;">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copy SVG Code
+                </button>
+                <button id="btn-copy-d" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.5rem 0.75rem;">
+                  Copy d
+                </button>
+              </div>
+
+              <button id="btn-download-svg" class="btn btn-secondary" style="width: 100%; font-size: 0.8rem; padding: 0.5rem; justify-content: center;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download SVG File
+              </button>
+            </div>
+
+            <!-- Import / Paste Path String Accordion -->
+            <div style="margin-top: 0.75rem; border-top: 1px solid var(--border); padding-top: 0.75rem;">
+              <details style="font-size: 0.8rem; color: var(--text-secondary);">
+                <summary style="cursor: pointer; font-weight: 600; color: var(--accent); user-select: none;">
+                  &plus; Import / Paste Path 'd'
+                </summary>
+                <div style="margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.4rem;">
+                  <textarea id="import-path-input" placeholder="Paste path d attribute (e.g. M 100,100 C 150,50 ...)" class="form-textarea" style="min-height: 70px; font-size: 0.75rem; padding: 0.4rem;"></textarea>
+                  <button id="btn-import-path" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.35rem 0.7rem; align-self: flex-end;">
+                    Parse &amp; Render Path
+                  </button>
+                </div>
+              </details>
+            </div>
+          </div>
+
+        </div>
       </div>
-    
     </div>
   </main>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast-pill">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    <span id="toast-message">Copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,7 +672,7 @@
     "@type": "WebApplication",
     "name": "SVG Path Builder",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/svg-path-builder/",
-    "description": "Visually generate custom SVG path strings.",
+    "description": "Visual interactive SVG path editor and curve generator with live preview and code export.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

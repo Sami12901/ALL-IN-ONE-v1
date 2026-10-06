@@ -3,15 +3,308 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CRM System - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Comprehensive Customer Relationship Management.">
-  <meta name="keywords" content="crm, customer, management, free, online, tool, utility">
+  <title>Micro CRM Pipeline System - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Client-side micro CRM with interactive drag-and-drop Kanban pipeline, weighted deal forecasts, win-rate analytics, local storage sync, and CSV export.">
+  <meta name="keywords" content="crm, pipeline, sales, kanban, deals, customer relationship, leads, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/crm-system/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    /* CRM Kanban Layout */
+    .crm-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .crm-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .kpi-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent);
+    }
+    .kpi-card.kpi-won::before { background: var(--success); }
+    .kpi-card.kpi-weighted::before { background: #8b5cf6; }
+    .kpi-card.kpi-rate::before { background: #f59e0b; }
+    .kpi-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+    }
+    .kpi-value {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+    .kpi-sub {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* Kanban Board */
+    .kanban-board {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(280px, 1fr));
+      gap: 1.25rem;
+      overflow-x: auto;
+      padding-bottom: 1.5rem;
+      -webkit-overflow-scrolling: touch;
+      min-height: 580px;
+    }
+    .kanban-col {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      max-height: 750px;
+      transition: var(--transition);
+    }
+    .kanban-col.drag-hover {
+      border-color: var(--accent);
+      background: rgba(78, 133, 191, 0.08);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+    .col-header {
+      padding: 1rem 1.15rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .col-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .col-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .col-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .ind-lead { background: #3b82f6; }
+    .ind-contacted { background: #8b5cf6; }
+    .ind-proposal { background: #f59e0b; }
+    .ind-won { background: var(--success); }
+    .ind-lost { background: var(--error); }
+
+    .col-stats {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    .col-total {
+      font-family: monospace;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .col-cards {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      overflow-y: auto;
+      flex: 1;
+      min-height: 140px;
+    }
+
+    /* Deal Card */
+    .deal-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      cursor: grab;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      user-select: none;
+    }
+    .deal-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+      border-color: var(--accent);
+    }
+    .deal-card.dragging {
+      opacity: 0.45;
+      transform: scale(0.98);
+      cursor: grabbing;
+    }
+    .deal-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      word-break: break-word;
+    }
+    .deal-value {
+      font-size: 1.15rem;
+      font-weight: 800;
+      font-family: monospace;
+      color: var(--accent);
+    }
+    .deal-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    .deal-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .deal-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+      padding-top: 0.6rem;
+      margin-top: 0.25rem;
+    }
+    .deal-stage-select {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      cursor: pointer;
+      max-width: 120px;
+    }
+    .deal-btn-group {
+      display: flex;
+      gap: 0.35rem;
+    }
+    .deal-icon-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 0.25rem;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    .deal-icon-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+    .deal-icon-btn.btn-delete:hover {
+      color: var(--error);
+    }
+
+    /* Modal Styling */
+    .crm-modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .crm-modal-backdrop.active {
+      display: flex;
+    }
+    .crm-modal {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 520px;
+      box-shadow: var(--glass-shadow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: modalFadeIn 0.2s ease-out;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-height: 75vh;
+      overflow-y: auto;
+    }
+    .modal-footer {
+      padding: 1.25rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--text-tertiary);
+      font-size: 0.85rem;
+      font-style: italic;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,31 +319,208 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>CRM System</h1>
-        <p class="tool-description">Comprehensive Customer Relationship Management.</p>
+        <h1>Micro CRM Pipeline System</h1>
+        <p class="tool-description">Manage client deals and sales opportunities across a visual Kanban board with drag-and-drop transitions, weighted pipeline values, win-rate metrics, and CSV export.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>CRM System</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Comprehensive Customer Relationship Management.</div>
-            <div><strong>Inputs:</strong> crm, customer, management</div>
-            <div><strong>Category:</strong> business</div>
-          </div>
+      <!-- Toolbar -->
+      <div class="crm-toolbar">
+        <div style="flex: 1; max-width: 380px; position: relative;">
+          <input type="text" id="deal-search" class="form-input" placeholder="Search deals by client or email..." style="padding-left: 2.25rem;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: var(--text-tertiary);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="crm-actions">
+          <button id="add-deal-btn" class="btn btn-primary" style="display:flex; align-items:center; gap:0.5rem;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Add Deal
+          </button>
+          <button id="export-csv-btn" class="btn btn-secondary" style="display:flex; align-items:center; gap:0.5rem;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Export CSV
+          </button>
+          <button id="reset-deals-btn" class="btn btn-secondary" title="Load sample dataset" style="display:flex; align-items:center; gap:0.5rem;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+            Sample Deals
+          </button>
+        </div>
       </div>
-    
+
+      <!-- KPI Summary Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-label">Total Pipeline Value</span>
+          <span class="kpi-value" id="kpi-total-val">$0</span>
+          <span class="kpi-sub" id="kpi-deal-count">0 active deals</span>
+        </div>
+        <div class="kpi-card kpi-weighted">
+          <span class="kpi-label">Weighted Forecast</span>
+          <span class="kpi-value" id="kpi-weighted-val" style="color:#a78bfa;">$0</span>
+          <span class="kpi-sub">Probability-adjusted revenue</span>
+        </div>
+        <div class="kpi-card kpi-won">
+          <span class="kpi-label">Won Revenue</span>
+          <span class="kpi-value" id="kpi-won-val" style="color:var(--success);">$0</span>
+          <span class="kpi-sub" id="kpi-won-count">0 closed deals</span>
+        </div>
+        <div class="kpi-card kpi-rate">
+          <span class="kpi-label">Win Rate</span>
+          <span class="kpi-value" id="kpi-win-rate" style="color:#f59e0b;">0%</span>
+          <span class="kpi-sub" id="kpi-closed-ratio">Based on closed deals</span>
+        </div>
+      </div>
+
+      <!-- Kanban Board -->
+      <div class="kanban-board" id="kanban-board">
+        <!-- Lead Column -->
+        <div class="kanban-col" data-stage="lead">
+          <div class="col-header">
+            <div class="col-title-row">
+              <span class="col-title">
+                <span class="col-indicator ind-lead"></span>
+                Lead
+              </span>
+              <span class="badge" style="background:#3b82f620; color:#60a5fa;" id="count-lead">0</span>
+            </div>
+            <div class="col-stats">
+              <span>10% probability</span>
+              <span class="col-total" id="val-lead">$0</span>
+            </div>
+          </div>
+          <div class="col-cards" id="cards-lead"></div>
+        </div>
+
+        <!-- Contacted Column -->
+        <div class="kanban-col" data-stage="contacted">
+          <div class="col-header">
+            <div class="col-title-row">
+              <span class="col-title">
+                <span class="col-indicator ind-contacted"></span>
+                Contacted
+              </span>
+              <span class="badge" style="background:#8b5cf620; color:#a78bfa;" id="count-contacted">0</span>
+            </div>
+            <div class="col-stats">
+              <span>30% probability</span>
+              <span class="col-total" id="val-contacted">$0</span>
+            </div>
+          </div>
+          <div class="col-cards" id="cards-contacted"></div>
+        </div>
+
+        <!-- Proposal Column -->
+        <div class="kanban-col" data-stage="proposal">
+          <div class="col-header">
+            <div class="col-title-row">
+              <span class="col-title">
+                <span class="col-indicator ind-proposal"></span>
+                Proposal
+              </span>
+              <span class="badge" style="background:#f59e0b20; color:#fbbf24;" id="count-proposal">0</span>
+            </div>
+            <div class="col-stats">
+              <span>60% probability</span>
+              <span class="col-total" id="val-proposal">$0</span>
+            </div>
+          </div>
+          <div class="col-cards" id="cards-proposal"></div>
+        </div>
+
+        <!-- Won Column -->
+        <div class="kanban-col" data-stage="won">
+          <div class="col-header">
+            <div class="col-title-row">
+              <span class="col-title">
+                <span class="col-indicator ind-won"></span>
+                Won
+              </span>
+              <span class="badge" style="background:#10b98120; color:#34d399;" id="count-won">0</span>
+            </div>
+            <div class="col-stats">
+              <span>100% closed</span>
+              <span class="col-total" id="val-won">$0</span>
+            </div>
+          </div>
+          <div class="col-cards" id="cards-won"></div>
+        </div>
+
+        <!-- Lost Column -->
+        <div class="kanban-col" data-stage="lost">
+          <div class="col-header">
+            <div class="col-title-row">
+              <span class="col-title">
+                <span class="col-indicator ind-lost"></span>
+                Lost
+              </span>
+              <span class="badge" style="background:#ef444420; color:#f87171;" id="count-lost">0</span>
+            </div>
+            <div class="col-stats">
+              <span>0% closed</span>
+              <span class="col-total" id="val-lost">$0</span>
+            </div>
+          </div>
+          <div class="col-cards" id="cards-lost"></div>
+        </div>
+      </div>
     </div>
   </main>
+
+  <!-- Add / Edit Deal Modal -->
+  <div class="crm-modal-backdrop" id="deal-modal">
+    <div class="crm-modal">
+      <div class="modal-header">
+        <h3 id="modal-title" style="font-size:1.15rem; font-weight:700;">Add New Deal</h3>
+        <button id="modal-close-btn" class="deal-icon-btn" style="font-size:1.25rem;">&times;</button>
+      </div>
+      <form id="deal-form">
+        <div class="modal-body">
+          <input type="hidden" id="deal-id">
+          
+          <div class="form-group">
+            <label for="deal-client">Client / Deal Name *</label>
+            <input type="text" id="deal-client" class="form-input" placeholder="e.g. Acme Corp Enterprise License" required>
+          </div>
+
+          <div class="form-group">
+            <label for="deal-value">Deal Value ($) *</label>
+            <input type="number" id="deal-value" class="form-input" min="0" step="100" placeholder="e.g. 15000" required>
+          </div>
+
+          <div class="form-group">
+            <label for="deal-email">Contact Email *</label>
+            <input type="email" id="deal-email" class="form-input" placeholder="e.g. contact@acme.com" required>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem;">
+            <div class="form-group">
+              <label for="deal-stage">Pipeline Stage</label>
+              <select id="deal-stage" class="form-select">
+                <option value="lead">Lead (10%)</option>
+                <option value="contacted">Contacted (30%)</option>
+                <option value="proposal">Proposal (60%)</option>
+                <option value="won">Won (100%)</option>
+                <option value="lost">Lost (0%)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="deal-date">Expected Close Date</label>
+              <input type="date" id="deal-date" class="form-input">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="deal-notes">Notes / Scope (Optional)</label>
+            <textarea id="deal-notes" class="form-input" style="min-height:70px; resize:vertical;" placeholder="Key customer objectives or notes..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="modal-cancel-btn" class="btn btn-secondary">Cancel</button>
+          <button type="submit" id="modal-save-btn" class="btn btn-primary">Save Deal</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -60,9 +530,9 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "CRM System",
+    "name": "Micro CRM Pipeline System",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/crm-system/",
-    "description": "Comprehensive Customer Relationship Management.",
+    "description": "Client-side micro CRM with interactive drag-and-drop Kanban pipeline, weighted deal forecasts, win-rate analytics, local storage sync, and CSV export.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

@@ -3,15 +3,174 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hash Matcher - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Checks if strings match target MD5/SHA hashes.">
-  <meta name="keywords" content="hash, compare, match, sha256, md5, free, online, tool, utility">
+  <title>Hash Matcher & Checksum Verifier - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Compare cryptographic hashes and verify checksum integrity. Compare two hash strings or compute SHA-256, SHA-512, SHA-384, SHA-1, and MD5 hashes instantly.">
+  <meta name="keywords" content="hash matcher, checksum compare, verify hash, sha256, sha512, sha1, md5, integrity auditor, free online tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/hash-matcher/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .hash-tabs {
+      display: flex;
+      background: var(--bg-tertiary);
+      padding: 0.35rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      gap: 0.5rem;
+      max-width: 440px;
+      margin-bottom: 1.5rem;
+    }
+    .hash-tab-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1rem;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .hash-tab-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    .status-banner {
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      transition: var(--transition);
+      margin-bottom: 1.5rem;
+    }
+    .status-banner.match {
+      background: rgba(16, 185, 129, 0.12);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #34d399;
+    }
+    .status-banner.mismatch {
+      background: rgba(239, 68, 68, 0.12);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #f87171;
+    }
+    .status-banner.neutral {
+      background: var(--bg-tertiary);
+      border-color: var(--border);
+      color: var(--text-secondary);
+    }
+    .status-banner svg {
+      flex-shrink: 0;
+      margin-top: 0.15rem;
+    }
+    .status-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+    }
+    .status-desc {
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    .hash-input-wrapper {
+      position: relative;
+    }
+    .hash-input-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.4rem;
+      font-size: 0.775rem;
+      color: var(--text-tertiary);
+    }
+    .algo-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.15rem 0.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+    }
+
+    .diff-box {
+      font-family: monospace;
+      font-size: 0.85rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      white-space: pre-wrap;
+      word-break: break-all;
+      line-height: 1.7;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+    .diff-match {
+      color: #34d399;
+      background: rgba(16, 185, 129, 0.15);
+      border-radius: 2px;
+      padding: 0 1px;
+    }
+    .diff-mismatch {
+      color: #f87171;
+      background: rgba(239, 68, 68, 0.25);
+      border-radius: 2px;
+      padding: 0 1px;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+
+    .options-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+      padding: 0.75rem 1rem;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      align-items: center;
+    }
+
+    .toast-popup {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      color: var(--text);
+      font-size: 0.875rem;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .toast-popup.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,31 +185,195 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Hash Matcher</h1>
-        <p class="tool-description">Checks if strings match target MD5/SHA hashes.</p>
+        <h1>Hash Matcher & Checksum Verifier</h1>
+        <p class="tool-description">Verify cryptographic integrity between two hashes or compute live SHA-256, SHA-512, SHA-384, SHA-1, and MD5 hashes to match against expected checksums.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Hash Matcher</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Checks if strings match target MD5/SHA hashes.</div>
-            <div><strong>Inputs:</strong> hash, compare, match, sha256, md5</div>
-            <div><strong>Category:</strong> security</div>
+      <!-- Mode Switcher -->
+      <div class="hash-tabs" role="tablist">
+        <button id="tab-mode-compare" class="hash-tab-btn active" role="tab" aria-selected="true">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20L21 3"></path><path d="M21 16v5h-5"></path><path d="M15 15l6 6"></path><path d="M4 4l5 5"></path></svg>
+          Compare Two Hashes
+        </button>
+        <button id="tab-mode-compute" class="hash-tab-btn" role="tab" aria-selected="false">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+          Compute & Match Text
+        </button>
+      </div>
+
+      <!-- Dynamic Status Banner -->
+      <div id="status-banner" class="status-banner neutral" role="status">
+        <div id="status-icon">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        </div>
+        <div>
+          <div id="status-title" class="status-title">Awaiting Input</div>
+          <div id="status-desc" class="status-desc">Enter or paste hashes below to verify cryptographic integrity.</div>
+        </div>
+      </div>
+
+      <!-- Normalization Options -->
+      <div class="options-row">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-tertiary);">Comparison Rules:</span>
+        <label class="checkbox-label" style="min-height: auto;">
+          <input type="checkbox" id="opt-case-insensitive" checked>
+          <span>Case-insensitive</span>
+        </label>
+        <label class="checkbox-label" style="min-height: auto;">
+          <input type="checkbox" id="opt-trim-whitespace" checked>
+          <span>Trim Whitespace</span>
+        </label>
+        <label class="checkbox-label" style="min-height: auto;">
+          <input type="checkbox" id="opt-ignore-delimiters" checked>
+          <span>Ignore Delimiters (Colons, Spaces, Dashes)</span>
+        </label>
+      </div>
+
+      <!-- Mode 1: Compare Two Hashes View -->
+      <div id="view-compare" class="tool-workarea split-view">
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+            <h2 class="panel-title" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">Expected Hash (Target)</h2>
+            <button id="paste-hash-a" class="btn btn-outline" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;">Paste</button>
+          </div>
+          <div class="form-group">
+            <textarea id="hash-input-a" class="form-textarea" placeholder="e.g. 5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8" style="min-height: 110px; font-family: monospace; font-size: 0.9rem;" spellcheck="false"></textarea>
+            <div class="hash-input-meta">
+              <span>Length: <strong id="hash-len-a">0</strong> chars</span>
+              <span id="hash-type-a" class="algo-tag">Unknown Format</span>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+            <h2 class="panel-title" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">Calculated / Downloaded Hash</h2>
+            <button id="paste-hash-b" class="btn btn-outline" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;">Paste</button>
+          </div>
+          <div class="form-group">
+            <textarea id="hash-input-b" class="form-textarea" placeholder="Paste the hash generated from your downloaded file or payload..." style="min-height: 110px; font-family: monospace; font-size: 0.9rem;" spellcheck="false"></textarea>
+            <div class="hash-input-meta">
+              <span>Length: <strong id="hash-len-b">0</strong> chars</span>
+              <span id="hash-type-b" class="algo-tag">Unknown Format</span>
+            </div>
+          </div>
+        </div>
       </div>
-    
+
+      <!-- Mode 2: Compute & Match View (Initially hidden) -->
+      <div id="view-compute" class="tool-workarea split-view" style="display: none;">
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">1. Input Text / Payload</h2>
+          <div class="form-group">
+            <label for="compute-text-input">Plaintext String</label>
+            <textarea id="compute-text-input" class="form-textarea" placeholder="Type or paste plaintext string to compute cryptographic hash..." style="min-height: 110px; font-family: monospace; font-size: 0.9rem;"></textarea>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label for="compute-algo-select">Hash Algorithm</label>
+              <select id="compute-algo-select" class="form-select">
+                <option value="SHA-256" selected>SHA-256 (Standard)</option>
+                <option value="SHA-512">SHA-512 (High Security)</option>
+                <option value="SHA-384">SHA-384</option>
+                <option value="SHA-1">SHA-1 (Legacy)</option>
+                <option value="MD5">MD5 (Checksum)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Encoding</label>
+              <input type="text" class="form-input" value="UTF-8" readonly disabled style="opacity: 0.7;">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 0.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label>Computed Checksum</label>
+              <button id="copy-computed-btn" class="btn btn-outline" style="font-size: 0.75rem; padding: 0.2rem 0.5rem;">Copy</button>
+            </div>
+            <input type="text" id="computed-hash-display" class="form-input" readonly placeholder="Waiting for input..." style="font-family: monospace; font-size: 0.85rem; background: var(--bg-secondary);">
+          </div>
+        </div>
+
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+            <h2 class="panel-title" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">2. Expected Hash to Match</h2>
+            <button id="paste-expected-btn" class="btn btn-outline" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;">Paste</button>
+          </div>
+          <div class="form-group">
+            <label for="compute-expected-input">Expected Target Hash</label>
+            <textarea id="compute-expected-input" class="form-textarea" placeholder="Paste the expected hash you want to verify against..." style="min-height: 140px; font-family: monospace; font-size: 0.9rem;" spellcheck="false"></textarea>
+            <div class="hash-input-meta">
+              <span>Length: <strong id="compute-expected-len">0</strong> chars</span>
+              <span id="compute-expected-type" class="algo-tag">Unknown Format</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Toolbar -->
+      <div class="action-bar" style="justify-content: space-between; align-items: center;">
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <button id="btn-swap" class="btn btn-secondary">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16V4M7 4L3 8M7 4L11 8M17 8v12M17 20l4-4M17 20l-4-4"/></svg>
+            Swap Hashes
+          </button>
+          <button id="btn-sample-match" class="btn btn-outline">Sample Match</button>
+          <button id="btn-sample-mismatch" class="btn btn-outline">Sample Mismatch</button>
+          <button id="btn-clear" class="btn btn-outline">Clear All</button>
+        </div>
+      </div>
+
+      <!-- Character-by-Character Difference Visualizer (Visible on Mismatch) -->
+      <div id="diff-panel" class="tool-panel glass-panel" style="display: none;">
+        <h2 class="panel-title">Character Divergence Audit</h2>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+          Green characters match identically; red highlighted characters indicate discrepancies.
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div>
+            <div style="font-size: 0.775rem; font-weight: 600; color: var(--text-tertiary); margin-bottom: 0.25rem;">TARGET HASH (A):</div>
+            <div id="diff-content-a" class="diff-box"></div>
+          </div>
+          <div>
+            <div style="font-size: 0.775rem; font-weight: 600; color: var(--text-tertiary); margin-bottom: 0.25rem;">DOWNLOADED HASH (B):</div>
+            <div id="diff-content-b" class="diff-box"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Technical Reference Card -->
+      <div class="tool-panel glass-panel" style="margin-top: 1rem;">
+        <h2 class="panel-title">Supported Hash Reference Specifications</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; font-size: 0.85rem; color: var(--text-secondary);">
+          <div style="background: var(--bg-tertiary); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+            <strong style="color: var(--text-primary); display: block;">MD5</strong>
+            <span>32 Hex Characters (128 bits)</span>
+          </div>
+          <div style="background: var(--bg-tertiary); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+            <strong style="color: var(--text-primary); display: block;">SHA-1</strong>
+            <span>40 Hex Characters (160 bits)</span>
+          </div>
+          <div style="background: var(--bg-tertiary); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+            <strong style="color: var(--text-primary); display: block;">SHA-256</strong>
+            <span>64 Hex Characters (256 bits)</span>
+          </div>
+          <div style="background: var(--bg-tertiary); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+            <strong style="color: var(--text-primary); display: block;">SHA-384</strong>
+            <span>96 Hex Characters (384 bits)</span>
+          </div>
+          <div style="background: var(--bg-tertiary); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+            <strong style="color: var(--text-primary); display: block;">SHA-512</strong>
+            <span>128 Hex Characters (512 bits)</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- Toast Notification -->
+  <div id="app-toast" class="toast-popup">Copied to clipboard!</div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -60,9 +383,9 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Hash Matcher",
+    "name": "Hash Matcher & Checksum Verifier",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/hash-matcher/",
-    "description": "Checks if strings match target MD5/SHA hashes.",
+    "description": "Checks if strings match target MD5/SHA hashes and verifies file checksums.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Story Typing Practice - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Enhance your skills with Story Typing Practice.">
-  <meta name="keywords" content="typing, keyboard, practice, free, online, tool, utility">
+  <title>Story Typing Practice - Classic Literature Drills - ALL IN ONE</title>
+  <meta name="description" content="Immerse yourself in classic literature with chapter typing drills from Alice in Wonderland, Sherlock Holmes, Frankenstein, and The Time Machine. Includes sentence progression and stamina analysis.">
+  <meta name="keywords" content="story typing practice, literature typing test, book typing, sentence typing, typing stamina analysis, immersion mode">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/story-typing-practice/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,371 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+  <style>
+    .stp-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      max-width: 1040px;
+      margin: 0 auto;
+      width: 100%;
+      transition: max-width 0.3s ease;
+    }
+
+    .stp-header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      background: rgba(78, 133, 191, 0.15);
+      border: 1px solid rgba(78, 133, 191, 0.3);
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+      width: fit-content;
+    }
+
+    .stp-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.15rem 1.35rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(12px);
+    }
+
+    .stp-controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .stp-select {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 0.45rem 0.85rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .stp-select:focus {
+      border-color: var(--accent);
+    }
+
+    .stp-pill-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.45rem 0.85rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .stp-pill-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+
+    .stp-pill-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    .stp-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+    }
+
+    .stp-stat-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.15rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      transition: var(--transition);
+    }
+
+    .stp-stat-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .stp-stat-val {
+      font-size: 2.15rem;
+      font-weight: 800;
+      line-height: 1.1;
+      font-family: var(--font-display), monospace;
+      color: var(--accent);
+    }
+
+    .stp-stat-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-tertiary);
+      font-weight: 600;
+    }
+
+    .stp-progress-container {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .stp-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--accent-gradient);
+      transition: width 0.15s ease;
+    }
+
+    /* Narrative Stage */
+    .stp-narrative-panel {
+      position: relative;
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 3rem;
+      min-height: 280px;
+      cursor: text;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stp-narrative-panel.focused {
+      border-color: var(--accent);
+      box-shadow: 0 0 24px var(--accent-glow);
+    }
+
+    /* Font modes */
+    .stp-font-serif {
+      font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+      font-size: 1.55rem;
+      line-height: 2.5rem;
+      letter-spacing: 0.01em;
+    }
+
+    .stp-font-mono {
+      font-family: 'Fira Code', 'Cascadia Code', Consolas, monospace;
+      font-size: 1.3rem;
+      line-height: 2.3rem;
+      letter-spacing: 0.02em;
+    }
+
+    .stp-text-display {
+      user-select: none;
+      word-break: break-word;
+      white-space: pre-wrap;
+      max-height: 340px;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+    }
+
+    .stp-char {
+      position: relative;
+      color: var(--text-tertiary);
+      transition: color 0.04s ease;
+    }
+
+    .stp-char.stp-correct {
+      color: #22c55e;
+    }
+
+    [data-theme="dark"] .stp-char.stp-correct {
+      color: #4ade80;
+    }
+
+    .stp-char.stp-incorrect {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.22);
+      text-decoration: underline;
+    }
+
+    .stp-char.stp-current {
+      color: var(--text-primary);
+      background: var(--accent-glow);
+    }
+
+    .stp-char.stp-current::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 10%;
+      bottom: 10%;
+      width: 2.5px;
+      background: var(--accent);
+      border-radius: 2px;
+      animation: stp-blink 1s infinite;
+    }
+
+    @keyframes stp-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .stp-hidden-input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      left: -9999px;
+    }
+
+    .stp-focus-hint {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      background: rgba(10, 10, 15, 0.75);
+      backdrop-filter: blur(4px);
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 1.1rem;
+      border-radius: var(--radius-lg);
+      z-index: 10;
+      cursor: pointer;
+    }
+
+    /* Reading Immersion Mode */
+    body.stp-immersion-active {
+      overflow-x: hidden;
+    }
+
+    body.stp-immersion-active app-header,
+    body.stp-immersion-active app-breadcrumbs,
+    body.stp-immersion-active app-footer,
+    body.stp-immersion-active .tool-header {
+      opacity: 0.15;
+      filter: blur(3px);
+      pointer-events: none;
+      transition: opacity 0.4s ease, filter 0.4s ease;
+    }
+
+    body.stp-immersion-active .stp-workspace {
+      max-width: 1180px;
+    }
+
+    body.stp-immersion-active .stp-narrative-panel {
+      min-height: 400px;
+      background: rgba(15, 23, 42, 0.95);
+      border-color: var(--accent);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Stamina Card */
+    .stp-stamina-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .stp-stamina-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #10b981;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    /* Modal */
+    .stp-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .stp-modal-backdrop.show {
+      display: flex;
+      opacity: 1;
+    }
+
+    .stp-modal-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      max-width: 620px;
+      width: 100%;
+      padding: 2.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      transform: scale(0.95);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .stp-modal-backdrop.show .stp-modal-card {
+      transform: scale(1);
+    }
+
+    @media (max-width: 768px) {
+      .stp-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .stp-controls-row {
+        justify-content: center;
+      }
+      .stp-narrative-panel {
+        padding: 1.5rem;
+      }
+      .stp-font-serif {
+        font-size: 1.25rem;
+        line-height: 2.1rem;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -26,31 +391,160 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
+        <div class="stp-header-badge">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+          Literary Touch Typing
+        </div>
         <h1>Story Typing Practice</h1>
-        <p class="tool-description">Enhance your skills with Story Typing Practice.</p>
+        <p class="tool-description">Immersive narrative typing drills through classic masterworks. Features chapter selections, sentence-by-sentence progression, reading immersion mode, and typing stamina analysis.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Story Typing Practice</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Enhance your skills with Story Typing Practice.</div>
-            <div><strong>Inputs:</strong> typing, keyboard, practice</div>
-            <div><strong>Category:</strong> typing</div>
+      <div class="stp-workspace">
+        
+        <!-- Toolbar & Selectors -->
+        <div class="stp-toolbar">
+          <div class="stp-controls-row">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;">Work:</span>
+            <select class="stp-select" id="story-select">
+              <option value="alice">Alice in Wonderland (Lewis Carroll)</option>
+              <option value="holmes">Sherlock Holmes (Arthur Conan Doyle)</option>
+              <option value="frankenstein">Frankenstein (Mary Shelley)</option>
+              <option value="timemachine">The Time Machine (H.G. Wells)</option>
+            </select>
+
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; margin-left: 0.5rem;">Chapter:</span>
+            <select class="stp-select" id="chapter-select"></select>
+          </div>
+
+          <div class="stp-controls-row">
+            <!-- Immersion Mode Toggle -->
+            <button type="button" class="stp-pill-btn" id="btn-immersion" title="Toggle distraction-free reading immersion mode">
+              <span id="immersion-icon">🕯️ Immersion</span>
+            </button>
+
+            <!-- Font Selector -->
+            <button type="button" class="stp-pill-btn" id="btn-font-toggle" title="Toggle Serif / Monospace typography">
+              <span id="font-toggle-label">📖 Serif</span>
+            </button>
+
+            <!-- Sound Toggle -->
+            <button type="button" class="stp-pill-btn" id="sound-toggle" title="Toggle mechanical sound">
+              <span id="sound-icon">🔊 Sound</span>
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Live Diagnostics Bar -->
+        <div class="stp-stats-grid">
+          <div class="stp-stat-card">
+            <div class="stp-stat-val" id="stat-wpm">0</div>
+            <div class="stp-stat-label">Words / Min</div>
+          </div>
+          <div class="stp-stat-card">
+            <div class="stp-stat-val" id="stat-accuracy">100%</div>
+            <div class="stp-stat-label">Accuracy</div>
+          </div>
+          <div class="stp-stat-card">
+            <div class="stp-stat-val" id="stat-words-count">0 / 0</div>
+            <div class="stp-stat-label">Words Completed</div>
+          </div>
+          <div class="stp-stat-card">
+            <div class="stp-stat-val" id="stat-stamina">100%</div>
+            <div class="stp-stat-label">Typing Stamina</div>
+          </div>
+          <div class="stp-stat-card">
+            <div class="stp-stat-val" id="stat-elapsed">0:00</div>
+            <div class="stp-stat-label">Time Elapsed</div>
+          </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="stp-progress-container">
+          <div class="stp-progress-bar" id="progress-bar"></div>
+        </div>
+
+        <!-- Interactive Narrative Text Panel -->
+        <div class="stp-narrative-panel" id="display-panel" tabindex="0">
+          <div class="stp-text-display stp-font-serif" id="text-display">Loading classic chapter...</div>
+          <input type="text" class="stp-hidden-input" id="hidden-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+          
+          <div class="stp-focus-hint" id="focus-hint">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+            <span>Click to enter narrative typing & begin reading</span>
+          </div>
+        </div>
+
+        <!-- Stamina Analysis Banner -->
+        <div class="stp-stamina-card">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span class="stp-stamina-badge" id="badge-stamina-rating">⚡ High Stamina (98%)</span>
+            <span style="font-size: 0.85rem; color: var(--text-secondary);" id="stamina-detail">
+              Pace holding steady. Initial pace: 0 WPM vs Current pace: 0 WPM.
+            </span>
+          </div>
+
+          <div style="display: flex; gap: 0.75rem;">
+            <button type="button" class="btn btn-secondary" id="btn-restart" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+              Restart Chapter (Esc)
+            </button>
+          </div>
+        </div>
+
       </div>
-    
     </div>
   </main>
+
+  <!-- Chapter Completion Modal -->
+  <div class="stp-modal-backdrop" id="completion-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="stp-modal-card">
+      <div style="text-align: center;">
+        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">📜</span>
+        <h2 id="modal-title" style="font-family: var(--font-display); font-size: 2rem; margin-bottom: 0.25rem;">Chapter Completed!</h2>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;" id="modal-chapter-title">Alice in Wonderland: Down the Rabbit-Hole</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;">
+        <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem; text-align: center;">
+          <div id="modal-wpm" style="font-size: 1.5rem; font-weight: 800; color: var(--accent); font-family: var(--font-display), monospace;">78</div>
+          <div style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-tertiary); margin-top: 0.2rem; font-weight: 600;">Average WPM</div>
+        </div>
+        <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem; text-align: center;">
+          <div id="modal-accuracy" style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); font-family: var(--font-display), monospace;">98.8%</div>
+          <div style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-tertiary); margin-top: 0.2rem; font-weight: 600;">Accuracy</div>
+        </div>
+        <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem; text-align: center;">
+          <div id="modal-stamina" style="font-size: 1.5rem; font-weight: 800; color: #10b981; font-family: var(--font-display), monospace;">96%</div>
+          <div style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-tertiary); margin-top: 0.2rem; font-weight: 600;">Stamina Score</div>
+        </div>
+      </div>
+
+      <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem; font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.4rem;">
+        <div style="display: flex; justify-content: space-between;">
+          <span>Stamina Endurance Profile:</span>
+          <strong id="modal-stamina-profile" style="color: var(--text-primary);">Consistent Velocity (+1.8% fatigue tolerance)</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span>Words & Characters:</span>
+          <strong id="modal-word-count" style="color: var(--text-primary);">145 words (810 characters)</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span>Reading & Typing Time:</span>
+          <strong id="modal-time-taken" style="color: var(--text-primary);">1m 52s</strong>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem; justify-content: flex-end; flex-wrap: wrap;">
+        <button type="button" class="btn btn-secondary" id="modal-btn-retry">
+          Retry Chapter
+        </button>
+        <button type="button" class="btn btn-primary" id="modal-btn-next">
+          Next Chapter &rarr;
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,8 +556,8 @@
     "@type": "WebApplication",
     "name": "Story Typing Practice",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/story-typing-practice/",
-    "description": "Enhance your skills with Story Typing Practice.",
-    "applicationCategory": "UtilityPage",
+    "description": "Narrative touch typing practice with classic literature chapters, reading immersion mode, sentence progression, and stamina analytics.",
+    "applicationCategory": "EducationalApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

@@ -3,14 +3,279 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CPA Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your CPA Calculator online.">
-  <meta name="keywords" content="marketing, digital, advertising, free, online, tool, utility">
+  <title>CPA Calculator - Cost Per Acquisition & Profitability - ALL IN ONE</title>
+  <meta name="description" content="Calculate Cost Per Acquisition (CPA), conversions, and ad spend. Analyze conversion rates, LTV-to-CAC ratios, profit margins, and lead generation economics.">
+  <meta name="keywords" content="cpa calculator, cost per acquisition, cost per action, conversion rate calculator, ltv to cac ratio, digital marketing calculator, ad spend profitability">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/cpa-calculator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <style>
+    .cpa-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+
+    @media (min-width: 1024px) {
+      .cpa-layout {
+        grid-template-columns: 460px 1fr;
+      }
+    }
+
+    .mode-tab-group {
+      display: flex;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.25rem;
+      gap: 0.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .mode-tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.6rem 0.5rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+    }
+
+    .mode-tab-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .mode-tab-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .preset-chips-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .chip-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-full);
+      padding: 0.3rem 0.75rem;
+      font-size: 0.775rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .chip-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    .input-affix-group {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-affix {
+      position: absolute;
+      left: 0.85rem;
+      color: var(--text-tertiary);
+      font-weight: 600;
+      pointer-events: none;
+      font-size: 0.9rem;
+    }
+
+    .input-affix-right {
+      position: absolute;
+      right: 0.85rem;
+      color: var(--text-tertiary);
+      font-weight: 600;
+      pointer-events: none;
+      font-size: 0.9rem;
+    }
+
+    .has-affix-left input {
+      padding-left: 2rem;
+    }
+
+    .has-affix-right input {
+      padding-right: 2rem;
+    }
+
+    /* KPI Display Grid */
+    .kpi-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .kpi-metric-tile {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-metric-tile.highlight {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.08) 0%, rgba(20, 20, 20, 0.8) 100%);
+    }
+
+    .kpi-title {
+      font-size: 0.775rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      margin-bottom: 0.25rem;
+    }
+
+    .kpi-number {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .kpi-subtext {
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+      margin-top: 0.35rem;
+    }
+
+    /* Margin Health Card */
+    .health-badge-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .health-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      border-radius: var(--radius-full);
+      font-size: 0.875rem;
+      font-weight: 700;
+      width: fit-content;
+    }
+
+    .health-exceptional {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .health-healthy {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .health-warning {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .health-critical {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    /* Ratio visual bar */
+    .ratio-bar-track {
+      height: 10px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      display: flex;
+      margin: 0.5rem 0;
+    }
+
+    .ratio-bar-cpa {
+      background: #ef4444;
+      transition: width 0.3s ease;
+    }
+
+    .ratio-bar-profit {
+      background: #10b981;
+      transition: width 0.3s ease;
+    }
+
+    .waterfall-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .waterfall-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* Sensitivity Table */
+    .sensitivity-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+
+    .sensitivity-table th {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 600;
+      padding: 0.65rem 0.85rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sensitivity-table td {
+      padding: 0.65rem 0.85rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-primary);
+    }
+
+    .sensitivity-table tr.current-row td {
+      background: rgba(78, 133, 191, 0.12);
+      font-weight: 700;
+      color: var(--accent);
+    }
+  </style>
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
@@ -27,28 +292,216 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>CPA Calculator</h1>
-        <p class="tool-description">Create, analyze, and manage your CPA Calculator online.</p>
+        <p class="tool-description">Cost Per Acquisition, Lead Generation & Unit Economics Solver. Calculate CPA, required ad spend, and conversion volumes, then stress-test profitability against Customer Lifetime Value (LTV) and profit margins.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>CPA Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your CPA Calculator online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, advertising</div>
-            <div><strong>Category:</strong> digital-marketing</div>
+      <div class="cpa-layout">
+        <!-- Left: Input Controls -->
+        <div class="cpa-controls-col">
+          <!-- Preset Chips -->
+          <div class="tool-panel glass-panel" style="padding: 1.15rem; margin-bottom: 1.25rem;">
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 0.5rem; text-transform: uppercase;">
+              Industry Benchmarks & Presets:
+            </div>
+            <div class="preset-chips-wrap">
+              <button type="button" class="chip-btn" id="preset-ecommerce">E-Commerce DTC</button>
+              <button type="button" class="chip-btn" id="preset-saas">B2B SaaS</button>
+              <button type="button" class="chip-btn" id="preset-highticket">High-Ticket Consulting</button>
+              <button type="button" class="chip-btn" id="preset-local">Local Services</button>
+            </div>
+          </div>
+
+          <!-- Solver Mode Switcher -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem; margin-bottom: 1.25rem;">
+            <label style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 0.5rem; display: block;">
+              Select Equation Target
+            </label>
+            <div class="mode-tab-group" id="mode-tab-group">
+              <button type="button" class="mode-tab-btn active" data-mode="solve-cpa">Find CPA</button>
+              <button type="button" class="mode-tab-btn" data-mode="solve-conversions">Find Conversions</button>
+              <button type="button" class="mode-tab-btn" data-mode="solve-spend">Find Spend</button>
+            </div>
+
+            <!-- Dynamic Equation Inputs -->
+            <div id="equation-inputs-container">
+              <!-- Spend Input -->
+              <div class="form-group" id="group-spend" style="margin-bottom: 0.85rem;">
+                <label for="input-ad-spend">Total Advertising Spend ($) *</label>
+                <div class="input-affix-group has-affix-left">
+                  <span class="input-affix">$</span>
+                  <input type="number" id="input-ad-spend" class="form-input" min="0" step="10" value="5000">
+                </div>
+              </div>
+
+              <!-- Conversions Input -->
+              <div class="form-group" id="group-conversions" style="margin-bottom: 0.85rem;">
+                <label for="input-conversions">Total Conversions (Customers / Leads) *</label>
+                <input type="number" id="input-conversions" class="form-input" min="1" step="1" value="125">
+              </div>
+
+              <!-- CPA Input (When solving for spend or conversions) -->
+              <div class="form-group" id="group-target-cpa" style="margin-bottom: 0.85rem; display: none;">
+                <label for="input-target-cpa">Target Cost Per Acquisition ($) *</label>
+                <div class="input-affix-group has-affix-left">
+                  <span class="input-affix">$</span>
+                  <input type="number" id="input-target-cpa" class="form-input" min="0.01" step="0.5" value="40">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Traffic & Funnel Inputs (Optional / Supplemental) -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem; margin-bottom: 1.25rem;">
+            <div class="panel-title" style="margin-bottom: 0.75rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              Traffic & Funnel Conversion
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <label for="input-clicks">Total Clicks / Visitors</label>
+                <input type="number" id="input-clicks" class="form-input" min="0" step="10" value="3500">
+              </div>
+              <div class="form-group">
+                <label for="input-impressions">Total Ad Impressions</label>
+                <input type="number" id="input-impressions" class="form-input" min="0" step="500" value="120000">
+              </div>
+            </div>
+          </div>
+
+          <!-- Unit Economics & Target Profitability -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <div class="panel-title" style="margin-bottom: 0.75rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              Unit Economics & Profitability
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+              <div class="form-group">
+                <label for="input-aov">Average Order Value (AOV)</label>
+                <div class="input-affix-group has-affix-left">
+                  <span class="input-affix">$</span>
+                  <input type="number" id="input-aov" class="form-input" min="1" step="1" value="120">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="input-gross-margin">Gross Margin (%)</label>
+                <div class="input-affix-group has-affix-right">
+                  <input type="number" id="input-gross-margin" class="form-input" min="1" max="100" step="1" value="65">
+                  <span class="input-affix-right">%</span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="input-ltv">Customer Lifetime Value (LTV)</label>
+              <div class="input-affix-group has-affix-left">
+                <span class="input-affix">$</span>
+                <input type="number" id="input-ltv" class="form-input" min="1" step="1" value="350">
+              </div>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right: Results & Strategic Analysis -->
+        <div class="cpa-results-col">
+          <!-- Primary KPI Tiles -->
+          <div class="kpi-summary-grid">
+            <div class="kpi-metric-tile highlight">
+              <div class="kpi-title" id="kpi-target-label">Cost Per Acquisition (CPA)</div>
+              <div class="kpi-number" id="kpi-primary-val">$40.00</div>
+              <div class="kpi-subtext" id="kpi-primary-sub">Spend per closed conversion</div>
+            </div>
+
+            <div class="kpi-metric-tile">
+              <div class="kpi-title">Conversion Rate (CVR)</div>
+              <div class="kpi-number" id="kpi-cvr-val">3.57%</div>
+              <div class="kpi-subtext" id="kpi-cpc-val">Cost Per Click: $1.43</div>
+            </div>
+
+            <div class="kpi-metric-tile">
+              <div class="kpi-title">First-Order Net Profit</div>
+              <div class="kpi-number" id="kpi-order-profit-val">+$38.00</div>
+              <div class="kpi-subtext" id="kpi-order-profit-sub">Per acquired customer</div>
+            </div>
+
+            <div class="kpi-metric-tile">
+              <div class="kpi-title">LTV : CAC Ratio</div>
+              <div class="kpi-number" id="kpi-ltv-cac-val">8.75x</div>
+              <div class="kpi-subtext" id="kpi-breakeven-cpa">Max Allowable CPA: $78.00</div>
+            </div>
+          </div>
+
+          <!-- Profitability Health Assessment Card -->
+          <div class="health-badge-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+              <div>
+                <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.2rem;">Campaign Margin Assessment</h3>
+                <p style="font-size: 0.85rem; color: var(--text-secondary);" id="health-description-text">
+                  Evaluating unit margins and return on customer acquisition.
+                </p>
+              </div>
+              <div class="health-status-badge health-healthy" id="health-badge">
+                Healthy & Scalable
+              </div>
+            </div>
+
+            <!-- Visual Bar: First-Order Revenue Breakdown -->
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.25rem;">
+                <span style="color: var(--text-secondary);">First-Order Revenue Allocation (AOV: <span id="bar-aov-text">$120.00</span>)</span>
+                <span id="bar-summary-text" style="font-weight: 600;">CPA: $40.00 (33.3%)</span>
+              </div>
+              <div class="ratio-bar-track">
+                <div class="ratio-bar-cpa" id="bar-cpa" style="width: 33.3%;"></div>
+                <div class="ratio-bar-profit" id="bar-profit" style="width: 31.7%;"></div>
+              </div>
+              <div class="waterfall-legend">
+                <div class="waterfall-legend-item">
+                  <span class="legend-dot" style="background: #ef4444;"></span>
+                  <span>Ad Spend / CPA: <strong id="legend-cpa-val">$40.00</strong></span>
+                </div>
+                <div class="waterfall-legend-item">
+                  <span class="legend-dot" style="background: #10b981;"></span>
+                  <span>Gross Profit Net of CPA: <strong id="legend-profit-val">$38.00</strong></span>
+                </div>
+                <div class="waterfall-legend-item">
+                  <span class="legend-dot" style="background: var(--bg-tertiary); border: 1px solid var(--border);"></span>
+                  <span>COGS: <strong id="legend-cogs-val">$42.00</strong></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scenario Sensitivity Table -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem; margin-bottom: 1.25rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+              <div class="panel-title" style="margin-bottom: 0; border: none; padding: 0;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"></path><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path></svg>
+                CPA Sensitivity & Efficiency Scenarios
+              </div>
+              <button type="button" id="btn-copy-cpa-report" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+                Copy Report
+              </button>
+            </div>
+
+            <div class="table-responsive">
+              <table class="sensitivity-table">
+                <thead>
+                  <tr>
+                    <th>Scenario</th>
+                    <th>CPA ($)</th>
+                    <th>Conversions</th>
+                    <th>Net Profit / Pax</th>
+                    <th>LTV : CAC</th>
+                    <th>Margin Health</th>
+                  </tr>
+                </thead>
+                <tbody id="sensitivity-tbody">
+                  <!-- Generated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
 
@@ -62,8 +515,8 @@
     "@type": "WebApplication",
     "name": "CPA Calculator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/cpa-calculator/",
-    "description": "Create, analyze, and manage your CPA Calculator online.",
-    "applicationCategory": "UtilityPage",
+    "description": "Calculate Cost Per Acquisition, conversions, and ad spend. Analyze conversion rates, LTV-to-CAC ratios, profit margins, and lead generation economics.",
+    "applicationCategory": "MarketingUtility",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

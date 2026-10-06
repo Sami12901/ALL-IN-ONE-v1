@@ -3,14 +3,382 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Passenger Database Analyzer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Analyze and segment passenger demographics.">
-  <meta name="keywords" content="passenger, data, crm, free, online, tool, utility">
+  <title>Passenger Database Analyzer - Flight Manifest CRM - ALL IN ONE</title>
+  <meta name="description" content="Travel agency flight passenger manifest analyzer. Interactive passenger directory, live search, status filters, baggage KPI metrics, and CSV export.">
+  <meta name="keywords" content="passenger manifest, flight database, travel agency crm, airline passenger analyzer, baggage tracker, pnr lookup">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/passenger-database-analyzer/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <style>
+    .manifest-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .search-filter-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      flex: 1;
+      min-width: 280px;
+    }
+
+    .search-input-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .search-input-wrap input {
+      padding-left: 2.25rem;
+    }
+
+    .search-input-wrap svg {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      pointer-events: none;
+    }
+
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .filter-pill {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .filter-pill:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    .filter-pill.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    .kpi-manifest-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+      opacity: 0.8;
+    }
+
+    .kpi-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .kpi-val {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .kpi-sub {
+      font-size: 0.775rem;
+      color: var(--text-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .progress-bar-wrap {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-top: 0.3rem;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: var(--radius-full);
+      transition: width 0.4s ease;
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge-confirmed {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .badge-checkedin {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .badge-boarded {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-cancelled {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .badge-meal {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      display: inline-block;
+    }
+
+    .badge-class {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.15rem 0.45rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .class-first {
+      background: rgba(217, 119, 6, 0.2);
+      color: #f59e0b;
+      border: 1px solid rgba(217, 119, 6, 0.4);
+    }
+
+    .class-business {
+      background: rgba(139, 92, 246, 0.2);
+      color: #a78bfa;
+      border: 1px solid rgba(139, 92, 246, 0.4);
+    }
+
+    .class-economy {
+      background: rgba(107, 114, 128, 0.2);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .manifest-table-container {
+      width: 100%;
+      overflow-x: auto;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .manifest-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.875rem;
+    }
+
+    .manifest-table th {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 600;
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .manifest-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+      color: var(--text-primary);
+    }
+
+    .manifest-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .manifest-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .passenger-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .passenger-name {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .passenger-passport {
+      font-family: monospace;
+      font-size: 0.775rem;
+      color: var(--text-tertiary);
+    }
+
+    .action-icon-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-right: 0.25rem;
+    }
+
+    .action-icon-btn:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--bg-tertiary);
+    }
+
+    .action-icon-btn.delete-btn:hover {
+      color: var(--error);
+      border-color: var(--error);
+    }
+
+    /* Modal Form */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--glass-shadow);
+      padding: 1.75rem;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .modal-header h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      font-size: 1.25rem;
+      padding: 0.25rem;
+    }
+
+    .modal-close-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .form-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .manifest-empty {
+      text-align: center;
+      padding: 3.5rem 1.5rem;
+      color: var(--text-secondary);
+    }
+  </style>
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
@@ -27,30 +395,231 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Passenger Database Analyzer</h1>
-        <p class="tool-description">Analyze and segment passenger demographics.</p>
+        <p class="tool-description">Real-time travel agency flight passenger manifest analyzer. Monitor flight rosters, baggage weight distributions, check-in and boarding completion, meal requests, and export flight logs.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Passenger Database Analyzer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Analyze and segment passenger demographics.</div>
-            <div><strong>Inputs:</strong> passenger, data, crm</div>
-            <div><strong>Category:</strong> travel</div>
+      <!-- KPI Metrics Cards -->
+      <div class="kpi-manifest-grid">
+        <div class="kpi-card">
+          <span class="kpi-label">Total Manifest</span>
+          <div class="kpi-val" id="kpi-total-pax">0</div>
+          <div class="kpi-sub">
+            <span id="kpi-confirmed-count">0 Confirmed</span> &bull; <span id="kpi-checkedin-count">0 Checked In</span>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="kpi-card">
+          <span class="kpi-label">Total Baggage Weight</span>
+          <div class="kpi-val" id="kpi-total-baggage">0 kg</div>
+          <div class="kpi-sub" id="kpi-avg-baggage">Avg: 0.0 kg / pax</div>
+        </div>
+
+        <div class="kpi-card">
+          <span class="kpi-label">Boarding Completion</span>
+          <div class="kpi-val" id="kpi-boarded-pct">0%</div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" id="kpi-boarded-bar" style="width: 0%;"></div>
+          </div>
+          <div class="kpi-sub" id="kpi-boarded-sub">0 of 0 boarded</div>
+        </div>
+
+        <div class="kpi-card">
+          <span class="kpi-label">Booked Revenue</span>
+          <div class="kpi-val" id="kpi-total-revenue">$0</div>
+          <div class="kpi-sub" id="kpi-revenue-sub">Avg fare: $0</div>
+        </div>
       </div>
-    
+
+      <!-- Controls & Actions Panel -->
+      <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+        <div class="manifest-controls">
+          <div class="search-filter-box">
+            <div class="search-input-wrap">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="manifest-search-input" class="form-input" placeholder="Search by name, passport, PNR, seat, or route...">
+            </div>
+
+            <select id="route-filter-select" class="form-select" style="width: auto; min-width: 160px;">
+              <option value="ALL">All Flight Routes</option>
+            </select>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button id="btn-add-pax" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              Add Passenger
+            </button>
+            <button id="btn-load-sample" class="btn btn-secondary" style="padding: 0.5rem 0.85rem; font-size: 0.85rem;">
+              Load Sample Flight
+            </button>
+            <button id="btn-export-csv" class="btn btn-secondary" style="padding: 0.5rem 0.85rem; font-size: 0.85rem;">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export CSV
+            </button>
+            <button id="btn-clear-manifest" class="btn btn-secondary" style="padding: 0.5rem 0.75rem; font-size: 0.85rem; color: var(--error);" title="Clear current manifest">
+              Clear
+            </button>
+          </div>
+        </div>
+
+        <!-- Status Filter Pills -->
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; padding-top: 0.5rem; border-top: 1px solid var(--border);">
+          <div class="filter-pills" id="status-filter-pills">
+            <button class="filter-pill active" data-status="ALL">All Statuses (<span id="count-all">0</span>)</button>
+            <button class="filter-pill" data-status="Confirmed">Confirmed (<span id="count-confirmed">0</span>)</button>
+            <button class="filter-pill" data-status="Checked-In">Checked-In (<span id="count-checkedin">0</span>)</button>
+            <button class="filter-pill" data-status="Boarded">Boarded (<span id="count-boarded">0</span>)</button>
+            <button class="filter-pill" data-status="Cancelled">Cancelled (<span id="count-cancelled">0</span>)</button>
+          </div>
+
+          <div style="font-size: 0.8rem; color: var(--text-tertiary);" id="showing-records-text">
+            Showing 0 passengers
+          </div>
+        </div>
+      </div>
+
+      <!-- Passengers Table View -->
+      <div class="manifest-table-container">
+        <table class="manifest-table" id="manifest-table">
+          <thead>
+            <tr>
+              <th>Passenger & Passport</th>
+              <th>PNR & Route</th>
+              <th>Seat & Class</th>
+              <th>Meal Request</th>
+              <th>Baggage</th>
+              <th>Fare</th>
+              <th>Status</th>
+              <th style="text-align: right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="manifest-tbody">
+            <!-- Dynamically Rendered -->
+          </tbody>
+        </table>
+        
+        <div id="manifest-empty-state" class="manifest-empty" style="display: none;">
+          <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--text-tertiary); margin-bottom: 0.75rem;"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+          <p style="font-weight: 600; margin-bottom: 0.25rem;">No passengers found</p>
+          <p style="font-size: 0.85rem; color: var(--text-tertiary);">Try adjusting your search query, status filter, or load sample manifest data.</p>
+        </div>
+      </div>
+
+      <!-- Special Manifest Summaries (Meals & Route Stats) -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-top: 0.5rem;">
+        <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+          <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+            Catering & Special Meal Requests
+          </h3>
+          <div id="meal-breakdown-container" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+          <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"></path><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            Flight Route Distribution
+          </h3>
+          <div id="route-breakdown-container" style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
     </div>
   </main>
+
+  <!-- Passenger Modal (Add / Edit) -->
+  <div class="modal-backdrop" id="passenger-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-title">Add Passenger Record</h3>
+        <button class="modal-close-btn" id="modal-close-btn">&times;</button>
+      </div>
+
+      <form id="passenger-form">
+        <input type="hidden" id="pax-id">
+        <div class="form-grid-2" style="margin-bottom: 1rem;">
+          <div class="form-group">
+            <label for="pax-name">Full Passenger Name *</label>
+            <input type="text" id="pax-name" class="form-input" placeholder="e.g. Eleanor Vance" required>
+          </div>
+          <div class="form-group">
+            <label for="pax-passport">Passport Number *</label>
+            <input type="text" id="pax-passport" class="form-input" placeholder="e.g. A9823412" required>
+          </div>
+        </div>
+
+        <div class="form-grid-2" style="margin-bottom: 1rem;">
+          <div class="form-group">
+            <label for="pax-pnr">PNR Code (6 chars) *</label>
+            <input type="text" id="pax-pnr" class="form-input" placeholder="e.g. WX84PQ" maxlength="6" style="text-transform: uppercase;" required>
+          </div>
+          <div class="form-group">
+            <label for="pax-route">Flight Route *</label>
+            <input type="text" id="pax-route" class="form-input" placeholder="e.g. DXB → JFK (EK201)" required>
+          </div>
+        </div>
+
+        <div class="form-grid-2" style="margin-bottom: 1rem;">
+          <div class="form-group">
+            <label for="pax-seat">Seat Number *</label>
+            <input type="text" id="pax-seat" class="form-input" placeholder="e.g. 14A" required>
+          </div>
+          <div class="form-group">
+            <label for="pax-class">Cabin Class</label>
+            <select id="pax-class" class="form-select">
+              <option value="Economy">Economy</option>
+              <option value="Business">Business</option>
+              <option value="First">First Class</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid-2" style="margin-bottom: 1rem;">
+          <div class="form-group">
+            <label for="pax-meal">Special Meal Preference</label>
+            <select id="pax-meal" class="form-select">
+              <option value="Standard">Standard Meal</option>
+              <option value="Vegetarian">Vegetarian (VGML)</option>
+              <option value="Vegan">Vegan (VGLM)</option>
+              <option value="Halal">Halal (MOML)</option>
+              <option value="Kosher">Kosher (KSML)</option>
+              <option value="Gluten-Free">Gluten-Free (GFML)</option>
+              <option value="Diabetic">Diabetic (DBML)</option>
+              <option value="Child Meal">Child Meal (CHML)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="pax-baggage">Checked Baggage (kg)</label>
+            <input type="number" id="pax-baggage" class="form-input" min="0" max="100" step="0.5" value="23">
+          </div>
+        </div>
+
+        <div class="form-grid-2" style="margin-bottom: 1.25rem;">
+          <div class="form-group">
+            <label for="pax-fare">Ticket Fare ($)</label>
+            <input type="number" id="pax-fare" class="form-input" min="0" step="1" value="750">
+          </div>
+          <div class="form-group">
+            <label for="pax-status">Booking Status</label>
+            <select id="pax-status" class="form-select">
+              <option value="Confirmed">Confirmed</option>
+              <option value="Checked-In">Checked-In</option>
+              <option value="Boarded">Boarded</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+          <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="modal-submit-btn">Save Passenger</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,8 +631,8 @@
     "@type": "WebApplication",
     "name": "Passenger Database Analyzer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/passenger-database-analyzer/",
-    "description": "Analyze and segment passenger demographics.",
-    "applicationCategory": "UtilityPage",
+    "description": "Travel agency flight passenger manifest analyzer. Interactive passenger directory, live search, status filters, baggage KPI metrics, and CSV export.",
+    "applicationCategory": "TravelUtility",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

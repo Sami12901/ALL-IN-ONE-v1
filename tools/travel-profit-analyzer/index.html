@@ -4,14 +4,254 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Travel Profit Analyzer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Analyze overall profitability of travel operations.">
-  <meta name="keywords" content="profit, analytics, finance, free, online, tool, utility">
+  <meta name="description" content="Travel agency revenue, margin, and profitability auditor. Calculate package gross margins, operational overheads, net profit, and break-even booking volumes with interactive SVG charts.">
+  <meta name="keywords" content="travel profit analyzer, travel agency margins, tour profitability, flight markup, umrah package profit, gross margin calculator, travel agency finance">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/travel-profit-analyzer/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* Travel Profit Analyzer Specialized Styles */
+    .travel-workspace {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1100px) {
+      .travel-workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .preset-pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .preset-btn {
+      font-size: 0.8rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .preset-btn:hover, .preset-btn.active {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      background: var(--accent-glow);
+    }
+
+    /* KPI Summary Cards */
+    .travel-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .travel-kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .travel-kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      box-shadow: 0 4px 16px var(--accent-glow);
+    }
+
+    .travel-kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+
+    .travel-kpi-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .travel-kpi-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+    }
+
+    .travel-kpi-sub {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Package Table & Form */
+    .package-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .package-table th, .package-table td {
+      padding: 0.75rem 0.85rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .package-table th {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .package-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .category-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-full);
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+    }
+
+    .badge-flights { color: #60a5fa; border-color: rgba(96, 165, 250, 0.3); }
+    .badge-hotels { color: #34d399; border-color: rgba(52, 211, 153, 0.3); }
+    .badge-umrah { color: #fbbf24; border-color: rgba(251, 191, 36, 0.3); }
+    .badge-tours { color: #c084fc; border-color: rgba(192, 132, 252, 0.3); }
+    .badge-visas { color: #38bdf8; border-color: rgba(56, 189, 248, 0.3); }
+    .badge-custom { color: #a1a1aa; border-color: rgba(161, 161, 170, 0.3); }
+
+    .action-icon-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 0.3rem;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .action-icon-btn:hover {
+      color: var(--accent);
+      background: var(--bg-tertiary);
+      border-color: var(--border);
+    }
+
+    .action-icon-btn.danger:hover {
+      color: #ef4444;
+    }
+
+    .chart-view-toggle {
+      display: flex;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      padding: 0.2rem;
+      border: 1px solid var(--border);
+    }
+
+    .chart-toggle-btn {
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-full);
+      background: transparent;
+      border: none;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .chart-toggle-btn.active {
+      background: var(--accent);
+      color: #0b0f19;
+    }
+
+    .chart-canvas-box {
+      width: 100%;
+      height: 320px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .chart-tooltip {
+      position: absolute;
+      pointer-events: none;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      padding: 0.5rem 0.8rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      color: var(--text-primary);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      display: none;
+      z-index: 50;
+      max-width: 250px;
+    }
+
+    .margin-pill {
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 0.15rem 0.4rem;
+      border-radius: var(--radius-sm);
+      display: inline-block;
+    }
+
+    .margin-high {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+    }
+
+    .margin-medium {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+    }
+
+    .margin-low {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,28 +267,259 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Travel Profit Analyzer</h1>
-        <p class="tool-description">Analyze overall profitability of travel operations.</p>
+        <p class="tool-description">
+          Financial revenue, unit cost, and profit margin auditor for travel agencies and tour operators. Monitor package economics, operational overheads, break-even booking volumes, and interactive visual margin charts.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Travel Profit Analyzer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Analyze overall profitability of travel operations.</div>
-            <div><strong>Inputs:</strong> profit, analytics, finance</div>
-            <div><strong>Category:</strong> travel</div>
-          </div>
+      <!-- Presets & Global Currency Bar -->
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.25rem;">
+        <div class="preset-pill-group" style="margin-bottom: 0;">
+          <span style="font-size: 0.8rem; color: var(--text-tertiary); display: flex; align-items: center; margin-right: 0.5rem;">Agency Templates:</span>
+          <button type="button" class="preset-btn" data-preset="umrah-hajj">🕋 Hajj & Umrah Agency</button>
+          <button type="button" class="preset-btn" data-preset="leisure-flights">✈️ Flights & Leisure Agency</button>
+          <button type="button" class="preset-btn" data-preset="corporate-tours">🌍 Corporate & Group Tours</button>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <label for="currency-select" style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Currency:</label>
+          <select id="currency-select" class="form-select" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+            <option value="$" selected>USD ($)</option>
+            <option value="SAR ">SAR (﷼)</option>
+            <option value="AED ">AED (د.إ)</option>
+            <option value="£">GBP (£)</option>
+            <option value="€">EUR (€)</option>
+            <option value="C$">CAD ($)</option>
+            <option value="A$">AUD ($)</option>
+            <option value="₹">INR (₹)</option>
+            <option value="৳">BDT (৳)</option>
+          </select>
+        </div>
       </div>
-    
+
+      <!-- Hero KPI Summary Cards -->
+      <div class="travel-kpi-grid">
+        <div class="travel-kpi-card">
+          <span class="travel-kpi-label">Gross Revenue</span>
+          <span class="travel-kpi-value" id="kpi-gross-revenue">$0</span>
+          <span class="travel-kpi-sub" id="kpi-total-bookings">0 Total Bookings</span>
+        </div>
+
+        <div class="travel-kpi-card">
+          <span class="travel-kpi-label">Cost of Sales (COGS)</span>
+          <span class="travel-kpi-value" id="kpi-cost-sales">$0</span>
+          <span class="travel-kpi-sub" id="kpi-cost-ratio">0.0% of revenue</span>
+        </div>
+
+        <div class="travel-kpi-card">
+          <span class="travel-kpi-label">Gross Profit</span>
+          <span class="travel-kpi-value" id="kpi-gross-profit">$0</span>
+          <span class="travel-kpi-sub" id="kpi-gross-margin">Gross Margin: 0.0%</span>
+        </div>
+
+        <div class="travel-kpi-card">
+          <span class="travel-kpi-label">Net Profit (After Overhead)</span>
+          <span class="travel-kpi-value" id="kpi-net-profit" style="color: #34d399;">$0</span>
+          <span class="travel-kpi-sub" id="kpi-net-margin">Net Margin: 0.0%</span>
+        </div>
+
+        <div class="travel-kpi-card">
+          <span class="travel-kpi-label">Avg Ticket Value (ATV)</span>
+          <span class="travel-kpi-value" id="kpi-atv">$0</span>
+          <span class="travel-kpi-sub">Avg revenue per booking</span>
+        </div>
+
+        <div class="travel-kpi-card">
+          <span class="travel-kpi-label">Break-Even Bookings</span>
+          <span class="travel-kpi-value" id="kpi-breakeven">0 Pax</span>
+          <span class="travel-kpi-sub" id="kpi-breakeven-rev">To cover overheads</span>
+        </div>
+      </div>
+
+      <!-- Main Workspace: Left (Packages & Table), Right (Visualizer & Overheads) -->
+      <div class="travel-workspace">
+        
+        <!-- Left Column: Package Management -->
+        <div class="tool-panel glass-panel">
+          
+          <!-- Package Creator Header & Form -->
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;">
+            <div class="panel-title" style="border: none; margin: 0; padding: 0;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              Travel Packages & Bookings
+            </div>
+            <span id="package-count-badge" style="font-size: 0.8rem; background: var(--bg-tertiary); padding: 0.25rem 0.6rem; border-radius: var(--radius-full); border: 1px solid var(--border); color: var(--text-secondary);">
+              0 Packages
+            </span>
+          </div>
+
+          <!-- Add Package Form -->
+          <form id="add-package-form" style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem; margin-top: 0.5rem;">
+            <div style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); margin-bottom: 0.75rem;">
+              + Add Booking Package / Line Item
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 2fr 1.2fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+              <div class="form-group">
+                <label for="pkg-name">Package / Item Name</label>
+                <input type="text" id="pkg-name" class="form-input" placeholder="e.g. VIP Umrah 14-Days Makkah & Madinah" required>
+              </div>
+              <div class="form-group">
+                <label for="pkg-category">Category</label>
+                <select id="pkg-category" class="form-select">
+                  <option value="Umrah">🕋 Umrah & Hajj</option>
+                  <option value="Flights">✈️ Flights</option>
+                  <option value="Hotels">🏨 Hotels & Stays</option>
+                  <option value="Group Tours">🌍 Group Tours</option>
+                  <option value="Visas">📑 Visas & Insurance</option>
+                  <option value="Custom">🎒 Custom Package</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 0.75rem; align-items: flex-end;">
+              <div class="form-group">
+                <label for="pkg-cost">Cost Price (COGS)</label>
+                <input type="number" id="pkg-cost" class="form-input" min="0" step="10" placeholder="1200" required>
+              </div>
+              <div class="form-group">
+                <label for="pkg-price">Selling Price</label>
+                <input type="number" id="pkg-price" class="form-input" min="0" step="10" placeholder="1650" required>
+              </div>
+              <div class="form-group">
+                <label for="pkg-volume">Bookings (Pax)</label>
+                <input type="number" id="pkg-volume" class="form-input" min="1" step="1" value="10" required>
+              </div>
+              <button type="submit" class="btn btn-primary" style="height: 42px; padding: 0 1.25rem;">
+                Add Package
+              </button>
+            </div>
+          </form>
+
+          <!-- Filter, Search & Table Toolbar -->
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem; margin-top: 1rem;">
+            <div style="display: flex; gap: 0.5rem; flex: 1; min-width: 200px;">
+              <input type="text" id="filter-search" class="form-input" placeholder="Search packages..." style="font-size: 0.85rem; padding: 0.4rem 0.75rem;">
+              <select id="filter-category" class="form-select" style="width: auto; font-size: 0.85rem; padding: 0.4rem 0.75rem;">
+                <option value="ALL">All Categories</option>
+                <option value="Umrah">Umrah & Hajj</option>
+                <option value="Flights">Flights</option>
+                <option value="Hotels">Hotels</option>
+                <option value="Group Tours">Group Tours</option>
+                <option value="Visas">Visas</option>
+                <option value="Custom">Custom</option>
+              </select>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="button" id="btn-export-csv" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.75rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                CSV Export
+              </button>
+              <button type="button" id="btn-clear-packages" class="btn btn-secondary" title="Clear All Packages" style="font-size: 0.8rem; padding: 0.4rem 0.75rem;">
+                Clear All
+              </button>
+            </div>
+          </div>
+
+          <!-- Packages Table -->
+          <div class="table-responsive" style="margin-top: 0.75rem; max-height: 480px; overflow-y: auto;">
+            <table class="package-table">
+              <thead>
+                <tr>
+                  <th>Package Name</th>
+                  <th>Cost</th>
+                  <th>Selling</th>
+                  <th>Margin %</th>
+                  <th>Bookings</th>
+                  <th>Total Profit</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="package-table-body">
+                <!-- Populated via script.js -->
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Visual Charts & Operational Overhead Auditor -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Visual Chart Card -->
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <div class="panel-title" style="margin: 0; padding: 0; border: none;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                Financial Analytics Chart
+              </div>
+              
+              <div class="chart-view-toggle">
+                <button type="button" class="chart-toggle-btn active" id="btn-view-bar">Revenue vs Cost</button>
+                <button type="button" class="chart-toggle-btn" id="btn-view-donut">Profit Share</button>
+              </div>
+            </div>
+
+            <!-- SVG Chart Box -->
+            <div class="chart-canvas-box" id="chart-canvas-box">
+              <svg id="travel-chart-svg" style="width: 100%; height: 100%;" viewBox="0 0 380 300" preserveAspectRatio="xMidYMid meet">
+                <!-- Rendered dynamically -->
+              </svg>
+              <div id="chart-tooltip" class="chart-tooltip"></div>
+            </div>
+
+            <!-- Chart Category Legend -->
+            <div id="chart-legend" style="display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; margin-top: 0.5rem; font-size: 0.75rem;">
+              <!-- Dynamic legend tags -->
+            </div>
+          </div>
+
+          <!-- Operational Overhead Management -->
+          <div class="tool-panel glass-panel">
+            <div class="panel-title" style="margin-bottom: 0.5rem;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Operational Overheads & Fixed Costs
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              Monthly agency fixed expenditures deducted from gross profit to compute net operational margin.
+            </p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <label for="overhead-salaries">Staff Salaries & Ops</label>
+                <input type="number" id="overhead-salaries" class="form-input overhead-input" min="0" step="100" value="4500">
+              </div>
+              <div class="form-group">
+                <label for="overhead-rent">Office Rent & Utilities</label>
+                <input type="number" id="overhead-rent" class="form-input overhead-input" min="0" step="100" value="1800">
+              </div>
+              <div class="form-group">
+                <label for="overhead-marketing">Marketing & Ad Campaigns</label>
+                <input type="number" id="overhead-marketing" class="form-input overhead-input" min="0" step="100" value="1500">
+              </div>
+              <div class="form-group">
+                <label for="overhead-tech">GDS & Software (Amadeus/Sabre)</label>
+                <input type="number" id="overhead-tech" class="form-input overhead-input" min="0" step="50" value="700">
+              </div>
+            </div>
+
+            <div style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px dashed var(--border); display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">Total Monthly Overhead:</span>
+              <span id="overhead-total-label" style="font-size: 1.1rem; font-weight: 800; color: #f87171; font-family: monospace;">$8,500</span>
+            </div>
+
+            <div style="margin-top: 0.75rem;">
+              <button type="button" id="btn-copy-summary" class="btn btn-secondary" style="width: 100%; font-size: 0.85rem; padding: 0.5rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copy Executive Profit Audit
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   </main>
 
@@ -62,8 +533,8 @@
     "@type": "WebApplication",
     "name": "Travel Profit Analyzer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/travel-profit-analyzer/",
-    "description": "Analyze overall profitability of travel operations.",
-    "applicationCategory": "UtilityPage",
+    "description": "Travel agency revenue, margin, and profitability auditor with package unit economics, operational overheads, and interactive SVG breakdown charts.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

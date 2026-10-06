@@ -3,15 +3,384 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Color Name Finder - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Find closest names for custom hex code inputs.">
-  <meta name="keywords" content="color, name, hex, match, free, online, tool, utility">
+  <title>Color Name Finder - 1500+ Named Shades & Closest Match Engine - ALL IN ONE</title>
+  <meta name="description" content="Discover exact and closest matching color names from an extensive 1500+ shade database. Calculate Euclidean color distance ΔE, view RGB, HSL, luminance, and similar shades with 1-click copy.">
+  <meta name="keywords" content="color name finder, name that color, hex color name, color matcher, delta E color distance, closest color, rgb, hsl, luminance, swatch, copy hex">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/color-name-finder/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .finder-hero {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 900px) {
+      .finder-hero {
+        grid-template-columns: 340px 1fr;
+      }
+    }
+
+    .input-glass-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .color-input-combo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.4rem 0.65rem;
+      transition: var(--transition);
+    }
+    .color-input-combo:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .picker-wrap {
+      position: relative;
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+    }
+    .picker-wrap input[type="color"] {
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      width: 60px;
+      height: 60px;
+      border: none;
+      cursor: pointer;
+      background: transparent;
+    }
+
+    .hex-text-input {
+      background: transparent;
+      border: none;
+      font-family: monospace;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      outline: none;
+      width: 100%;
+      letter-spacing: 0.05em;
+    }
+
+    .quick-preset-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .color-preset-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.785rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .color-preset-pill:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+    .pill-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Result Main Card */
+    .result-main-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .swatch-showcase {
+      min-height: 180px;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      padding: 1.5rem;
+      transition: background-color 0.25s ease;
+      background-image: 
+        linear-gradient(45deg, rgba(0,0,0,0.04) 25%, transparent 25%), 
+        linear-gradient(-45deg, rgba(0,0,0,0.04) 25%, transparent 25%), 
+        linear-gradient(45deg, transparent 75%, rgba(0,0,0,0.04) 75%), 
+        linear-gradient(-45deg, transparent 75%, rgba(0,0,0,0.04) 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    }
+
+    .swatch-split-compare {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-md);
+      padding: 0.5rem 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.75rem;
+      color: #ffffff;
+      font-weight: 600;
+    }
+    .split-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .split-chip {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.4);
+    }
+
+    .swatch-overlay-info {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .color-name-headline {
+      font-family: var(--font-display);
+      font-size: 2.35rem;
+      font-weight: 700;
+      line-height: 1.1;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.25);
+    }
+
+    .match-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+      width: fit-content;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .badge-exact {
+      background: rgba(16, 185, 129, 0.25);
+      border: 1px solid #10b981;
+      color: #10b981;
+    }
+    .badge-approx {
+      background: rgba(245, 158, 11, 0.25);
+      border: 1px solid #f59e0b;
+      color: #f59e0b;
+    }
+
+    .specs-grid {
+      padding: 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .spec-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      position: relative;
+    }
+    .spec-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .spec-value {
+      font-family: monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      word-break: break-all;
+    }
+    .spec-copy-btn {
+      position: absolute;
+      top: 0.6rem;
+      right: 0.6rem;
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 0.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+    }
+    .spec-copy-btn:hover {
+      color: var(--accent);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    /* Similar Shades Section */
+    .similar-shades-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 0.85rem;
+      margin-top: 1rem;
+    }
+    .shade-item-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .shade-item-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .shade-swatch {
+      height: 48px;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      width: 100%;
+    }
+    .shade-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .shade-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .shade-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+    .delta-e-tag {
+      font-size: 0.7rem;
+      padding: 0.1rem 0.35rem;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-sm);
+      color: var(--text-tertiary);
+    }
+
+    /* Dictionary Search Section */
+    .dictionary-search-box {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .explorer-results {
+      max-height: 380px;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.65rem;
+      padding-right: 0.5rem;
+    }
+    .explorer-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0.75rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .explorer-row:hover {
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+    }
+    .explorer-swatch {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.15);
+      flex-shrink: 0;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,43 +395,189 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Color Name Finder</h1>
-        <p class="tool-description">Find closest names for custom hex code inputs.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Color Name Finder</h1>
+        <p class="tool-description">Named color discovery engine. Enter any HEX code or pick a shade to discover exact and closest names from our 1,566+ curated color database with Euclidean distance (&Delta;E) analysis.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Color Name Finder</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Find closest names for custom hex code inputs.</div>
-            <div><strong>Inputs:</strong> color, name, hex, match</div>
-            <div><strong>Category:</strong> color</div>
+      <!-- Main Workspace -->
+      <div class="finder-hero">
+        
+        <!-- Left: Input & Presets -->
+        <div class="input-glass-card">
+          <div class="form-group">
+            <label for="hex-text-input">Color Input (HEX)</label>
+            <div class="color-input-combo">
+              <div class="picker-wrap" title="Open Native Color Picker">
+                <input type="color" id="native-color-picker" value="#3b82f6" aria-label="Color Picker">
+              </div>
+              <span style="font-weight: 700; color: var(--text-tertiary); font-size: 1.1rem;">#</span>
+              <input type="text" id="hex-text-input" class="hex-text-input" value="3B82F6" maxlength="7" spellcheck="false" placeholder="3B82F6">
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="random-color-btn" class="btn btn-secondary" style="flex: 1; font-size: 0.85rem; padding: 0.6rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.35rem;"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+              Random Color
+            </button>
+            <button id="copy-summary-btn" class="btn btn-secondary" style="padding: 0.6rem 0.85rem;" title="Copy Color Summary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+
+          <div class="form-group" style="margin-top: 0.5rem;">
+            <label>Popular Creative Shades</label>
+            <div class="quick-preset-pills" id="preset-pills-list">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">
+            <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">How matching works:</strong>
+            Searches all 1,566 colors using human-perception weighted Euclidean distance (&Delta;E). If &Delta;E = 0, you have an exact match!
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right: Primary Result Card -->
+        <div class="result-main-card">
+          <!-- Live Swatch Area -->
+          <div class="swatch-showcase" id="main-swatch-display">
+            <!-- Split compare chip if approximate -->
+            <div class="swatch-split-compare" id="split-compare-box" style="display: none;">
+              <span class="split-indicator"><span class="split-chip" id="split-input-chip"></span> Input</span>
+              <span style="opacity: 0.4;">|</span>
+              <span class="split-indicator"><span class="split-chip" id="split-named-chip"></span> Match</span>
+            </div>
+
+            <div class="swatch-overlay-info">
+              <span class="match-status-badge badge-exact" id="match-status-badge">Exact Match</span>
+              <div class="color-name-headline" id="matched-color-name">Dodger Blue</div>
+              <div style="font-size: 0.9rem; opacity: 0.9; font-weight: 500;" id="matched-shade-category">Standard Vibrant Blue</div>
+            </div>
+          </div>
+
+          <!-- Color Technical Specs Grid -->
+          <div class="specs-grid">
+            <div class="spec-card">
+              <span class="spec-label">Name</span>
+              <span class="spec-value" id="spec-name-val">Dodger Blue</span>
+              <button class="spec-copy-btn" data-copy="name" title="Copy Name">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </button>
+            </div>
+
+            <div class="spec-card">
+              <span class="spec-label">Input HEX</span>
+              <span class="spec-value" id="spec-input-hex-val">#3B82F6</span>
+              <button class="spec-copy-btn" data-copy="input-hex" title="Copy Input HEX">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </button>
+            </div>
+
+            <div class="spec-card">
+              <span class="spec-label">Named HEX</span>
+              <span class="spec-value" id="spec-named-hex-val">#3B82F6</span>
+              <button class="spec-copy-btn" data-copy="named-hex" title="Copy Named HEX">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </button>
+            </div>
+
+            <div class="spec-card">
+              <span class="spec-label">RGB</span>
+              <span class="spec-value" id="spec-rgb-val">rgb(59, 130, 246)</span>
+              <button class="spec-copy-btn" data-copy="rgb" title="Copy RGB">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </button>
+            </div>
+
+            <div class="spec-card">
+              <span class="spec-label">HSL</span>
+              <span class="spec-value" id="spec-hsl-val">hsl(217, 91%, 60%)</span>
+              <button class="spec-copy-btn" data-copy="hsl" title="Copy HSL">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </button>
+            </div>
+
+            <div class="spec-card">
+              <span class="spec-label">Luminance</span>
+              <span class="spec-value" id="spec-lum-val">22.8%</span>
+              <button class="spec-copy-btn" data-copy="lum" title="Copy Luminance">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </button>
+            </div>
+
+            <div class="spec-card">
+              <span class="spec-label">Distance (&Delta;E)</span>
+              <span class="spec-value" id="spec-delta-val">0.0 (Exact)</span>
+            </div>
+
+            <div class="spec-card">
+              <span class="spec-label">Contrast Text</span>
+              <span class="spec-value" id="spec-contrast-val">#FFFFFF (Light)</span>
+            </div>
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div style="padding: 1.25rem 1.5rem; display: flex; flex-wrap: wrap; gap: 0.75rem; background: var(--bg-tertiary);">
+            <button class="btn btn-secondary" id="copy-css-var-btn" style="font-size: 0.825rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+              Copy CSS Variable
+            </button>
+            <button class="btn btn-secondary" id="copy-hex-direct-btn" style="font-size: 0.825rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Named HEX
+            </button>
+          </div>
+        </div>
+
       </div>
-    
+
+      <!-- Section: Similar Named Shades -->
+      <div class="tool-panel glass-panel" style="margin-top: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+          <h2 class="panel-title" style="margin-bottom: 0;">Similar Named Shades</h2>
+          <span style="font-size: 0.8rem; color: var(--text-tertiary);">Ranked by lowest Euclidean perceptual distance (&Delta;E)</span>
+        </div>
+        <p style="color: var(--text-secondary); font-size: 0.875rem;">Closest named alternatives from the database. Click any card to set as active color.</p>
+        <div class="similar-shades-grid" id="similar-shades-container">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Section: Full Color Database Explorer -->
+      <div class="tool-panel glass-panel" style="margin-top: 1.5rem;">
+        <div class="panel-title">Explore 1,566+ Named Colors</div>
+        <p style="color: var(--text-secondary); font-size: 0.875rem;">Search through all registered named colors in the database by name or hex code.</p>
+        <div class="dictionary-search-box">
+          <input type="text" id="db-search-input" class="form-input" placeholder="Filter by name (e.g. coral, lavender, sapphire, emerald, sunset)..." style="flex: 1;">
+          <button id="db-search-clear" class="btn btn-secondary">Clear</button>
+        </div>
+        <div style="font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 0.5rem;" id="db-search-count">Showing 1,566 colors</div>
+        <div class="explorer-results" id="db-explorer-list">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- Toast Notification Element -->
+  <div id="toast" class="toast">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">Copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Color Name Finder",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/color-name-finder/",
-    "description": "Find closest names for custom hex code inputs.",
+    "description": "Find closest names for custom hex code inputs using Euclidean color distance against 1,500+ color names.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

@@ -3,15 +3,162 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile Circle Cropper - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Crops images into circular formats for avatars.">
-  <meta name="keywords" content="crop, circle, avatar, profile, image, free, online, tool, utility">
+  <title>Profile Circle Cropper & Avatar Maker - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Crop profile photos and avatars into perfect circles. Pan, zoom, rotate, add solid or gradient luxury borders, and export high-resolution transparent circular PNGs.">
+  <meta name="keywords" content="circle cropper, avatar cropper, round photo maker, profile picture crop, circular avatar, transparent png crop, free online tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/circle-cropper/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .cropper-layout-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .cropper-layout-grid {
+        grid-template-columns: 1.25fr 0.75fr;
+      }
+    }
+
+    /* Interactive Viewport Canvas */
+    .crop-viewport-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      max-width: 460px;
+      margin: 0 auto;
+      background: #090d16;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border);
+      touch-action: none;
+      cursor: grab;
+      user-select: none;
+    }
+    .crop-viewport-wrapper:active {
+      cursor: grabbing;
+    }
+    #viewport-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Controls Bar */
+    .controls-group {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .border-tabs {
+      display: flex;
+      gap: 0.35rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.25rem;
+      border-radius: var(--radius-sm);
+    }
+    .border-tab-btn {
+      flex: 1;
+      padding: 0.45rem 0.65rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .border-tab-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .gradient-picker-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .gradient-pill {
+      height: 36px;
+      border-radius: var(--radius-sm);
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .gradient-pill:hover {
+      transform: scale(1.05);
+    }
+    .gradient-pill.active {
+      border-color: #ffffff;
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+    }
+
+    /* Avatar Preview Showcase */
+    .preview-showcase {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      padding: 1.25rem;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    .avatar-preview-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .avatar-circle-display {
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      transition: var(--transition);
+    }
+
+    .toast-popup {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      color: var(--text);
+      font-size: 0.875rem;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .toast-popup.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,31 +173,160 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Profile Circle Cropper</h1>
-        <p class="tool-description">Crops images into circular formats for avatars.</p>
+        <h1>Profile Circle Cropper & Avatar Maker</h1>
+        <p class="tool-description">Create circular profile pictures and avatars for Instagram, Discord, LinkedIn, and Twitter. Drag & pan, zoom up to 5x, rotate, apply luxury border rings, and download as transparent PNGs.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Profile Circle Cropper</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Crops images into circular formats for avatars.</div>
-            <div><strong>Inputs:</strong> crop, circle, avatar, profile, image</div>
-            <div><strong>Category:</strong> social</div>
+      <!-- File Upload & Drop Zone -->
+      <div id="drop-zone" class="file-drag-area" style="padding: 1.75rem; margin-bottom: 1rem;">
+        <input type="file" id="image-file-input" accept="image/png, image/jpeg, image/webp" style="display: none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+        <div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.25rem; color: var(--text-primary);">
+          Drag & Drop your photo here or <span style="color: var(--accent); text-decoration: underline; cursor: pointer;" id="browse-btn">browse file</span>
+        </div>
+        <p style="font-size: 0.825rem; color: var(--text-tertiary); margin-bottom: 0.75rem;">Supports PNG, JPG, JPEG, and WebP (Up to 25MB)</p>
+        <button id="btn-load-sample" class="btn btn-outline" style="font-size: 0.8rem; padding: 0.35rem 0.85rem;">Load Sample Portrait</button>
+      </div>
+
+      <!-- Main Cropper Grid -->
+      <div class="cropper-layout-grid">
+        <!-- Canvas Viewport Panel -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+            <h2 class="panel-title" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">Interactive Viewport</h2>
+            <span style="font-size: 0.8rem; color: var(--text-tertiary);">Drag to reposition photo</span>
+          </div>
+
+          <!-- Interactive Viewport -->
+          <div class="crop-viewport-wrapper" id="crop-viewport-wrapper">
+            <canvas id="viewport-canvas"></canvas>
+          </div>
+
+          <!-- Transform Controls -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem;">
+            <div style="display: flex; gap: 0.5rem;">
+              <button id="btn-rotate-left" class="btn btn-outline" title="Rotate 90° Left" style="padding: 0.5rem;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+              </button>
+              <button id="btn-rotate-right" class="btn btn-outline" title="Rotate 90° Right" style="padding: 0.5rem;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+              </button>
+              <button id="btn-flip-h" class="btn btn-outline" title="Flip Horizontal" style="font-size: 0.8rem; padding: 0.5rem 0.75rem;">Flip H</button>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button id="btn-center-img" class="btn btn-outline" style="font-size: 0.8rem;">Center & Fit</button>
+              <button id="btn-reset-all" class="btn btn-outline" style="font-size: 0.8rem;">Reset</button>
+            </div>
+          </div>
+
+          <!-- Zoom Slider -->
+          <div class="form-group" style="margin-top: 0.75rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.825rem; color: var(--text-secondary); margin-bottom: 0.25rem;">
+              <label for="zoom-slider">Zoom Factor</label>
+              <span id="zoom-value" style="font-weight: 700; color: var(--accent);">1.0x</span>
+            </div>
+            <div class="range-group">
+              <input type="range" id="zoom-slider" class="range-slider" min="1.0" max="5.0" step="0.05" value="1.0">
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Customization & Export Sidebar -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">Avatar Styling & Export</h2>
+
+          <!-- Border Options -->
+          <div class="controls-group">
+            <div style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-tertiary);">Border Style</div>
+            <div class="border-tabs">
+              <button class="border-tab-btn active" data-border="none">None</button>
+              <button class="border-tab-btn" data-border="solid">Solid Outline</button>
+              <button class="border-tab-btn" data-border="gradient">Luxury Ring</button>
+            </div>
+
+            <!-- Solid Border Controls -->
+            <div id="solid-border-controls" style="display: none; flex-direction: column; gap: 0.75rem;">
+              <div class="form-group">
+                <label for="border-color-picker">Border Color</label>
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                  <input type="color" id="border-color-picker" class="form-input" value="#4e85bf" style="padding: 0.2rem; height: 38px; width: 60px; cursor: pointer;">
+                  <input type="text" id="border-color-text" class="form-input" value="#4e85bf" style="font-family: monospace; font-size: 0.85rem;">
+                </div>
+              </div>
+            </div>
+
+            <!-- Gradient Ring Controls -->
+            <div id="gradient-border-controls" style="display: none; flex-direction: column; gap: 0.75rem;">
+              <label style="font-size: 0.825rem; font-weight: 600; color: var(--text-secondary);">Select Luxury Gradient</label>
+              <div class="gradient-picker-grid">
+                <div class="gradient-pill active" data-gradient="gold" style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);" title="Golden Luxury"></div>
+                <div class="gradient-pill" data-gradient="cyberpunk" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" title="Cyberpunk Neon"></div>
+                <div class="gradient-pill" data-gradient="royalblue" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);" title="Royal Blue"></div>
+                <div class="gradient-pill" data-gradient="emerald" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);" title="Emerald Glow"></div>
+                <div class="gradient-pill" data-gradient="sunset" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);" title="Neon Sunset"></div>
+                <div class="gradient-pill" data-gradient="purple" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" title="Deep Purple"></div>
+              </div>
+            </div>
+
+            <!-- Border Width Slider -->
+            <div id="border-width-container" style="display: none; flex-direction: column; gap: 0.25rem;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.825rem; color: var(--text-secondary);">
+                <span>Ring Thickness</span>
+                <span id="border-width-value" style="font-weight: 700; color: var(--accent);">6px</span>
+              </div>
+              <input type="range" id="border-width-slider" class="range-slider" min="2" max="24" step="1" value="6">
+            </div>
+          </div>
+
+          <!-- Output Resolution -->
+          <div class="form-group">
+            <label for="export-size-select">Output Canvas Resolution</label>
+            <select id="export-size-select" class="form-select">
+              <option value="256">256 x 256 px (Twitter / Discord Small)</option>
+              <option value="512" selected>512 x 512 px (HD Profile - Recommended)</option>
+              <option value="1024">1024 x 1024 px (Ultra HD Master)</option>
+            </select>
+          </div>
+
+          <!-- Multi-size Avatar Preview -->
+          <div style="margin-top: 0.5rem;">
+            <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-tertiary); margin-bottom: 0.5rem; text-transform: uppercase;">
+              Feed Profile Preview
+            </div>
+            <div class="preview-showcase">
+              <div class="avatar-preview-item">
+                <div id="preview-avatar-lg" class="avatar-circle-display" style="width: 72px; height: 72px;"></div>
+                <span style="font-size: 0.7rem; color: var(--text-tertiary);">72px</span>
+              </div>
+              <div class="avatar-preview-item">
+                <div id="preview-avatar-md" class="avatar-circle-display" style="width: 48px; height: 48px;"></div>
+                <span style="font-size: 0.7rem; color: var(--text-tertiary);">48px</span>
+              </div>
+              <div class="avatar-preview-item">
+                <div id="preview-avatar-sm" class="avatar-circle-display" style="width: 32px; height: 32px;"></div>
+                <span style="font-size: 0.7rem; color: var(--text-tertiary);">32px</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Export Actions -->
+          <div style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem;">
+            <button id="btn-download-png" class="btn btn-primary" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.85rem;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download Circular PNG
+            </button>
+            <p style="font-size: 0.75rem; color: var(--text-tertiary); text-align: center;">
+              ✓ Rendered with 100% transparent alpha channel background
+            </p>
+          </div>
+        </div>
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Toast Notification -->
+  <div id="app-toast" class="toast-popup">Image downloaded!</div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>

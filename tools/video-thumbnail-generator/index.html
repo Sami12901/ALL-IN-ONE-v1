@@ -4,14 +4,390 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Video Thumbnail Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Extract high-quality thumbnails from videos at custom timestamps.">
-  <meta name="keywords" content="video, media, video thumbnail generator, free, online, tool, utility">
+  <meta name="description" content="Create high-impact YouTube and social media video thumbnails from any video frame with custom typography, attention badges, and preset styles.">
+  <meta name="keywords" content="video thumbnail generator, youtube thumbnail maker, video frame grabber, freeze frame, thumbnail studio, online video tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/video-thumbnail-generator/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Montserrat:wght@700;900&display=swap">
   
+  <style>
+    /* Scoped Styles for Video Thumbnail Studio */
+    .studio-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+    @media (min-width: 1024px) {
+      .studio-grid {
+        grid-template-columns: 1.15fr 0.85fr;
+      }
+    }
+    
+    .canvas-preview-panel {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .canvas-viewport-wrap {
+      position: relative;
+      background: radial-gradient(circle at center, #1b2432 0%, #0d1117 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      overflow: hidden;
+    }
+
+    .canvas-viewport-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.25rem 0.5rem 0.6rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 0.75rem;
+    }
+
+    .canvas-viewport-header .badge-pill {
+      background: rgba(78, 133, 191, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(78, 133, 191, 0.3);
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      font-size: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .canvas-container-box {
+      width: 100%;
+      max-width: 100%;
+      position: relative;
+      aspect-ratio: 16 / 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+    }
+
+    #thumbnail-canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* Video Scrubbing Bar */
+    .scrubber-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .scrubber-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+
+    .scrubber-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .scrubber-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 0.4rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: var(--transition);
+    }
+
+    .scrubber-btn:hover {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .scrubber-btn.play-btn {
+      background: var(--accent-gradient);
+      color: #fff;
+      border: none;
+      padding: 0.4rem 1.1rem;
+    }
+
+    .scrubber-slider {
+      width: 100%;
+      appearance: none;
+      height: 8px;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .scrubber-slider::-webkit-slider-thumb {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent-glow);
+      cursor: grab;
+      transition: transform 0.1s ease;
+    }
+
+    .scrubber-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    /* Drop Area */
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      background: var(--bg-secondary);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+    }
+
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    /* Presets Strip */
+    .preset-card-group {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+    }
+
+    @media (max-width: 600px) {
+      .preset-card-group {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .preset-card-btn {
+      padding: 0.65rem 0.5rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      transition: var(--transition);
+      text-align: center;
+    }
+
+    .preset-card-btn .preset-icon {
+      font-size: 1.25rem;
+    }
+
+    .preset-card-btn:hover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+      transform: translateY(-2px);
+    }
+
+    .preset-card-btn.active {
+      border-color: var(--accent);
+      background: rgba(78, 133, 191, 0.2);
+      color: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    /* Tabs / Accordion inside sidebar */
+    .sidebar-section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .sidebar-section-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin: 0;
+    }
+
+    .controls-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .controls-row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    @media (max-width: 480px) {
+      .controls-row-2, .controls-row-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .color-picker-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      padding: 0.3rem 0.6rem;
+      border-radius: var(--radius-md);
+    }
+
+    .color-picker-wrap input[type="color"] {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .color-hex-label {
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .slider-with-label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .slider-val {
+      font-family: monospace;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .export-card {
+      background: linear-gradient(145deg, rgba(78, 133, 191, 0.08) 0%, rgba(137, 170, 204, 0.04) 100%);
+      border: 1px solid rgba(78, 133, 191, 0.3);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .export-btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    @media (min-width: 600px) {
+      .export-btn-group {
+        flex-direction: row;
+      }
+      .export-btn-group .btn {
+        flex: 1;
+      }
+    }
+
+    /* Information / tips banner */
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .tip-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .tip-box svg {
+      flex-shrink: 0;
+      color: var(--accent);
+      margin-top: 0.2rem;
+    }
+
+    .tip-box h4 {
+      font-size: 0.9rem;
+      margin-bottom: 0.25rem;
+      color: var(--text-primary);
+    }
+
+    .tip-box p {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.4;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -27,30 +403,428 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Video Thumbnail Generator</h1>
-        <p class="tool-description">Extract high-quality thumbnails from videos at custom timestamps.</p>
+        <p class="tool-description">Create 1280×720 HD YouTube & social media video thumbnails. Freeze any video frame, style headlines, add attention badges, and apply creator preset banners—100% private in your browser.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Video Thumbnail Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Extract high-quality thumbnails from videos at custom timestamps.</div>
-            <div><strong>Inputs:</strong> video, media, video thumbnail generator</div>
-            <div><strong>Category:</strong> video</div>
+      <!-- Main Studio Workspace -->
+      <div class="studio-grid">
+        
+        <!-- Left: Stage & Scrubber -->
+        <div class="canvas-preview-panel">
+          
+          <!-- Drop & Select Zone -->
+          <div class="upload-zone" id="drop-zone">
+            <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+              <polygon points="23 7 16 12 23 17 23 7"></polygon>
+              <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+            </svg>
+            <div>
+              <strong style="font-size: 0.95rem; display: block; color: var(--text-primary);">Drag & drop your video file here</strong>
+              <span style="font-size: 0.825rem; color: var(--text-secondary);">Supports MP4, WebM, MOV & OGG</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-top: 0.25rem;">
+              <label for="video-file-input" class="btn btn-secondary" style="padding: 0.45rem 1rem; font-size: 0.85rem; cursor: pointer;">
+                Browse Video
+              </label>
+              <input type="file" id="video-file-input" accept="video/mp4,video/webm,video/ogg,video/quicktime,video/*" style="display: none;">
+              <button type="button" id="load-sample-btn" class="btn btn-secondary" style="padding: 0.45rem 1rem; font-size: 0.85rem;">
+                Try Sample Frame
+              </button>
+            </div>
+          </div>
+
+          <!-- Video scrubber bar (always present, activated when video is loaded) -->
+          <div class="scrubber-panel" id="scrubber-panel">
+            <div class="scrubber-header">
+              <span style="font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 0.4rem;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                Frame Scrubber
+              </span>
+              <span id="time-display" style="font-family: monospace; font-size: 0.85rem; color: var(--accent); font-weight: 700;">
+                00:00.00 / 00:00.00
+              </span>
+            </div>
+
+            <!-- Range Scrubber Slider -->
+            <input type="range" id="video-scrubber" class="scrubber-slider" min="0" max="100" value="0" step="0.01" disabled>
+
+            <!-- Playback Controls -->
+            <div class="scrubber-controls">
+              <button type="button" class="scrubber-btn" id="step-back-5" title="-5 Seconds" disabled>&laquo; -5s</button>
+              <button type="button" class="scrubber-btn" id="step-back-1" title="-1 Second" disabled>&lsaquo; -1s</button>
+              <button type="button" class="scrubber-btn" id="step-back-frame" title="Previous Frame" disabled>&ltrif; Frame</button>
+              <button type="button" class="scrubber-btn play-btn" id="btn-play-pause" title="Play / Pause" disabled>
+                <span id="play-pause-icon">&#9658;</span> Play
+              </button>
+              <button type="button" class="scrubber-btn" id="step-fwd-frame" title="Next Frame" disabled>Frame &rtrif;</button>
+              <button type="button" class="scrubber-btn" id="step-fwd-1" title="+1 Second" disabled>+1s &rsaquo;</button>
+              <button type="button" class="scrubber-btn" id="step-fwd-5" title="+5 Seconds" disabled>+5s &raquo;</button>
+            </div>
+            
+            <div id="video-meta-badge" style="display: none; font-size: 0.775rem; color: var(--text-tertiary); text-align: center;">
+              Video Loaded: <span id="meta-filename" style="color: var(--text-secondary); font-weight: 600;">sample.mp4</span> • 
+              <span id="meta-res">1920x1080</span>
+            </div>
+          </div>
+
+          <!-- 16:9 Canvas Viewport -->
+          <div class="canvas-viewport-wrap">
+            <div class="canvas-viewport-header">
+              <span style="font-weight: 600;">Thumbnail Canvas Stage</span>
+              <span class="badge-pill">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                1280 × 720 (16:9 HD)
+              </span>
+            </div>
+
+            <div class="canvas-container-box">
+              <canvas id="thumbnail-canvas" width="1280" height="720"></canvas>
+            </div>
+          </div>
+
+          <!-- Export Action Box -->
+          <div class="export-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <strong style="color: var(--text-primary); font-size: 1rem;">Export High-Res Thumbnail</strong>
+                <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Optimized for YouTube, Twitter/X, LinkedIn & Meta</p>
+              </div>
+              <button type="button" id="btn-reset" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;" title="Reset settings to default">
+                Reset
+              </button>
+            </div>
+
+            <div class="export-btn-group">
+              <button type="button" id="btn-download-png" class="btn btn-primary">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download Thumbnail PNG
+              </button>
+              <button type="button" id="btn-download-jpg" class="btn btn-secondary">
+                Download JPG (Lightweight)
+              </button>
+              <button type="button" id="btn-copy-clipboard" class="btn btn-secondary" title="Copy to clipboard">
+                Copy to Clipboard
+              </button>
+            </div>
+            <div id="export-status" style="font-size: 0.8rem; text-align: center; color: var(--accent); display: none;"></div>
+          </div>
+
+        </div>
+
+        <!-- Right: Studio Controls & Customization -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          
+          <!-- Banner Preset Styles -->
+          <div class="sidebar-section">
+            <h3 class="sidebar-section-title">
+              <span>Preset Banner Styles</span>
+              <span style="font-size: 0.75rem; font-weight: normal; color: var(--text-tertiary);">1-Click Creator Looks</span>
+            </h3>
+            
+            <div class="preset-card-group">
+              <button type="button" class="preset-card-btn active" data-preset="gaming">
+                <span class="preset-icon">&#127918;</span>
+                <span>Gaming</span>
+              </button>
+              <button type="button" class="preset-card-btn" data-preset="podcast">
+                <span class="preset-icon">&#127908;</span>
+                <span>Podcast</span>
+              </button>
+              <button type="button" class="preset-card-btn" data-preset="tech">
+                <span class="preset-icon">&#9881;&#65039;</span>
+                <span>Tech</span>
+              </button>
+              <button type="button" class="preset-card-btn" data-preset="vlog">
+                <span class="preset-icon">&#127916;</span>
+                <span>Vlog</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Main Title Settings -->
+          <div class="sidebar-section">
+            <h3 class="sidebar-section-title">
+              <span>Main Title Typography</span>
+              <span style="font-size: 0.75rem; color: var(--accent); font-weight: 600;">Headline</span>
+            </h3>
+
+            <div class="form-group">
+              <label for="input-title">Headline Text</label>
+              <input type="text" id="input-title" class="form-input" value="EPIC HIGHLIGHTS" placeholder="Enter headline text...">
+            </div>
+
+            <div class="controls-row-2">
+              <div class="form-group">
+                <label for="font-family-title">Font Family</label>
+                <select id="font-family-title" class="form-select">
+                  <option value="Anton" selected>Anton (Ultra Bold)</option>
+                  <option value="Impact">Impact (Classic)</option>
+                  <option value="Bebas Neue">Bebas Neue (Tall Display)</option>
+                  <option value="Montserrat">Montserrat (Geometric 900)</option>
+                  <option value="Inter">Inter (Modern Clean)</option>
+                  <option value="Instrument Serif">Instrument Serif (Elegant)</option>
+                  <option value="monospace">Courier (Cyber Mono)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="color-title">Text Color</label>
+                <div class="color-picker-wrap">
+                  <input type="color" id="color-title" value="#FFE600">
+                  <span class="color-hex-label" id="color-title-hex">#FFE600</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="controls-row-2">
+              <div class="slider-with-label">
+                <div class="slider-header">
+                  <span>Font Size</span>
+                  <span class="slider-val" id="val-size-title">92px</span>
+                </div>
+                <input type="range" id="size-title" class="range-slider" min="36" max="150" value="92">
+              </div>
+
+              <div class="slider-with-label">
+                <div class="slider-header">
+                  <span>Vertical Position (Y)</span>
+                  <span class="slider-val" id="val-pos-title">58%</span>
+                </div>
+                <input type="range" id="pos-title" class="range-slider" min="15" max="85" value="58">
+              </div>
+            </div>
+          </div>
+
+          <!-- Subtitle Settings -->
+          <div class="sidebar-section">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h3 class="sidebar-section-title" style="border: none; padding: 0; margin: 0;">
+                <span>Subtitle Banner</span>
+              </h3>
+              <label class="checkbox-label" style="min-height: unset; margin: 0; cursor: pointer;">
+                <input type="checkbox" id="enable-subtitle" checked>
+                <span style="font-size: 0.8rem; font-weight: 600;">Enable Subtitle</span>
+              </label>
+            </div>
+
+            <div id="subtitle-controls-body" style="display: flex; flex-direction: column; gap: 0.85rem; border-top: 1px solid var(--border); padding-top: 0.75rem;">
+              <div class="form-group">
+                <label for="input-subtitle">Subtitle Text</label>
+                <input type="text" id="input-subtitle" class="form-input" value="UNBELIEVABLE FINALE & SECRETS" placeholder="Enter secondary line...">
+              </div>
+
+              <div class="controls-row-2">
+                <div class="form-group">
+                  <label for="color-subtitle">Subtitle Color</label>
+                  <div class="color-picker-wrap">
+                    <input type="color" id="color-subtitle" value="#FFFFFF">
+                    <span class="color-hex-label" id="color-subtitle-hex">#FFFFFF</span>
+                  </div>
+                </div>
+
+                <div class="slider-with-label">
+                  <div class="slider-header">
+                    <span>Font Size</span>
+                    <span class="slider-val" id="val-size-sub">38px</span>
+                  </div>
+                  <input type="range" id="size-subtitle" class="range-slider" min="20" max="80" value="38">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Attention Badge -->
+          <div class="sidebar-section">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h3 class="sidebar-section-title" style="border: none; padding: 0; margin: 0;">
+                <span>Attention Badge</span>
+              </h3>
+              <label class="checkbox-label" style="min-height: unset; margin: 0; cursor: pointer;">
+                <input type="checkbox" id="enable-badge" checked>
+                <span style="font-size: 0.8rem; font-weight: 600;">Enable Badge</span>
+              </label>
+            </div>
+
+            <div id="badge-controls-body" style="display: flex; flex-direction: column; gap: 0.85rem; border-top: 1px solid var(--border); padding-top: 0.75rem;">
+              <div class="controls-row-2">
+                <div class="form-group">
+                  <label for="input-badge">Badge Label</label>
+                  <input type="text" id="input-badge" class="form-input" value="LEVEL 100!" placeholder="e.g. 4K HDR, NEW...">
+                </div>
+
+                <div class="form-group">
+                  <label for="badge-position">Badge Placement</label>
+                  <select id="badge-position" class="form-select">
+                    <option value="top-left">Top Left</option>
+                    <option value="top-right" selected>Top Right</option>
+                    <option value="bottom-left">Bottom Left</option>
+                    <option value="bottom-right">Bottom Right</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="controls-row-2">
+                <div class="form-group">
+                  <label for="color-badge-bg">Badge Background</label>
+                  <div class="color-picker-wrap">
+                    <input type="color" id="color-badge-bg" value="#FF0055">
+                    <span class="color-hex-label" id="color-badge-bg-hex">#FF0055</span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="color-badge-text">Badge Text</label>
+                  <div class="color-picker-wrap">
+                    <input type="color" id="color-badge-text" value="#FFFFFF">
+                    <span class="color-hex-label" id="color-badge-text-hex">#FFFFFF</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Outline, Shadows & Background Pill -->
+          <div class="sidebar-section">
+            <h3 class="sidebar-section-title">
+              <span>Text Contrast & Pill Styler</span>
+              <span style="font-size: 0.75rem; color: var(--text-tertiary);">Readability</span>
+            </h3>
+
+            <!-- Stroke / Outline -->
+            <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label class="checkbox-label" style="min-height: unset; margin: 0;">
+                  <input type="checkbox" id="enable-outline" checked>
+                  <span style="font-size: 0.85rem; font-weight: 600;">Text Outline / Stroke</span>
+                </label>
+                <div class="color-picker-wrap" style="padding: 0.15rem 0.4rem;">
+                  <input type="color" id="color-outline" value="#000000">
+                  <span class="color-hex-label" id="color-outline-hex">#000000</span>
+                </div>
+              </div>
+              <div class="slider-with-label" id="outline-slider-wrap">
+                <div class="slider-header">
+                  <span>Stroke Width</span>
+                  <span class="slider-val" id="val-stroke">10px</span>
+                </div>
+                <input type="range" id="stroke-width" class="range-slider" min="1" max="24" value="10">
+              </div>
+            </div>
+
+            <!-- Shadow -->
+            <div style="display: flex; flex-direction: column; gap: 0.6rem; border-top: 1px solid var(--border); padding-top: 0.75rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label class="checkbox-label" style="min-height: unset; margin: 0;">
+                  <input type="checkbox" id="enable-shadow" checked>
+                  <span style="font-size: 0.85rem; font-weight: 600;">Drop Shadow & Glow</span>
+                </label>
+                <div class="color-picker-wrap" style="padding: 0.15rem 0.4rem;">
+                  <input type="color" id="color-shadow" value="#000000">
+                  <span class="color-hex-label" id="color-shadow-hex">#000000</span>
+                </div>
+              </div>
+              <div class="slider-with-label" id="shadow-slider-wrap">
+                <div class="slider-header">
+                  <span>Shadow Blur</span>
+                  <span class="slider-val" id="val-shadow">18px</span>
+                </div>
+                <input type="range" id="shadow-blur" class="range-slider" min="0" max="40" value="18">
+              </div>
+            </div>
+
+            <!-- Background Pill -->
+            <div style="display: flex; flex-direction: column; gap: 0.6rem; border-top: 1px solid var(--border); padding-top: 0.75rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label class="checkbox-label" style="min-height: unset; margin: 0;">
+                  <input type="checkbox" id="enable-pill" checked>
+                  <span style="font-size: 0.85rem; font-weight: 600;">Backdrop Pill Box</span>
+                </label>
+                <div class="color-picker-wrap" style="padding: 0.15rem 0.4rem;">
+                  <input type="color" id="color-pill" value="#000000">
+                  <span class="color-hex-label" id="color-pill-hex">#000000</span>
+                </div>
+              </div>
+              <div class="slider-with-label" id="pill-slider-wrap">
+                <div class="slider-header">
+                  <span>Pill Opacity</span>
+                  <span class="slider-val" id="val-pill-opacity">65%</span>
+                </div>
+                <input type="range" id="pill-opacity" class="range-slider" min="10" max="100" value="65">
+              </div>
+            </div>
+          </div>
+
+          <!-- Video Frame Adjustments -->
+          <div class="sidebar-section">
+            <h3 class="sidebar-section-title">
+              <span>Lighting & Overlays</span>
+              <span style="font-size: 0.75rem; color: var(--text-tertiary);">Cinema Look</span>
+            </h3>
+
+            <div class="controls-row-2">
+              <label class="checkbox-label" style="min-height: unset; margin: 0;">
+                <input type="checkbox" id="enable-dark-grad" checked>
+                <span style="font-size: 0.8rem; font-weight: 600;">Bottom Dark Fade</span>
+              </label>
+              <label class="checkbox-label" style="min-height: unset; margin: 0;">
+                <input type="checkbox" id="enable-vignette" checked>
+                <span style="font-size: 0.8rem; font-weight: 600;">Vignette Corners</span>
+              </label>
+            </div>
+
+            <div class="controls-row-2" style="margin-top: 0.5rem;">
+              <div class="slider-with-label">
+                <div class="slider-header">
+                  <span>Brightness</span>
+                  <span class="slider-val" id="val-brightness">100%</span>
+                </div>
+                <input type="range" id="filter-brightness" class="range-slider" min="60" max="140" value="100">
+              </div>
+
+              <div class="slider-with-label">
+                <div class="slider-header">
+                  <span>Contrast</span>
+                  <span class="slider-val" id="val-contrast">115%</span>
+                </div>
+                <input type="range" id="filter-contrast" class="range-slider" min="70" max="150" value="115">
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Professional Guide / Tips -->
+      <div class="tips-grid">
+        <div class="tip-box">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          <div>
+            <h4>1280×720 Standard</h4>
+            <p>16:9 aspect ratio thumbnail format natively supported across YouTube, Vimeo, Facebook, and Twitter cards.</p>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+        <div class="tip-box">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          <div>
+            <h4>High Contrast CTR</h4>
+            <p>Use contrasting text outlines and background pills to ensure title text remains readable on mobile screens and search feeds.</p>
+          </div>
+        </div>
+        <div class="tip-box">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <div>
+            <h4>100% Client-Side Privacy</h4>
+            <p>Your video never leaves your browser. All frame extraction and rendering happens instantly via your local GPU/CPU.</p>
+          </div>
+        </div>
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Hidden Video Element for Frame Decoding -->
+  <video id="hidden-video" style="display: none;" playsinline muted preload="auto" crossorigin="anonymous"></video>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>

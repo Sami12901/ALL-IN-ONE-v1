@@ -3,15 +3,126 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Social Share Link Builder - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Builds sharing links for social networking portals.">
-  <meta name="keywords" content="share, links, facebook, twitter, builder, free, online, tool, utility">
+  <title>Social Share & Direct Link Builder - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Generate instant click-to-chat links and QR codes for WhatsApp, Telegram, Facebook Messenger, Twitter/X, SMS, and Email with custom pre-filled messages.">
+  <meta name="keywords" content="whatsapp link generator, telegram link builder, messenger link, click to chat, social share link, qr code generator, free online tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/social-link-builder/">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    .builder-layout-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .builder-layout-grid {
+        grid-template-columns: 1.15fr 0.85fr;
+      }
+    }
+
+    /* Platform Selection Grid */
+    .platform-selector-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .platform-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 0.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+      text-align: center;
+    }
+    .platform-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .platform-card.active {
+      border-color: var(--accent);
+      background: rgba(78, 133, 191, 0.12);
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+    .platform-card svg {
+      width: 28px;
+      height: 28px;
+    }
+    .platform-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* Message Preset Pills */
+    .template-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .template-pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.3rem 0.75rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .template-pill:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* Output Link & QR Container */
+    .qr-preview-wrapper {
+      background: #ffffff;
+      padding: 1.25rem;
+      border-radius: var(--radius-md);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      margin: 0 auto;
+    }
+
+    .toast-popup {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      color: var(--text);
+      font-size: 0.875rem;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .toast-popup.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+
+  <script src="../../assets/lib/qrious.min.js"></script>
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -26,31 +137,146 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Social Share Link Builder</h1>
-        <p class="tool-description">Builds sharing links for social networking portals.</p>
+        <h1>Social Share & Direct Link Builder</h1>
+        <p class="tool-description">Generate direct click-to-chat links, pre-filled messages, and printable QR codes for WhatsApp, Telegram, Facebook Messenger, Twitter/X, SMS, and Email.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Social Share Link Builder</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Builds sharing links for social networking portals.</div>
-            <div><strong>Inputs:</strong> share, links, facebook, twitter, builder</div>
-            <div><strong>Category:</strong> social</div>
+      <!-- Platform Selection -->
+      <div class="platform-selector-grid" role="tablist">
+        <!-- WhatsApp -->
+        <div class="platform-card active" data-platform="whatsapp">
+          <svg viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M9.53 7.03C9.36 7.03 9.08 7.09 8.84 7.35C8.6 7.61 7.92 8.25 7.92 9.54C7.92 10.83 8.86 12.08 9 12.26C9.13 12.44 10.87 15.13 13.55 16.29C14.19 16.57 14.69 16.73 15.08 16.86C15.72 17.06 16.31 17.03 16.77 16.96C17.29 16.88 18.36 16.31 18.58 15.68C18.81 15.05 18.81 14.51 18.74 14.39C18.67 14.28 18.49 14.21 18.23 14.08C17.97 13.95 16.68 13.31 16.44 13.23C16.2 13.14 16.03 13.1 15.86 13.36C15.68 13.62 15.19 14.21 15.04 14.39C14.89 14.56 14.74 14.58 14.48 14.45C14.22 14.32 13.38 14.05 12.38 13.16C11.61 12.47 11.08 11.62 10.93 11.36C10.78 11.1 10.91 10.96 11.04 10.83C11.16 10.71 11.3 10.52 11.43 10.37C11.56 10.22 11.6 10.11 11.69 9.94C11.78 9.76 11.73 9.61 11.67 9.48C11.6 9.35 11.08 8.08 10.87 7.55C10.66 7.04 10.44 7.11 10.28 7.11L9.78 7.1C9.69 7.1 9.61 7.03 9.53 7.03Z"/></svg>
+          <span class="platform-name">WhatsApp</span>
+        </div>
+
+        <!-- Telegram -->
+        <div class="platform-card" data-platform="telegram">
+          <svg viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+          <span class="platform-name">Telegram</span>
+        </div>
+
+        <!-- Messenger -->
+        <div class="platform-card" data-platform="messenger">
+          <svg viewBox="0 0 24 24" fill="#0084FF"><path d="M12 2C6.477 2 2 6.145 2 11.26c0 2.915 1.453 5.524 3.732 7.197V22l3.39-1.86c.924.256 1.903.395 2.878.395 5.523 0 10-4.145 10-9.26S17.523 2 12 2zm1.092 12.443l-2.584-2.756-5.045 2.756 5.549-5.892 2.65 2.756 4.978-2.756-5.548 5.892z"/></svg>
+          <span class="platform-name">Messenger</span>
+        </div>
+
+        <!-- Twitter / X -->
+        <div class="platform-card" data-platform="twitter">
+          <svg viewBox="0 0 24 24" fill="#ffffff"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          <span class="platform-name">Twitter / X</span>
+        </div>
+
+        <!-- SMS -->
+        <div class="platform-card" data-platform="sms">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><path d="M8 10h.01"></path><path d="M12 10h.01"></path><path d="M16 10h.01"></path></svg>
+          <span class="platform-name">SMS Text</span>
+        </div>
+
+        <!-- Email -->
+        <div class="platform-card" data-platform="email">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ea4335" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          <span class="platform-name">Email Mailto</span>
+        </div>
+      </div>
+
+      <!-- Main Work Area -->
+      <div class="builder-layout-grid">
+        <!-- Form Configuration Panel -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+            <h2 id="platform-title" class="panel-title" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">WhatsApp Configuration</h2>
+            <span id="platform-badge" class="algo-tag" style="background: rgba(37, 211, 102, 0.15); color: #25D366; border-color: rgba(37, 211, 102, 0.3);">wa.me</span>
+          </div>
+
+          <!-- Dynamic Target Identifier (Phone / Username / Email) -->
+          <div class="form-group" id="field-recipient-container">
+            <label for="input-recipient" id="label-recipient">Phone Number (with Country Code)</label>
+            <input type="text" id="input-recipient" class="form-input" placeholder="e.g. 14155552671 (no + or dashes)">
+            <span id="hint-recipient" style="font-size: 0.775rem; color: var(--text-tertiary);">Include international country code without spaces, +, or parentheses.</span>
+          </div>
+
+          <!-- Email Subject Line (Visible only for Email) -->
+          <div class="form-group" id="field-subject-container" style="display: none;">
+            <label for="input-subject">Email Subject</label>
+            <input type="text" id="input-subject" class="form-input" placeholder="e.g. Inquiry regarding your service">
+          </div>
+
+          <!-- Twitter Mode Selector (Visible only for Twitter) -->
+          <div class="form-group" id="field-twitter-mode-container" style="display: none;">
+            <label for="select-twitter-mode">Action Mode</label>
+            <select id="select-twitter-mode" class="form-select">
+              <option value="tweet" selected>Share Tweet / Post Intent</option>
+              <option value="profile">Direct Profile Link</option>
+              <option value="dm">Direct Message (Requires Numeric Recipient ID)</option>
+            </select>
+          </div>
+
+          <!-- Message Body -->
+          <div class="form-group" id="field-message-container">
+            <label for="input-message" id="label-message">Pre-filled Custom Message</label>
+            <textarea id="input-message" class="form-textarea" placeholder="Hello! I would like to get more information about your product..." style="min-height: 120px;"></textarea>
+          </div>
+
+          <!-- Message Templates -->
+          <div>
+            <span style="font-size: 0.775rem; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase;">Quick Message Presets:</span>
+            <div class="template-pills">
+              <button class="template-pill" data-template="support">Customer Support</button>
+              <button class="template-pill" data-template="booking">Book Appointment</button>
+              <button class="template-pill" data-template="pricing">Pricing Inquiry</button>
+              <button class="template-pill" data-template="collab">Partnership / Collab</button>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Generated Link & QR Code Preview Panel -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+            <h2 class="panel-title" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">Instant Link & QR</h2>
+            <span style="font-size: 0.75rem; color: var(--text-tertiary);">Real-time Sync</span>
+          </div>
+
+          <!-- Generated URL Display -->
+          <div class="form-group">
+            <label>Generated Click-to-Chat URL</label>
+            <div style="display: flex; gap: 0.5rem;">
+              <input type="text" id="output-url" class="form-input" readonly placeholder="https://..." style="font-family: monospace; font-size: 0.85rem; background: var(--bg-secondary);">
+            </div>
+          </div>
+
+          <!-- Link Actions -->
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="btn-copy-url" class="btn btn-primary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.4rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Link
+            </button>
+            <button id="btn-test-url" class="btn btn-outline" style="display: flex; align-items: center; gap: 0.4rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+              Test Link
+            </button>
+          </div>
+
+          <!-- QR Code Preview Box -->
+          <div style="margin-top: 1.25rem; display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
+            <div class="qr-preview-wrapper">
+              <canvas id="qr-canvas"></canvas>
+            </div>
+            <div style="display: flex; gap: 0.75rem; width: 100%;">
+              <button id="btn-download-qr" class="btn btn-secondary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download QR Code (PNG)
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Toast Notification -->
+  <div id="app-toast" class="toast-popup">Link copied to clipboard!</div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,7 +288,7 @@
     "@type": "WebApplication",
     "name": "Social Share Link Builder",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/social-link-builder/",
-    "description": "Builds sharing links for social networking portals.",
+    "description": "Builds direct sharing links and QR codes for social networking portals.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

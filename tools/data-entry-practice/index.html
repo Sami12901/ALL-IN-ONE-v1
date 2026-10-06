@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Data Entry Practice - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Enhance your skills with Data Entry Practice.">
-  <meta name="keywords" content="typing, keyboard, practice, free, online, tool, utility">
+  <title>Data Entry Practice - Commercial Speed Test - ALL IN ONE</title>
+  <meta name="description" content="Commercial data entry speed test simulating multi-field forms: Names, Emails, Phone Numbers, ZIP codes, and Currency. Calculates Fields-Per-Minute (FPM), accuracy, and 10-key numeric score.">
+  <meta name="keywords" content="data entry practice, 10 key test, fields per minute, fpm, commercial data entry, typing test, numpad practice, form typing">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/data-entry-practice/">
   <link rel="stylesheet" href="../../css/main.css">
@@ -14,6 +14,326 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+  <style>
+    .dep-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .dep-header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      background: rgba(78, 133, 191, 0.15);
+      border: 1px solid rgba(78, 133, 191, 0.3);
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+      width: fit-content;
+    }
+
+    .dep-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.15rem 1.35rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(12px);
+    }
+
+    .dep-controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .dep-btn-group {
+      display: inline-flex;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      padding: 0.25rem;
+      gap: 0.25rem;
+      border: 1px solid var(--border);
+    }
+
+    .dep-pill-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 0.45rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .dep-pill-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .dep-pill-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    .dep-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+    }
+
+    .dep-stat-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.15rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      transition: var(--transition);
+    }
+
+    .dep-stat-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .dep-stat-val {
+      font-size: 2.15rem;
+      font-weight: 800;
+      line-height: 1.1;
+      font-family: var(--font-display), monospace;
+      color: var(--accent);
+    }
+
+    .dep-stat-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-tertiary);
+      font-weight: 600;
+    }
+
+    .dep-progress-container {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .dep-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--accent-gradient);
+      transition: width 0.15s ease;
+    }
+
+    /* Dual Panels: Target Reference Card vs Interactive Input Form */
+    .dep-split-stage {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 900px) {
+      .dep-split-stage {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .dep-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .dep-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dep-panel-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    /* Reference Card Items */
+    .dep-ref-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .dep-ref-item {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      transition: all 0.2s ease;
+    }
+
+    .dep-ref-item.active-ref {
+      border-color: var(--accent);
+      background: rgba(78, 133, 191, 0.12);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .dep-ref-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+      font-weight: 700;
+    }
+
+    .dep-ref-val {
+      font-family: 'Fira Code', Consolas, monospace;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      word-break: break-all;
+    }
+
+    /* Interactive Form Inputs */
+    .dep-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .dep-form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .dep-form-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .dep-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 2px solid var(--border);
+      color: var(--text-primary);
+      font-family: 'Fira Code', Consolas, monospace;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .dep-input:focus {
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+      box-shadow: 0 0 14px var(--accent-glow);
+    }
+
+    .dep-input.input-matched {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.08);
+    }
+
+    .dep-input.input-error {
+      border-color: #ef4444;
+      background: rgba(239, 68, 68, 0.08);
+    }
+
+    .dep-hint-text {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Modal */
+    .dep-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .dep-modal-backdrop.show {
+      display: flex;
+      opacity: 1;
+    }
+
+    .dep-modal-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      max-width: 640px;
+      width: 100%;
+      padding: 2.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      transform: scale(0.95);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .dep-modal-backdrop.show .dep-modal-card {
+      transform: scale(1);
+    }
+
+    @media (max-width: 600px) {
+      .dep-ref-grid,
+      .dep-form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -26,31 +346,239 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
+        <div class="dep-header-badge">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+          Commercial Assessment
+        </div>
         <h1>Data Entry Practice</h1>
-        <p class="tool-description">Enhance your skills with Data Entry Practice.</p>
+        <p class="tool-description">High-volume form data entry speed test simulating enterprise CRM fields: First Name, Last Name, Email, Phone, ZIP Code, and Currency Amount with live FPM and 10-key numeric scoring.</p>
       </div>
 
       <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Data Entry Practice</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Enhance your skills with Data Entry Practice.</div>
-            <div><strong>Inputs:</strong> typing, keyboard, practice</div>
-            <div><strong>Category:</strong> typing</div>
+      <div class="dep-workspace">
+        
+        <!-- Toolbar & Options -->
+        <div class="dep-toolbar">
+          <div class="dep-controls-row">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;">Duration:</span>
+            <div class="dep-btn-group" id="duration-group">
+              <button type="button" class="dep-pill-btn active" data-duration="60">1 Min Drill</button>
+              <button type="button" class="dep-pill-btn" data-duration="120">2 Min Drill</button>
+              <button type="button" class="dep-pill-btn" data-duration="180">3 Min Drill</button>
+              <button type="button" class="dep-pill-btn" data-duration="records">5 Records</button>
+            </div>
+          </div>
+
+          <div class="dep-controls-row">
+            <span style="font-size: 0.85rem; color: var(--text-secondary); margin-right: 0.5rem;">
+              Press <kbd style="background: var(--bg-tertiary); padding: 0.2rem 0.4rem; border-radius: 4px; border: 1px solid var(--border);">Tab</kbd> or <kbd style="background: var(--bg-tertiary); padding: 0.2rem 0.4rem; border-radius: 4px; border: 1px solid var(--border);">Enter</kbd> to advance
+            </span>
+            <button type="button" class="dep-pill-btn" id="sound-toggle" title="Toggle mechanical sound">
+              <span id="sound-icon">🔊 Sound</span>
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Live Diagnostics Bar -->
+        <div class="dep-stats-grid">
+          <div class="dep-stat-card">
+            <div class="dep-stat-val" id="stat-time">60</div>
+            <div class="dep-stat-label">Seconds Left</div>
+          </div>
+          <div class="dep-stat-card">
+            <div class="dep-stat-val" id="stat-fpm">0</div>
+            <div class="dep-stat-label">Fields / Min (FPM)</div>
+          </div>
+          <div class="dep-stat-card">
+            <div class="dep-stat-val" id="stat-accuracy">100%</div>
+            <div class="dep-stat-label">Accuracy</div>
+          </div>
+          <div class="dep-stat-card">
+            <div class="dep-stat-val" id="stat-ten-key">0</div>
+            <div class="dep-stat-label">10-Key KPH</div>
+          </div>
+          <div class="dep-stat-card">
+            <div class="dep-stat-val" id="stat-records">0</div>
+            <div class="dep-stat-label">Records Completed</div>
+          </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="dep-progress-container">
+          <div class="dep-progress-bar" id="progress-bar"></div>
+        </div>
+
+        <!-- Split Stage: Reference Record Card vs Interactive Input Form -->
+        <div class="dep-split-stage">
+          
+          <!-- Source Reference Card -->
+          <div class="dep-panel">
+            <div class="dep-panel-header">
+              <span class="dep-panel-title">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                Customer Record <span id="ref-record-id" style="color: var(--accent); font-size: 0.9rem;">#1042</span>
+              </span>
+              <span style="font-size: 0.8rem; color: var(--text-tertiary);" id="ref-record-counter">Record 1 of 5</span>
+            </div>
+
+            <div class="dep-ref-grid">
+              <div class="dep-ref-item active-ref" id="ref-box-firstName">
+                <span class="dep-ref-label">First Name</span>
+                <span class="dep-ref-val" id="ref-val-firstName">Sophia</span>
+              </div>
+              <div class="dep-ref-item" id="ref-box-lastName">
+                <span class="dep-ref-label">Last Name</span>
+                <span class="dep-ref-val" id="ref-val-lastName">Vanderbilt</span>
+              </div>
+              <div class="dep-ref-item" id="ref-box-email">
+                <span class="dep-ref-label">Email Address</span>
+                <span class="dep-ref-val" id="ref-val-email">sophia.v@meridian.io</span>
+              </div>
+              <div class="dep-ref-item" id="ref-box-phone">
+                <span class="dep-ref-label">Phone Number</span>
+                <span class="dep-ref-val" id="ref-val-phone">(415) 555-0194</span>
+              </div>
+              <div class="dep-ref-item" id="ref-box-zip">
+                <span class="dep-ref-label">ZIP Code</span>
+                <span class="dep-ref-val" id="ref-val-zip">94107</span>
+              </div>
+              <div class="dep-ref-item" id="ref-box-amount">
+                <span class="dep-ref-label">Currency Amount</span>
+                <span class="dep-ref-val" id="ref-val-amount">$1,845.50</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Entry Form -->
+          <form class="dep-panel" id="entry-form" autocomplete="off" onsubmit="return false;">
+            <div class="dep-panel-header">
+              <span class="dep-panel-title">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                Operator Input Workspace
+              </span>
+              <span style="font-size: 0.8rem; color: var(--accent); font-weight: 600;" id="form-field-indicator">Field 1 / 6</span>
+            </div>
+
+            <div class="dep-form-grid">
+              <div class="dep-form-group">
+                <label class="dep-form-label" for="input-firstName">
+                  <span>First Name</span>
+                  <span class="dep-hint-text" id="status-firstName"></span>
+                </label>
+                <input type="text" class="dep-input" id="input-firstName" data-field="firstName" placeholder="Type first name..." autofocus>
+              </div>
+
+              <div class="dep-form-group">
+                <label class="dep-form-label" for="input-lastName">
+                  <span>Last Name</span>
+                  <span class="dep-hint-text" id="status-lastName"></span>
+                </label>
+                <input type="text" class="dep-input" id="input-lastName" data-field="lastName" placeholder="Type last name...">
+              </div>
+
+              <div class="dep-form-group" style="grid-column: span 2;">
+                <label class="dep-form-label" for="input-email">
+                  <span>Email Address</span>
+                  <span class="dep-hint-text" id="status-email"></span>
+                </label>
+                <input type="text" class="dep-input" id="input-email" data-field="email" placeholder="Type email address...">
+              </div>
+
+              <div class="dep-form-group">
+                <label class="dep-form-label" for="input-phone">
+                  <span>Phone Number</span>
+                  <span class="dep-hint-text" id="status-phone"></span>
+                </label>
+                <input type="text" class="dep-input" id="input-phone" data-field="phone" placeholder="(xxx) xxx-xxxx">
+              </div>
+
+              <div class="dep-form-group">
+                <label class="dep-form-label" for="input-zip">
+                  <span>ZIP Code</span>
+                  <span class="dep-hint-text" id="status-zip"></span>
+                </label>
+                <input type="text" class="dep-input" id="input-zip" data-field="zip" placeholder="5-digit ZIP">
+              </div>
+
+              <div class="dep-form-group" style="grid-column: span 2;">
+                <label class="dep-form-label" for="input-amount">
+                  <span>Currency Amount</span>
+                  <span class="dep-hint-text" id="status-amount"></span>
+                </label>
+                <input type="text" class="dep-input" id="input-amount" data-field="amount" placeholder="$0,000.00">
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+              <span style="font-size: 0.8rem; color: var(--text-tertiary);">
+                Total Keystrokes: <strong id="keystroke-counter" style="color: var(--text-primary);">0</strong>
+              </span>
+              <button type="button" class="btn btn-secondary" id="btn-restart" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.45rem 0.95rem; font-size: 0.85rem;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                Restart Drill (Esc)
+              </button>
+            </div>
+          </form>
+
+        </div>
+
       </div>
-    
     </div>
   </main>
+
+  <!-- Drill Scorecard Modal -->
+  <div class="dep-modal-backdrop" id="scorecard-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="dep-modal-card">
+      <div style="text-align: center;">
+        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">📊</span>
+        <h2 id="modal-title" style="font-family: var(--font-display); font-size: 2rem; margin-bottom: 0.25rem;">Data Entry Assessment</h2>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">Commercial Speed & 10-Key Precision Analysis</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;">
+        <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem; text-align: center;">
+          <div id="modal-fpm" style="font-size: 1.5rem; font-weight: 800; color: var(--accent); font-family: var(--font-display), monospace;">54</div>
+          <div style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-tertiary); margin-top: 0.2rem; font-weight: 600;">Fields / Min</div>
+        </div>
+        <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem; text-align: center;">
+          <div id="modal-accuracy" style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); font-family: var(--font-display), monospace;">98.5%</div>
+          <div style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-tertiary); margin-top: 0.2rem; font-weight: 600;">Accuracy</div>
+        </div>
+        <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem; text-align: center;">
+          <div id="modal-ten-key" style="font-size: 1.5rem; font-weight: 800; color: #10b981; font-family: var(--font-display), monospace;">8,450</div>
+          <div style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-tertiary); margin-top: 0.2rem; font-weight: 600;">10-Key KPH</div>
+        </div>
+      </div>
+
+      <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem; font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.4rem;">
+        <div style="display: flex; justify-content: space-between;">
+          <span>Commercial Operator Tier:</span>
+          <strong id="modal-tier-badge" style="color: var(--accent);">Tier 1 Data Entry Specialist</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span>Records & Fields Processed:</span>
+          <strong id="modal-records-fields" style="color: var(--text-primary);">4 records (24 fields)</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span>Error Count:</span>
+          <strong id="modal-error-count" style="color: var(--text-primary);">1 field typo (95.8% clean)</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span>Total Drill Time:</span>
+          <strong id="modal-drill-time" style="color: var(--text-primary);">60.0s</strong>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem; justify-content: flex-end; flex-wrap: wrap;">
+        <button type="button" class="btn btn-secondary" id="modal-btn-copy">
+          📋 Copy Report
+        </button>
+        <button type="button" class="btn btn-primary" id="modal-btn-retry">
+          ⚡ Retest Drill
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -62,8 +590,8 @@
     "@type": "WebApplication",
     "name": "Data Entry Practice",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/data-entry-practice/",
-    "description": "Enhance your skills with Data Entry Practice.",
-    "applicationCategory": "UtilityPage",
+    "description": "Commercial data entry speed test measuring Fields-Per-Minute (FPM), accuracy percentage, and 10-key numeric keypad performance across enterprise forms.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }
