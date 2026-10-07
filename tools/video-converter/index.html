@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Video Converter - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Convert MP4, WEBM, MOV, MKV, AVI files natively in your browser.">
-  <meta name="keywords" content="video, media, video converter, free, online, tool, utility">
+  <title>Video Converter - Convert MP4, WEBM, MOV, MKV Online - ALL IN ONE</title>
+  <meta name="description" content="Convert video formats, resolutions, framerates, and bitrates directly in your browser. 100% private, client-side video conversion with zero server uploads.">
+  <meta name="keywords" content="video converter, mp4 to webm, webm to mp4, change video resolution, video transcoder, free online video converter">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/video-converter/">
 
@@ -14,26 +14,101 @@
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/video-converter/">
   <meta property="og:title" content="Video Converter - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Convert MP4, WEBM, MOV, MKV, AVI files natively in your browser.">
+  <meta property="og:description" content="Convert video formats, resolutions, framerates, and bitrates directly in your browser. Fast, 100% client-side conversion.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:width" content="512">
-  <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="Video Converter - ALL IN ONE">
-  <meta property="og:locale" content="en_US">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/video-converter/">
   <meta name="twitter:title" content="Video Converter - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Convert MP4, WEBM, MOV, MKV, AVI files natively in your browser.">
+  <meta name="twitter:description" content="Convert video formats, resolutions, framerates, and bitrates directly in your browser.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="Video Converter - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .vc-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .vc-grid {
+        grid-template-columns: 1.1fr 0.9fr;
+      }
+    }
+    .video-preview-card {
+      background: rgba(10, 14, 20, 0.85);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .video-viewport {
+      background: #000;
+      min-height: 280px;
+      max-height: 420px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .video-viewport video, .video-viewport canvas {
+      max-width: 100%;
+      max-height: 420px;
+      display: block;
+    }
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .badge-pill.accent {
+      background: rgba(78, 133, 191, 0.2);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .progress-bar-wrap {
+      width: 100%;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent-gradient);
+      transition: width 0.15s ease;
+    }
+    .spec-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.45rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.875rem;
+    }
+    .spec-label {
+      color: var(--text-secondary);
+    }
+    .spec-val {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-family: monospace;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -48,51 +123,201 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Video Converter</h1>
-        <p class="tool-description">Convert MP4, WEBM, MOV, MKV, AVI files natively in your browser.</p>
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>Video Converter</h1>
+            <p class="tool-description">Convert formats, resolutions, framerates, and quality client-side with zero server latency.</p>
+          </div>
+          <button id="btn-load-demo" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.4rem;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            Load Sample Video
+          </button>
+        </div>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Video Converter</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Convert MP4, WEBM, MOV, MKV, AVI files natively in your browser.</div>
-            <div><strong>Inputs:</strong> video, media, video converter</div>
-            <div><strong>Category:</strong> video</div>
+      <!-- Upload Drop Zone -->
+      <div id="drop-zone" class="file-drag-area">
+        <input type="file" id="file-input" accept="video/*" style="display: none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">Drag & Drop Video File Here</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Supports MP4, WebM, MOV, MKV, AVI, FLV & more (Processed securely in browser)</p>
+        <button type="button" class="btn btn-primary" onclick="document.getElementById('file-input').click()">Browse Video File</button>
+      </div>
+
+      <!-- Active Workspace -->
+      <div id="workspace-panel" class="vc-grid" style="display: none;">
+        <!-- Left: Video Preview & Source Info -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
+            Source Video Preview
+          </div>
+
+          <div class="video-preview-card">
+            <div class="video-viewport">
+              <video id="source-video" controls playsinline></video>
+              <canvas id="hidden-render-canvas" style="display: none;"></canvas>
+            </div>
+            <div style="padding: 1rem; background: var(--bg-tertiary); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+              <span id="source-name" style="font-weight: 600; font-size: 0.9rem; word-break: break-all;">video.mp4</span>
+              <div style="display: flex; gap: 0.5rem;">
+                <span id="badge-source-res" class="badge-pill accent">1920x1080</span>
+                <span id="badge-source-size" class="badge-pill">0 MB</span>
+                <span id="badge-source-dur" class="badge-pill">00:00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Conversion Progress Card -->
+          <div id="progress-card" style="display: none; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.875rem;">
+              <span id="progress-status" style="font-weight: 600; color: var(--accent);">Encoding Video...</span>
+              <span id="progress-pct" style="font-family: monospace; font-weight: 700;">0%</span>
+            </div>
+            <div class="progress-bar-wrap">
+              <div id="progress-fill" class="progress-bar-fill"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-tertiary);">
+              <span id="progress-frames">Frame: 0 / 0</span>
+              <span id="progress-eta">ETA: calculating...</span>
+            </div>
+          </div>
+
+          <!-- Converted Result Card -->
+          <div id="result-card" style="display: none; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: var(--radius-md); padding: 1.25rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--success);"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              <h4 style="font-size: 1rem; font-weight: 700; color: var(--success);">Conversion Completed!</h4>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.85rem; margin-bottom: 1rem;">
+              <div class="spec-item"><span class="spec-label">Output Format:</span><span id="res-format" class="spec-val">WEBM</span></div>
+              <div class="spec-item"><span class="spec-label">Resolution:</span><span id="res-resolution" class="spec-val">1280x720</span></div>
+              <div class="spec-item"><span class="spec-label">Output Size:</span><span id="res-filesize" class="spec-val">0 MB</span></div>
+              <div class="spec-item"><span class="spec-label">Duration:</span><span id="res-duration" class="spec-val">00:00</span></div>
+            </div>
+            <div style="display: flex; gap: 0.75rem;">
+              <button id="btn-download-video" class="btn btn-primary" style="flex: 1;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.4rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download Converted Video
+              </button>
+              <button id="btn-preview-output" class="btn btn-secondary">Play Preview</button>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right: Conversion Configuration Panel -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            Target Settings
+          </div>
+
+          <div class="form-group">
+            <label for="select-format">Target Format / Container</label>
+            <select id="select-format" class="form-select">
+              <option value="webm-vp9" selected>WebM (VP9 High Quality) - Recommended</option>
+              <option value="webm-vp8">WebM (VP8 Maximum Compatibility)</option>
+              <option value="webm-default">WebM (Standard Web)</option>
+              <option value="mp4">MP4 (H.264 / AAC where supported)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="select-resolution">Resolution Preset</label>
+            <select id="select-resolution" class="form-select">
+              <option value="original" selected>Same as Source (Preserve)</option>
+              <option value="1080p">1080p Full HD (1920 × 1080)</option>
+              <option value="720p">720p HD (1280 × 720)</option>
+              <option value="480p">480p SD (854 × 480)</option>
+              <option value="360p">360p Mobile (640 × 360)</option>
+              <option value="custom">Custom Dimensions</option>
+            </select>
+          </div>
+
+          <!-- Custom Dimensions -->
+          <div id="custom-res-group" style="display: none; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <div class="form-group">
+              <label for="custom-width">Width (px)</label>
+              <input type="number" id="custom-width" class="form-input" value="1280" min="160" max="3840" step="2">
+            </div>
+            <div class="form-group">
+              <label for="custom-height">Height (px)</label>
+              <input type="number" id="custom-height" class="form-input" value="720" min="160" max="2160" step="2">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="select-fps">Framerate (FPS)</label>
+            <select id="select-fps" class="form-select">
+              <option value="original" selected>Keep Source Framerate (up to 60)</option>
+              <option value="60">60 FPS (Ultra Smooth)</option>
+              <option value="30">30 FPS (Standard Video)</option>
+              <option value="24">24 FPS (Cinematic Motion)</option>
+              <option value="15">15 FPS (Compact Size)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="select-bitrate">Video Bitrate / Quality</label>
+            <select id="select-bitrate" class="form-select">
+              <option value="8000000">Ultra (8 Mbps) - Highest Fidelity</option>
+              <option value="4000000" selected>High (4 Mbps) - Balanced</option>
+              <option value="2000000">Medium (2 Mbps) - Web Optimized</option>
+              <option value="1000000">Low (1 Mbps) - Compact Size</option>
+              <option value="500000">Ultra-Light (500 Kbps) - Email / Chat</option>
+            </select>
+          </div>
+
+          <div class="checkbox-group" style="margin-top: 0.5rem;">
+            <label class="checkbox-label">
+              <input type="checkbox" id="check-include-audio" checked>
+              <span>Preserve & Transcode Audio Track</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="check-maintain-aspect" checked>
+              <span>Maintain Aspect Ratio (Letterbox / Pad if needed)</span>
+            </label>
+          </div>
+
+          <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 0.75rem;">
+            <button id="btn-start-convert" class="btn btn-primary" style="padding: 0.85rem; font-size: 1rem; font-weight: 700;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+              Start Video Conversion
+            </button>
+            <button id="btn-cancel-convert" class="btn btn-secondary" style="display: none;">Cancel Conversion</button>
+          </div>
+
+          <!-- Equivalent FFmpeg Command Generator -->
+          <div style="margin-top: 1.5rem; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Equivalent FFmpeg Command</span>
+              <button id="btn-copy-ffmpeg" class="btn btn-secondary" style="font-size: 0.7rem; padding: 0.2rem 0.5rem;">Copy</button>
+            </div>
+            <code id="ffmpeg-code" style="display: block; font-size: 0.75rem; color: #a5d6ff; word-break: break-all; font-family: monospace;">ffmpeg -i input.mp4 -c:v libvpx-vp9 -b:v 4M output.webm</code>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Video Converter",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/video-converter/",
-    "description": "Convert MP4, WEBM, MOV, MKV, AVI files natively in your browser.",
+    "description": "Convert video formats, resolutions, framerates, and bitrates client-side in your browser.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5.",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "ALL IN ONE",
-      "url": "https://sami12901.github.io/ALL-IN-ONE-v1/"
-    }
+    "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas & MediaRecorder."
   }
   </script>
 </body>

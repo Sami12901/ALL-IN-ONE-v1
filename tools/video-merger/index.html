@@ -3,96 +3,291 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Video Merger - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Merge multiple video clips, arrange order, and export as one.">
-  <meta name="keywords" content="video, media, video merger, free, online, tool, utility">
+  <title>Video Merger - Combine & Join Videos Online - ALL IN ONE</title>
+  <meta name="description" content="Merge multiple video clips into a single video file directly in your browser. Seamless clip concatenation with transitions, no server uploads.">
+  <meta name="keywords" content="video merger, join videos, combine video clips, video stitcher, free online video merger">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/video-merger/">
 
-  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/video-merger/">
   <meta property="og:title" content="Video Merger - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Merge multiple video clips, arrange order, and export as one.">
+  <meta property="og:description" content="Combine multiple video clips into a single file with custom transitions in your browser.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:width" content="512">
-  <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="Video Merger - ALL IN ONE">
-  <meta property="og:locale" content="en_US">
 
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/video-merger/">
   <meta name="twitter:title" content="Video Merger - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Merge multiple video clips, arrange order, and export as one.">
+  <meta name="twitter:description" content="Combine video clips online quickly with client-side canvas rendering.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="Video Merger - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .merger-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .merger-grid {
+        grid-template-columns: 1.1fr 0.9fr;
+      }
+    }
+    .clip-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      max-height: 480px;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+    .clip-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: var(--transition);
+    }
+    .clip-card:hover {
+      border-color: var(--accent);
+    }
+    .clip-num {
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--accent);
+      min-width: 1.5rem;
+    }
+    .clip-thumb {
+      width: 72px;
+      height: 48px;
+      background: #000;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .clip-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .clip-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text-primary);
+    }
+    .clip-meta {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 0.2rem;
+      font-family: monospace;
+    }
+    .clip-actions {
+      display: flex;
+      gap: 0.35rem;
+    }
+    .clip-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      padding: 0.35rem 0.5rem;
+      cursor: pointer;
+      font-size: 0.75rem;
+    }
+    .clip-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+    .clip-btn.danger:hover {
+      color: var(--error);
+      border-color: var(--error);
+    }
+    .merger-preview-stage {
+      background: #000;
+      min-height: 280px;
+      max-height: 380px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      position: relative;
+    }
+    .merger-preview-stage video, .merger-preview-stage canvas {
+      max-width: 100%;
+      max-height: 380px;
+    }
+    .progress-bar-wrap {
+      width: 100%;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent-gradient);
+      transition: width 0.15s ease;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Video Merger</h1>
-        <p class="tool-description">Merge multiple video clips, arrange order, and export as one.</p>
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>Video Merger</h1>
+            <p class="tool-description">Stitch multiple video clips together seamlessly with custom transitions and unified audio.</p>
+          </div>
+          <button id="btn-load-demo" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.4rem;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            Load 2 Demo Clips
+          </button>
+        </div>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Video Merger</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Merge multiple video clips, arrange order, and export as one.</div>
-            <div><strong>Inputs:</strong> video, media, video merger</div>
-            <div><strong>Category:</strong> video</div>
+      <!-- Upload Drop Zone -->
+      <div id="drop-zone" class="file-drag-area">
+        <input type="file" id="file-input" accept="video/*" multiple style="display: none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+          <line x1="12" y1="8" x2="12" y2="16"></line>
+          <line x1="8" y1="12" x2="16" y2="12"></line>
+        </svg>
+        <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">Select Multiple Video Clips</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Upload 2 or more video files. Drag to reorder sequence.</p>
+        <button type="button" class="btn btn-primary" onclick="document.getElementById('file-input').click()">Browse Videos</button>
+      </div>
+
+      <!-- Studio Panel -->
+      <div id="workspace-panel" class="merger-grid" style="display: none;">
+        <!-- Left: Queue & Ordering -->
+        <div class="tool-panel glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+            <span class="panel-title" style="border: none; margin: 0; padding: 0;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              Clips Sequence (<span id="count-clips">0</span>)
+            </span>
+            <div style="display: flex; gap: 0.5rem;">
+              <button id="btn-add-more" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;">+ Add More</button>
+              <button id="btn-clear-all" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;">Clear All</button>
+            </div>
+          </div>
+
+          <!-- List of Added Clips -->
+          <div id="clip-list" class="clip-list"></div>
+
+          <!-- Total Info -->
+          <div style="background: var(--bg-tertiary); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border); display: flex; justify-content: space-between; font-size: 0.85rem;">
+            <span style="color: var(--text-secondary);">Total Output Duration:</span>
+            <span id="label-total-dur" style="font-weight: 700; font-family: monospace; color: var(--accent);">00:00</span>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right: Settings, Preview & Merge Button -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            Export Options & Merge
+          </div>
+
+          <div class="merger-preview-stage">
+            <video id="preview-video" controls playsinline style="display: none;"></video>
+            <canvas id="merger-canvas" width="1280" height="720"></canvas>
+          </div>
+
+          <div class="form-group">
+            <label for="select-merge-res">Output Resolution</label>
+            <select id="select-merge-res" class="form-select">
+              <option value="first" selected>Match First Clip Resolution</option>
+              <option value="1080p">1080p Full HD (1920 × 1080)</option>
+              <option value="720p">720p HD (1280 × 720)</option>
+              <option value="480p">480p SD (854 × 480)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="select-transition">Transition Between Clips</label>
+            <select id="select-transition" class="form-select">
+              <option value="cut" selected>Direct Cut (Instant Stitch)</option>
+              <option value="fade-black">Dip Through Black (0.5s)</option>
+              <option value="crossfade">Smooth Crossfade (0.75s)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="select-merge-fps">Framerate (FPS)</label>
+            <select id="select-merge-fps" class="form-select">
+              <option value="30" selected>30 FPS (Standard)</option>
+              <option value="60">60 FPS (Smooth)</option>
+              <option value="24">24 FPS (Cinematic)</option>
+            </select>
+          </div>
+
+          <!-- Progress -->
+          <div id="progress-card" style="display: none; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.875rem;">
+              <span id="progress-status" style="font-weight: 600; color: var(--accent);">Merging Clip 1 of 2...</span>
+              <span id="progress-pct" style="font-family: monospace; font-weight: 700;">0%</span>
+            </div>
+            <div class="progress-bar-wrap">
+              <div id="progress-fill" class="progress-bar-fill"></div>
+            </div>
+          </div>
+
+          <!-- Result Box -->
+          <div id="result-card" style="display: none; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: var(--radius-md); padding: 1.25rem;">
+            <div style="font-weight: 700; color: var(--success); font-size: 1rem; margin-bottom: 0.5rem;">🎉 Merged Video Ready!</div>
+            <p id="res-info" style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">All clips successfully combined.</p>
+            <div style="display: flex; gap: 0.75rem;">
+              <button id="btn-download-merged" class="btn btn-primary" style="flex: 1;">Download Merged Video</button>
+              <button id="btn-play-merged" class="btn btn-secondary">Play Result</button>
+            </div>
+          </div>
+
+          <div style="margin-top: 1rem;">
+            <button id="btn-start-merge" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem; font-weight: 700;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Merge All Clips
+            </button>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
 
-  <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Video Merger",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/video-merger/",
-    "description": "Merge multiple video clips, arrange order, and export as one.",
+    "description": "Combine and join multiple video clips into one seamlessly in your browser with transitions.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5.",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "ALL IN ONE",
-      "url": "https://sami12901.github.io/ALL-IN-ONE-v1/"
-    }
+    "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas & MediaRecorder."
   }
   </script>
 </body>

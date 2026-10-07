@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Presentation Builder - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Generate entire presentations from a simple text prompt.">
-  <meta name="keywords" content="slide, presentation, pitch, deck, ai presentation builder, free, online, tool, utility">
+  <meta name="description" content="Build bespoke presentation decks with AI prompts or 20+ layout templates. Features visual slide canvas, drag & drop reordering, fullscreen presentation, and HTML/PDF export.">
+  <meta name="keywords" content="ai presentation builder, slide builder pro, presentation maker, pitch deck studio, online slides, export html slides, responsive presentation">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-presentation-builder/">
 
@@ -14,7 +14,7 @@
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-presentation-builder/">
   <meta property="og:title" content="AI Presentation Builder - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Generate entire presentations from a simple text prompt.">
+  <meta property="og:description" content="Build bespoke presentation decks with AI prompts or 20+ layout templates.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
@@ -26,9 +26,8 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-presentation-builder/">
   <meta name="twitter:title" content="AI Presentation Builder - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Generate entire presentations from a simple text prompt.">
+  <meta name="twitter:description" content="Build bespoke presentation decks with AI prompts or 20+ layout templates.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="AI Presentation Builder - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
@@ -36,6 +35,204 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+
+  <style>
+    /* AI Presentation Studio Styles */
+    .builder-prompt-bar {
+      display: flex;
+      gap: 0.75rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .prompt-input-group {
+      flex: 1;
+      min-width: 280px;
+    }
+    
+    .builder-studio-grid {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 992px) {
+      .builder-studio-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Slides Thumbnail Strip */
+    .slide-thumbs-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      max-height: 640px;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+    .slide-thumb-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .slide-thumb-card:hover {
+      border-color: var(--accent);
+      transform: translateX(2px);
+    }
+    .slide-thumb-card.active {
+      border-color: var(--accent);
+      background: rgba(var(--accent-rgb, 99, 102, 241), 0.12);
+      box-shadow: 0 0 12px rgba(var(--accent-rgb, 99, 102, 241), 0.2);
+    }
+
+    /* 16:9 Canvas */
+    .canvas-viewport {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #090d16;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      display: flex;
+      position: relative;
+    }
+    .canvas-inner {
+      width: 100%;
+      height: 100%;
+      padding: 2.75rem;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      background: radial-gradient(circle at 85% 15%, rgba(99, 102, 241, 0.14), transparent 50%),
+                  radial-gradient(circle at 15% 85%, rgba(168, 85, 247, 0.08), transparent 50%),
+                  #0c101c;
+      color: #f8fafc;
+      user-select: none;
+    }
+
+    /* Layout Modal */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-backdrop.active {
+      display: flex;
+    }
+    .layout-picker-modal {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      max-width: 800px;
+      width: 90vw;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+    }
+    .layout-grid-select {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .layout-choice-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .layout-choice-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    /* Fullscreen Presenter */
+    .present-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: #06080e;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .present-modal.active { display: flex; }
+    .present-hud {
+      position: fixed;
+      bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 1rem;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-full);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      z-index: 10001;
+    }
+    .present-hud button {
+      background: transparent;
+      border: none;
+      color: #cbd5e1;
+      padding: 0.4rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .present-hud button:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+    }
+
+    @media print {
+      body * { visibility: hidden; }
+      #print-container, #print-container * { visibility: visible; }
+      #print-container { position: absolute; left: 0; top: 0; width: 100%; display: block !important; }
+      .print-slide-page {
+        page-break-after: always;
+        break-after: page;
+        width: 100vw;
+        height: 56.25vw;
+        margin: 0;
+        padding: 2.5rem;
+        box-sizing: border-box;
+        background: #0c101c !important;
+        color: #f8fafc !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -49,30 +246,130 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>AI Presentation Builder</h1>
-        <p class="tool-description">Generate entire presentations from a simple text prompt.</p>
+        <p class="tool-description">Create multi-slide professional presentations from any prompt or assemble custom decks using 20+ specialized layouts. Edit, reorder, present fullscreen, and export to HTML, JSON, or PDF.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AI Presentation Builder</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Generate entire presentations from a simple text prompt.</div>
-            <div><strong>Inputs:</strong> slide, presentation, pitch, deck, ai presentation builder</div>
-            <div><strong>Category:</strong> slide</div>
+      <!-- AI Prompt Bar -->
+      <div class="builder-prompt-bar glass-panel">
+        <div class="prompt-input-group">
+          <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.35rem;">Generate Full Deck with AI Prompt:</label>
+          <input type="text" id="inp-builder-prompt" class="form-input" placeholder="e.g. Build an 8-slide Series A pitch deck for a cognitive robotics startup..." value="Build an 8-slide Series A pitch deck for a cognitive robotics startup">
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: flex-end;">
+          <select id="select-builder-count" class="form-select" style="width: auto; height: 42px;">
+            <option value="6">6 Slides</option>
+            <option value="8" selected>8 Slides</option>
+            <option value="10">10 Slides</option>
+          </select>
+          <button id="btn-ai-generate" class="btn btn-primary" style="height: 42px; padding: 0 1.25rem; font-weight: 700; white-space: nowrap;">
+            ⚡ Build Deck
+          </button>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <span style="font-size: 0.85rem; font-weight: 700; color: #fff;">Presentation Studio</span>
+          <span id="badge-total-slides" style="font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 9999px; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--accent);">8 Slides</span>
+        </div>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button id="btn-open-layouts" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">+ Add Layout</button>
+          <button id="btn-present" class="btn btn-primary" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Present (F5)</button>
+          <button id="btn-export-html" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Export HTML</button>
+          <button id="btn-export-pdf" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Print / PDF</button>
+          <button id="btn-export-json" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Export JSON</button>
+          <label class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; cursor: pointer;">
+            Import JSON <input type="file" id="file-import-json" accept=".json" style="display: none;">
+          </label>
+        </div>
+      </div>
+
+      <!-- Studio Work Area -->
+      <div class="builder-studio-grid">
+        <!-- Left Thumbnails -->
+        <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;">Deck Slides</span>
+            <span style="font-size: 0.75rem; color: var(--text-secondary);" id="slide-index-counter">1 / 8</span>
+          </div>
+          <div class="slide-thumbs-container" id="slide-thumbs-container">
+            <!-- Populated dynamically -->
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Canvas & Editor -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <!-- 16:9 Canvas Viewport -->
+          <div class="canvas-viewport" id="canvas-viewport">
+            <div class="canvas-inner" id="canvas-inner">
+              <!-- Rendered Active Slide -->
+            </div>
+          </div>
+
+          <!-- Slide Content Inspector -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+              <h3 id="inspector-heading" style="font-size: 0.95rem; margin: 0; color: var(--text-primary);">Slide Editor</h3>
+              <div style="display: flex; gap: 0.5rem;">
+                <button id="btn-duplicate-slide" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Duplicate</button>
+                <button id="btn-delete-slide" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; color: #ef4444;">Delete</button>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem;">
+              <div class="form-group">
+                <label>Slide Title</label>
+                <input type="text" id="inp-edit-title" class="form-input">
+              </div>
+              <div class="form-group">
+                <label>Section Kicker</label>
+                <input type="text" id="inp-edit-kicker" class="form-input">
+              </div>
+            </div>
+            <div class="form-group" style="margin-top: 0.75rem;">
+              <label>Subtitle / Description</label>
+              <input type="text" id="inp-edit-subtitle" class="form-input">
+            </div>
+            <div class="form-group" style="margin-top: 0.75rem;">
+              <label>Body Content / Bullet Points</label>
+              <textarea id="inp-edit-body" class="form-textarea" style="min-height: 90px;"></textarea>
+            </div>
+          </div>
+        </div>
       </div>
-    
+
     </div>
   </main>
+
+  <!-- 20+ Layouts Picker Modal -->
+  <div class="modal-backdrop" id="layout-modal">
+    <div class="layout-picker-modal glass-panel">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+        <h3 style="margin: 0; font-size: 1.15rem; color: #fff;">Choose a Slide Layout (20+ Layouts)</h3>
+        <button id="btn-close-layouts" class="btn btn-secondary" style="padding: 0.25rem 0.6rem; font-size: 0.85rem;">✕ Close</button>
+      </div>
+      <div class="layout-grid-select" id="layout-grid-select">
+        <!-- 20+ layout choices populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Fullscreen Presentation Modal -->
+  <div class="present-modal" id="present-modal">
+    <div style="width: 95vw; max-width: 1366px; aspect-ratio: 16/9; background: #090d16; border-radius: var(--radius-lg); overflow: hidden; display: flex;">
+      <div class="canvas-inner" id="present-inner" style="padding: 4rem;"></div>
+    </div>
+    <div class="present-hud">
+      <button id="hud-prev">&larr; Prev</button>
+      <span id="hud-counter" style="color: var(--accent); font-weight: 700;">1 / 8</span>
+      <button id="hud-next">Next &rarr;</button>
+      <button id="hud-exit" style="color: #f87171;">Exit [Esc]</button>
+    </div>
+  </div>
+
+  <!-- Print Container -->
+  <div id="print-container" style="display: none;"></div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -84,8 +381,8 @@
     "@type": "WebApplication",
     "name": "AI Presentation Builder",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-presentation-builder/",
-    "description": "Generate entire presentations from a simple text prompt.",
-    "applicationCategory": "UtilityPage",
+    "description": "Build bespoke presentation decks with AI prompts or 20+ layout templates.",
+    "applicationCategory": "PresentationSoftware",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
     "isPartOf": {

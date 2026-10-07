@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Voice Announcement Creator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create professional business and travel announcements.">
-  <meta name="keywords" content="audio, music, sound, voice announcement creator, free, online, tool, utility">
+  <title>Voice Announcement Creator - Professional PA & Commercial Studio - ALL IN ONE</title>
+  <meta name="description" content="Generate professional business, retail, transit, and event voice announcements with authentic chimes, public address acoustic filters, and WAV export.">
+  <meta name="keywords" content="voice announcement creator, PA announcement, airport chime, store closing announcement, public address system, voiceover generator, audio creator">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/voice-announcement-creator/">
 
@@ -13,8 +13,8 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/voice-announcement-creator/">
-  <meta property="og:title" content="Voice Announcement Creator - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Create professional business and travel announcements.">
+  <meta property="og:title" content="Voice Announcement Creator - Professional PA Studio - ALL IN ONE">
+  <meta property="og:description" content="Create professional retail, transit, and business announcements with authentic chimes and voice synthesis.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
@@ -25,74 +25,363 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/voice-announcement-creator/">
-  <meta name="twitter:title" content="Voice Announcement Creator - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Create professional business and travel announcements.">
+  <meta name="twitter:title" content="Voice Announcement Creator - ALL IN ONE">
+  <meta name="twitter:description" content="Create professional retail, transit, and business announcements with authentic chimes and voice synthesis.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="Voice Announcement Creator - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    /* Voice Announcement Creator Specific Styles */
+    .vac-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .vac-grid {
+        grid-template-columns: 1.1fr 0.9fr;
+      }
+    }
+
+    .preset-pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .preset-pill {
+      min-height: 44px;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .preset-pill:hover, .preset-pill.active {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+      font-weight: 600;
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.35);
+    }
+
+    .chime-selector-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .chime-card {
+      min-height: 52px;
+      padding: 0.6rem 0.8rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 0.25rem;
+      font-size: 0.85rem;
+      transition: all 0.2s ease;
+    }
+
+    .chime-card:hover, .chime-card.selected {
+      border-color: var(--accent);
+      background: rgba(245, 158, 11, 0.12);
+      color: var(--accent);
+      box-shadow: inset 0 0 12px rgba(245, 158, 11, 0.2);
+    }
+
+    .chime-card span.chime-name {
+      font-weight: 600;
+    }
+
+    .chime-card span.chime-desc {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+    }
+
+    .studio-visualizer-card {
+      background: rgba(10, 10, 15, 0.85);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .studio-canvas {
+      width: 100%;
+      height: 120px;
+      border-radius: var(--radius-md);
+      background: #050508;
+      display: block;
+    }
+
+    .playback-controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .btn-action {
+      min-height: 44px;
+      min-width: 44px;
+      padding: 0.6rem 1.25rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      min-height: 44px;
+    }
+
+    .slider-row input[type="range"] {
+      flex: 1;
+      height: 6px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .slider-row span.val {
+      font-family: monospace;
+      font-weight: 600;
+      min-width: 42px;
+      text-align: right;
+    }
+
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .status-dot-pulse {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    .status-dot-pulse.active {
+      animation: pulse 1s infinite alternate;
+    }
+
+    @keyframes pulse {
+      from { transform: scale(0.9); opacity: 0.6; }
+      to { transform: scale(1.3); opacity: 1; }
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Voice Announcement Creator</h1>
-        <p class="tool-description">Create professional business and travel announcements.</p>
+        <p class="tool-description">Create realistic commercial, retail, transit, and corporate public address announcements with authentic dual-tone chimes, voiceover, and broadcast acoustic filters.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Voice Announcement Creator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create professional business and travel announcements.</div>
-            <div><strong>Inputs:</strong> audio, music, sound, voice announcement creator</div>
-            <div><strong>Category:</strong> audio</div>
+      <div class="vac-grid">
+        <!-- Left Panel: Announcement Editor -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+            Announcement Script & Presets
+          </div>
+
+          <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Quick Presets:</label>
+          <div class="preset-pill-group" id="presetPills">
+            <button type="button" class="preset-pill active" data-preset="retail">🛍️ Store Closing (15m)</button>
+            <button type="button" class="preset-pill" data-preset="flight">✈️ Final Boarding Call</button>
+            <button type="button" class="preset-pill" data-preset="flash">⚡ Flash Sale Alert</button>
+            <button type="button" class="preset-pill" data-preset="drill">🚨 Evacuation Drill</button>
+            <button type="button" class="preset-pill" data-preset="keynote">🎤 Keynote Starting</button>
+            <button type="button" class="preset-pill" data-preset="custom">✏️ Custom Blank</button>
+          </div>
+
+          <div class="form-group">
+            <label for="announcementText">Announcement Script:</label>
+            <textarea id="announcementText" class="form-textarea" style="min-height: 140px; font-family: var(--font-sans); font-size: 0.95rem; line-height: 1.5;" placeholder="Enter announcement text to speak..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Attention Chime Melody:</label>
+            <div class="chime-selector-grid" id="chimeSelector">
+              <div class="chime-card selected" data-chime="airport">
+                <span class="chime-name">Ding-Dong</span>
+                <span class="chime-desc">Airport Standard (F#4-D4)</span>
+              </div>
+              <div class="chime-card" data-chime="westminster">
+                <span class="chime-name">Westminster</span>
+                <span class="chime-desc">4-Tone Classic Quarters</span>
+              </div>
+              <div class="chime-card" data-chime="marimba">
+                <span class="chime-name">Marimba Double</span>
+                <span class="chime-desc">Modern Retail Soft Ping</span>
+              </div>
+              <div class="chime-card" data-chime="bell">
+                <span class="chime-name">Gong Bell</span>
+                <span class="chime-desc">Resonant Metallic Strike</span>
+              </div>
+              <div class="chime-card" data-chime="subtle">
+                <span class="chime-name">Triple Chime</span>
+                <span class="chime-desc">Ascending High Triad</span>
+              </div>
+              <div class="chime-card" data-chime="none">
+                <span class="chime-name">No Chime</span>
+                <span class="chime-desc">Pure Voice Direct</span>
+              </div>
+            </div>
+            <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+              <button type="button" id="previewChimeBtn" class="btn btn-secondary btn-action" style="flex: 1;">
+                🔔 Test Selected Chime
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="acousticAcoustics">PA System Acoustic Filter:</label>
+            <select id="acousticFilter" class="form-select">
+              <option value="pa">Mega PA System (Bandpass 450Hz-3.5kHz with Hall Resonance)</option>
+              <option value="mall">Shopping Mall / Retail Ceiling Speakers</option>
+              <option value="station">Train Station / Subway Echo Hall</option>
+              <option value="clean" selected>Direct Clean Studio Broadcast</option>
+            </select>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Panel: Voice Controls & Player -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+            Voice & Audio Engine
+          </div>
+
+          <!-- Voice Synthesizer Settings -->
+          <div class="form-group">
+            <label for="voiceSelect">Announcer Voice (Speech Engine):</label>
+            <select id="voiceSelect" class="form-select">
+              <option value="">Detecting available browser voices...</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <div class="slider-row">
+              <label for="voiceRate">Speaking Rate:</label>
+              <input type="range" id="voiceRate" min="0.6" max="1.4" step="0.05" value="0.95">
+              <span class="val" id="voiceRateVal">0.95x</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="slider-row">
+              <label for="voicePitch">Pitch / Inflection:</label>
+              <input type="range" id="voicePitch" min="0.6" max="1.4" step="0.05" value="1.0">
+              <span class="val" id="voicePitchVal">1.0x</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Live Microphone Announcer (Alternative):</label>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button type="button" id="recordMicBtn" class="btn btn-secondary btn-action" style="flex: 1;">
+                🎙️ Record Voice with Mic
+              </button>
+              <button type="button" id="stopMicBtn" class="btn btn-secondary btn-action" style="display: none; color: #ef4444;" disabled>
+                ⏹️ Stop Recording
+              </button>
+            </div>
+            <span id="micRecordingStatus" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem;">
+              Optionally record your own voice to overlay with the selected chimes and acoustic filters.
+            </span>
+          </div>
+
+          <!-- Studio Visualizer & Live Monitor -->
+          <div class="studio-visualizer-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div class="status-indicator">
+                <span class="status-dot-pulse" id="statusPulse"></span>
+                <span id="studioStatus">Engine Ready</span>
+              </div>
+              <span id="playbackTimer" style="font-family: monospace; font-size: 0.9rem; color: var(--text-secondary);">00:00 / 00:00</span>
+            </div>
+            <canvas id="visualizerCanvas" class="studio-canvas"></canvas>
+
+            <div class="playback-controls-bar">
+              <div style="display: flex; gap: 0.5rem;">
+                <button type="button" id="playAnnouncementBtn" class="btn btn-primary btn-action">
+                  ▶ Play Announcement
+                </button>
+                <button type="button" id="stopAnnouncementBtn" class="btn btn-secondary btn-action" disabled>
+                  ⏹ Stop
+                </button>
+              </div>
+
+              <div style="display: flex; gap: 0.5rem;">
+                <button type="button" id="exportWavBtn" class="btn btn-secondary btn-action" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #10b981;">
+                  💾 Download Chime + Audio (WAV)
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
-    
     </div>
   </main>
 
-  <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Voice Announcement Creator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/voice-announcement-creator/",
-    "description": "Create professional business and travel announcements.",
-    "applicationCategory": "UtilityPage",
+    "description": "Create professional commercial, retail, and transit voice announcements with authentic chimes and broadcast acoustic filters.",
+    "applicationCategory": "MultimediaApplication",
     "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5.",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "ALL IN ONE",
-      "url": "https://sami12901.github.io/ALL-IN-ONE-v1/"
-    }
+    "browserRequirements": "Requires JavaScript. Requires HTML5 Audio."
   }
   </script>
 </body>

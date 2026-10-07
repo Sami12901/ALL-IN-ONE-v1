@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart Slide Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Auto-generate layout, design, and charts intelligently.">
-  <meta name="keywords" content="slide, presentation, pitch, deck, smart slide generator, free, online, tool, utility">
+  <meta name="description" content="Generate complete, beautifully formatted presentation slide decks from any topic or prompt. Choose from luxury themes, edit live, present fullscreen, and export to HTML, JSON, or PDF.">
+  <meta name="keywords" content="smart slide generator, ai slide deck, presentation maker, automatic slides, pitch deck generator, luxury slides, export html presentation">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/smart-slide-generator/">
 
@@ -14,7 +14,7 @@
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/smart-slide-generator/">
   <meta property="og:title" content="Smart Slide Generator - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Auto-generate layout, design, and charts intelligently.">
+  <meta property="og:description" content="Generate complete, beautifully formatted presentation slide decks from any topic or prompt.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
@@ -26,9 +26,8 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/smart-slide-generator/">
   <meta name="twitter:title" content="Smart Slide Generator - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Auto-generate layout, design, and charts intelligently.">
+  <meta name="twitter:description" content="Generate complete, beautifully formatted presentation slide decks from any topic or prompt.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="Smart Slide Generator - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
@@ -36,6 +35,210 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+
+  <style>
+    /* Generator Specific Styles */
+    .generator-config-box {
+      background: radial-gradient(circle at 95% 5%, rgba(99, 102, 241, 0.15), transparent 40%),
+                  var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .topic-prompt-row {
+      display: flex;
+      gap: 0.75rem;
+    }
+    @media (max-width: 768px) {
+      .topic-prompt-row {
+        flex-direction: column;
+      }
+    }
+    .prompt-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .suggestion-chip {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.25rem 0.65rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .suggestion-chip:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    /* Studio Grid */
+    .generator-studio-grid {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 992px) {
+      .generator-studio-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Slide List */
+    .deck-nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-height: 600px;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+    .deck-nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 0.85rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: var(--transition);
+      gap: 0.5rem;
+    }
+    .deck-nav-item:hover {
+      border-color: var(--accent);
+      transform: translateX(2px);
+    }
+    .deck-nav-item.active {
+      border-color: var(--accent);
+      background: rgba(var(--accent-rgb, 99, 102, 241), 0.12);
+      box-shadow: 0 0 10px rgba(var(--accent-rgb, 99, 102, 241), 0.2);
+    }
+
+    /* 16:9 Slide Canvas */
+    .slide-canvas-box {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #090d16;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      display: flex;
+      position: relative;
+    }
+    .slide-canvas-content {
+      width: 100%;
+      height: 100%;
+      padding: 2.75rem;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      color: #f8fafc;
+      user-select: none;
+    }
+
+    /* Themes */
+    .theme-obsidian {
+      background: radial-gradient(circle at 85% 15%, rgba(245, 158, 11, 0.15), transparent 50%),
+                  radial-gradient(circle at 15% 85%, rgba(217, 119, 6, 0.08), transparent 50%),
+                  #0a0a0c;
+    }
+    .theme-cyberpunk {
+      background: radial-gradient(circle at 85% 15%, rgba(56, 189, 248, 0.18), transparent 50%),
+                  radial-gradient(circle at 15% 85%, rgba(168, 85, 247, 0.15), transparent 50%),
+                  #070a14;
+    }
+    .theme-emerald {
+      background: radial-gradient(circle at 85% 15%, rgba(16, 185, 129, 0.16), transparent 50%),
+                  radial-gradient(circle at 15% 85%, rgba(5, 150, 105, 0.08), transparent 50%),
+                  #080f0c;
+    }
+    .theme-crimson {
+      background: radial-gradient(circle at 85% 15%, rgba(244, 63, 94, 0.16), transparent 50%),
+                  radial-gradient(circle at 15% 85%, rgba(225, 29, 72, 0.08), transparent 50%),
+                  #0f080b;
+    }
+    .theme-indigo {
+      background: radial-gradient(circle at 85% 15%, rgba(99, 102, 241, 0.18), transparent 50%),
+                  radial-gradient(circle at 15% 85%, rgba(79, 70, 229, 0.08), transparent 50%),
+                  #0a0c16;
+    }
+
+    /* Fullscreen Modal */
+    .present-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #06080e;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .present-modal.active {
+      display: flex;
+    }
+    .present-hud {
+      position: fixed;
+      bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 1rem;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-full);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      z-index: 10000;
+    }
+    .present-hud button {
+      background: transparent;
+      border: none;
+      color: #cbd5e1;
+      padding: 0.4rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .present-hud button:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+    }
+
+    @media print {
+      body * { visibility: hidden; }
+      #print-container, #print-container * { visibility: visible; }
+      #print-container { position: absolute; left: 0; top: 0; width: 100%; display: block !important; }
+      .print-slide-page {
+        page-break-after: always;
+        break-after: page;
+        width: 100vw;
+        height: 56.25vw;
+        margin: 0;
+        padding: 2.5rem;
+        box-sizing: border-box;
+        background: #090d16 !important;
+        color: #f8fafc !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -49,30 +252,153 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Smart Slide Generator</h1>
-        <p class="tool-description">Auto-generate layout, design, and charts intelligently.</p>
+        <p class="tool-description">Turn any topic, outline, or strategic prompt into an intelligent, multi-slide presentation deck. Features luxury theme palettes, live editing, and full export capabilities.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Smart Slide Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Auto-generate layout, design, and charts intelligently.</div>
-            <div><strong>Inputs:</strong> slide, presentation, pitch, deck, smart slide generator</div>
-            <div><strong>Category:</strong> slide</div>
+      <!-- Generator Configuration Panel -->
+      <div class="generator-config-box glass-panel">
+        <div class="form-group">
+          <label for="inp-topic-prompt">Presentation Topic or Core Thesis</label>
+          <div class="topic-prompt-row">
+            <input type="text" id="inp-topic-prompt" class="form-input" placeholder="e.g. Autonomous AI Agents for Enterprise Supply Chain Resilience..." value="Autonomous Enterprise Reasoning Engine">
+            <button id="btn-generate-deck" class="btn btn-primary" style="padding: 0.75rem 1.5rem; font-weight: 700; white-space: nowrap;">
+              ✨ Generate Deck
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Inspiration chips -->
+        <div class="prompt-suggestions">
+          <span style="font-size: 0.75rem; color: var(--text-tertiary); font-weight: 600;">Inspirations:</span>
+          <button class="suggestion-chip" data-prompt="Next-Gen Cross-Border FinTech Payments">💳 Cross-Border FinTech</button>
+          <button class="suggestion-chip" data-prompt="Decarbonization & Green Hydrogen Infrastructure">⚡ Green Hydrogen</button>
+          <button class="suggestion-chip" data-prompt="Product-Led Growth (PLG) for B2B SaaS">🚀 B2B SaaS PLG</button>
+          <button class="suggestion-chip" data-prompt="Ultra-Luxury Kyoto Cultural Concierge">⛩️ Luxury Travel Kyoto</button>
+          <button class="suggestion-chip" data-prompt="Cybersecurity Zero-Trust Architecture">🛡️ Zero-Trust Security</button>
+        </div>
+
+        <!-- Parameters row -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+          <div class="form-group">
+            <label for="select-audience">Target Audience</label>
+            <select id="select-audience" class="form-select">
+              <option value="investors">Venture Capital & Angel Investors</option>
+              <option value="csuite" selected>C-Suite & Board Members</option>
+              <option value="engineering">Engineering & Tech Leaders</option>
+              <option value="clients">Prospective Enterprise Clients</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="select-theme">Visual Theme Palette</label>
+            <select id="select-theme" class="form-select">
+              <option value="theme-obsidian">Obsidian Gold (Dark Luxury)</option>
+              <option value="theme-cyberpunk">Cyberpunk Neon (Electric Cyan)</option>
+              <option value="theme-emerald">Midnight Emerald (Modern Forest)</option>
+              <option value="theme-crimson">Crimson Impact (Ruby Red)</option>
+              <option value="theme-indigo" selected>Royal Indigo (Enterprise Tech)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="select-slide-count">Slide Deck Length</label>
+            <select id="select-slide-count" class="form-select">
+              <option value="6">Compact Briefing (6 Slides)</option>
+              <option value="8" selected>Standard Presentation (8 Slides)</option>
+              <option value="10">Comprehensive Deck (10 Slides)</option>
+            </select>
+          </div>
+        </div>
       </div>
-    
+
+      <!-- Studio Work Area -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <h2 style="font-size: 1.15rem; font-weight: 700; margin: 0; color: #fff;">Deck Studio</h2>
+          <span class="badge-counter" id="badge-slide-count" style="font-size: 0.78rem; padding: 0.2rem 0.6rem; border-radius: 9999px; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--accent);">8 Slides</span>
+        </div>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button id="btn-present-fullscreen" class="btn btn-primary" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Present (F5)</button>
+          <button id="btn-export-html" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Export HTML</button>
+          <button id="btn-export-pdf" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Print / PDF</button>
+          <button id="btn-export-json" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Export JSON</button>
+          <label class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; cursor: pointer;">
+            Import JSON <input type="file" id="file-import-json" accept=".json" style="display: none;">
+          </label>
+        </div>
+      </div>
+
+      <div class="generator-studio-grid">
+        <!-- Left: Slide Navigator -->
+        <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;">Slides</span>
+            <button id="btn-add-slide" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">+ Add Slide</button>
+          </div>
+          <div class="deck-nav-list" id="deck-nav-list">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Right: Slide Viewport & Editor Form -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <!-- 16:9 Slide Canvas -->
+          <div class="slide-canvas-box" id="slide-canvas-container">
+            <div class="slide-canvas-content theme-indigo" id="slide-canvas-content">
+              <!-- Rendered slide HTML -->
+            </div>
+          </div>
+
+          <!-- Slide Editor Panel -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+              <h3 id="editor-slide-title-pill" style="font-size: 0.95rem; margin: 0; color: var(--text-primary);">Slide Editor</h3>
+              <div style="display: flex; gap: 0.5rem;">
+                <button id="btn-dup-slide" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Duplicate</button>
+                <button id="btn-del-slide" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; color: #ef4444;">Delete</button>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem;">
+              <div class="form-group">
+                <label>Slide Title</label>
+                <input type="text" id="edit-title" class="form-input">
+              </div>
+              <div class="form-group">
+                <label>Category Kicker</label>
+                <input type="text" id="edit-kicker" class="form-input">
+              </div>
+            </div>
+            <div class="form-group" style="margin-top: 0.75rem;">
+              <label>Subtitle / One-Line Takeaway</label>
+              <input type="text" id="edit-subtitle" class="form-input">
+            </div>
+            <div class="form-group" style="margin-top: 0.75rem;">
+              <label>Bullet Points / Body Lines (One per line)</label>
+              <textarea id="edit-bullets" class="form-textarea" style="min-height: 90px;"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- Fullscreen Presentation Modal -->
+  <div class="present-modal" id="present-modal">
+    <div style="width: 95vw; max-width: 1366px; aspect-ratio: 16/9; background: #090d16; border-radius: var(--radius-lg); overflow: hidden; display: flex;">
+      <div class="slide-canvas-content" id="present-canvas-content" style="padding: 4rem;"></div>
+    </div>
+    <div class="present-hud">
+      <button id="pres-btn-prev">&larr; Prev</button>
+      <span id="pres-counter" style="color: var(--accent); font-weight: 700;">1 / 8</span>
+      <button id="pres-btn-next">Next &rarr;</button>
+      <button id="pres-btn-exit" style="color: #f87171;">Exit [Esc]</button>
+    </div>
+  </div>
+
+  <!-- Print Container -->
+  <div id="print-container" style="display: none;"></div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -84,8 +410,8 @@
     "@type": "WebApplication",
     "name": "Smart Slide Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/smart-slide-generator/",
-    "description": "Auto-generate layout, design, and charts intelligently.",
-    "applicationCategory": "UtilityPage",
+    "description": "Turn any topic, outline, or strategic prompt into an intelligent, multi-slide presentation deck.",
+    "applicationCategory": "PresentationSoftware",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
     "isPartOf": {

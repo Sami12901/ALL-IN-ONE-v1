@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LinkedIn Resume Import - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Import your LinkedIn profile and generate a CV instantly.">
-  <meta name="keywords" content="cv, resume, job, career, linkedin resume import, free, online, tool, utility">
+  <title>LinkedIn to Resume Importer &amp; Formatter - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Paste or import LinkedIn profile text, extract career experience, education, skills, and certifications, and generate professional PDF & Markdown resumes.">
+  <meta name="keywords" content="linkedin resume import, linkedin to pdf, resume formatter, linkedin to resume, cv builder, ats resume, export resume">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/linkedin-resume-import/">
 
@@ -13,29 +13,367 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/linkedin-resume-import/">
-  <meta property="og:title" content="LinkedIn Resume Import - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Import your LinkedIn profile and generate a CV instantly.">
+  <meta property="og:title" content="LinkedIn to Resume Importer &amp; Formatter - Free Online Tool - ALL IN ONE">
+  <meta property="og:description" content="Import your LinkedIn profile text and convert it into a polished executive resume with 1-click PDF and Markdown export.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="LinkedIn Resume Import - ALL IN ONE">
+  <meta property="og:image:alt" content="LinkedIn to Resume Importer - ALL IN ONE">
   <meta property="og:locale" content="en_US">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/linkedin-resume-import/">
-  <meta name="twitter:title" content="LinkedIn Resume Import - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Import your LinkedIn profile and generate a CV instantly.">
+  <meta name="twitter:title" content="LinkedIn to Resume Importer &amp; Formatter - Free Online Tool - ALL IN ONE">
+  <meta name="twitter:description" content="Import your LinkedIn profile text and convert it into a polished executive resume with 1-click PDF and Markdown export.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="LinkedIn Resume Import - ALL IN ONE">
+  <meta name="twitter:image:alt" content="LinkedIn to Resume Importer - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+
+  <style>
+    /* LinkedIn Resume Importer Specific Styles */
+    .importer-split-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 1080px) {
+      .importer-split-layout {
+        grid-template-columns: 460px 1fr;
+      }
+    }
+
+    /* Template Picker Bar */
+    .template-selector-bar {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .template-selector-bar::-webkit-scrollbar {
+      display: none;
+    }
+    .template-btn {
+      padding: 0.45rem 0.95rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.825rem;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .template-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .template-btn.active {
+      background: var(--accent-gradient);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    /* Resume Preview Paper Sheet */
+    .resume-paper-wrapper {
+      background: #0f1117;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      justify-content: center;
+      overflow-x: auto;
+    }
+    .resume-sheet {
+      width: 100%;
+      max-width: 820px;
+      min-height: 1050px;
+      background: #ffffff;
+      color: #111827;
+      border-radius: 4px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      padding: 2.75rem 2.75rem;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.5;
+      transition: all 0.25s ease;
+    }
+
+    /* Template 1: Modern Executive (Default) */
+    .resume-sheet.tpl-modern {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    .resume-sheet.tpl-modern .res-name {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+    }
+    .resume-sheet.tpl-modern .res-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #2563eb;
+      margin-bottom: 0.5rem;
+    }
+    .resume-sheet.tpl-modern .res-contact {
+      font-size: 0.825rem;
+      color: #4b5563;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #e2e8f0;
+      margin-bottom: 1.25rem;
+    }
+    .resume-sheet.tpl-modern .res-section-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #1e293b;
+      border-bottom: 1px solid #cbd5e1;
+      padding-bottom: 0.3rem;
+      margin-top: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Template 2: Harvard Classic (Serif / High ATS) */
+    .resume-sheet.tpl-classic {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      line-height: 1.45;
+    }
+    .resume-sheet.tpl-classic .res-name {
+      font-size: 1.85rem;
+      font-weight: 700;
+      text-align: center;
+      color: #000000;
+      margin-bottom: 0.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .resume-sheet.tpl-classic .res-title {
+      font-size: 0.95rem;
+      text-align: center;
+      font-style: italic;
+      color: #374151;
+      margin-bottom: 0.4rem;
+    }
+    .resume-sheet.tpl-classic .res-contact {
+      font-size: 0.825rem;
+      color: #374151;
+      text-align: center;
+      justify-content: center;
+      display: flex;
+      gap: 0.75rem;
+      border-bottom: 1px solid #000000;
+      padding-bottom: 0.6rem;
+      margin-bottom: 1.25rem;
+    }
+    .resume-sheet.tpl-classic .res-section-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #000000;
+      border-bottom: 1px solid #000000;
+      padding-bottom: 0.2rem;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.04em;
+    }
+
+    /* Template 3: Silicon Valley Tech */
+    .resume-sheet.tpl-tech {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    .resume-sheet.tpl-tech .res-name {
+      font-size: 1.9rem;
+      font-weight: 800;
+      color: #09090b;
+      margin-bottom: 0.2rem;
+    }
+    .resume-sheet.tpl-tech .res-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #059669;
+      font-family: monospace;
+      margin-bottom: 0.5rem;
+    }
+    .resume-sheet.tpl-tech .res-contact {
+      font-size: 0.8rem;
+      color: #52525b;
+      display: flex;
+      gap: 0.75rem;
+      font-family: monospace;
+      border-bottom: 2px solid #e4e4e7;
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .resume-sheet.tpl-tech .res-section-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #09090b;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border-bottom: 1.5px solid #059669;
+      padding-bottom: 0.25rem;
+      margin-top: 1.15rem;
+      margin-bottom: 0.65rem;
+    }
+
+    /* Template 4: Creative Accent */
+    .resume-sheet.tpl-creative {
+      border-top: 6px solid #6366f1;
+    }
+    .resume-sheet.tpl-creative .res-name {
+      font-size: 2.1rem;
+      font-weight: 800;
+      color: #1e1b4b;
+      margin-bottom: 0.2rem;
+    }
+    .resume-sheet.tpl-creative .res-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #6366f1;
+      margin-bottom: 0.5rem;
+    }
+    .resume-sheet.tpl-creative .res-contact {
+      font-size: 0.825rem;
+      color: #475569;
+      display: flex;
+      gap: 0.85rem;
+      border-bottom: 2px dashed #cbd5e1;
+      padding-bottom: 0.85rem;
+      margin-bottom: 1.25rem;
+    }
+    .resume-sheet.tpl-creative .res-section-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #4338ca;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-left: 3px solid #6366f1;
+      padding-left: 0.5rem;
+      margin-top: 1.25rem;
+      margin-bottom: 0.65rem;
+    }
+
+    /* Shared resume element styling */
+    .res-entry {
+      margin-bottom: 0.9rem;
+    }
+    .res-entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: #111827;
+      margin-bottom: 0.15rem;
+    }
+    .res-entry-subheader {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.84rem;
+      color: #4b5563;
+      margin-bottom: 0.35rem;
+    }
+    .res-bullets {
+      margin: 0.3rem 0 0 1.2rem;
+      padding: 0;
+      font-size: 0.84rem;
+      color: #374151;
+      line-height: 1.45;
+    }
+    .res-bullets li {
+      margin-bottom: 0.25rem;
+    }
+    .res-summary-text {
+      font-size: 0.84rem;
+      color: #374151;
+      line-height: 1.5;
+      margin: 0.35rem 0;
+    }
+    .res-skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.4rem;
+    }
+    .res-skill-pill {
+      font-size: 0.78rem;
+      padding: 0.2rem 0.55rem;
+      background: #f1f5f9;
+      color: #1e293b;
+      border-radius: 4px;
+      border: 1px solid #e2e8f0;
+      font-weight: 500;
+    }
+
+    /* Toast */
+    .app-toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      transform: translateY(100px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .app-toast.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Print Stylesheet for 1-Click Clean PDF Export */
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+      app-header, app-breadcrumbs, app-footer, .tool-header, .template-selector-bar, .importer-controls-panel, .action-bar, .app-toast {
+        display: none !important;
+      }
+      .resume-paper-wrapper, .resume-sheet, .resume-sheet * {
+        visibility: visible !important;
+      }
+      .resume-paper-wrapper {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+      }
+      .resume-sheet {
+        box-shadow: none !important;
+        padding: 0.5in !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -48,31 +386,125 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>LinkedIn Resume Import</h1>
-        <p class="tool-description">Import your LinkedIn profile and generate a CV instantly.</p>
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+          <div style="padding: 0.5rem; border-radius: var(--radius-md); background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.3);">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+              <rect x="2" y="9" width="4" height="12"></rect>
+              <circle cx="4" cy="4" r="2"></circle>
+            </svg>
+          </div>
+          <span style="font-size: 0.85rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em;">Instant Resume Transformer</span>
+        </div>
+        <h1>LinkedIn to Resume Importer &amp; Formatter</h1>
+        <p class="tool-description">Import text or files from your LinkedIn profile, extract work experience, skills, and education into structured resume sections, and export as clean PDF or Markdown.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>LinkedIn Resume Import</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Import your LinkedIn profile and generate a CV instantly.</div>
-            <div><strong>Inputs:</strong> cv, resume, job, career, linkedin resume import</div>
-            <div><strong>Category:</strong> cv</div>
+      <!-- Main Split Layout -->
+      <div class="importer-split-layout">
+        
+        <!-- Left Column: Importer Input & Section Tweaker -->
+        <div class="importer-controls-panel" style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <!-- Ingestion Panel -->
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem;">
+              <h2 class="panel-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0; font-size: 1.05rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                Import LinkedIn Profile
+              </h2>
+              <button type="button" id="btn-load-sample-li" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;">Load Sample</button>
+            </div>
+
+            <!-- Upload File or Paste -->
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
+              <label class="btn btn-secondary" style="flex: 1; font-size: 0.8rem; padding: 0.45rem; text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.4rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                Upload File (.txt, .json)
+                <input type="file" id="inp-li-file" accept=".txt,.json,.pdf" style="display: none;">
+              </label>
+              <button type="button" id="btn-clear-raw" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.45rem 0.75rem;">Clear</button>
+            </div>
+
+            <div class="form-group">
+              <label for="inp-raw-linkedin" style="font-size: 0.8rem;">Paste LinkedIn Raw Text or PDF Export Text</label>
+              <textarea id="inp-raw-linkedin" class="form-input" style="min-height: 220px; font-size: 0.84rem; font-family: monospace;" placeholder="Paste LinkedIn 'Save to PDF' text or profile text here..."></textarea>
+            </div>
+
+            <button type="button" id="btn-parse-linkedin" class="btn btn-primary" style="margin-top: 0.75rem; width: 100%;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+              Parse &amp; Format Resume
+            </button>
+          </div>
+
+          <!-- Quick Edit Fields Panel -->
+          <div class="tool-panel glass-panel">
+            <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+              Quick Edit Parsed Data
+            </h3>
+            <div class="form-group" style="margin-bottom: 0.65rem;">
+              <label for="edit-name" style="font-size: 0.78rem;">Full Name</label>
+              <input type="text" id="edit-name" class="form-input" style="padding: 0.45rem 0.75rem; font-size: 0.85rem;" value="David Vance, PMP">
+            </div>
+            <div class="form-group" style="margin-bottom: 0.65rem;">
+              <label for="edit-title" style="font-size: 0.78rem;">Professional Headline</label>
+              <input type="text" id="edit-title" class="form-input" style="padding: 0.45rem 0.75rem; font-size: 0.85rem;" value="VP of Engineering & Distributed Cloud Architect">
+            </div>
+            <div class="form-group" style="margin-bottom: 0.65rem;">
+              <label for="edit-contact" style="font-size: 0.78rem;">Contact Info Line</label>
+              <input type="text" id="edit-contact" class="form-input" style="padding: 0.45rem 0.75rem; font-size: 0.85rem;" value="San Francisco, CA • david.vance@example.com • linkedin.com/in/davidvance">
+            </div>
+            <div class="form-group">
+              <label for="edit-skills" style="font-size: 0.78rem;">Key Skills (Comma-Separated)</label>
+              <input type="text" id="edit-skills" class="form-input" style="padding: 0.45rem 0.75rem; font-size: 0.85rem;" value="Cloud Architecture, Kubernetes, Go, TypeScript, PostgreSQL, Distributed Systems, Team Leadership">
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Column: Live Staged Resume Preview & Template Controls -->
+        <div class="tool-panel glass-panel" style="display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+            <!-- Template Selector -->
+            <div class="template-selector-bar" style="margin-bottom: 0;">
+              <button type="button" class="template-btn active" data-tpl="tpl-modern">Modern Executive</button>
+              <button type="button" class="template-btn" data-tpl="tpl-classic">Harvard Classic</button>
+              <button type="button" class="template-btn" data-tpl="tpl-tech">Silicon Valley Tech</button>
+              <button type="button" class="template-btn" data-tpl="tpl-creative">Creative Accent</button>
+            </div>
+
+            <!-- Export Buttons -->
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="button" id="btn-print-pdf" class="btn btn-primary" style="padding: 0.45rem 0.85rem; font-size: 0.825rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                Print / PDF
+              </button>
+              <button type="button" id="btn-export-markdown" class="btn btn-secondary" style="padding: 0.45rem 0.75rem; font-size: 0.825rem;">
+                Markdown
+              </button>
+              <button type="button" id="btn-copy-plain" class="btn btn-secondary" style="padding: 0.45rem 0.75rem; font-size: 0.825rem;">
+                Copy Text
+              </button>
+            </div>
+          </div>
+
+          <!-- Staged Paper Wrapper -->
+          <div class="resume-paper-wrapper">
+            <div id="resume-sheet" class="resume-sheet tpl-modern">
+              <!-- Dynamically populated via JS parser -->
+            </div>
+          </div>
+        </div>
+
       </div>
-    
     </div>
   </main>
+
+  <!-- Global Toast Notification -->
+  <div id="app-toast" class="app-toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span id="toast-message">Resume parsed successfully!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -82,10 +514,10 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "LinkedIn Resume Import",
+    "name": "LinkedIn to Resume Importer & Formatter",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/linkedin-resume-import/",
-    "description": "Import your LinkedIn profile and generate a CV instantly.",
-    "applicationCategory": "UtilityPage",
+    "description": "Convert LinkedIn profiles into executive PDF and Markdown formatted resumes directly in the browser.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
     "isPartOf": {
@@ -95,5 +527,8 @@
     }
   }
   </script>
+
+  <script type="module" src="../../js/components.js"></script>
+  <script type="module" src="./script.js" defer></script>
 </body>
 </html>

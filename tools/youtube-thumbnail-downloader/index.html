@@ -3,96 +3,295 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YouTube Thumbnail Downloader - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Download HD and 4K thumbnails from any YouTube video.">
-  <meta name="keywords" content="video, media, youtube thumbnail downloader, free, online, tool, utility">
+  <title>YouTube Thumbnail Downloader - 4K & HD Max Resolution - ALL IN ONE</title>
+  <meta name="description" content="Download YouTube video thumbnails in Maximum Resolution (1080p/720p HD, 480p, 360p) with 1-click. Free, instant, zero ads.">
+  <meta name="keywords" content="youtube thumbnail downloader, download youtube thumbnail, youtube cover download, maxresdefault download, 4k youtube thumbnail">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/youtube-thumbnail-downloader/">
 
-  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/youtube-thumbnail-downloader/">
   <meta property="og:title" content="YouTube Thumbnail Downloader - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Download HD and 4K thumbnails from any YouTube video.">
+  <meta property="og:description" content="Download high resolution YouTube video thumbnails in 1080p, 720p HD, and standard qualities.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:width" content="512">
-  <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="YouTube Thumbnail Downloader - ALL IN ONE">
-  <meta property="og:locale" content="en_US">
 
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/youtube-thumbnail-downloader/">
   <meta name="twitter:title" content="YouTube Thumbnail Downloader - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Download HD and 4K thumbnails from any YouTube video.">
+  <meta name="twitter:description" content="Extract maximum resolution YouTube thumbnails with 1-click downloads.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="YouTube Thumbnail Downloader - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .yt-search-bar {
+      display: flex;
+      gap: 0.75rem;
+      background: var(--bg-tertiary);
+      padding: 0.5rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+    }
+    .yt-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-primary);
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .thumb-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+    }
+    .thumb-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+    .thumb-card.featured {
+      grid-column: 1 / -1;
+      border-color: rgba(78, 133, 191, 0.4);
+    }
+    .thumb-img-wrapper {
+      position: relative;
+      background: #000;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .thumb-img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .thumb-badge {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .thumb-body {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .thumb-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .thumb-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .thumb-res-label {
+      font-size: 0.8rem;
+      font-family: monospace;
+      color: var(--accent);
+      background: rgba(78, 133, 191, 0.15);
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+    }
+    .thumb-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>YouTube Thumbnail Downloader</h1>
-        <p class="tool-description">Download HD and 4K thumbnails from any YouTube video.</p>
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>YouTube Thumbnail Downloader</h1>
+            <p class="tool-description">Grab maximum resolution thumbnails (1280×720 HD, 640×480, 480×360) from any YouTube video or Short.</p>
+          </div>
+          <button id="btn-load-demo" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.4rem;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            Load Sample Video
+          </button>
+        </div>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>YouTube Thumbnail Downloader</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Download HD and 4K thumbnails from any YouTube video.</div>
-            <div><strong>Inputs:</strong> video, media, youtube thumbnail downloader</div>
-            <div><strong>Category:</strong> video</div>
+      <!-- Search Input Bar -->
+      <div class="tool-panel glass-panel" style="padding: 1.5rem;">
+        <form id="form-extract" class="yt-search-bar">
+          <input type="text" id="input-url" class="yt-input" placeholder="Paste YouTube Link or Video ID (e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ)" required>
+          <button type="submit" class="btn btn-primary" style="padding: 0.75rem 1.5rem; font-weight: 700; white-space: nowrap;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.4rem;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            Extract Thumbnails
+          </button>
+        </form>
+        <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-tertiary);">
+          <span>Supported links:</span>
+          <code>youtube.com/watch?v=...</code>
+          <code>youtu.be/...</code>
+          <code>youtube.com/shorts/...</code>
+        </div>
+      </div>
+
+      <!-- Results Grid -->
+      <div id="results-area" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <h3 style="font-size: 1.25rem; font-weight: 700;">Extracted Thumbnails for Video: <span id="current-vid-id" style="color: var(--accent); font-family: monospace;"></span></h3>
+          <button id="btn-download-all" class="btn btn-secondary" style="font-size: 0.85rem;">Download All Sizes</button>
+        </div>
+
+        <div class="cards-grid">
+          <!-- Max Res Card (Featured) -->
+          <div class="thumb-card featured">
+            <div class="thumb-img-wrapper">
+              <span class="thumb-badge" style="background: rgba(16, 185, 129, 0.85); color: #fff;">⭐ Maximum Resolution (HD 1080p/720p)</span>
+              <img id="img-maxres" src="" alt="Maximum Resolution Thumbnail">
+            </div>
+            <div class="thumb-body">
+              <div class="thumb-header">
+                <div>
+                  <div class="thumb-title">Ultra High Definition (maxresdefault)</div>
+                  <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.2rem;">Best quality available from creator upload.</div>
+                </div>
+                <span class="thumb-res-label">1280 × 720</span>
+              </div>
+              <div class="thumb-actions">
+                <button class="btn btn-primary btn-dl-single" data-quality="maxres" data-res="1280x720">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.35rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                  Download HD (1280×720)
+                </button>
+                <button class="btn btn-secondary btn-copy-url" data-target="maxres">Copy Link</button>
+                <button class="btn btn-secondary btn-open-tab" data-target="maxres">Open Full Image</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Standard Definition (sddefault) -->
+          <div class="thumb-card">
+            <div class="thumb-img-wrapper">
+              <span class="thumb-badge">Standard Definition</span>
+              <img id="img-sd" src="" alt="Standard Definition Thumbnail">
+            </div>
+            <div class="thumb-body">
+              <div class="thumb-header">
+                <div class="thumb-title">Standard Quality (sddefault)</div>
+                <span class="thumb-res-label">640 × 480</span>
+              </div>
+              <div class="thumb-actions">
+                <button class="btn btn-primary btn-dl-single" data-quality="sd" data-res="640x480">Download SD</button>
+                <button class="btn btn-secondary btn-copy-url" data-target="sd">Copy Link</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- High Quality (hqdefault) -->
+          <div class="thumb-card">
+            <div class="thumb-img-wrapper">
+              <span class="thumb-badge">High Quality</span>
+              <img id="img-hq" src="" alt="High Quality Thumbnail">
+            </div>
+            <div class="thumb-body">
+              <div class="thumb-header">
+                <div class="thumb-title">Medium High (hqdefault)</div>
+                <span class="thumb-res-label">480 × 360</span>
+              </div>
+              <div class="thumb-actions">
+                <button class="btn btn-primary btn-dl-single" data-quality="hq" data-res="480x360">Download HQ</button>
+                <button class="btn btn-secondary btn-copy-url" data-target="hq">Copy Link</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Medium Quality (mqdefault) -->
+          <div class="thumb-card">
+            <div class="thumb-img-wrapper">
+              <span class="thumb-badge">Medium Quality</span>
+              <img id="img-mq" src="" alt="Medium Quality Thumbnail">
+            </div>
+            <div class="thumb-body">
+              <div class="thumb-header">
+                <div class="thumb-title">Medium Quality (mqdefault)</div>
+                <span class="thumb-res-label">320 × 180</span>
+              </div>
+              <div class="thumb-actions">
+                <button class="btn btn-primary btn-dl-single" data-quality="mq" data-res="320x180">Download MQ</button>
+                <button class="btn btn-secondary btn-copy-url" data-target="mq">Copy Link</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Default Thumbnail (default) -->
+          <div class="thumb-card">
+            <div class="thumb-img-wrapper">
+              <span class="thumb-badge">Compact Thumbnail</span>
+              <img id="img-default" src="" alt="Default Thumbnail">
+            </div>
+            <div class="thumb-body">
+              <div class="thumb-header">
+                <div class="thumb-title">Compact Small (default)</div>
+                <span class="thumb-res-label">120 × 90</span>
+              </div>
+              <div class="thumb-actions">
+                <button class="btn btn-primary btn-dl-single" data-quality="default" data-res="120x90">Download Small</button>
+                <button class="btn btn-secondary btn-copy-url" data-target="default">Copy Link</button>
+              </div>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
     </div>
   </main>
 
-  <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "YouTube Thumbnail Downloader",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/youtube-thumbnail-downloader/",
-    "description": "Download HD and 4K thumbnails from any YouTube video.",
+    "description": "Download YouTube video thumbnails in 4K, 1080p, and standard resolutions.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5.",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "ALL IN ONE",
-      "url": "https://sami12901.github.io/ALL-IN-ONE-v1/"
-    }
+    "browserRequirements": "Requires JavaScript. Requires HTML5."
   }
   </script>
 </body>

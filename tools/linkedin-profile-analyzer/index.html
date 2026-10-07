@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LinkedIn Profile Analyzer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Analyze and optimize your LinkedIn profile.">
-  <meta name="keywords" content="cv, resume, job, career, linkedin profile analyzer, free, online, tool, utility">
+  <title>LinkedIn Profile Optimizer &amp; Audit - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Audit and score your LinkedIn profile headline, about summary hook, keyword density, and Social Selling Index (SSI) with AI rewriters.">
+  <meta name="keywords" content="linkedin profile analyzer, linkedin headline audit, ssi score, linkedin summary hook, linkedin seo, social selling index">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/linkedin-profile-analyzer/">
 
@@ -13,8 +13,8 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/linkedin-profile-analyzer/">
-  <meta property="og:title" content="LinkedIn Profile Analyzer - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Analyze and optimize your LinkedIn profile.">
+  <meta property="og:title" content="LinkedIn Profile Optimizer &amp; Audit - Free Online Tool - ALL IN ONE">
+  <meta property="og:description" content="Comprehensive LinkedIn profile audit: headline power score, about hook analysis, SEO keyword density, and action checklist.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
@@ -25,17 +25,242 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/linkedin-profile-analyzer/">
-  <meta name="twitter:title" content="LinkedIn Profile Analyzer - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Analyze and optimize your LinkedIn profile.">
+  <meta name="twitter:title" content="LinkedIn Profile Optimizer &amp; Audit - Free Online Tool - ALL IN ONE">
+  <meta name="twitter:description" content="Comprehensive LinkedIn profile audit: headline power score, about hook analysis, SEO keyword density, and action checklist.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="LinkedIn Profile Analyzer - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
-  <script type="module" src="../../js/components.js"></script>
-  <script type="module" src="./script.js" defer></script>
+
+  <style>
+    /* LinkedIn Profile Analyzer Styles */
+    .analyzer-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .analyzer-grid {
+        grid-template-columns: 1.15fr 0.85fr;
+      }
+    }
+
+    .preset-pills-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+    }
+    .preset-pill {
+      font-size: 0.78rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .preset-pill:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    /* Score Gauge Circle */
+    .score-meter-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.75rem;
+    }
+    .score-circle {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: conic-gradient(var(--accent) var(--score-pct, 82%), rgba(255, 255, 255, 0.08) 0deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 25px rgba(99, 102, 241, 0.25);
+    }
+    .score-circle-inner {
+      width: 106px;
+      height: 106px;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .score-circle-num {
+      font-size: 2.1rem;
+      font-weight: 800;
+      font-family: var(--font-display);
+      color: var(--text-primary);
+    }
+
+    /* SSI Quadrant Breakdown */
+    .ssi-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+    .ssi-item {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem;
+      text-align: left;
+    }
+    .ssi-item-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.25rem;
+      display: block;
+    }
+    .ssi-item-score {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--accent);
+      font-family: var(--font-display);
+    }
+
+    /* Truncation Hook Simulator */
+    .hook-preview-box {
+      background: #000000;
+      border: 1px solid #1f2937;
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: #e5e7eb;
+      position: relative;
+    }
+    .hook-see-more {
+      color: #3b82f6;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .hook-danger-tag {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+
+    /* Action Checklist */
+    .action-checklist-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.65rem 0.85rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .checklist-item.done {
+      opacity: 0.6;
+    }
+    .checklist-item.done span {
+      text-decoration: line-through;
+    }
+    .checklist-priority {
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .priority-high {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    .priority-med {
+      background: rgba(245, 158, 11, 0.2);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .priority-low {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    /* AI Suggestions Cards */
+    .ai-rewriter-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      margin-bottom: 0.85rem;
+    }
+    .ai-rewriter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .ai-rewriter-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Toast */
+    .app-toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      transform: translateY(100px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .app-toast.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -48,31 +273,219 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>LinkedIn Profile Analyzer</h1>
-        <p class="tool-description">Analyze and optimize your LinkedIn profile.</p>
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+          <div style="padding: 0.5rem; border-radius: var(--radius-md); background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.3);">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+              <rect x="2" y="9" width="4" height="12"></rect>
+              <circle cx="4" cy="4" r="2"></circle>
+            </svg>
+          </div>
+          <span style="font-size: 0.85rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em;">Profile Optimization Audit</span>
+        </div>
+        <h1>LinkedIn Profile Optimizer &amp; Audit</h1>
+        <p class="tool-description">Audit headline impact, test the 3-line 'See more' about hook truncation, evaluate keyword searchability, and simulate your LinkedIn Social Selling Index (SSI) score.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>LinkedIn Profile Analyzer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Analyze and optimize your LinkedIn profile.</div>
-            <div><strong>Inputs:</strong> cv, resume, job, career, linkedin profile analyzer</div>
-            <div><strong>Category:</strong> cv</div>
-          </div>
-        </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+      <!-- Presets Bar -->
+      <div class="preset-pills-bar">
+        <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);">Load Archetypes:</span>
+        <button type="button" class="preset-pill" data-preset="tech">Staff Architect / Tech Lead</button>
+        <button type="button" class="preset-pill" data-preset="pm">VP of Product Management</button>
+        <button type="button" class="preset-pill" data-preset="growth">Growth Marketing Director</button>
+        <button type="button" class="preset-pill" data-preset="sales">Enterprise Sales &amp; Revenue VP</button>
       </div>
-    
+
+      <!-- Analyzer Main Grid -->
+      <div class="analyzer-grid">
+        
+        <!-- Left Column: Inputs & Interactive Analysis -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          
+          <!-- Headline Audit Card -->
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem;">
+              <h2 class="panel-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0; font-size: 1.1rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+                Headline Optimizer
+              </h2>
+              <span id="headline-char-count" style="font-size: 0.8rem; font-weight: 700; color: var(--accent);">0 / 220 chars</span>
+            </div>
+            
+            <div class="form-group">
+              <label for="inp-headline-text">Your Current Profile Headline</label>
+              <textarea id="inp-headline-text" class="form-input" rows="2" style="font-size: 0.92rem; line-height: 1.4;" placeholder="e.g. Senior Software Engineer at TechCorp | React & Node.js | Scalable Cloud Systems"></textarea>
+            </div>
+
+            <!-- Headline Health Meters -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem; margin-top: 0.75rem;">
+              <div style="background: var(--bg-tertiary); padding: 0.65rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <span style="font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; display: block;">Headline Score</span>
+                <strong id="badge-headline-score" style="font-size: 1.1rem; color: var(--accent);">88 / 100</strong>
+              </div>
+              <div style="background: var(--bg-tertiary); padding: 0.65rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <span style="font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; display: block;">Search Scarcity</span>
+                <strong id="badge-headline-scarcity" style="font-size: 1.1rem; color: #10b981;">High Impact</strong>
+              </div>
+              <div style="background: var(--bg-tertiary); padding: 0.65rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <span style="font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; display: block;">Value Proposition</span>
+                <strong id="badge-headline-value" style="font-size: 1.1rem; color: var(--accent);">Clear Proof</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- About / Summary Section & Truncation Hook Sandbox -->
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem;">
+              <h2 class="panel-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0; font-size: 1.1rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                About / Summary Hook Sandbox
+              </h2>
+              <span id="about-char-count" style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);">0 chars</span>
+            </div>
+
+            <div class="form-group">
+              <label for="inp-about-text">About Summary Body</label>
+              <textarea id="inp-about-text" class="form-input" rows="6" style="font-size: 0.88rem; line-height: 1.5;" placeholder="Paste your LinkedIn About section..."></textarea>
+            </div>
+
+            <!-- Feed Hook Preview Simulator -->
+            <div style="margin-top: 1rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">
+                  Exact 3-Line Cutoff Simulation (~210 Chars):
+                </span>
+                <span id="hook-status-label" style="font-size: 0.78rem; font-weight: 700; color: #10b981;">Optimal Hook</span>
+              </div>
+              <div id="hook-preview-box" class="hook-preview-box">
+                <!-- Populated dynamically via JS -->
+              </div>
+              <div style="font-size: 0.78rem; color: var(--text-tertiary); margin-top: 0.35rem;">
+                💡 <strong>Hook Rule:</strong> 90% of profile visitors never click "...see more". Your opening 3 lines must deliver a self-contained hook, quantifiable metric, or bold value proposition.
+              </div>
+            </div>
+          </div>
+
+          <!-- AI Rewriter & Formula Generation -->
+          <div class="tool-panel glass-panel">
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+              AI Optimized Headline Rewrites
+            </h3>
+
+            <!-- Rewritten Headline 1: Authority -->
+            <div class="ai-rewriter-card">
+              <div class="ai-rewriter-header">
+                <span class="ai-rewriter-label">Formula 1: Authority &amp; Scope</span>
+                <button type="button" class="btn btn-secondary btn-copy-rewrite" data-target="rewrite-1" style="padding: 0.2rem 0.55rem; font-size: 0.75rem;">Copy</button>
+              </div>
+              <div id="rewrite-1" style="font-size: 0.88rem; color: var(--text-primary); line-height: 1.4;">
+                Loading authority headline...
+              </div>
+            </div>
+
+            <!-- Rewritten Headline 2: Metrics / Outcome Driven -->
+            <div class="ai-rewriter-card">
+              <div class="ai-rewriter-header">
+                <span class="ai-rewriter-label">Formula 2: Measurable Business Impact</span>
+                <button type="button" class="btn btn-secondary btn-copy-rewrite" data-target="rewrite-2" style="padding: 0.2rem 0.55rem; font-size: 0.75rem;">Copy</button>
+              </div>
+              <div id="rewrite-2" style="font-size: 0.88rem; color: var(--text-primary); line-height: 1.4;">
+                Loading outcome headline...
+              </div>
+            </div>
+
+            <!-- Rewritten Headline 3: Keyword Rich SEO -->
+            <div class="ai-rewriter-card" style="margin-bottom: 0;">
+              <div class="ai-rewriter-header">
+                <span class="ai-rewriter-label">Formula 3: Maximum Recruiter SEO Density</span>
+                <button type="button" class="btn btn-secondary btn-copy-rewrite" data-target="rewrite-3" style="padding: 0.2rem 0.55rem; font-size: 0.75rem;">Copy</button>
+              </div>
+              <div id="rewrite-3" style="font-size: 0.88rem; color: var(--text-primary); line-height: 1.4;">
+                Loading SEO headline...
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: SSI Score, Algorithmic Metrics & Action Checklist -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          
+          <!-- Social Selling Index (SSI) Card -->
+          <div class="score-meter-card glass-panel">
+            <div class="score-circle" id="ssi-circle" style="--score-pct: 84%;">
+              <div class="score-circle-inner">
+                <span id="ssi-score-num" class="score-circle-num">84</span>
+                <span style="font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700;">SSI Score / 100</span>
+              </div>
+            </div>
+            <div>
+              <h3 id="ssi-tier-title" style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.25rem 0;">Top 2% Industry Ranking</h3>
+              <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">
+                Calculated from profile completeness, keyword density, and connection engagement signals.
+              </p>
+            </div>
+
+            <!-- 4 SSI Quadrants -->
+            <div class="ssi-grid">
+              <div class="ssi-item">
+                <span class="ssi-item-label">Brand Strength</span>
+                <div id="ssi-q1" class="ssi-item-score">23.5 <span style="font-size: 0.75rem; color: var(--text-tertiary);">/ 25</span></div>
+              </div>
+              <div class="ssi-item">
+                <span class="ssi-item-label">Target Network</span>
+                <div id="ssi-q2" class="ssi-item-score">21.0 <span style="font-size: 0.75rem; color: var(--text-tertiary);">/ 25</span></div>
+              </div>
+              <div class="ssi-item">
+                <span class="ssi-item-label">Insights &amp; Content</span>
+                <div id="ssi-q3" class="ssi-item-score">19.5 <span style="font-size: 0.75rem; color: var(--text-tertiary);">/ 25</span></div>
+              </div>
+              <div class="ssi-item">
+                <span class="ssi-item-label">Relationships</span>
+                <div id="ssi-q4" class="ssi-item-score">20.0 <span style="font-size: 0.75rem; color: var(--text-tertiary);">/ 25</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Prioritized Action Checklist -->
+          <div class="tool-panel glass-panel">
+            <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+              <span>Profile Optimization Checklist</span>
+              <span id="checklist-progress" style="font-size: 0.75rem; color: var(--accent); font-weight: 600;">3 / 6 Done</span>
+            </h3>
+            
+            <div id="checklist-container" class="action-checklist-list">
+              <!-- Dynamically generated or interactive via JS -->
+            </div>
+          </div>
+
+          <!-- Strategic LinkedIn SEO Tips -->
+          <div class="tool-panel glass-panel">
+            <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              Recruiter Search Engine Hacks
+            </h4>
+            <ul style="margin: 0 0 0 1.1rem; padding: 0; font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5;">
+              <li style="margin-bottom: 0.35rem;">LinkedIn Recruiter indexes the <strong>Headline</strong> and <strong>Current Job Title</strong> with 3x algorithmic weight compared to the rest of the profile.</li>
+              <li style="margin-bottom: 0.35rem;">Avoid vague buzzwords like <em>"Problem Solver"</em> or <em>"Guru"</em>; recruiters search for hard tokens: <em>"Kubernetes", "TypeScript", "B2B SaaS"</em>.</li>
+              <li>Include your direct professional email or calendar link at the end of the About section to lower inbound recruiter friction.</li>
+            </ul>
+          </div>
+
+        </div>
+
+      </div>
     </div>
   </main>
+
+  <!-- Global Toast Notification -->
+  <div id="app-toast" class="app-toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span id="toast-message">Copied to clipboard!</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -82,10 +495,10 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "LinkedIn Profile Analyzer",
+    "name": "LinkedIn Profile Optimizer & Audit",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/linkedin-profile-analyzer/",
-    "description": "Analyze and optimize your LinkedIn profile.",
-    "applicationCategory": "UtilityPage",
+    "description": "Interactive LinkedIn profile audit tool measuring headline strength, about section hook truncation, SSI score, and actionable optimization checklist.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
     "isPartOf": {
@@ -95,5 +508,8 @@
     }
   }
   </script>
+
+  <script type="module" src="../../js/components.js"></script>
+  <script type="module" src="./script.js" defer></script>
 </body>
 </html>

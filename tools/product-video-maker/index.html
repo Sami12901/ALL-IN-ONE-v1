@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product Video Maker - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create high-converting e-commerce product videos.">
-  <meta name="keywords" content="video, media, product video maker, free, online, tool, utility">
+  <meta name="description" content="Create high-converting commercial product videos with animated callouts, price badges, rhythmic beats, and instant video download.">
+  <meta name="keywords" content="product video maker, commercial video creator, e-commerce video generator, promo video, product showcase video">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/product-video-maker/">
 
@@ -14,25 +14,151 @@
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/product-video-maker/">
   <meta property="og:title" content="Product Video Maker - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Create high-converting e-commerce product videos.">
+  <meta property="og:description" content="Create high-converting commercial product videos with animated callouts, price badges, rhythmic beats, and instant video download.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:width" content="512">
-  <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="Product Video Maker - ALL IN ONE">
-  <meta property="og:locale" content="en_US">
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/product-video-maker/">
-  <meta name="twitter:title" content="Product Video Maker - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Create high-converting e-commerce product videos.">
-  <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="Product Video Maker - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+  
+  <style>
+    .maker-layout {
+      display: grid;
+      grid-template-columns: 430px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 1024px) {
+      .maker-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .canvas-preview-container {
+      position: relative;
+      background: #000;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: 16/9;
+      max-height: 540px;
+      width: 100%;
+    }
+    .canvas-preview-container.aspect-9-16 {
+      aspect-ratio: 9/16;
+      max-height: 600px;
+      max-width: 338px;
+      margin: 0 auto;
+    }
+    .canvas-preview-container.aspect-1-1 {
+      aspect-ratio: 1/1;
+      max-height: 500px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    #preview-canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .playback-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-top: 1rem;
+    }
+    .progress-bar-wrap {
+      width: 100%;
+      height: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+    .progress-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: var(--accent);
+      transition: width 0.1s linear;
+    }
+    .chip-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .chip-btn {
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .chip-btn.active, .chip-btn:hover {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .product-presets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .preset-card-btn {
+      padding: 0.6rem 0.4rem;
+      text-align: center;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .preset-card-btn.active, .preset-card-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-glow);
+    }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      max-width: 480px;
+      width: 90%;
+      text-align: center;
+    }
+  </style>
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
@@ -49,50 +175,210 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Product Video Maker</h1>
-        <p class="tool-description">Create high-converting e-commerce product videos.</p>
+        <p class="tool-description">Generate high-conversion commercial ads and product promo videos with animated feature callouts, discount ribbons, and synchronized upbeat audio.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Product Video Maker</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create high-converting e-commerce product videos.</div>
-            <div><strong>Inputs:</strong> video, media, product video maker</div>
-            <div><strong>Category:</strong> video</div>
+      <div class="maker-layout">
+        <!-- Left: Product Parameters -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+            Product Preset & Media
+          </div>
+
+          <div class="product-presets-grid" id="preset-selector">
+            <button type="button" class="preset-card-btn active" data-preset="watch">
+              <span style="font-size: 1.25rem;">⌚</span>
+              <span>Watch</span>
+            </button>
+            <button type="button" class="preset-card-btn" data-preset="perfume">
+              <span style="font-size: 1.25rem;">✨</span>
+              <span>Perfume</span>
+            </button>
+            <button type="button" class="preset-card-btn" data-preset="sneaker">
+              <span style="font-size: 1.25rem;">👟</span>
+              <span>Sneaker</span>
+            </button>
+            <button type="button" class="preset-card-btn" data-preset="phone">
+              <span style="font-size: 1.25rem;">📱</span>
+              <span>Phone</span>
+            </button>
+            <button type="button" class="preset-card-btn" data-preset="headphones">
+              <span style="font-size: 1.25rem;">🎧</span>
+              <span>Audio</span>
+            </button>
+          </div>
+
+          <div class="form-group">
+            <label>Or Upload Custom Product Image (PNG/JPG)</label>
+            <input type="file" id="upload-product-img" accept="image/*" class="form-input">
+          </div>
+
+          <div class="panel-title" style="margin-top: 1rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            Commercial Copy & Details
+          </div>
+
+          <div class="form-group">
+            <label for="brand-name">Brand Name</label>
+            <input type="text" id="brand-name" class="form-input" value="AURA CHRONOGRAPH">
+          </div>
+
+          <div class="form-group">
+            <label for="product-name">Product Name & Edition</label>
+            <input type="text" id="product-name" class="form-input" value="Titanium Tourbillon Master V">
+          </div>
+
+          <div class="form-group">
+            <label for="badge-text">Promotion Badge</label>
+            <input type="text" id="badge-text" class="form-input" value="LIMITED EDITION • 500 PIECES">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <div class="form-group">
+              <label for="sale-price">Sale Price</label>
+              <input type="text" id="sale-price" class="form-input" value="$590">
+            </div>
+            <div class="form-group">
+              <label for="orig-price">Original Price</label>
+              <input type="text" id="orig-price" class="form-input" value="$950">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="feature-1">Feature Highlight #1</label>
+            <input type="text" id="feature-1" class="form-input" value="Forged Grade 5 Aerospace Titanium Case">
+          </div>
+
+          <div class="form-group">
+            <label for="feature-2">Feature Highlight #2</label>
+            <input type="text" id="feature-2" class="form-input" value="Anti-Reflective Sapphire Crystal • 72h Reserve">
+          </div>
+
+          <div class="form-group">
+            <label for="cta-text">Call To Action (CTA)</label>
+            <input type="text" id="cta-text" class="form-input" value="ORDER NOW • FREE WORLDWIDE EXPRESS">
+          </div>
+
+          <div class="panel-title" style="margin-top: 1rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            Format & Aesthetics
+          </div>
+
+          <div class="form-group">
+            <label>Aspect Ratio</label>
+            <div class="chip-group" id="aspect-selector">
+              <button type="button" class="chip-btn active" data-aspect="16-9">16:9 Landscape</button>
+              <button type="button" class="chip-btn" data-aspect="9-16">9:16 Vertical Reel</button>
+              <button type="button" class="chip-btn" data-aspect="1-1">1:1 Square</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="color-theme">Color Theme</label>
+            <select id="color-theme" class="form-select">
+              <option value="gold" selected>Luxury Gold & Obsidian</option>
+              <option value="neon">Cyber Neon Cyan</option>
+              <option value="ruby">High-Tech Ruby Red</option>
+              <option value="violet">Royal Ultra Violet</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="soundtrack-style">Soundtrack Beat</label>
+            <select id="soundtrack-style" class="form-select">
+              <option value="commercial-beat" selected>Commercial Synth Pulse (Dynamic Beat)</option>
+              <option value="chill-lounge">Subtle Minimal Bass Pulse</option>
+              <option value="silent">No Audio (Muted)</option>
+            </select>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right: Studio Preview Stage -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title" style="display: flex; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              Live Video Preview
+            </div>
+            <span class="badge" style="background: rgba(197, 160, 89, 0.2); color: var(--accent); padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.75rem;">Dynamic Ad Stage</span>
+          </div>
+
+          <div class="canvas-preview-container aspect-16-9" id="preview-wrapper">
+            <canvas id="preview-canvas" width="1280" height="720"></canvas>
+          </div>
+
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" id="playback-progress"></div>
+          </div>
+
+          <div class="playback-toolbar">
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <button type="button" id="btn-play-pause" class="btn btn-secondary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                Play Preview
+              </button>
+              <button type="button" id="btn-restart" class="btn btn-secondary" title="Restart">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+              </button>
+              <span id="time-display" style="font-size: 0.85rem; color: var(--text-secondary); font-family: monospace;">00:00 / 00:12</span>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+              <button type="button" id="btn-export-video" class="btn btn-primary" style="font-weight: 700;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Export Commercial Video (.webm)
+              </button>
+            </div>
+          </div>
+
+          <!-- Feature Cards -->
+          <div style="margin-top: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+              <div style="font-weight: 700; color: var(--accent); margin-bottom: 0.25rem;">⚡ Instant Render</div>
+              <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">High performance hardware-accelerated Canvas 2D frame pipeline.</p>
+            </div>
+            <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+              <div style="font-weight: 700; color: var(--accent); margin-bottom: 0.25rem;">🥁 Web Audio Beats</div>
+              <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Generative rhythmic pulse synths with kick, bass, and hi-hats.</p>
+            </div>
+            <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+              <div style="font-weight: 700; color: var(--accent); margin-bottom: 0.25rem;">💎 E-commerce Ready</div>
+              <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Designed for TikTok, Instagram Ads, Shopify, and Amazon listings.</p>
+            </div>
+          </div>
+        </div>
       </div>
-    
     </div>
   </main>
+
+  <!-- Export Processing Modal -->
+  <div class="modal-overlay" id="export-modal">
+    <div class="modal-card">
+      <div style="margin-bottom: 1rem;">
+        <svg class="spinning" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg>
+      </div>
+      <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">Rendering Product Video</h3>
+      <p style="font-size: 0.85rem; color: var(--text-secondary);" id="export-status-text">Capturing frames and audio pulse...</p>
+      <div class="progress-bar-wrap" style="height: 10px; margin: 1.5rem 0;">
+        <div class="progress-bar-fill" id="export-progress-bar" style="width: 0%;"></div>
+      </div>
+      <p style="font-size: 0.75rem; color: var(--text-muted);">Processing in your browser at 30fps HD.</p>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Product Video Maker",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/product-video-maker/",
-    "description": "Create high-converting e-commerce product videos.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5.",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "ALL IN ONE",
-      "url": "https://sami12901.github.io/ALL-IN-ONE-v1/"
-    }
+    "description": "Create high-converting commercial product videos with animated callouts, price badges, and rhythmic beats.",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "All"
   }
   </script>
 </body>

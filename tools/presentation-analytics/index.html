@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Presentation Analytics - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Analyze slide count, reading time, and content depth.">
-  <meta name="keywords" content="slide, presentation, pitch, deck, presentation analytics, free, online, tool, utility">
+  <title>Presentation Analytics & Rehearsal Studio - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Analyze slide deck timing, words-per-minute (WPM), reading grade complexity, and audience engagement forecast. Features an interactive rehearsal stopwatch and slide health auditor.">
+  <meta name="keywords" content="presentation analytics, speech pace calculator, words per minute, slide timing tracker, reading level analyzer, audience engagement forecast, rehearsal timer">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/presentation-analytics/">
 
@@ -13,8 +13,8 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/presentation-analytics/">
-  <meta property="og:title" content="Presentation Analytics - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Analyze slide count, reading time, and content depth.">
+  <meta property="og:title" content="Presentation Analytics & Rehearsal Studio - Free Online Tool - ALL IN ONE">
+  <meta property="og:description" content="Analyze slide deck timing, words-per-minute (WPM), reading grade complexity, and audience engagement forecast.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
@@ -25,10 +25,9 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/presentation-analytics/">
-  <meta name="twitter:title" content="Presentation Analytics - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Analyze slide count, reading time, and content depth.">
-  <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="Presentation Analytics - ALL IN ONE">
+  <meta property="twitter:title" content="Presentation Analytics & Rehearsal Studio - Free Online Tool - ALL IN ONE">
+  <meta property="twitter:description" content="Analyze slide deck timing, words-per-minute (WPM), reading grade complexity, and audience engagement forecast.">
+  <meta property="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
@@ -36,6 +35,216 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+
+  <style>
+    /* Analytics Studio Specific Styles */
+    .analytics-hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .kpi-metric-card {
+      padding: 1.25rem;
+      border-radius: var(--radius-lg);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .kpi-metric-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent);
+    }
+    .kpi-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .kpi-value {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-display, inherit);
+      line-height: 1.1;
+    }
+    .kpi-subtext {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    /* 2-Column Workspace Grid */
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 992px) {
+      .analytics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Attention Curve Chart Container */
+    .chart-container-box {
+      width: 100%;
+      height: 180px;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      position: relative;
+      margin: 1rem 0;
+      overflow: hidden;
+    }
+    .chart-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Slide Breakdown Table */
+    .table-responsive {
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    .analytics-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.825rem;
+      text-align: left;
+    }
+    .analytics-table th {
+      background: var(--bg-tertiary);
+      padding: 0.65rem 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .analytics-table td {
+      padding: 0.65rem 0.85rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+      vertical-align: middle;
+    }
+    .analytics-table tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .badge-load-optimal {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+    }
+    .badge-load-warning {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+    }
+    .badge-load-danger {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+    }
+
+    /* Rehearsal Mode Panel */
+    .rehearsal-card {
+      background: radial-gradient(circle at 90% 10%, rgba(99, 102, 241, 0.1), transparent),
+                  var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .stopwatch-display {
+      font-family: monospace;
+      font-size: 2.75rem;
+      font-weight: 800;
+      color: var(--accent);
+      text-align: center;
+      letter-spacing: 2px;
+    }
+    .rehearsal-hud-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+    .pace-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .pace-pill.on-pace {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+    .pace-pill.fast {
+      background: rgba(56, 189, 248, 0.2);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+    .pace-pill.slow {
+      background: rgba(245, 158, 11, 0.2);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+
+    .recommendations-box {
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .rec-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+    .rec-icon {
+      font-size: 0.9rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -48,29 +257,156 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Presentation Analytics</h1>
-        <p class="tool-description">Analyze slide count, reading time, and content depth.</p>
+        <h1>Presentation Analytics & Rehearsal Studio</h1>
+        <p class="tool-description">Audit your slide deck's speaking pace, reading complexity, cognitive load, and audience attention curve. Rehearse with a live split-time stopwatch.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Presentation Analytics</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Analyze slide count, reading time, and content depth.</div>
-            <div><strong>Inputs:</strong> slide, presentation, pitch, deck, presentation analytics</div>
-            <div><strong>Category:</strong> slide</div>
+      <!-- Top KPI Metric Cards -->
+      <div class="analytics-hero-grid">
+        <div class="kpi-metric-card">
+          <span class="kpi-label">Estimated Talk Time</span>
+          <div class="kpi-value" id="kpi-talk-time">00:00</div>
+          <span class="kpi-subtext" id="kpi-talk-sub">Based on 135 WPM pace</span>
+        </div>
+        <div class="kpi-metric-card">
+          <span class="kpi-label">Total Word Count</span>
+          <div class="kpi-value" id="kpi-word-count">0</div>
+          <span class="kpi-subtext" id="kpi-slides-sub">0 slides analyzed</span>
+        </div>
+        <div class="kpi-metric-card">
+          <span class="kpi-label">Reading Grade Level</span>
+          <div class="kpi-value" id="kpi-grade-level">Grade 8.4</div>
+          <span class="kpi-subtext" id="kpi-ease-sub">Flesch Reading Ease: 65/100</span>
+        </div>
+        <div class="kpi-metric-card">
+          <span class="kpi-label">Audience Engagement</span>
+          <div class="kpi-value" id="kpi-engagement-score" style="color: #38bdf8;">82%</div>
+          <span class="kpi-subtext">High Retention Projected</span>
+        </div>
+      </div>
+
+      <!-- 2-Column Analytics Studio Grid -->
+      <div class="analytics-grid">
+        <!-- Left Column: Input Deck & Pacing Controls -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          <!-- Slide Deck Input Panel -->
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+              <h2 class="panel-title" style="border: none; padding: 0; margin: 0;">Presentation Content</h2>
+              <div style="display: flex; gap: 0.5rem;">
+                <select id="select-sample-deck" class="form-select" style="width: auto; padding: 0.3rem 0.6rem; font-size: 0.8rem;">
+                  <option value="pitch">Sample: Startup Pitch (10 slides)</option>
+                  <option value="qbr">Sample: Quarterly Review (8 slides)</option>
+                  <option value="keynote">Sample: Tech Keynote (6 slides)</option>
+                </select>
+                <button id="btn-load-sample" class="btn btn-secondary" style="padding: 0.3rem 0.65rem; font-size: 0.8rem;">Load</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="deck-text-input">Slides Text (Separate slides using <code>---</code> or <code>## Slide Title</code>):</label>
+              <textarea id="deck-text-input" class="form-textarea" style="min-height: 280px; font-family: monospace; font-size: 0.85rem;" placeholder="Paste your markdown slides or slide notes here..."></textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: center;">
+              <div class="form-group">
+                <label for="select-speaking-pace">Speaking Pace Preset</label>
+                <select id="select-speaking-pace" class="form-select">
+                  <option value="115">Relaxed / Storytelling (115 WPM)</option>
+                  <option value="135" selected>Conversational / Business (135 WPM)</option>
+                  <option value="160">Brisk / Fast Demo Day (160 WPM)</option>
+                  <option value="custom">Custom WPM...</option>
+                </select>
+              </div>
+              <div class="form-group" id="group-custom-wpm" style="display: none;">
+                <label for="inp-custom-wpm">Custom Words Per Minute</label>
+                <input type="number" id="inp-custom-wpm" class="form-input" value="135" min="60" max="300">
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 0.5rem;">
+              <button id="btn-analyze-deck" class="btn btn-primary" style="padding: 0.5rem 1rem;">Re-Analyze Deck</button>
+              <button id="btn-export-report" class="btn btn-secondary" style="padding: 0.5rem 1rem;">Export Report</button>
+            </div>
+          </div>
+
+          <!-- Slide Health & Recommendations -->
+          <div class="tool-panel glass-panel">
+            <h3 class="panel-title">Slide Health & Delivery Optimization</h3>
+            <div class="recommendations-box" id="recommendations-list">
+              <!-- Dynamically populated recommendations -->
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right Column: Visual Breakdown & Rehearsal Mode -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          <!-- Audience Attention Curve Forecast -->
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h3 class="panel-title" style="border: none; padding: 0; margin: 0;">Audience Attention Curve Forecast</h3>
+              <span style="font-size: 0.75rem; color: var(--text-tertiary);">Simulated Attention Span</span>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0.25rem 0 0.5rem 0;">
+              Predicts audience retention based on cognitive text density, visual breathing room, and slide sequence.
+            </p>
+            <div class="chart-container-box">
+              <svg id="attention-chart" class="chart-svg" viewBox="0 0 500 160" preserveAspectRatio="none">
+                <!-- SVG Attention curve rendered dynamically -->
+              </svg>
+            </div>
+          </div>
+
+          <!-- Per-Slide Timing Breakdown Table -->
+          <div class="tool-panel glass-panel">
+            <h3 class="panel-title">Per-Slide Timing & Cognitive Load Breakdown</h3>
+            <div class="table-responsive">
+              <table class="analytics-table">
+                <thead>
+                  <tr>
+                    <th>Slide #</th>
+                    <th>Heading / Topic</th>
+                    <th>Words</th>
+                    <th>Allocated Time</th>
+                    <th>Cognitive Load</th>
+                  </tr>
+                </thead>
+                <tbody id="slide-breakdown-tbody">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Interactive Rehearsal Stopwatch -->
+          <div class="rehearsal-card glass-panel" id="rehearsal-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h3 style="font-size: 1.1rem; font-weight: 700; color: #fff; margin: 0;">Interactive Rehearsal Coach</h3>
+              <span id="rehearsal-slide-badge" style="font-size: 0.78rem; font-weight: 700; color: var(--accent);">Slide 1 of 10</span>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">
+              Practice your talk live. Hit <strong>Spacebar</strong> or <strong>Next Slide</strong> when you finish talking to track split-time variance against your target pace.
+            </p>
+
+            <div class="stopwatch-display" id="stopwatch-timer">00:00</div>
+
+            <div style="display: flex; justify-content: center; margin-bottom: 0.5rem;">
+              <span class="pace-pill on-pace" id="stopwatch-pace-indicator">Ready to Rehearse</span>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.3); border-radius: var(--radius-md); padding: 0.75rem 1rem; font-size: 0.825rem; color: #cbd5e1;" id="rehearsal-slide-preview">
+              <em>Slide content will appear here during rehearsal...</em>
+            </div>
+
+            <div class="rehearsal-hud-bar">
+              <button id="btn-rehearsal-start" class="btn btn-primary" style="padding: 0.5rem 1.25rem;">Start Rehearsal</button>
+              <button id="btn-rehearsal-next" class="btn btn-secondary" style="padding: 0.5rem 1.25rem;" disabled>Next Slide [Space]</button>
+              <button id="btn-rehearsal-reset" class="btn btn-secondary" style="padding: 0.5rem 1rem;" disabled>Reset</button>
+            </div>
+          </div>
+        </div>
       </div>
-    
+
     </div>
   </main>
 
@@ -82,10 +418,10 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Presentation Analytics",
+    "name": "Presentation Analytics & Rehearsal Studio",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/presentation-analytics/",
-    "description": "Analyze slide count, reading time, and content depth.",
-    "applicationCategory": "UtilityPage",
+    "description": "Analyze slide deck timing, words-per-minute (WPM), reading grade complexity, and audience engagement forecast.",
+    "applicationCategory": "ProductivityApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
     "isPartOf": {
