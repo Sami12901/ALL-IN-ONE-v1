@@ -42,7 +42,7 @@ class AppHeader extends HTMLElement {
         <div style="pointer-events: auto; display: inline-flex; align-items: center; border-radius: 9999px; backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); background: var(--surface); padding: 0.4rem 0.65rem; box-shadow: 0 4px 12px rgba(0,0,0,0.25); max-width: calc(100vw - 1.5rem);">
           
           <!-- Logo -->
-          <a href="${prefix}index.html" class="gradient-border-hover" style="display:flex; align-items:center; justify-content:center; width: 34px; height: 34px; border-radius: 50%; background: var(--bg); transition: transform 0.2s; text-decoration: none; flex-shrink: 0;">
+          <a href="${prefix}index.html" class="gradient-border-hover" aria-label="ALL IN ONE Home Portal" title="ALL IN ONE (ALL-IN-ONE-v1) — Home" style="display:flex; align-items:center; justify-content:center; width: 34px; height: 34px; border-radius: 50%; background: var(--bg); transition: transform 0.2s; text-decoration: none; flex-shrink: 0;">
             <span class="font-display italic-display" style="font-size: 16px; color: var(--text);">A</span>
           </a>
 
@@ -342,8 +342,8 @@ class AppFooter extends HTMLElement {
           </div>
 
           <div class="footer-bottom">
-            <span>&copy; ${currentYear} ALL IN ONE Tools. Released under the MIT License.</span>
-            <span>Created for ALL TYPE USER.</span>
+            <span>&copy; ${currentYear} <strong><a href="${prefix}index.html" style="color:var(--text); text-decoration:none;">ALL IN ONE (ALL-IN-ONE-v1)</a></strong> by <a href="https://github.com/Sami12901" target="_blank" rel="noopener noreferrer" style="color:var(--text); text-decoration:underline;">Sami</a>. Released under the MIT License.</span>
+            <span>100% Client-Side Private • <a href="${prefix}sitemap.html" style="color:var(--text-tertiary); text-decoration:underline;">Directory</a></span>
           </div>
         </div>
       </footer>
