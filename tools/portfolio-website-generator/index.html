@@ -4,95 +4,397 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portfolio Website Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Generate a stunning personal portfolio website from your CV.">
-  <meta name="keywords" content="cv, resume, job, career, portfolio website generator, free, online, tool, utility">
+  <meta name="description" content="Generate a stunning, responsive personal portfolio website with live responsive preview, multiple luxury themes, and instant single-file HTML download.">
+  <meta name="keywords" content="portfolio website generator, developer portfolio maker, personal website builder, html portfolio template, glassmorphism portfolio">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/portfolio-website-generator/">
 
-  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/portfolio-website-generator/">
-  <meta property="og:title" content="Portfolio Website Generator - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Generate a stunning personal portfolio website from your CV.">
+  <meta property="og:title" content="Portfolio Website Generator - ALL IN ONE">
+  <meta property="og:description" content="Build and export stunning personal developer & designer portfolio websites.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:width" content="512">
-  <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="Portfolio Website Generator - ALL IN ONE">
-  <meta property="og:locale" content="en_US">
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/portfolio-website-generator/">
-  <meta name="twitter:title" content="Portfolio Website Generator - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Generate a stunning personal portfolio website from your CV.">
-  <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="Portfolio Website Generator - ALL IN ONE">
+  <meta property="og:width" content="512">
+  <meta property="og:height" content="512">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .builder-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 1100px) {
+      .builder-layout {
+        grid-template-columns: 480px 1fr;
+      }
+    }
+
+    /* Template Cards */
+    .template-selector {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .tpl-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      transition: all 0.2s;
+    }
+    .tpl-card:hover {
+      border-color: var(--accent);
+    }
+    .tpl-card.active {
+      border-color: var(--accent);
+      background: rgba(0, 229, 255, 0.12);
+      box-shadow: 0 0 16px rgba(0, 229, 255, 0.25);
+    }
+    .tpl-title {
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #fff;
+    }
+    .tpl-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Color Swatches */
+    .color-swatches {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.25rem;
+    }
+    .color-swatch {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .color-swatch.active {
+      transform: scale(1.2);
+      border-color: #fff;
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    /* Preview Container */
+    .preview-wrapper {
+      position: sticky;
+      top: 5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      height: calc(100vh - 7rem);
+      min-height: 600px;
+    }
+    .preview-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #090c14;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    .viewport-btn-group {
+      display: flex;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-sm);
+      padding: 2px;
+      border: 1px solid var(--border);
+    }
+    .viewport-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 0.25rem 0.6rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .viewport-btn.active {
+      background: var(--accent);
+      color: #000;
+    }
+    .preview-frame-container {
+      flex: 1;
+      background: #000;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+    }
+    .preview-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #0a0e17;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Form Accordions / Sections */
+    .section-tab {
+      display: flex;
+      gap: 0.4rem;
+      overflow-x: auto;
+      margin-bottom: 1rem;
+      padding-bottom: 0.25rem;
+    }
+    .tab-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000;
+      font-weight: 700;
+    }
+
+    .project-card-item {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem;
+      margin-bottom: 0.75rem;
+      position: relative;
+    }
+    .btn-del-project {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: rgba(255, 59, 48, 0.15);
+      color: #ff5252;
+      border: 1px solid rgba(255, 59, 48, 0.3);
+      border-radius: var(--radius-sm);
+      padding: 0.2rem 0.5rem;
+      font-size: 0.7rem;
+      cursor: pointer;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Portfolio Website Generator</h1>
-        <p class="tool-description">Generate a stunning personal portfolio website from your CV.</p>
-      </div>
-
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Portfolio Website Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Generate a stunning personal portfolio website from your CV.</div>
-            <div><strong>Inputs:</strong> cv, resume, job, career, portfolio website generator</div>
-            <div><strong>Category:</strong> cv</div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>Personal Portfolio Website Generator</h1>
+            <p class="tool-description">Create an elite developer, designer, or executive personal portfolio website with live responsive preview, multiple templates, customizable themes, and instant single-file HTML export.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="btnDownloadHtml" class="btn btn-primary" style="display: flex; align-items: center; gap: 0.4rem; font-weight: 700;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Download Website (index.html)</span>
+            </button>
+            <button id="btnCopyHtml" class="btn btn-secondary" style="font-size: 0.85rem;">Copy Code</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- Main Two-Column Studio Layout -->
+      <div class="builder-layout">
+        <!-- Left: Customizer Sidebar -->
+        <div class="tool-panel glass-panel" style="max-height: calc(100vh - 7rem); overflow-y: auto;">
+          <!-- Template Selection -->
+          <div>
+            <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 0.5rem; display: block;">Choose Design Template:</label>
+            <div class="template-selector">
+              <div class="tpl-card active" data-tpl="glass_luxe">
+                <span class="tpl-title">💎 Glass Luxe</span>
+                <span class="tpl-desc">Dark glassmorphism with subtle neon glowing accents</span>
+              </div>
+              <div class="tpl-card" data-tpl="cyber_dev">
+                <span class="tpl-title">⚡ Cyberpunk Dev</span>
+                <span class="tpl-desc">Terminal matrix aesthetic with code badges</span>
+              </div>
+              <div class="tpl-card" data-tpl="executive">
+                <span class="tpl-title">🏛️ Editorial Serif</span>
+                <span class="tpl-desc">High-end editorial typography for executives</span>
+              </div>
+              <div class="tpl-card" data-tpl="bento">
+                <span class="tpl-title">📦 Bento Grid</span>
+                <span class="tpl-desc">Modern SaaS style interactive bento card layout</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Color Accent Picker -->
+          <div style="margin-bottom: 1.25rem;">
+            <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 0.35rem; display: block;">Brand Accent Glow:</label>
+            <div class="color-swatches">
+              <div class="color-swatch active" data-color="#00e5ff" style="background: #00e5ff;"></div>
+              <div class="color-swatch" data-color="#d4af37" style="background: #d4af37;"></div>
+              <div class="color-swatch" data-color="#00e676" style="background: #00e676;"></div>
+              <div class="color-swatch" data-color="#a855f7" style="background: #a855f7;"></div>
+              <div class="color-swatch" data-color="#ec4899" style="background: #ec4899;"></div>
+              <div class="color-swatch" data-color="#ff9100" style="background: #ff9100;"></div>
+            </div>
+          </div>
+
+          <!-- Section Navigation Tabs -->
+          <div class="section-tab">
+            <button class="tab-btn active" data-tab="tabProfile">Profile</button>
+            <button class="tab-btn" data-tab="tabSkills">Skills</button>
+            <button class="tab-btn" data-tab="tabProjects">Projects</button>
+            <button class="tab-btn" data-tab="tabExperience">Experience</button>
+            <button class="tab-btn" data-tab="tabSocial">Contact</button>
+          </div>
+
+          <!-- Tab 1: Profile -->
+          <div id="tabProfile" class="tab-content">
+            <div class="form-group">
+              <label for="profName">Full Name</label>
+              <input type="text" id="profName" class="form-input" value="Alexander Vance">
+            </div>
+            <div class="form-group">
+              <label for="profTitle">Professional Title / Headline</label>
+              <input type="text" id="profTitle" class="form-input" value="Senior Full-Stack Engineer &amp; AI Architect">
+            </div>
+            <div class="form-group">
+              <label for="profLocation">Location / Based In</label>
+              <input type="text" id="profLocation" class="form-input" value="San Francisco, CA &bull; Available Worldwide">
+            </div>
+            <div class="form-group">
+              <label for="profBio">Bio / Elevator Pitch</label>
+              <textarea id="profBio" class="form-textarea" rows="4" style="min-height: 90px;">I architect high-performance distributed systems, real-time Web Audio engines, and autonomous AI agents. Passionate about sleek interface craftsmanship and sub-second latency.</textarea>
+            </div>
+            <div class="form-group">
+              <label for="profAvatar">Avatar Image URL</label>
+              <input type="text" id="profAvatar" class="form-input" value="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80">
+            </div>
+            <div class="checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="chkAvailableBadge" checked>
+                <span>Display "Available for new projects" live badge</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Tab 2: Skills -->
+          <div id="tabSkills" class="tab-content" style="display: none;">
+            <div class="form-group">
+              <label for="skillsFrontend">Frontend Technologies (comma-separated)</label>
+              <input type="text" id="skillsFrontend" class="form-input" value="React, Vue.js, TypeScript, Next.js, Web Audio API, TailwindCSS">
+            </div>
+            <div class="form-group">
+              <label for="skillsBackend">Backend &amp; Cloud (comma-separated)</label>
+              <input type="text" id="skillsBackend" class="form-input" value="Node.js, Python, FastAPI, Go, PostgreSQL, Redis, Docker, AWS">
+            </div>
+            <div class="form-group">
+              <label for="skillsAI">AI &amp; Specialized Tools (comma-separated)</label>
+              <input type="text" id="skillsAI" class="form-input" value="LLM Fine-Tuning, LangChain, WebSockets, DSP Audio Filters, GraphQL">
+            </div>
+          </div>
+
+          <!-- Tab 3: Projects -->
+          <div id="tabProjects" class="tab-content" style="display: none;">
+            <div id="projectsList">
+              <!-- Dynamically rendered project cards -->
+            </div>
+            <button id="btnAddProject" class="btn btn-secondary" style="width: 100%; margin-top: 0.5rem; font-size: 0.85rem;">
+              + Add New Project
+            </button>
+          </div>
+
+          <!-- Tab 4: Experience -->
+          <div id="tabExperience" class="tab-content" style="display: none;">
+            <div class="form-group">
+              <label for="expRole1">Role &bull; Company &bull; Period</label>
+              <input type="text" id="expRole1" class="form-input" value="Principal Architect &bull; Aura Labs &bull; 2023 - Present">
+              <input type="text" id="expDesc1" class="form-input" value="Led development of low-latency generative AI applications serving 2M+ active users with 99.99% uptime." style="margin-top: 0.35rem;">
+            </div>
+            <div class="form-group" style="margin-top: 0.75rem;">
+              <label for="expRole2">Previous Role &bull; Company &bull; Period</label>
+              <input type="text" id="expRole2" class="form-input" value="Senior Software Engineer &bull; Nexus Global &bull; 2020 - 2023">
+              <input type="text" id="expDesc2" class="form-input" value="Engineered distributed real-time audio pipeline and client-side WebAssembly tools." style="margin-top: 0.35rem;">
+            </div>
+          </div>
+
+          <!-- Tab 5: Contact -->
+          <div id="tabSocial" class="tab-content" style="display: none;">
+            <div class="form-group">
+              <label for="contEmail">Email Address</label>
+              <input type="email" id="contEmail" class="form-input" value="alexander.vance@example.com">
+            </div>
+            <div class="form-group">
+              <label for="contGithub">GitHub URL</label>
+              <input type="text" id="contGithub" class="form-input" value="https://github.com">
+            </div>
+            <div class="form-group">
+              <label for="contLinkedin">LinkedIn URL</label>
+              <input type="text" id="contLinkedin" class="form-input" value="https://linkedin.com">
+            </div>
+            <div class="form-group">
+              <label for="contTwitter">Twitter / X URL</label>
+              <input type="text" id="contTwitter" class="form-input" value="https://x.com">
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Live Responsive Preview -->
+        <div class="preview-wrapper">
+          <div class="preview-header-bar">
+            <span style="font-weight: 700; font-size: 0.85rem; color: #fff; display: flex; align-items: center; gap: 0.4rem;">
+              <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #00e676;"></span>
+              LIVE RESPONSIVE PREVIEW
+            </span>
+            <div class="viewport-btn-group">
+              <button class="viewport-btn active" data-width="100%">🖥️ Desktop</button>
+              <button class="viewport-btn" data-width="768px">📱 Tablet</button>
+              <button class="viewport-btn" data-width="375px">📱 Mobile</button>
+            </div>
+          </div>
+
+          <div class="preview-frame-container">
+            <iframe id="previewIframe" class="preview-iframe" title="Live Portfolio Preview"></iframe>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
 
-  <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Portfolio Website Generator",
+    "name": "Personal Portfolio Website Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/portfolio-website-generator/",
-    "description": "Generate a stunning personal portfolio website from your CV.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5.",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "ALL IN ONE",
-      "url": "https://sami12901.github.io/ALL-IN-ONE-v1/"
-    }
+    "description": "Generate responsive developer portfolio websites with live preview and single-file HTML export.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All"
   }
   </script>
 </body>

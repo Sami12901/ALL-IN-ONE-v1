@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Marketing Deck Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Auto-generate digital marketing reports using AI.">
-  <meta name="keywords" content="slide, presentation, pitch, deck, ai marketing deck generator, free, online, tool, utility">
+  <meta name="description" content="Generate high-converting digital marketing decks, GTM strategy presentations, full-funnel campaign plans, and performance scorecards with AI.">
+  <meta name="keywords" content="slide, presentation, pitch, deck, ai marketing deck generator, go-to-market, gtm, performance marketing, growth, free, online, tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-marketing-deck-generator/">
 
@@ -14,7 +14,7 @@
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-marketing-deck-generator/">
   <meta property="og:title" content="AI Marketing Deck Generator - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Auto-generate digital marketing reports using AI.">
+  <meta property="og:description" content="Generate high-converting marketing decks, GTM strategy presentations, and performance scorecards with AI.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
@@ -26,14 +26,203 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-marketing-deck-generator/">
   <meta name="twitter:title" content="AI Marketing Deck Generator - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Auto-generate digital marketing reports using AI.">
+  <meta name="twitter:description" content="Generate high-converting marketing decks, GTM strategy presentations, and performance scorecards with AI.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="AI Marketing Deck Generator - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    /* Marketing Deck Studio */
+    .mktg-toolbar {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .mktg-preset-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .mktg-pill {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .mktg-pill:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+    .mktg-input-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    @media (max-width: 900px) {
+      .mktg-input-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .mktg-studio-grid {
+      display: grid;
+      grid-template-columns: 290px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 992px) {
+      .mktg-studio-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Thumbnails Sidebar */
+    .mktg-thumbs-scroll {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      max-height: 650px;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+    .mktg-thumb-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .mktg-thumb-card:hover {
+      border-color: var(--accent);
+      transform: translateX(2px);
+    }
+    .mktg-thumb-card.active {
+      border-color: var(--accent);
+      background: rgba(99, 102, 241, 0.15);
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
+    }
+
+    /* 16:9 Canvas Viewport */
+    .mktg-canvas-frame {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #060911;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+    }
+    .mktg-slide-stage {
+      width: 100%;
+      height: 100%;
+      padding: 3rem;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      color: #f8fafc;
+      background: radial-gradient(circle at 85% 15%, rgba(244, 63, 94, 0.18), transparent 50%),
+                  radial-gradient(circle at 15% 85%, rgba(99, 102, 241, 0.12), transparent 50%),
+                  #110815;
+      transition: all 0.3s ease;
+    }
+
+    /* Fullscreen Presenter */
+    .fs-mktg-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #07040a;
+      z-index: 99999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .fs-mktg-modal.active { display: flex; }
+    .fs-mktg-stage {
+      width: 94vw;
+      max-width: 1400px;
+      aspect-ratio: 16 / 9;
+      background: #110815;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.85);
+      overflow: hidden;
+      display: flex;
+    }
+    .fs-mktg-hud {
+      position: fixed;
+      bottom: 1.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 1.25rem;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-full);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      z-index: 100000;
+    }
+    .fs-mktg-hud button {
+      background: transparent;
+      border: none;
+      color: #e2e8f0;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+    }
+
+    /* Print Styles */
+    @media print {
+      body * { visibility: hidden; }
+      #mktg-print-target, #mktg-print-target * { visibility: visible; }
+      #mktg-print-target {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        display: block !important;
+      }
+      .print-mktg-slide {
+        page-break-after: always;
+        break-after: page;
+        width: 100vw;
+        height: 56.25vw;
+        padding: 3rem;
+        box-sizing: border-box;
+        background: #110815 !important;
+        color: #f8fafc !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -49,30 +238,149 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>AI Marketing Deck Generator</h1>
-        <p class="tool-description">Auto-generate digital marketing reports using AI.</p>
+        <p class="tool-description">Generate comprehensive Go-to-Market strategy presentations, digital marketing plans, full-funnel campaign decks, and attribution scorecards with AI. 100% client-side with interactive presentation mode and multi-format exports.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AI Marketing Deck Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Auto-generate digital marketing reports using AI.</div>
-            <div><strong>Inputs:</strong> slide, presentation, pitch, deck, ai marketing deck generator</div>
-            <div><strong>Category:</strong> slide</div>
+      <!-- Generator Toolbar -->
+      <div class="mktg-toolbar glass-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;">Campaign Strategy Presets:</span>
+          <div class="mktg-preset-row" id="mktg-preset-pills">
+            <button class="mktg-pill" data-preset="saas-gtm">🚀 Enterprise SaaS GTM Launch</button>
+            <button class="mktg-pill" data-preset="ecommerce-q4">🛍️ DTC E-Commerce Q4 Omnichannel Blitz</button>
+            <button class="mktg-pill" data-preset="b2b-abm">🎯 B2B Account-Based Marketing (ABM)</button>
+            <button class="mktg-pill" data-preset="app-growth">📱 Mobile App Viral User Acquisition</button>
+            <button class="mktg-pill" data-preset="creator-influencer">🎥 Creator & Influencer Ambassador Blitz</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="mktg-input-grid">
+          <div>
+            <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Campaign Title & Core Objective:</label>
+            <input type="text" id="inp-mktg-prompt" class="form-input" placeholder="e.g. Enterprise SaaS GTM: Scaling Pipeline to $10M ARR..." value="Enterprise SaaS GTM: Scaling Pipeline to $10M ARR with Autonomous Agents">
+          </div>
+          <div>
+            <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Campaign Type:</label>
+            <select id="select-campaign-type" class="form-select" style="height: 42px;">
+              <option value="Product Launch / GTM" selected>Product Launch (GTM)</option>
+              <option value="Demand Generation">Demand Generation</option>
+              <option value="Brand Awareness">Brand Awareness</option>
+              <option value="Customer Retention / Expansion">Retention & Expansion</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Slide Count:</label>
+            <select id="select-slide-count" class="form-select" style="height: 42px;">
+              <option value="8" selected>8 Slides (Standard)</option>
+              <option value="10">10 Slides (Detailed)</option>
+            </select>
+          </div>
+          <div style="align-self: flex-end;">
+            <button id="btn-generate-mktg-deck" class="btn btn-primary" style="height: 42px; font-weight: 700; white-space: nowrap; padding: 0 1.25rem;">
+              ⚡ Generate Marketing Deck
+            </button>
+          </div>
+        </div>
       </div>
-    
+
+      <!-- Action Bar -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <span style="font-size: 0.88rem; font-weight: 700; color: #fff;">Marketing Studio</span>
+          <span id="badge-total-slides" style="font-size: 0.75rem; padding: 0.2rem 0.65rem; border-radius: 9999px; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--accent);">8 Slides</span>
+          <span id="badge-campaign-tag" style="font-size: 0.75rem; padding: 0.2rem 0.65rem; border-radius: 9999px; background: var(--bg-tertiary); border: 1px solid var(--border); color: #f43f5e;">GTM Strategy</span>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button id="btn-add-slide" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.82rem;">+ Add Slide</button>
+          <button id="btn-present-fullscreen" class="btn btn-primary" style="padding: 0.35rem 0.85rem; font-size: 0.82rem;">Present Marketing Deck (F5)</button>
+          <button id="btn-export-html" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.82rem;">Export HTML</button>
+          <button id="btn-export-pdf" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.82rem;">Print / PDF</button>
+          <button id="btn-export-json" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.82rem;">Export JSON</button>
+          <label class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.82rem; cursor: pointer; margin: 0;">
+            Import JSON <input type="file" id="input-import-json" accept=".json" style="display: none;">
+          </label>
+        </div>
+      </div>
+
+      <!-- Studio Work Area -->
+      <div class="mktg-studio-grid">
+        <!-- Sidebar Thumbnails -->
+        <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;">Campaign Sequence</span>
+            <span style="font-size: 0.75rem; color: var(--text-secondary);" id="counter-active-slide">1 / 8</span>
+          </div>
+          <div class="mktg-thumbs-scroll" id="mktg-thumbs-container">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Canvas & Editor -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <!-- 16:9 Presentation Canvas -->
+          <div class="mktg-canvas-frame" id="mktg-canvas-frame">
+            <div class="mktg-slide-stage" id="mktg-slide-stage">
+              <!-- Rendered slide -->
+            </div>
+          </div>
+
+          <!-- Slide Inspector & Content Editor -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+              <h3 style="font-size: 0.95rem; margin: 0; color: var(--text-primary);">Campaign Slide Inspector</h3>
+              <div style="display: flex; gap: 0.4rem;">
+                <button id="btn-slide-up" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">&uarr; Up</button>
+                <button id="btn-slide-down" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">&darr; Down</button>
+                <button id="btn-slide-duplicate" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">Duplicate</button>
+                <button id="btn-slide-delete" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; color: #ef4444;">Delete</button>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <label>Slide Title</label>
+                <input type="text" id="inp-edit-title" class="form-input">
+              </div>
+              <div class="form-group">
+                <label>Strategy Kicker</label>
+                <input type="text" id="inp-edit-kicker" class="form-input">
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 0.75rem;">
+              <label>Subtitle / Campaign Thesis</label>
+              <input type="text" id="inp-edit-sub" class="form-input">
+            </div>
+
+            <div class="form-group" style="margin-top: 0.75rem;">
+              <label>Content Items / Cards / Metrics (One item per line; Title: Description)</label>
+              <textarea id="inp-edit-content" class="form-textarea" style="min-height: 90px;"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- Fullscreen Presenter Modal -->
+  <div class="fs-mktg-modal" id="fs-mktg-modal">
+    <div class="fs-mktg-stage">
+      <div class="mktg-slide-stage" id="fs-slide-content" style="padding: 4rem;">
+        <!-- Fullscreen slide -->
+      </div>
+    </div>
+    <div class="fs-mktg-hud">
+      <button id="fs-btn-prev">&larr; Previous</button>
+      <span id="fs-slide-num" style="color: var(--accent); font-weight: 800; font-size: 0.85rem;">1 / 8</span>
+      <button id="fs-btn-next">Next &rarr;</button>
+      <button id="fs-btn-exit" style="color: #f87171;">Exit [Esc]</button>
+    </div>
+  </div>
+
+  <!-- Print Target Container -->
+  <div id="mktg-print-target" style="display: none;"></div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -84,8 +392,8 @@
     "@type": "WebApplication",
     "name": "AI Marketing Deck Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-marketing-deck-generator/",
-    "description": "Auto-generate digital marketing reports using AI.",
-    "applicationCategory": "UtilityPage",
+    "description": "Generate comprehensive Go-to-Market strategy presentations, digital marketing plans, and performance scorecards.",
+    "applicationCategory": "PresentationSoftware",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
     "isPartOf": {
