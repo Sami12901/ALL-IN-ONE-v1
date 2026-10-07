@@ -24,6 +24,13 @@ let xml = `<?xml version="1.0" encoding="UTF-8"?>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
+  <!-- HTML Sitemap Hub -->
+  <url>
+    <loc>https://sami12901.github.io/ALL-IN-ONE-v1/sitemap.html</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
   <!-- Core Information Pages -->
   <url>
     <loc>https://sami12901.github.io/ALL-IN-ONE-v1/pages/about.html</loc>
@@ -83,4 +90,4 @@ console.log(`Root sitemap.xml generated successfully at ${ROOT_SITEMAP_PATH}`);
 fs.writeFileSync(SEO_SITEMAP_PATH, xml, 'utf-8');
 console.log(`SEO sitemap.xml generated successfully at ${SEO_SITEMAP_PATH}`);
 
-console.log(`Total URLs indexed: ${5 + totalTools} (Homepage + 4 Core pages + ${totalTools} Tools [${activeCount} active])`);
+console.log(`Total URLs indexed: ${6 + totalTools} (Homepage + Sitemap Hub + 4 Core pages + ${totalTools} Tools [${activeCount} active])`);

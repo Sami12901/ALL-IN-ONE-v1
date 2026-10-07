@@ -87,9 +87,13 @@ class AppHeader extends HTMLElement {
             <span>Support & Feedback</span>
             <span style="font-size:0.75rem; color:var(--text-tertiary);">Help</span>
           </a>
+          <a href="${prefix}sitemap.html">
+            <span>HTML Sitemap</span>
+            <span style="font-size:0.75rem; color:var(--text-tertiary);">Directory</span>
+          </a>
         </div>
 
-        <div class="mobile-drawer-section-title">Tool Suites (181 Active)</div>
+        <div class="mobile-drawer-section-title">Tool Suites (424 Active)</div>
         <div class="mobile-drawer-categories">
           <a href="${prefix}index.html?cat=pdf" style="display:flex; align-items:center; justify-content:space-between;">
             <span>PDF Document Suite</span>
@@ -300,7 +304,7 @@ class AppFooter extends HTMLElement {
             <!-- Brand Info -->
             <div class="footer-brand-section">
               <span class="footer-brand-title">ALL IN ONE</span>
-              <p class="footer-brand-desc">150+ free web utilities in one tab. Fast, secure, client-side tools processed locally inside your browser.</p>
+              <p class="footer-brand-desc">420+ free online web tools & utilities in one tab. Fast, secure, 100% client-side private tools processed locally inside your browser with zero data tracking.</p>
               
               <!-- PWA Install Button -->
               <button id="pwa-install-btn" class="btn btn-primary" style="display: none; width: fit-content; padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: var(--radius-sm); margin-top: 0.5rem; align-items: center; gap: 0.35rem;">
@@ -314,6 +318,7 @@ class AppFooter extends HTMLElement {
               <a href="${prefix}index.html">Dashboard Portal</a>
               <a href="${prefix}pages/about.html">About the Project</a>
               <a href="${prefix}pages/contact.html">Support Form</a>
+              <a href="${prefix}sitemap.html">HTML Sitemap</a>
             </div>
 
             <!-- Categories -->
