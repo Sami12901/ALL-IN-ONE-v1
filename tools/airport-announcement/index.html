@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Airport Announcement - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Generate realistic airport-style announcements.">
-  <meta name="keywords" content="audio, music, sound, airport announcement, free, online, tool, utility">
+  <title>Airport Announcement Generator - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Generate realistic airport public address announcements with authentic chimes, terminal hall acoustics, and multilingual voice synthesis.">
+  <meta name="keywords" content="airport announcement, flight announcement generator, pa chime, airport sound effects, text to speech, flight boarding audio">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/airport-announcement/">
 
@@ -13,27 +13,182 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/airport-announcement/">
-  <meta property="og:title" content="Airport Announcement - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Generate realistic airport-style announcements.">
+  <meta property="og:title" content="Airport Announcement Generator - Free Online Tool - ALL IN ONE">
+  <meta property="og:description" content="Generate realistic airport-style flight announcements with chimes, PA reverb, and audio export.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="Airport Announcement - ALL IN ONE">
   <meta property="og:locale" content="en_US">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/airport-announcement/">
-  <meta name="twitter:title" content="Airport Announcement - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Generate realistic airport-style announcements.">
+  <meta name="twitter:title" content="Airport Announcement Generator - ALL IN ONE">
+  <meta name="twitter:description" content="Generate realistic airport-style announcements with authentic chimes and terminal acoustics.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="Airport Announcement - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    /* Flight Information Display System (FIDS) styling */
+    .fids-board {
+      background: #090d16;
+      border: 1px solid rgba(255, 179, 0, 0.3);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(255, 179, 0, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    .fids-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 179, 0, 0.2);
+      padding-bottom: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .fids-title {
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #ffb300;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .fids-clock {
+      font-family: monospace;
+      color: #00e5ff;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .fids-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.75rem;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      font-family: monospace;
+      border-left: 3px solid #ffb300;
+    }
+    .fids-col-label {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.5);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.2rem;
+    }
+    .fids-col-val {
+      font-size: 1.05rem;
+      color: #fff;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .fids-status {
+      color: #00e676;
+      font-weight: 700;
+      animation: pulse-glow 2s infinite ease-in-out;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    /* Grid layout */
+    .studio-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .studio-grid {
+        grid-template-columns: 1.15fr 0.85fr;
+      }
+    }
+
+    /* Preset buttons */
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .preset-chip {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .preset-chip:hover, .preset-chip.active {
+      background: rgba(255, 179, 0, 0.15);
+      border-color: #ffb300;
+      color: #ffb300;
+    }
+
+    /* Visualizer canvas */
+    .visualizer-container {
+      background: #06090e;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      height: 90px;
+      position: relative;
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+    .visualizer-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .visualizer-overlay {
+      position: absolute;
+      top: 6px;
+      right: 10px;
+      font-size: 0.7rem;
+      font-family: monospace;
+      color: #00e5ff;
+      letter-spacing: 1px;
+    }
+
+    .mic-live-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.25rem 0.6rem;
+      border-radius: var(--radius-full);
+      background: rgba(255, 59, 48, 0.15);
+      color: #ff453a;
+      border: 1px solid rgba(255, 59, 48, 0.3);
+    }
+    .mic-live-indicator.active {
+      background: rgba(255, 59, 48, 0.3);
+      animation: pulse-glow 1s infinite alternate;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -48,29 +203,192 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Airport Announcement</h1>
-        <p class="tool-description">Generate realistic airport-style announcements.</p>
-      </div>
-
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Airport Announcement</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Generate realistic airport-style announcements.</div>
-            <div><strong>Inputs:</strong> audio, music, sound, airport announcement</div>
-            <div><strong>Category:</strong> audio</div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>Airport Announcement Generator</h1>
+            <p class="tool-description">Simulate high-fidelity international airport public address announcements with authentic multi-tone chimes, reverberant terminal hall acoustics, and multilingual flight dispatch voices.</p>
+          </div>
+          <div id="micStatus" class="mic-live-indicator">
+            <span class="dot"></span> PA SYSTEM READY
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- FIDS Board Header -->
+      <div class="fids-board">
+        <div class="fids-header">
+          <div class="fids-title">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+            DEPARTURES &bull; PUBLIC ADDRESS SYSTEM
+          </div>
+          <div class="fids-clock" id="fidsClock">14:45:00 UTC</div>
+        </div>
+        <div class="fids-row">
+          <div>
+            <div class="fids-col-label">AIRLINE</div>
+            <div class="fids-col-val" id="dispAirline">Emirates</div>
+          </div>
+          <div>
+            <div class="fids-col-label">FLIGHT</div>
+            <div class="fids-col-val" id="dispFlight">EK 202</div>
+          </div>
+          <div>
+            <div class="fids-col-label">DESTINATION</div>
+            <div class="fids-col-val" id="dispDest">New York JFK</div>
+          </div>
+          <div>
+            <div class="fids-col-label">GATE</div>
+            <div class="fids-col-val" id="dispGate">B24</div>
+          </div>
+          <div>
+            <div class="fids-col-label">STATUS</div>
+            <div class="fids-col-val fids-status" id="dispStatus">FINAL CALL</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Studio Grid -->
+      <div class="studio-grid">
+        <!-- Left: Configuration & Script -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            Flight Announcement Setup
+          </h2>
+
+          <!-- Presets -->
+          <div>
+            <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.4rem; display: block;">Quick Presets:</label>
+            <div class="preset-chips">
+              <button type="button" class="preset-chip active" data-preset="final_call">Final Call / Gate Closing</button>
+              <button type="button" class="preset-chip" data-preset="boarding">General Boarding</button>
+              <button type="button" class="preset-chip" data-preset="priority">First & Business Priority</button>
+              <button type="button" class="preset-chip" data-preset="delayed">Flight Delay Notice</button>
+              <button type="button" class="preset-chip" data-preset="gate_change">Gate Change</button>
+              <button type="button" class="preset-chip" data-preset="security">Baggage Security Warning</button>
+              <button type="button" class="preset-chip" data-preset="welcome">Arrival & Welcome</button>
+            </div>
+          </div>
+
+          <!-- Quick Parameters Form -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;">
+            <div class="form-group">
+              <label for="inpAirline">Airline</label>
+              <input type="text" id="inpAirline" class="form-input" value="Emirates">
+            </div>
+            <div class="form-group">
+              <label for="inpFlight">Flight Number</label>
+              <input type="text" id="inpFlight" class="form-input" value="EK 202">
+            </div>
+            <div class="form-group">
+              <label for="inpDest">Destination</label>
+              <input type="text" id="inpDest" class="form-input" value="New York JFK">
+            </div>
+            <div class="form-group">
+              <label for="inpGate">Gate</label>
+              <input type="text" id="inpGate" class="form-input" value="B24">
+            </div>
+          </div>
+
+          <!-- Announcement Script Editor -->
+          <div class="form-group" style="margin-top: 0.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label for="announcementText">Broadcast Script</label>
+              <span style="font-size: 0.75rem; color: var(--text-muted);" id="charCount">0 characters</span>
+            </div>
+            <textarea id="announcementText" class="form-textarea" rows="5" style="min-height: 140px; font-family: var(--font-sans); font-size: 0.95rem; line-height: 1.5;"></textarea>
+          </div>
+
+          <!-- Action Buttons -->
+          <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.5rem;">
+            <button id="btnPlay" class="btn btn-primary" style="display: flex; align-items: center; gap: 0.5rem; font-weight: 700; padding: 0.75rem 1.4rem;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span>Broadcast Announcement</span>
+            </button>
+            <button id="btnChimeOnly" class="btn btn-secondary" style="display: flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <span>Play Chime Only</span>
+            </button>
+            <button id="btnStop" class="btn btn-secondary" style="display: flex; align-items: center; gap: 0.5rem; color: #ff5252;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>
+              <span>Stop</span>
+            </button>
+            <button id="btnDownloadWav" class="btn btn-secondary" style="display: flex; align-items: center; gap: 0.5rem; margin-left: auto;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Download Chime Audio (WAV)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Acoustic Effects & Voice Engine -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            Terminal Acoustics & Voice
+          </h2>
+
+          <!-- Chime Style -->
+          <div class="form-group">
+            <label for="chimeStyle">Airport Chime Signature</label>
+            <select id="chimeStyle" class="form-select">
+              <option value="classic">Classic Two-Tone (Ding-Dong / Boeing Bell)</option>
+              <option value="four_tone">European 4-Tone (Paris CDG / Heathrow)</option>
+              <option value="triple_asian">Changi / Incheon Triple Harmonic</option>
+              <option value="soft_lounge">Executive Lounge Soft Chime</option>
+              <option value="modern_pulse">Modern Futuristic Hub Chime</option>
+            </select>
+          </div>
+
+          <!-- Voice Selection -->
+          <div class="form-group">
+            <label for="voiceSelect">Announcer Voice</label>
+            <select id="voiceSelect" class="form-select">
+              <option value="">Default System Voice</option>
+            </select>
+            <small style="color: var(--text-muted); font-size: 0.75rem;">Uses high-fidelity Web Speech voices installed on your system.</small>
+          </div>
+
+          <!-- Speech Sliders -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label for="speechRate">Cadence / Speed: <span id="rateVal" style="color: var(--accent);">0.95x</span></label>
+              <input type="range" id="speechRate" class="range-slider" min="0.7" max="1.3" step="0.05" value="0.95">
+            </div>
+            <div class="form-group">
+              <label for="speechPitch">Pitch: <span id="pitchVal" style="color: var(--accent);">1.00x</span></label>
+              <input type="range" id="speechPitch" class="range-slider" min="0.7" max="1.3" step="0.05" value="1.0">
+            </div>
+          </div>
+
+          <!-- Acoustic Environment Sliders -->
+          <div class="form-group">
+            <label for="reverbLevel">Terminal Hall Acoustics / Reverb: <span id="reverbVal" style="color: var(--accent);">65%</span></label>
+            <input type="range" id="reverbLevel" class="range-slider" min="0" max="100" step="5" value="65">
+          </div>
+
+          <div class="form-group">
+            <label for="ambientLevel">Terminal Background Ambiance: <span id="ambientVal" style="color: var(--accent);">35%</span></label>
+            <input type="range" id="ambientLevel" class="range-slider" min="0" max="100" step="5" value="35">
+          </div>
+
+          <div class="checkbox-group" style="margin-top: 0.25rem;">
+            <label class="checkbox-label">
+              <input type="checkbox" id="chkPaMegaphone" checked>
+              <span>Enable PA Megaphone Bandpass EQ (Authentic Terminal Speaker sound)</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="chkRepeat" checked>
+              <span>Play Confirmation Outro Tone when broadcast completes</span>
+            </label>
+          </div>
+
+          <!-- Real-Time Audio Spectrum Visualizer -->
+          <div class="visualizer-container">
+            <canvas id="audioVisualizer" class="visualizer-canvas"></canvas>
+            <div class="visualizer-overlay" id="vizStatus">PA READY &bull; 48.0 kHz</div>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
 
@@ -82,17 +400,12 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Airport Announcement",
+    "name": "Airport Announcement Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/airport-announcement/",
-    "description": "Generate realistic airport-style announcements.",
-    "applicationCategory": "UtilityPage",
+    "description": "Generate realistic airport-style announcements with authentic chimes and terminal acoustics.",
+    "applicationCategory": "AudioApplication",
     "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5.",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "ALL IN ONE",
-      "url": "https://sami12901.github.io/ALL-IN-ONE-v1/"
-    }
+    "browserRequirements": "Requires JavaScript. Requires HTML5 Audio."
   }
   </script>
 </body>

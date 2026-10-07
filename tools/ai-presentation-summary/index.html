@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Presentation Summary - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Summarize long presentations into a few key slides.">
-  <meta name="keywords" content="slide, presentation, pitch, deck, ai presentation summary, free, online, tool, utility">
+  <meta name="description" content="Summarize long slide decks and presentations into condensed executive summary decks, 1-page briefs, and stakeholder memos.">
+  <meta name="keywords" content="slide, presentation, pitch, deck, ai presentation summary, executive brief, tldr, free, online, tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-presentation-summary/">
 
@@ -14,7 +14,7 @@
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-presentation-summary/">
   <meta property="og:title" content="AI Presentation Summary - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Summarize long presentations into a few key slides.">
+  <meta property="og:description" content="Summarize long presentations into condensed executive decks, 1-page briefs, and stakeholder memos.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
@@ -26,14 +26,196 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-presentation-summary/">
   <meta name="twitter:title" content="AI Presentation Summary - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Summarize long presentations into a few key slides.">
+  <meta name="twitter:description" content="Summarize long presentations into condensed executive decks, 1-page briefs, and stakeholder memos.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="AI Presentation Summary - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    /* Presentation Summary Studio */
+    .summary-toolbar {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .preset-pills-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .summary-pill {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .summary-pill:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+    
+    .summary-workspace-grid {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 992px) {
+      .summary-workspace-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Output Mode Tabs */
+    .view-mode-tabs {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .view-tab {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-secondary);
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .view-tab:hover {
+      color: #fff;
+      background: var(--bg-tertiary);
+    }
+    .view-tab.active {
+      color: #fff;
+      background: rgba(99, 102, 241, 0.18);
+      border-color: var(--accent);
+    }
+
+    /* 16:9 Canvas Viewport */
+    .summary-canvas-box {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: radial-gradient(circle at 85% 15%, rgba(99, 102, 241, 0.18), transparent 50%),
+                  radial-gradient(circle at 15% 85%, rgba(139, 92, 246, 0.12), transparent 50%),
+                  #0b0f19;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+      padding: 3rem;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #f8fafc;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Executive One Pager Card */
+    .one-pager-sheet {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .highlight-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+    }
+
+    /* Fullscreen Presenter */
+    .fs-summary-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #05070e;
+      z-index: 99999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .fs-summary-modal.active { display: flex; }
+    .fs-summary-frame {
+      width: 94vw;
+      max-width: 1400px;
+      aspect-ratio: 16 / 9;
+      background: #090d16;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.85);
+      overflow: hidden;
+      display: flex;
+    }
+    .fs-summary-hud {
+      position: fixed;
+      bottom: 1.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 1.25rem;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-full);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      z-index: 100000;
+    }
+    .fs-summary-hud button {
+      background: transparent;
+      border: none;
+      color: #e2e8f0;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+    }
+
+    /* Print Styles */
+    @media print {
+      body * { visibility: hidden; }
+      #summary-print-target, #summary-print-target * { visibility: visible; }
+      #summary-print-target {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        display: block !important;
+      }
+      .print-brief-page {
+        page-break-after: always;
+        break-after: page;
+        padding: 3rem;
+        box-sizing: border-box;
+        background: #ffffff !important;
+        color: #0f172a !important;
+        font-family: -apple-system, sans-serif;
+      }
+    }
+  </style>
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -49,30 +231,123 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>AI Presentation Summary</h1>
-        <p class="tool-description">Summarize long presentations into a few key slides.</p>
+        <p class="tool-description">Condense extensive 30+ slide decks into high-impact executive summary presentations, 1-page briefs, and stakeholder memos. Synthesize core takeaways, critical metrics, and immediate decision gates.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AI Presentation Summary</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Summarize long presentations into a few key slides.</div>
-            <div><strong>Inputs:</strong> slide, presentation, pitch, deck, ai presentation summary</div>
-            <div><strong>Category:</strong> slide</div>
+      <!-- Presets Toolbar -->
+      <div class="summary-toolbar glass-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;">Sample Deck Presets:</span>
+          <div class="preset-pills-wrap" id="preset-pills">
+            <button class="summary-pill" data-preset="series-b">📈 Series B Growth Deck (42 Slides)</button>
+            <button class="summary-pill" data-preset="cloud-migration">☁️ Enterprise Cloud Modernization (55 Slides)</button>
+            <button class="summary-pill" data-preset="product-vision">🚀 2027 Autonomous AI Roadmap (38 Slides)</button>
+            <button class="summary-pill" data-preset="q3-earnings">📊 Q3 Financial Performance Review (30 Slides)</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- Studio Work Area -->
+      <div class="summary-workspace-grid">
+        <!-- Left: Input Presentation Content -->
+        <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+            <h3 style="font-size: 0.95rem; margin: 0; color: #fff;">Original Presentation Content</h3>
+            <span id="badge-char-count" style="font-size: 0.75rem; color: var(--text-secondary);">1,450 words</span>
+          </div>
+
+          <div class="form-group">
+            <label>Deck Title / Subject</label>
+            <input type="text" id="inp-source-title" class="form-input" value="Series B Global Expansion & Autonomous Infrastructure">
+          </div>
+
+          <div class="form-group" style="margin-top: 0.75rem;">
+            <label>Paste Full Slide Deck Content / Outline / Notes:</label>
+            <textarea id="inp-source-content" class="form-textarea" style="min-height: 380px; font-size: 0.85rem; line-height: 1.5;" placeholder="Paste slide deck bullet points, meeting transcripts, or text..."></textarea>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+            <button id="btn-summarize" class="btn btn-primary" style="flex: 1; font-weight: 700;">
+              ⚡ Condense & Summarize
+            </button>
+            <button id="btn-clear" class="btn btn-secondary" style="padding: 0.5rem 0.75rem;">Clear</button>
+          </div>
+        </div>
+
+        <!-- Right: Summarized Outputs & Executive Studio -->
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <!-- Mode Tabs -->
+          <div class="view-mode-tabs">
+            <button class="view-tab active" data-tab="deck">🎴 Executive Summary Deck (4 Slides)</button>
+            <button class="view-tab" data-tab="one-pager">📄 1-Page Executive Brief</button>
+            <button class="view-tab" data-tab="memo">✉️ Stakeholder Follow-Up Memo</button>
+          </div>
+
+          <!-- TAB 1: Condensed Deck Viewer -->
+          <div id="view-section-deck" style="display: flex; flex-direction: column; gap: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+              <div style="display: flex; gap: 0.4rem;" id="deck-slide-tabs">
+                <!-- Slide switcher buttons populated dynamically -->
+              </div>
+              <div style="display: flex; gap: 0.4rem;">
+                <button id="btn-present-summary" class="btn btn-primary" style="padding: 0.3rem 0.75rem; font-size: 0.8rem;">Present Fullscreen [F5]</button>
+                <button id="btn-export-html-deck" class="btn btn-secondary" style="padding: 0.3rem 0.75rem; font-size: 0.8rem;">Export HTML Deck</button>
+              </div>
+            </div>
+
+            <!-- 16:9 Canvas -->
+            <div class="summary-canvas-box" id="summary-canvas">
+              <!-- Rendered summary slide -->
+            </div>
+          </div>
+
+          <!-- TAB 2: One-Pager Brief -->
+          <div id="view-section-one-pager" style="display: none;">
+            <div class="one-pager-sheet" id="one-pager-content">
+              <!-- Rendered Executive One Pager -->
+            </div>
+            <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+              <button id="btn-print-brief" class="btn btn-primary" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;">🖨️ Print Executive 1-Pager (PDF)</button>
+              <button id="btn-copy-brief" class="btn btn-secondary" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;">Copy Markdown</button>
+            </div>
+          </div>
+
+          <!-- TAB 3: Stakeholder Memo -->
+          <div id="view-section-memo" style="display: none;">
+            <div class="tool-panel glass-panel" style="padding: 1.5rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1rem;">
+                <span style="font-weight: 700; color: #fff;">Follow-up Email to Leadership & Board</span>
+                <button id="btn-copy-memo" class="btn btn-secondary" style="padding: 0.25rem 0.6rem; font-size: 0.75rem;">📋 Copy Email</button>
+              </div>
+              <div id="memo-rendered-body" style="white-space: pre-line; line-height: 1.6; color: #cbd5e1; font-size: 0.95rem; font-family: -apple-system, sans-serif;">
+                <!-- Memo text -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- Fullscreen Presenter Modal -->
+  <div class="fs-summary-modal" id="fs-summary-modal">
+    <div class="fs-summary-frame">
+      <div class="summary-canvas-box" id="fs-canvas-inner" style="padding: 4rem;">
+        <!-- Fullscreen slide -->
+      </div>
+    </div>
+    <div class="fs-summary-hud">
+      <button id="fs-btn-prev">&larr; Previous</button>
+      <span id="fs-slide-counter" style="color: var(--accent); font-weight: 800; font-size: 0.85rem;">1 / 4</span>
+      <button id="fs-btn-next">Next &rarr;</button>
+      <button id="fs-btn-exit" style="color: #f87171;">Exit [Esc]</button>
+    </div>
+  </div>
+
+  <!-- Print Target -->
+  <div id="summary-print-target" style="display: none;"></div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -84,8 +359,8 @@
     "@type": "WebApplication",
     "name": "AI Presentation Summary",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-presentation-summary/",
-    "description": "Summarize long presentations into a few key slides.",
-    "applicationCategory": "UtilityPage",
+    "description": "Condense long slide decks into executive summary presentations and one-page briefs.",
+    "applicationCategory": "PresentationSoftware",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
     "isPartOf": {

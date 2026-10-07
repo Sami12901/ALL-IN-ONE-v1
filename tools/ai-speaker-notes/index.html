@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Speaker Notes - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Automatically generate speaker notes for your presentations.">
-  <meta name="keywords" content="slide, presentation, pitch, deck, ai speaker notes, free, online, tool, utility">
+  <meta name="description" content="Generate high-impact speaker notes, teleprompter scripts, stage cues, and rehearsal timers for slide presentations.">
+  <meta name="keywords" content="slide, presentation, pitch, deck, ai speaker notes, teleprompter, rehearsal, speech, free, online, tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-speaker-notes/">
 
@@ -14,7 +14,7 @@
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-speaker-notes/">
   <meta property="og:title" content="AI Speaker Notes - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Automatically generate speaker notes for your presentations.">
+  <meta property="og:description" content="Generate high-impact speaker notes, teleprompter scripts, stage cues, and rehearsal timers for slide presentations.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
@@ -26,14 +26,270 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-speaker-notes/">
   <meta name="twitter:title" content="AI Speaker Notes - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Automatically generate speaker notes for your presentations.">
+  <meta name="twitter:description" content="Generate high-impact speaker notes, teleprompter scripts, stage cues, and rehearsal timers for slide presentations.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="AI Speaker Notes - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    /* Speaker Notes Studio Layout */
+    .notes-toolbar {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .notes-preset-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .persona-pill {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .persona-pill:hover, .persona-pill.active {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      background: rgba(99, 102, 241, 0.15);
+    }
+    .notes-input-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    @media (max-width: 900px) {
+      .notes-input-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .notes-workspace-grid {
+      display: grid;
+      grid-template-columns: 280px 1.1fr 1.1fr;
+      gap: 1.25rem;
+      align-items: start;
+    }
+    @media (max-width: 1200px) {
+      .notes-workspace-grid {
+        grid-template-columns: 260px 1fr;
+      }
+      .notes-panel-col {
+        grid-column: span 2;
+      }
+    }
+    @media (max-width: 800px) {
+      .notes-workspace-grid {
+        grid-template-columns: 1fr;
+      }
+      .notes-panel-col {
+        grid-column: span 1;
+      }
+    }
+
+    /* Slides List */
+    .notes-slide-scroll {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      max-height: 640px;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+    .notes-thumb-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .notes-thumb-card:hover {
+      border-color: var(--accent);
+      transform: translateX(2px);
+    }
+    .notes-thumb-card.active {
+      border-color: var(--accent);
+      background: rgba(99, 102, 241, 0.15);
+      box-shadow: 0 0 12px rgba(99, 102, 241, 0.25);
+    }
+
+    /* 16:9 Slide Canvas */
+    .notes-canvas-box {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: radial-gradient(circle at 85% 15%, rgba(99, 102, 241, 0.18), transparent 50%),
+                  radial-gradient(circle at 15% 85%, rgba(139, 92, 246, 0.12), transparent 50%),
+                  #0b0f19;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+      padding: 2.25rem;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #f8fafc;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Speaker Notes Box */
+    .speaker-box-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .stage-cue-tag {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      background: rgba(245, 158, 11, 0.18);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+      border-radius: var(--radius-sm);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .teleprompter-text {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      color: #e2e8f0;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      max-height: 250px;
+      overflow-y: auto;
+      white-space: pre-line;
+    }
+    .metric-bubble {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.75rem;
+      border-radius: var(--radius-md);
+      font-size: 0.8rem;
+    }
+
+    /* Fullscreen Presenter & Teleprompter Modal */
+    .rehearsal-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #04060c;
+      z-index: 99999;
+      flex-direction: column;
+    }
+    .rehearsal-modal.active { display: flex; }
+    .rehearsal-split {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 2rem;
+      padding: 2.5rem;
+      box-sizing: border-box;
+      align-items: center;
+    }
+    @media (max-width: 992px) {
+      .rehearsal-split {
+        grid-template-columns: 1fr;
+      }
+    }
+    .rehearsal-slide-stage {
+      aspect-ratio: 16 / 9;
+      width: 100%;
+      background: #090d16;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+      padding: 3rem;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #fff;
+    }
+    .rehearsal-teleprompter {
+      height: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+    .teleprompter-scroll-body {
+      flex: 1;
+      overflow-y: auto;
+      font-size: 1.35rem;
+      line-height: 1.7;
+      color: #f8fafc;
+      scroll-behavior: smooth;
+    }
+    .rehearsal-hud {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2.5rem;
+      background: rgba(15, 23, 42, 0.95);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    /* Print Styles */
+    @media print {
+      body * { visibility: hidden; }
+      #cue-cards-print-target, #cue-cards-print-target * { visibility: visible; }
+      #cue-cards-print-target {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        display: block !important;
+      }
+      .cue-card-page {
+        page-break-after: always;
+        break-after: page;
+        padding: 3rem;
+        box-sizing: border-box;
+        background: #ffffff !important;
+        color: #0f172a !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        border: 2px solid #000;
+        margin: 1rem;
+      }
+    }
+  </style>
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -48,31 +304,213 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>AI Speaker Notes</h1>
-        <p class="tool-description">Automatically generate speaker notes for your presentations.</p>
+        <h1>AI Speaker Notes & Rehearsal Studio</h1>
+        <p class="tool-description">Generate comprehensive speaking scripts, teleprompter notes, and stage delivery cues for every slide. Rehearse with real-time speech pacing, word counting, and fullscreen teleprompter mode.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AI Speaker Notes</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Automatically generate speaker notes for your presentations.</div>
-            <div><strong>Inputs:</strong> slide, presentation, pitch, deck, ai speaker notes</div>
-            <div><strong>Category:</strong> slide</div>
+      <!-- Generator Toolbar -->
+      <div class="notes-toolbar glass-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;">Speaker Persona:</span>
+          <div class="notes-preset-row" id="persona-row">
+            <button class="persona-pill active" data-persona="confident-founder">🚀 Confident Startup Founder</button>
+            <button class="persona-pill" data-persona="technical-architect">🧠 Technical Deep-Dive Expert</button>
+            <button class="persona-pill" data-persona="keynote-storyteller">🎙️ Keynote Storyteller</button>
+            <button class="persona-pill" data-persona="executive-briefing">👔 Boardroom Executive Briefing</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="notes-input-grid">
+          <div>
+            <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Presentation Title & Topic:</label>
+            <input type="text" id="inp-presentation-topic" class="form-input" placeholder="e.g. Next-Gen Autonomous AI Agents Keynote..." value="Next-Gen Autonomous AI Agents: Transforming Enterprise Software">
+          </div>
+          <div>
+            <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Target Speech Duration:</label>
+            <select id="select-duration" class="form-select" style="height: 42px;">
+              <option value="5">5 Minutes (Lightning)</option>
+              <option value="10" selected>10 Minutes (Pitch)</option>
+              <option value="20">20 Minutes (Keynote)</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Slide Count:</label>
+            <select id="select-slide-count" class="form-select" style="height: 42px;">
+              <option value="6">6 Slides</option>
+              <option value="8" selected>8 Slides</option>
+              <option value="10">10 Slides</option>
+            </select>
+          </div>
+          <div style="align-self: flex-end;">
+            <button id="btn-generate-notes-deck" class="btn btn-primary" style="height: 42px; font-weight: 700; white-space: nowrap; padding: 0 1.25rem;">
+              ⚡ Generate Deck & Notes
+            </button>
+          </div>
+        </div>
       </div>
-    
+
+      <!-- Action Bar -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <span style="font-size: 0.88rem; font-weight: 700; color: #fff;">Speaker Deck</span>
+          <span id="badge-total-slides" style="font-size: 0.75rem; padding: 0.2rem 0.65rem; border-radius: 9999px; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--accent);">8 Slides</span>
+          <span id="badge-total-time" style="font-size: 0.75rem; padding: 0.2rem 0.65rem; border-radius: 9999px; background: var(--bg-tertiary); border: 1px solid var(--border); color: #34d399;">~10 mins total</span>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button id="btn-add-slide" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.82rem;">+ Add Slide</button>
+          <button id="btn-rehearse-mode" class="btn btn-primary" style="padding: 0.35rem 0.85rem; font-size: 0.82rem;">🎙️ Rehearse (Teleprompter)</button>
+          <button id="btn-export-cue-cards" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.82rem;">Print Cue Cards</button>
+          <button id="btn-export-transcript" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.82rem;">Export Script (MD)</button>
+          <button id="btn-export-html" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.82rem;">Export HTML Deck</button>
+          <button id="btn-export-json" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.82rem;">Export JSON</button>
+        </div>
+      </div>
+
+      <!-- Studio Work Area -->
+      <div class="notes-workspace-grid">
+        <!-- Sidebar Thumbnails -->
+        <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;">Slide List</span>
+            <span style="font-size: 0.75rem; color: var(--text-secondary);" id="counter-active-slide">1 / 8</span>
+          </div>
+          <div class="notes-slide-scroll" id="notes-thumbs-container">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Middle: 16:9 Slide Canvas & Slide Inspector -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <div class="notes-canvas-box" id="notes-slide-canvas">
+            <!-- Rendered active slide -->
+          </div>
+
+          <!-- Slide Content Quick Edit -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+              <h3 style="font-size: 0.92rem; margin: 0; color: var(--text-primary);">Slide Visual Content</h3>
+              <div style="display: flex; gap: 0.4rem;">
+                <button id="btn-slide-up" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">&uarr; Up</button>
+                <button id="btn-slide-down" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">&darr; Down</button>
+                <button id="btn-slide-delete" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; color: #ef4444;">Delete</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Slide Title</label>
+              <input type="text" id="inp-slide-title" class="form-input">
+            </div>
+            <div class="form-group" style="margin-top: 0.5rem;">
+              <label>Slide Subtitle</label>
+              <input type="text" id="inp-slide-sub" class="form-input">
+            </div>
+            <div class="form-group" style="margin-top: 0.5rem;">
+              <label>Visual Bullets (One per line)</label>
+              <textarea id="inp-slide-bullets" class="form-textarea" style="min-height: 70px;"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Speaker Notes & Speech Metrics -->
+        <div class="speaker-box-panel notes-panel-col">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+            <h3 style="font-size: 0.95rem; margin: 0; color: #fff;">Speaker Notes & Teleprompter Script</h3>
+            <button id="btn-ai-regen-notes" class="btn btn-secondary" style="padding: 0.2rem 0.6rem; font-size: 0.75rem; color: #a855f7;">✨ AI Polish Script</button>
+          </div>
+
+          <!-- Speech Metrics Header -->
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <div class="metric-bubble">
+              <span>⏱️ Slide Target:</span>
+              <strong id="label-slide-time" style="color: var(--accent);">75s</strong>
+            </div>
+            <div class="metric-bubble">
+              <span>📝 Word Count:</span>
+              <strong id="label-word-count" style="color: #38bdf8;">164 words</strong>
+            </div>
+            <div class="metric-bubble">
+              <span>🗣️ Pacing:</span>
+              <strong id="label-pacing" style="color: #4ade80;">130 WPM (Optimal)</strong>
+            </div>
+          </div>
+
+          <!-- Opening Hook -->
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label>Opening Hook & Transition Cue</label>
+              <span class="stage-cue-tag">[Stage Cue]</span>
+            </div>
+            <input type="text" id="inp-notes-hook" class="form-input" style="border-color: rgba(245, 158, 11, 0.4);">
+          </div>
+
+          <!-- Main Speech Script -->
+          <div class="form-group">
+            <label>Complete Speech Transcript (What you actually say):</label>
+            <textarea id="inp-notes-script" class="form-textarea" style="min-height: 140px; font-size: 0.95rem; line-height: 1.6;"></textarea>
+          </div>
+
+          <!-- Anticipated Q&A / Objections -->
+          <div class="form-group">
+            <label>Anticipated Audience Objection & Response:</label>
+            <textarea id="inp-notes-qa" class="form-textarea" style="min-height: 60px; font-size: 0.85rem; color: #94a3b8;"></textarea>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- Fullscreen Rehearsal Teleprompter Modal -->
+  <div class="rehearsal-modal" id="rehearsal-modal">
+    <div class="rehearsal-split">
+      <!-- Left: Slide -->
+      <div class="rehearsal-slide-stage" id="rehearsal-slide-view">
+        <!-- Live slide clone -->
+      </div>
+
+      <!-- Right: Teleprompter -->
+      <div class="rehearsal-teleprompter">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.75rem; margin-bottom: 1rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase;">TELEPROMPTER</span>
+            <span id="rehearsal-slide-label" style="font-size: 0.8rem; color: #94a3b8;">Slide 1 of 8</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <button id="btn-font-smaller" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">A-</button>
+            <button id="btn-font-larger" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">A+</button>
+            <button id="btn-toggle-scroll" class="btn btn-secondary" style="padding: 0.2rem 0.6rem; font-size: 0.8rem;">▶ Auto-Scroll</button>
+          </div>
+        </div>
+
+        <div class="teleprompter-scroll-body" id="teleprompter-text-body">
+          <!-- Live Teleprompter content -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Rehearsal HUD -->
+    <div class="rehearsal-hud">
+      <div style="display: flex; align-items: center; gap: 1.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 0.85rem; color: #94a3b8;">Timer:</span>
+          <span id="rehearsal-stopwatch" style="font-size: 1.3rem; font-family: monospace; font-weight: 800; color: #4ade80;">00:00</span>
+        </div>
+        <button id="btn-timer-toggle" class="btn btn-secondary" style="padding: 0.25rem 0.6rem; font-size: 0.8rem;">Start Timer</button>
+        <button id="btn-timer-reset" class="btn btn-secondary" style="padding: 0.25rem 0.6rem; font-size: 0.8rem;">Reset</button>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <button id="rehearsal-prev" class="btn btn-secondary" style="padding: 0.4rem 0.8rem;">&larr; Prev Slide</button>
+        <span id="rehearsal-count" style="font-weight: 700; color: #fff;">1 / 8</span>
+        <button id="rehearsal-next" class="btn btn-secondary" style="padding: 0.4rem 0.8rem;">Next Slide &rarr;</button>
+        <button id="rehearsal-exit" class="btn btn-primary" style="padding: 0.4rem 0.9rem; background: #ef4444; border-color: #ef4444;">Exit Rehearsal [Esc]</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Print Cue Cards Target -->
+  <div id="cue-cards-print-target" style="display: none;"></div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -84,8 +522,8 @@
     "@type": "WebApplication",
     "name": "AI Speaker Notes",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-speaker-notes/",
-    "description": "Automatically generate speaker notes for your presentations.",
-    "applicationCategory": "UtilityPage",
+    "description": "Generate high-impact speaker notes, teleprompter scripts, stage cues, and rehearsal timers.",
+    "applicationCategory": "PresentationSoftware",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
     "isPartOf": {

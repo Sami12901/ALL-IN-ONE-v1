@@ -3,96 +3,230 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Dubbing - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Automatically dub audio into different languages.">
-  <meta name="keywords" content="audio, music, sound, ai dubbing, free, online, tool, utility">
+  <title>AI Video & Audio Dubbing Studio - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Dub video dialogue into multiple languages with synchronized time-coded timelines, automatic speech rate fitting, live video preview, and SRT export.">
+  <meta name="keywords" content="ai video dubbing, audio dubbing studio, time-coded voiceover, subtitle sync, video translation dub, lip sync audio">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-dubbing/">
 
-  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-dubbing/">
-  <meta property="og:title" content="AI Dubbing - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Automatically dub audio into different languages.">
+  <meta property="og:title" content="AI Video & Audio Dubbing Studio - ALL IN ONE">
+  <meta property="og:description" content="Time-coded video dubbing and voice synchronization studio.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:width" content="512">
-  <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="AI Dubbing - ALL IN ONE">
-  <meta property="og:locale" content="en_US">
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-dubbing/">
-  <meta name="twitter:title" content="AI Dubbing - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Automatically dub audio into different languages.">
-  <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="AI Dubbing - ALL IN ONE">
+  <meta property="og:width" content="512">
+  <meta property="og:height" content="512">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .video-mockup-screen {
+      background: #020408;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      aspect-ratio: 16 / 9;
+      max-height: 280px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .video-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .video-captions-overlay {
+      position: relative;
+      z-index: 5;
+      background: rgba(0, 0, 0, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 1rem;
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-align: center;
+      max-width: 85%;
+      backdrop-filter: blur(8px);
+    }
+    .timeline-scrubber {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-full);
+      margin-top: 0.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .timeline-progress {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00e5ff, #00e676);
+      transition: width 0.1s linear;
+    }
+    .cue-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .cue-table th {
+      text-align: left;
+      padding: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+    .cue-table td {
+      padding: 0.6rem 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .cue-row.active {
+      background: rgba(0, 229, 255, 0.1);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
 <body>
-  <!-- Header Web Component -->
   <app-header></app-header>
-  
-  <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
-  <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>AI Dubbing</h1>
-        <p class="tool-description">Automatically dub audio into different languages.</p>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1>AI Video &amp; Audio Dubbing Studio</h1>
+            <p class="tool-description">Synchronize multilingual voice dubbing to video timelines. Features automatic dialogue pacing, background foley preservation, time-coded subtitle cues, and SRT export.</p>
+          </div>
+          <span class="btn btn-secondary" style="font-size: 0.8rem; pointer-events: none;">TIME-CODED DUBBING ENGINE</span>
+        </div>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AI Dubbing</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Automatically dub audio into different languages.</div>
-            <div><strong>Inputs:</strong> audio, music, sound, ai dubbing</div>
-            <div><strong>Category:</strong> audio</div>
+      <!-- Video Preview Simulator Canvas -->
+      <div class="video-mockup-screen">
+        <canvas id="videoCanvas" class="video-canvas"></canvas>
+        <div class="video-captions-overlay" id="captionOverlay">
+          [DUBBING STANDBY - PRESS PLAY TO START]
+        </div>
+        <div class="timeline-scrubber">
+          <div class="timeline-progress" id="timelineProgress"></div>
+        </div>
+      </div>
+
+      <!-- Playback Header & Presets -->
+      <div class="tool-panel glass-panel" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="btnPlayDub" class="btn btn-primary" style="display: flex; align-items: center; gap: 0.5rem; font-weight: 700;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span>Play Synchronized Dub</span>
+            </button>
+            <button id="btnStopDub" class="btn btn-secondary" style="color: #ff5252;">Stop</button>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <label for="dubProjectSelect" style="font-size: 0.85rem; font-weight: 700;">Project Preset:</label>
+            <select id="dubProjectSelect" class="form-select" style="width: auto; padding: 0.35rem 0.85rem;">
+              <option value="keynote">📱 Tech Keynote (English &rarr; Spanish)</option>
+              <option value="travel">✈️ Travel Vlog (English &rarr; French)</option>
+              <option value="trailer">🎬 Epic Movie Teaser (English &rarr; Arabic)</option>
+            </select>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="btnExportSrt" class="btn btn-secondary" style="font-size: 0.85rem;">Download Subtitles (SRT)</button>
+            <button id="btnExportDubWav" class="btn btn-secondary" style="font-size: 0.85rem;">Download Dub Audio (WAV)</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
       </div>
-    
+
+      <!-- Time-Coded Cue Sheet Manager -->
+      <div class="tool-workarea split-view">
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Timeline Dialogue Cues
+          </h2>
+
+          <div style="overflow-x: auto;">
+            <table class="cue-table">
+              <thead>
+                <tr>
+                  <th style="width: 70px;">Start</th>
+                  <th style="width: 70px;">End</th>
+                  <th>Original Dialogue</th>
+                  <th>Dubbed Translation</th>
+                </tr>
+              </thead>
+              <tbody id="cueTableBody">
+                <!-- Dynamically populated cues -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Dubbing Controls & Foley Mix -->
+        <div class="tool-panel glass-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+            Dubbing Voice &amp; Foley Mix
+          </h2>
+
+          <div class="form-group">
+            <label for="dubVoiceSelect">Dubbed Voice Talent</label>
+            <select id="dubVoiceSelect" class="form-select">
+              <option value="">Default System Voice</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="foleyBedVol">Background Ambience / Foley: <span id="foleyVolDisp" style="color: var(--accent);">20%</span></label>
+            <input type="range" id="foleyBedVol" class="range-slider" min="0" max="50" step="5" value="20">
+          </div>
+
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="chkAutoPacing" checked>
+              <span>Auto-Fit Cadence (automatically adjust speech speed to fit exact cue duration)</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="chkCinematicRoom" checked>
+              <span>Cinematic Reverb (blend dubbed voice naturally into video scene)</span>
+            </label>
+          </div>
+
+          <div style="margin-top: 1.25rem; padding: 1rem; background: var(--bg-tertiary); border-radius: var(--radius-md); font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">
+            💡 <strong>Dubbing Synchronizer:</strong> When Auto-Fit Cadence is active, the speech rate algorithm dynamically scales the speech rate between 0.85x and 1.35x to match the actor's lips and time-coded interval.
+          </div>
+        </div>
+      </div>
     </div>
   </main>
 
-  <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "AI Dubbing",
+    "name": "AI Video & Audio Dubbing Studio",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-dubbing/",
-    "description": "Automatically dub audio into different languages.",
-    "applicationCategory": "UtilityPage",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5.",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "ALL IN ONE",
-      "url": "https://sami12901.github.io/ALL-IN-ONE-v1/"
-    }
+    "description": "Video dialogue dubbing and time-coded audio synchronizer.",
+    "applicationCategory": "AudioApplication",
+    "operatingSystem": "All"
   }
   </script>
 </body>

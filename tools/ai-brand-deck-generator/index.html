@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Brand Deck Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Generate a complete brand guidelines deck with AI.">
-  <meta name="keywords" content="slide, presentation, pitch, deck, ai brand deck generator, free, online, tool, utility">
+  <meta name="description" content="Generate complete brand guidelines and design system decks with AI. Interactive color palettes, typography specs, logo rules, and presentation exports.">
+  <meta name="keywords" content="slide, presentation, pitch, deck, ai brand deck generator, brand guidelines, design system, typography, color palette, free, online, tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-brand-deck-generator/">
 
@@ -14,7 +14,7 @@
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-brand-deck-generator/">
   <meta property="og:title" content="AI Brand Deck Generator - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Generate a complete brand guidelines deck with AI.">
+  <meta property="og:description" content="Generate complete brand guidelines and design system decks with AI. Interactive palettes, logo rules, and presentation exports.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
@@ -26,14 +26,232 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-brand-deck-generator/">
   <meta name="twitter:title" content="AI Brand Deck Generator - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Generate a complete brand guidelines deck with AI.">
+  <meta name="twitter:description" content="Generate complete brand guidelines and design system decks with AI. Interactive palettes, logo rules, and presentation exports.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="AI Brand Deck Generator - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    /* Brand Deck Studio */
+    .brand-toolbar {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .brand-preset-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .brand-pill {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .brand-pill:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+    .brand-input-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    @media (max-width: 900px) {
+      .brand-input-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .brand-studio-grid {
+      display: grid;
+      grid-template-columns: 290px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 992px) {
+      .brand-studio-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Thumbnails Sidebar */
+    .brand-thumbs-scroll {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      max-height: 650px;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+    .brand-thumb-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .brand-thumb-card:hover {
+      border-color: var(--accent);
+      transform: translateX(2px);
+    }
+    .brand-thumb-card.active {
+      border-color: var(--accent);
+      background: rgba(99, 102, 241, 0.15);
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
+    }
+
+    /* 16:9 Canvas Viewport */
+    .brand-canvas-frame {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #060911;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+    }
+    .brand-slide-stage {
+      width: 100%;
+      height: 100%;
+      padding: 3rem;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      color: #f8fafc;
+      background: radial-gradient(circle at 85% 15%, rgba(99, 102, 241, 0.18), transparent 50%),
+                  radial-gradient(circle at 15% 85%, rgba(139, 92, 246, 0.12), transparent 50%),
+                  #0c101c;
+      transition: all 0.3s ease;
+    }
+
+    /* Swatches Grid */
+    .swatches-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+    @media (max-width: 768px) {
+      .swatches-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .swatch-item {
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.04);
+      display: flex;
+      flex-direction: column;
+    }
+    .swatch-color-box {
+      height: 75px;
+      width: 100%;
+    }
+    .swatch-label-box {
+      padding: 0.6rem;
+      font-size: 0.75rem;
+    }
+
+    /* Fullscreen Presenter */
+    .fs-brand-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #05070e;
+      z-index: 99999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .fs-brand-modal.active { display: flex; }
+    .fs-brand-stage {
+      width: 94vw;
+      max-width: 1400px;
+      aspect-ratio: 16 / 9;
+      background: #090d16;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.85);
+      overflow: hidden;
+      display: flex;
+    }
+    .fs-brand-hud {
+      position: fixed;
+      bottom: 1.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 1.25rem;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-full);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      z-index: 100000;
+    }
+    .fs-brand-hud button {
+      background: transparent;
+      border: none;
+      color: #e2e8f0;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+    }
+
+    /* Print Styles */
+    @media print {
+      body * { visibility: hidden; }
+      #brand-print-target, #brand-print-target * { visibility: visible; }
+      #brand-print-target {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        display: block !important;
+      }
+      .print-brand-slide {
+        page-break-after: always;
+        break-after: page;
+        width: 100vw;
+        height: 56.25vw;
+        padding: 3rem;
+        box-sizing: border-box;
+        background: #0c101c !important;
+        color: #f8fafc !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -49,30 +267,149 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>AI Brand Deck Generator</h1>
-        <p class="tool-description">Generate a complete brand guidelines deck with AI.</p>
+        <p class="tool-description">Generate comprehensive, investor-grade brand guidelines and design system decks. Curate color swatches, typography scales, logo rules, and tone-of-voice messaging matrices.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AI Brand Deck Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Generate a complete brand guidelines deck with AI.</div>
-            <div><strong>Inputs:</strong> slide, presentation, pitch, deck, ai brand deck generator</div>
-            <div><strong>Category:</strong> slide</div>
+      <!-- Generator Toolbar -->
+      <div class="brand-toolbar glass-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;">Brand Archetype Presets:</span>
+          <div class="brand-preset-pills" id="brand-preset-pills">
+            <button class="brand-pill" data-preset="luxe-obsidian">🖤 Obsidian Luxe (High Fashion & Tech)</button>
+            <button class="brand-pill" data-preset="quantum-cyber">⚡ Quantum Cyber (DevTools & AI)</button>
+            <button class="brand-pill" data-preset="aura-wellness">🌿 Aura Wellness (Modern Health & Life)</button>
+            <button class="brand-pill" data-preset="apex-fintech">🏛️ Apex Capital (FinTech & Private Equity)</button>
+            <button class="brand-pill" data-preset="solaris-clean">☀️ Solaris Green (Clean Energy & Climate)</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="brand-input-row">
+          <div>
+            <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Brand Name & Mission Thesis:</label>
+            <input type="text" id="inp-brand-prompt" class="form-input" placeholder="e.g. Lumina: Next-Generation Optical Computing Hardware..." value="Lumina: Next-Generation Photonic AI & Optical Computing">
+          </div>
+          <div>
+            <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Brand Archetype:</label>
+            <select id="select-brand-archetype" class="form-select" style="height: 42px;">
+              <option value="Creator / Visionary" selected>The Visionary</option>
+              <option value="Ruler / Elite">The Ruler / Elite</option>
+              <option value="Sage / Intellect">The Sage / Intellect</option>
+              <option value="Outlaw / Disruptor">The Disruptor</option>
+              <option value="Caregiver / Nurturer">The Caregiver</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Slide Count:</label>
+            <select id="select-slide-count" class="form-select" style="height: 42px;">
+              <option value="8" selected>8 Slides (Standard)</option>
+              <option value="10">10 Slides (Full Suite)</option>
+            </select>
+          </div>
+          <div style="align-self: flex-end;">
+            <button id="btn-generate-brand-deck" class="btn btn-primary" style="height: 42px; font-weight: 700; white-space: nowrap; padding: 0 1.25rem;">
+              ⚡ Generate Brand Deck
+            </button>
+          </div>
+        </div>
       </div>
-    
+
+      <!-- Action Bar -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <span style="font-size: 0.88rem; font-weight: 700; color: #fff;">Brand Guidelines Studio</span>
+          <span id="badge-total-slides" style="font-size: 0.75rem; padding: 0.2rem 0.65rem; border-radius: 9999px; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--accent);">8 Slides</span>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button id="btn-add-slide" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.82rem;">+ Add Slide</button>
+          <button id="btn-present-fullscreen" class="btn btn-primary" style="padding: 0.35rem 0.85rem; font-size: 0.82rem;">Present Brand Deck (F5)</button>
+          <button id="btn-export-html" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.82rem;">Export HTML</button>
+          <button id="btn-export-pdf" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.82rem;">Print / PDF</button>
+          <button id="btn-export-json" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.82rem;">Export JSON</button>
+          <label class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.82rem; cursor: pointer; margin: 0;">
+            Import JSON <input type="file" id="input-import-json" accept=".json" style="display: none;">
+          </label>
+        </div>
+      </div>
+
+      <!-- Studio Work Area -->
+      <div class="brand-studio-grid">
+        <!-- Sidebar Thumbnails -->
+        <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;">Guidelines Index</span>
+            <span style="font-size: 0.75rem; color: var(--text-secondary);" id="counter-active-slide">1 / 8</span>
+          </div>
+          <div class="brand-thumbs-scroll" id="brand-thumbs-container">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Canvas & Editor -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <!-- 16:9 Presentation Canvas -->
+          <div class="brand-canvas-frame" id="brand-canvas-frame">
+            <div class="brand-slide-stage" id="brand-slide-stage">
+              <!-- Rendered slide -->
+            </div>
+          </div>
+
+          <!-- Slide Inspector & Content Editor -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+              <h3 style="font-size: 0.95rem; margin: 0; color: var(--text-primary);">Brand Section Inspector</h3>
+              <div style="display: flex; gap: 0.4rem;">
+                <button id="btn-slide-up" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">&uarr; Up</button>
+                <button id="btn-slide-down" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">&darr; Down</button>
+                <button id="btn-slide-duplicate" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">Duplicate</button>
+                <button id="btn-slide-delete" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; color: #ef4444;">Delete</button>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <label>Section Title</label>
+                <input type="text" id="inp-edit-title" class="form-input">
+              </div>
+              <div class="form-group">
+                <label>Category Kicker</label>
+                <input type="text" id="inp-edit-kicker" class="form-input">
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 0.75rem;">
+              <label>Subtitle / Brand Principle</label>
+              <input type="text" id="inp-edit-sub" class="form-input">
+            </div>
+
+            <div class="form-group" style="margin-top: 0.75rem;">
+              <label>Brand Guidelines Content / Card Items (One item per line; Title: Description)</label>
+              <textarea id="inp-edit-content" class="form-textarea" style="min-height: 90px;"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- Fullscreen Presenter Modal -->
+  <div class="fs-brand-modal" id="fs-brand-modal">
+    <div class="fs-brand-stage">
+      <div class="brand-slide-stage" id="fs-slide-content" style="padding: 4rem;">
+        <!-- Fullscreen slide -->
+      </div>
+    </div>
+    <div class="fs-brand-hud">
+      <button id="fs-btn-prev">&larr; Previous</button>
+      <span id="fs-slide-num" style="color: var(--accent); font-weight: 800; font-size: 0.85rem;">1 / 8</span>
+      <button id="fs-btn-next">Next &rarr;</button>
+      <button id="fs-btn-exit" style="color: #f87171;">Exit [Esc]</button>
+    </div>
+  </div>
+
+  <!-- Print Target Container -->
+  <div id="brand-print-target" style="display: none;"></div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -84,8 +421,8 @@
     "@type": "WebApplication",
     "name": "AI Brand Deck Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-brand-deck-generator/",
-    "description": "Generate a complete brand guidelines deck with AI.",
-    "applicationCategory": "UtilityPage",
+    "description": "Generate complete brand guidelines and design system decks with AI.",
+    "applicationCategory": "PresentationSoftware",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
     "isPartOf": {

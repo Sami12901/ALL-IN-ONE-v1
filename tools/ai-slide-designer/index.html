@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Slide Designer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="AI-assisted design suggestions for beautiful slides.">
-  <meta name="keywords" content="slide, presentation, pitch, deck, ai slide designer, free, online, tool, utility">
+  <meta name="description" content="AI-assisted design suggestions, layout morphing, and aesthetic styling for beautiful, high-impact presentation slides.">
+  <meta name="keywords" content="slide, presentation, pitch, deck, ai slide designer, slide layout, themes, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-slide-designer/">
 
@@ -14,7 +14,7 @@
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-slide-designer/">
   <meta property="og:title" content="AI Slide Designer - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="AI-assisted design suggestions for beautiful slides.">
+  <meta property="og:description" content="AI-assisted design suggestions, layout morphing, and aesthetic styling for beautiful presentation slides.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
@@ -26,14 +26,325 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-slide-designer/">
   <meta name="twitter:title" content="AI Slide Designer - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="AI-assisted design suggestions for beautiful slides.">
+  <meta name="twitter:description" content="AI-assisted design suggestions, layout morphing, and aesthetic styling for beautiful presentation slides.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="AI Slide Designer - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    /* Slide Designer Specific Styles */
+    .designer-toolbar {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .designer-preset-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .design-pill {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .design-pill:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+    .designer-grid-controls {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    @media (max-width: 900px) {
+      .designer-grid-controls {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .designer-workspace {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 992px) {
+      .designer-workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Slides List */
+    .designer-slides-scroll {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      max-height: 640px;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+    .slide-thumb {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .slide-thumb:hover {
+      border-color: var(--accent);
+      transform: translateX(2px);
+    }
+    .slide-thumb.active {
+      border-color: var(--accent);
+      background: rgba(99, 102, 241, 0.15);
+      box-shadow: 0 0 12px rgba(99, 102, 241, 0.25);
+    }
+
+    /* 16:9 Canvas */
+    .canvas-container {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #060911;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+    }
+    .slide-viewport {
+      width: 100%;
+      height: 100%;
+      padding: 3rem;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      color: #f8fafc;
+      transition: all 0.3s ease;
+    }
+
+    /* Color Themes */
+    .theme-obsidian {
+      background: radial-gradient(circle at 85% 15%, rgba(99, 102, 241, 0.18), transparent 50%),
+                  radial-gradient(circle at 15% 85%, rgba(168, 85, 247, 0.12), transparent 50%),
+                  #0c101c;
+    }
+    .theme-emerald {
+      background: radial-gradient(circle at 85% 15%, rgba(16, 185, 129, 0.18), transparent 50%),
+                  radial-gradient(circle at 15% 85%, rgba(6, 182, 212, 0.12), transparent 50%),
+                  #061612;
+    }
+    .theme-cobalt {
+      background: radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.22), transparent 50%),
+                  radial-gradient(circle at 15% 85%, rgba(99, 102, 241, 0.12), transparent 50%),
+                  #070d1e;
+    }
+    .theme-crimson {
+      background: radial-gradient(circle at 85% 15%, rgba(244, 63, 94, 0.18), transparent 50%),
+                  radial-gradient(circle at 15% 85%, rgba(249, 115, 22, 0.12), transparent 50%),
+                  #16080d;
+    }
+    .theme-monochrome {
+      background: radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.08), transparent 50%),
+                  radial-gradient(circle at 15% 85%, rgba(148, 163, 184, 0.05), transparent 50%),
+                  #0a0a0c;
+    }
+
+    /* Typography Classes */
+    .font-sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    .font-serif { font-family: "Georgia", "Playfair Display", serif; }
+    .font-mono { font-family: "JetBrains Mono", "Courier New", monospace; }
+
+    /* Layout Components */
+    .badge-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.25rem 0.65rem;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #cbd5e1;
+      width: fit-content;
+      margin-bottom: 0.6rem;
+    }
+    .main-heading {
+      font-size: clamp(1.4rem, 2.7vw, 2.3rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffffff 60%, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .sub-heading {
+      font-size: clamp(0.85rem, 1.25vw, 1.05rem);
+      color: #94a3b8;
+      line-height: 1.5;
+      max-width: 820px;
+    }
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 0.75rem;
+      margin-top: 1rem;
+      font-size: 0.72rem;
+      color: #64748b;
+    }
+
+    /* Layout Variant Layouts */
+    .layout-cards-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+    .layout-split-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 1.25rem;
+    }
+    .layout-quad-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+      margin-top: 1.25rem;
+    }
+    .layout-metrics-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+    .layout-timeline {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1.25rem;
+      position: relative;
+    }
+    .layout-comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-top: 1.25rem;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      backdrop-filter: blur(8px);
+    }
+
+    /* Fullscreen Modal */
+    .fs-present-view {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #05070e;
+      z-index: 99999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .fs-present-view.active { display: flex; }
+    .fs-frame {
+      width: 94vw;
+      max-width: 1400px;
+      aspect-ratio: 16 / 9;
+      background: #090d16;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.85);
+      overflow: hidden;
+      display: flex;
+    }
+    .fs-controls {
+      position: fixed;
+      bottom: 1.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 1.25rem;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-full);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      z-index: 100000;
+    }
+    .fs-controls button {
+      background: transparent;
+      border: none;
+      color: #e2e8f0;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+    }
+
+    /* Print Styles */
+    @media print {
+      body * { visibility: hidden; }
+      #designer-print-target, #designer-print-target * { visibility: visible; }
+      #designer-print-target {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        display: block !important;
+      }
+      .print-slide-box {
+        page-break-after: always;
+        break-after: page;
+        width: 100vw;
+        height: 56.25vw;
+        padding: 3rem;
+        box-sizing: border-box;
+        background: #0c101c !important;
+        color: #f8fafc !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -49,30 +360,161 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>AI Slide Designer</h1>
-        <p class="tool-description">AI-assisted design suggestions for beautiful slides.</p>
+        <p class="tool-description">Intelligent slide design studio. Morph layouts between 8+ professional visual structures, apply high-aesthetic glassmorphism themes, auto-beautify raw text, and export to Standalone HTML, PDF, or JSON.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AI Slide Designer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> AI-assisted design suggestions for beautiful slides.</div>
-            <div><strong>Inputs:</strong> slide, presentation, pitch, deck, ai slide designer</div>
-            <div><strong>Category:</strong> slide</div>
+      <!-- Top Generator & Styling Controls -->
+      <div class="designer-toolbar glass-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;">Design Topic Presets:</span>
+          <div class="designer-preset-row" id="design-preset-row">
+            <button class="design-pill" data-preset="product-architecture">🏗️ System Architecture</button>
+            <button class="design-pill" data-preset="executive-strategy">🎯 2027 Strategic Vision</button>
+            <button class="design-pill" data-preset="qbr-metrics">📊 Quarterly Review (QBR)</button>
+            <button class="design-pill" data-preset="customer-success">🌟 Enterprise Case Study</button>
+            <button class="design-pill" data-preset="pricing-tiers">💎 Tiered Pricing Matrix</button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="designer-grid-controls">
+          <div>
+            <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Slide Topic / Concept Prompt:</label>
+            <input type="text" id="inp-designer-prompt" class="form-input" placeholder="e.g. Scalable AI Microservices Architecture and Edge Ingestion Pipeline..." value="Scalable AI Microservices Architecture and Edge Ingestion Pipeline">
+          </div>
+          <div>
+            <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Active Slide Layout:</label>
+            <select id="select-slide-layout" class="form-select" style="height: 42px;">
+              <option value="cards-3" selected>3-Column Cards</option>
+              <option value="split-2">2-Column Split</option>
+              <option value="quad-4">2x2 Feature Grid</option>
+              <option value="metrics">Stat & Metric Showcase</option>
+              <option value="comparison">Before vs After</option>
+              <option value="timeline">Roadmap Timeline</option>
+              <option value="quote">Executive Quote</option>
+              <option value="hero">Hero Spotlight</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Visual Theme:</label>
+            <select id="select-slide-theme" class="form-select" style="height: 42px;">
+              <option value="theme-obsidian" selected>Obsidian Luxe</option>
+              <option value="theme-emerald">Cyber Emerald</option>
+              <option value="theme-cobalt">Royal Cobalt</option>
+              <option value="theme-crimson">Velvet Crimson</option>
+              <option value="theme-monochrome">Titanium Mono</option>
+            </select>
+          </div>
+          <div style="align-self: flex-end;">
+            <button id="btn-design-generate" class="btn btn-primary" style="height: 42px; font-weight: 700; white-space: nowrap; padding: 0 1.25rem;">
+              ⚡ Generate Deck
+            </button>
+          </div>
+        </div>
       </div>
-    
+
+      <!-- Action Bar -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <span style="font-size: 0.88rem; font-weight: 700; color: #fff;">Design Studio</span>
+          <span id="badge-slide-count" style="font-size: 0.75rem; padding: 0.2rem 0.65rem; border-radius: 9999px; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--accent);">6 Slides</span>
+          <select id="select-typography" class="form-select" style="padding: 0.25rem 0.6rem; font-size: 0.8rem; width: auto; height: 32px;">
+            <option value="font-sans" selected>Modern Sans</option>
+            <option value="font-serif">Executive Serif</option>
+            <option value="font-mono">Tech Monospace</option>
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button id="btn-add-slide" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.82rem;">+ Add Slide</button>
+          <button id="btn-present-fullscreen" class="btn btn-primary" style="padding: 0.35rem 0.85rem; font-size: 0.82rem;">Present (F5)</button>
+          <button id="btn-export-html" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.82rem;">Export HTML</button>
+          <button id="btn-export-pdf" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.82rem;">Print / PDF</button>
+          <button id="btn-export-json" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.82rem;">Export JSON</button>
+          <label class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.82rem; cursor: pointer; margin: 0;">
+            Import JSON <input type="file" id="input-import-json" accept=".json" style="display: none;">
+          </label>
+        </div>
+      </div>
+
+      <!-- Studio Work Area -->
+      <div class="designer-workspace">
+        <!-- Sidebar Thumbnails -->
+        <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;">Slides Sequence</span>
+            <span style="font-size: 0.75rem; color: var(--text-secondary);" id="counter-active-slide">1 / 6</span>
+          </div>
+          <div class="designer-slides-scroll" id="designer-thumbs-container">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Canvas & Editor -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <!-- 16:9 Presentation Canvas -->
+          <div class="canvas-container" id="canvas-container">
+            <div class="slide-viewport theme-obsidian font-sans" id="canvas-slide-viewport">
+              <!-- Rendered slide -->
+            </div>
+          </div>
+
+          <!-- Slide Content & Layout Inspector -->
+          <div class="tool-panel glass-panel" style="padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+              <h3 style="font-size: 0.95rem; margin: 0; color: var(--text-primary);">Slide Layout & Content Inspector</h3>
+              <div style="display: flex; gap: 0.4rem;">
+                <button id="btn-beautify" class="btn btn-secondary" style="padding: 0.2rem 0.6rem; font-size: 0.75rem; color: #a855f7;">✨ AI Polish</button>
+                <button id="btn-slide-up" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">&uarr; Up</button>
+                <button id="btn-slide-down" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">&darr; Down</button>
+                <button id="btn-slide-duplicate" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">Duplicate</button>
+                <button id="btn-slide-delete" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; color: #ef4444;">Delete</button>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <label>Slide Title</label>
+                <input type="text" id="inp-edit-title" class="form-input">
+              </div>
+              <div class="form-group">
+                <label>Category Kicker</label>
+                <input type="text" id="inp-edit-kicker" class="form-input">
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 0.75rem;">
+              <label>Subtitle / Core Insight</label>
+              <input type="text" id="inp-edit-sub" class="form-input">
+            </div>
+
+            <div class="form-group" style="margin-top: 0.75rem;">
+              <label>Content Items (One per line; Title: Description or Metric: Label)</label>
+              <textarea id="inp-edit-content" class="form-textarea" style="min-height: 90px;"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- Fullscreen Presenter Modal -->
+  <div class="fs-present-view" id="fs-present-modal">
+    <div class="fs-frame">
+      <div class="slide-viewport theme-obsidian font-sans" id="fs-slide-viewport" style="padding: 4rem;">
+        <!-- Fullscreen slide -->
+      </div>
+    </div>
+    <div class="fs-controls">
+      <button id="fs-nav-prev">&larr; Previous</button>
+      <span id="fs-slide-num" style="color: var(--accent); font-weight: 800; font-size: 0.85rem;">1 / 6</span>
+      <button id="fs-nav-next">Next &rarr;</button>
+      <button id="fs-nav-exit" style="color: #f87171;">Exit [Esc]</button>
+    </div>
+  </div>
+
+  <!-- Print Target Container -->
+  <div id="designer-print-target" style="display: none;"></div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -84,8 +526,8 @@
     "@type": "WebApplication",
     "name": "AI Slide Designer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-slide-designer/",
-    "description": "AI-assisted design suggestions for beautiful slides.",
-    "applicationCategory": "UtilityPage",
+    "description": "AI-assisted design suggestions and layout morphing for beautiful presentation slides.",
+    "applicationCategory": "PresentationSoftware",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
     "isPartOf": {
