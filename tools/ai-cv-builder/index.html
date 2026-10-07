@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI CV Builder - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Build your CV entirely using AI intelligence.">
+  <meta name="description" content="Build your CV entirely using AI intelligence with step-by-step guidance, industry bullet generators, and live A4 preview.">
   <meta name="keywords" content="cv, resume, job, career, ai cv builder, free, online, tool, utility">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-cv-builder/">
@@ -14,7 +14,7 @@
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-cv-builder/">
   <meta property="og:title" content="AI CV Builder - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Build your CV entirely using AI intelligence.">
+  <meta property="og:description" content="Build your CV entirely using AI intelligence with step-by-step guidance, industry bullet generators, and live A4 preview.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
@@ -26,7 +26,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-cv-builder/">
   <meta name="twitter:title" content="AI CV Builder - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Build your CV entirely using AI intelligence.">
+  <meta name="twitter:description" content="Build your CV entirely using AI intelligence with step-by-step guidance, industry bullet generators, and live A4 preview.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="AI CV Builder - ALL IN ONE">
 
@@ -34,6 +34,465 @@
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
   
+  <style>
+    /* AI CV Builder Custom Styles */
+    .cv-builder-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    @media (min-width: 1100px) {
+      .cv-builder-layout {
+        grid-template-columns: 460px 1fr;
+      }
+    }
+
+    /* Stepper Header */
+    .stepper-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.25rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0.5rem;
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+    }
+
+    .step-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 0.75rem;
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: var(--transition);
+    }
+
+    .step-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+
+    .step-btn.active {
+      color: var(--accent);
+      background: rgba(78, 133, 191, 0.15);
+      border: 1px solid rgba(78, 133, 191, 0.3);
+    }
+
+    .step-btn.completed {
+      color: var(--success);
+    }
+
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--bg-tertiary);
+      font-size: 0.72rem;
+    }
+
+    .step-btn.active .step-badge {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .step-btn.completed .step-badge {
+      background: var(--success);
+      color: #fff;
+    }
+
+    /* Step Panes */
+    .step-pane {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .step-pane.active {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Dynamic Card Lists */
+    .dynamic-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      position: relative;
+    }
+
+    .dynamic-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .remove-card-btn {
+      background: transparent;
+      border: none;
+      color: var(--danger);
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      opacity: 0.8;
+      transition: var(--transition);
+    }
+
+    .remove-card-btn:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+
+    /* AI Generator Toolbar */
+    .ai-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      background: rgba(78, 133, 191, 0.08);
+      border: 1px solid rgba(78, 133, 191, 0.25);
+      border-radius: var(--radius-md);
+      padding: 0.65rem 0.85rem;
+    }
+
+    .ai-toolbar-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .ai-pill-btn {
+      background: rgba(78, 133, 191, 0.15);
+      border: 1px solid rgba(78, 133, 191, 0.35);
+      color: var(--text-primary);
+      padding: 0.3rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .ai-pill-btn:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* Preview Canvas & Toolbar */
+    .preview-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: sticky;
+      top: 1.5rem;
+    }
+
+    .preview-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.65rem 1rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .theme-selector-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .theme-chip {
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.78rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .theme-chip.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    /* A4 Paper Canvas */
+    .cv-paper-container {
+      overflow-x: auto;
+      padding-bottom: 1rem;
+    }
+
+    .cv-paper {
+      width: 100%;
+      min-width: 580px;
+      max-width: 820px;
+      margin: 0 auto;
+      min-height: 1050px;
+      background: #ffffff;
+      color: #1a1a1a;
+      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4);
+      border-radius: 6px;
+      padding: 3rem 3.5rem;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.5;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    /* THEME 1: Midnight Luxury */
+    .cv-paper[data-theme="midnight-luxury"] {
+      background: #0f172a;
+      color: #f8fafc;
+      border-left: 6px solid #d4af37;
+    }
+    .cv-paper[data-theme="midnight-luxury"] .cv-header {
+      border-bottom: 2px solid rgba(212, 175, 55, 0.35);
+    }
+    .cv-paper[data-theme="midnight-luxury"] .cv-name {
+      color: #ffffff;
+    }
+    .cv-paper[data-theme="midnight-luxury"] .cv-title {
+      color: #d4af37;
+    }
+    .cv-paper[data-theme="midnight-luxury"] .cv-section-title {
+      color: #d4af37;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    .cv-paper[data-theme="midnight-luxury"] .cv-text-muted {
+      color: #94a3b8;
+    }
+    .cv-paper[data-theme="midnight-luxury"] .cv-tag {
+      background: rgba(212, 175, 55, 0.12);
+      color: #f1e5c4;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    /* THEME 2: Minimalist Clean */
+    .cv-paper[data-theme="minimalist-clean"] {
+      background: #ffffff;
+      color: #1e293b;
+      border: 1px solid #e2e8f0;
+    }
+    .cv-paper[data-theme="minimalist-clean"] .cv-header {
+      border-bottom: 2px solid #0f172a;
+    }
+    .cv-paper[data-theme="minimalist-clean"] .cv-name {
+      color: #0f172a;
+    }
+    .cv-paper[data-theme="minimalist-clean"] .cv-title {
+      color: #475569;
+    }
+    .cv-paper[data-theme="minimalist-clean"] .cv-section-title {
+      color: #0f172a;
+      border-bottom: 1px solid #cbd5e1;
+    }
+    .cv-paper[data-theme="minimalist-clean"] .cv-text-muted {
+      color: #64748b;
+    }
+    .cv-paper[data-theme="minimalist-clean"] .cv-tag {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* THEME 3: Modern Teal */
+    .cv-paper[data-theme="modern-teal"] {
+      background: #f8fafc;
+      color: #134e4a;
+      border-top: 6px solid #0d9488;
+    }
+    .cv-paper[data-theme="modern-teal"] .cv-header {
+      border-bottom: 2px solid rgba(13, 148, 136, 0.3);
+    }
+    .cv-paper[data-theme="modern-teal"] .cv-name {
+      color: #115e59;
+    }
+    .cv-paper[data-theme="modern-teal"] .cv-title {
+      color: #0d9488;
+    }
+    .cv-paper[data-theme="modern-teal"] .cv-section-title {
+      color: #0f766e;
+      border-bottom: 1px solid rgba(13, 148, 136, 0.25);
+    }
+    .cv-paper[data-theme="modern-teal"] .cv-text-muted {
+      color: #475569;
+    }
+    .cv-paper[data-theme="modern-teal"] .cv-tag {
+      background: rgba(13, 148, 136, 0.1);
+      color: #115e59;
+      border: 1px solid rgba(13, 148, 136, 0.25);
+    }
+
+    /* CV Document Elements */
+    .cv-header {
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .cv-name {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+    }
+
+    .cv-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .cv-contact-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.85rem;
+    }
+
+    .cv-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .cv-section-title {
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding-bottom: 0.35rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .cv-summary-text {
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    .cv-item {
+      margin-bottom: 1.15rem;
+    }
+
+    .cv-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .cv-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.2rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .cv-item-role {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .cv-item-company {
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .cv-item-date {
+      font-size: 0.82rem;
+    }
+
+    .cv-bullets {
+      margin-top: 0.4rem;
+      padding-left: 1.25rem;
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
+
+    .cv-bullets li {
+      margin-bottom: 0.35rem;
+    }
+
+    .cv-tags-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .cv-tag {
+      padding: 0.25rem 0.65rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    /* Print Media Query */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      app-header, app-breadcrumbs, app-footer, .tool-header, .builder-form-col, .preview-topbar, .tool-description {
+        display: none !important;
+      }
+      .cv-paper, .cv-paper * {
+        visibility: visible;
+      }
+      .cv-paper-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: visible !important;
+      }
+      .cv-paper {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: 100% !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 1.5cm !important;
+      }
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -49,28 +508,334 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>AI CV Builder</h1>
-        <p class="tool-description">Build your CV entirely using AI intelligence.</p>
+        <p class="tool-description">Intelligent step-by-step CV composer. Draft polished summaries, generate high-impact bullet points for 20+ industries, and export print-ready PDFs.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AI CV Builder</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Build your CV entirely using AI intelligence.</div>
-            <div><strong>Inputs:</strong> cv, resume, job, career, ai cv builder</div>
-            <div><strong>Category:</strong> cv</div>
+      <!-- Quick Preset & Global Actions -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem;">
+        <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+          <span style="font-size: 0.825rem; font-weight: 600; color: var(--text-secondary);">Load Pre-filled Preset:</span>
+          <button id="btnLoadTechPreset" class="btn btn-outline btn-sm">Full-Stack Tech Lead</button>
+          <button id="btnLoadMarketingPreset" class="btn btn-outline btn-sm">Growth Marketing Director</button>
+          <button id="btnLoadFinancePreset" class="btn btn-outline btn-sm">FinTech Product Manager</button>
+        </div>
+        <div>
+          <button id="btnResetForm" class="btn btn-outline btn-sm" style="color: var(--danger); border-color: rgba(239, 68, 68, 0.4);">Reset Form</button>
+        </div>
+      </div>
+
+      <!-- Tool Workspace Split View -->
+      <div class="cv-builder-layout">
+        
+        <!-- Left: Stepper & Form Configuration -->
+        <div class="builder-form-col">
+          <!-- Stepper Navigation Bar -->
+          <nav class="stepper-nav" aria-label="CV Builder Steps">
+            <button class="step-btn active" data-step="1">
+              <span class="step-badge">1</span>
+              <span>Contact</span>
+            </button>
+            <button class="step-btn" data-step="2">
+              <span class="step-badge">2</span>
+              <span>Target Role</span>
+            </button>
+            <button class="step-btn" data-step="3">
+              <span class="step-badge">3</span>
+              <span>Experience</span>
+            </button>
+            <button class="step-btn" data-step="4">
+              <span class="step-badge">4</span>
+              <span>Education</span>
+            </button>
+            <button class="step-btn" data-step="5">
+              <span class="step-badge">5</span>
+              <span>Skills</span>
+            </button>
+          </nav>
+
+          <div class="tool-panel glass-panel">
+            <!-- STEP 1: Contact Information -->
+            <div id="stepPane1" class="step-pane active">
+              <div class="panel-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                Personal & Contact Details
+              </div>
+
+              <div class="form-group">
+                <label for="inputFullName">Full Name *</label>
+                <input type="text" id="inputFullName" class="form-input" placeholder="e.g. Alexander Vance" value="Alexander Vance">
+              </div>
+
+              <div class="form-group">
+                <label for="inputHeadline">Professional Headline / Subtitle</label>
+                <input type="text" id="inputHeadline" class="form-input" placeholder="e.g. Senior Principal Cloud Architect" value="Senior Principal Cloud Architect">
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                <div class="form-group">
+                  <label for="inputEmail">Email Address</label>
+                  <input type="email" id="inputEmail" class="form-input" placeholder="alexander.vance@example.com" value="alexander.vance@enterprise.io">
+                </div>
+                <div class="form-group">
+                  <label for="inputPhone">Phone Number</label>
+                  <input type="text" id="inputPhone" class="form-input" placeholder="+1 (555) 019-2834" value="+1 (555) 019-2834">
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                <div class="form-group">
+                  <label for="inputLocation">Location (City, Country)</label>
+                  <input type="text" id="inputLocation" class="form-input" placeholder="San Francisco, CA" value="San Francisco, CA">
+                </div>
+                <div class="form-group">
+                  <label for="inputWebsite">Portfolio / LinkedIn</label>
+                  <input type="text" id="inputWebsite" class="form-input" placeholder="linkedin.com/in/alexvance" value="linkedin.com/in/alexvance">
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+                <button class="btn btn-primary next-step-btn" data-next="2">Next: Target Role &rarr;</button>
+              </div>
+            </div>
+
+            <!-- STEP 2: Target Role & Summary -->
+            <div id="stepPane2" class="step-pane">
+              <div class="panel-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="12 6 12 12 16 14"></polygon></svg>
+                Target Role & AI Summary
+              </div>
+
+              <div class="form-group">
+                <label for="selectIndustry">Select Industry (20+ Specialized Domains) *</label>
+                <select id="selectIndustry" class="form-select">
+                  <option value="software-engineering" selected>Software Engineering & Architecture</option>
+                  <option value="data-ai">Data Science, ML & Artificial Intelligence</option>
+                  <option value="cloud-devops">Cloud Architecture, DevOps & SRE</option>
+                  <option value="product-management">Product Management & Agile Strategy</option>
+                  <option value="ui-ux">UI/UX Design & Product Experience</option>
+                  <option value="marketing-growth">Digital Marketing, SEO & Growth Ops</option>
+                  <option value="sales-enterprise">Enterprise B2B Sales & Business Development</option>
+                  <option value="finance-banking">Finance, Investment Banking & FinTech</option>
+                  <option value="cybersecurity">Cybersecurity, InfoSec & Compliance</option>
+                  <option value="healthcare-nursing">Healthcare, Clinical Practice & Nursing</option>
+                  <option value="human-resources">Human Resources, People Ops & Talent Acquisition</option>
+                  <option value="supply-chain">Supply Chain, Logistics & Operations</option>
+                  <option value="legal-compliance">Legal Affairs, Corporate Governance & IP</option>
+                  <option value="education-elearning">Education, Instructional Design & Academia</option>
+                  <option value="architecture-construction">Architecture & Civil Engineering</option>
+                  <option value="creative-media">Creative Direction, Multimedia & Journalism</option>
+                  <option value="hospitality-tourism">Hospitality, Luxury Travel & Events</option>
+                  <option value="ecommerce-retail">E-Commerce, Direct-to-Consumer & Retail</option>
+                  <option value="biotech-pharma">Biotechnology & Pharmaceutical Sciences</option>
+                  <option value="executive-csuite">Executive Management & C-Suite Advisory</option>
+                </select>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.75rem;">
+                <div class="form-group">
+                  <label for="inputTargetRole">Target Job Title</label>
+                  <input type="text" id="inputTargetRole" class="form-input" placeholder="e.g. Lead Platform Engineer" value="Principal Cloud Solutions Architect">
+                </div>
+                <div class="form-group">
+                  <label for="selectSeniority">Seniority Level</label>
+                  <select id="selectSeniority" class="form-select">
+                    <option value="entry">Entry / Associate</option>
+                    <option value="mid">Mid-Level</option>
+                    <option value="senior" selected>Senior / Lead</option>
+                    <option value="executive">Executive / Director</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- AI Summary Generator Toolbar -->
+              <div class="ai-toolbar">
+                <span class="ai-toolbar-label">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
+                  AI Heuristic Summary Generator
+                </span>
+                <button type="button" id="btnDraftAISummary" class="ai-pill-btn">✨ Generate Tailored Summary</button>
+              </div>
+
+              <div class="form-group">
+                <label for="inputSummary">Professional Summary</label>
+                <textarea id="inputSummary" class="form-textarea" style="min-height: 120px;" placeholder="Summarize your professional profile..."></textarea>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; margin-top: 1rem;">
+                <button class="btn btn-outline prev-step-btn" data-prev="1">&larr; Back</button>
+                <button class="btn btn-primary next-step-btn" data-next="3">Next: Experience &rarr;</button>
+              </div>
+            </div>
+
+            <!-- STEP 3: Work Experience -->
+            <div id="stepPane3" class="step-pane">
+              <div class="panel-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                Work Experience & Bullet Generator
+              </div>
+
+              <p style="font-size: 0.825rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                Add your career milestones. Use the AI bullet generator to inject metric-driven XYZ statements tailored to your selected industry.
+              </p>
+
+              <div id="experienceList" style="display: flex; flex-direction: column; gap: 1rem;">
+                <!-- Experience cards injected dynamically -->
+              </div>
+
+              <button type="button" id="btnAddExperience" class="btn btn-outline btn-sm" style="align-self: flex-start; margin-top: 0.5rem;">
+                + Add Another Position
+              </button>
+
+              <div style="display: flex; justify-content: space-between; margin-top: 1rem;">
+                <button class="btn btn-outline prev-step-btn" data-prev="2">&larr; Back</button>
+                <button class="btn btn-primary next-step-btn" data-next="4">Next: Education &rarr;</button>
+              </div>
+            </div>
+
+            <!-- STEP 4: Education & Certifications -->
+            <div id="stepPane4" class="step-pane">
+              <div class="panel-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+                Education & Credentials
+              </div>
+
+              <div id="educationList" style="display: flex; flex-direction: column; gap: 1rem;">
+                <!-- Education cards injected dynamically -->
+              </div>
+
+              <button type="button" id="btnAddEducation" class="btn btn-outline btn-sm" style="align-self: flex-start; margin-top: 0.5rem;">
+                + Add Another Degree
+              </button>
+
+              <div class="form-group" style="margin-top: 1rem;">
+                <label for="inputCertifications">Licenses & Certifications (Comma-separated)</label>
+                <input type="text" id="inputCertifications" class="form-input" placeholder="e.g. AWS Certified Solutions Architect Professional, CKA, CISSP" value="AWS Certified Solutions Architect (SAP-C02), HashiCorp Certified Terraform Associate">
+              </div>
+
+              <div style="display: flex; justify-content: space-between; margin-top: 1rem;">
+                <button class="btn btn-outline prev-step-btn" data-prev="3">&larr; Back</button>
+                <button class="btn btn-primary next-step-btn" data-next="5">Next: Skills &rarr;</button>
+              </div>
+            </div>
+
+            <!-- STEP 5: Core Skills & Languages -->
+            <div id="stepPane5" class="step-pane">
+              <div class="panel-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                Core Competencies & Skills
+              </div>
+
+              <div class="ai-toolbar">
+                <span class="ai-toolbar-label">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+                  AI Skills Suggester
+                </span>
+                <button type="button" id="btnSuggestIndustrySkills" class="ai-pill-btn">⚡ Fill Industry Keywords</button>
+              </div>
+
+              <div class="form-group">
+                <label for="inputSkills">Technical & Hard Skills (Comma-separated)</label>
+                <textarea id="inputSkills" class="form-textarea" style="min-height: 80px;" placeholder="Kubernetes, Terraform, AWS, Go, Distributed Systems..."></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="inputSoftSkills">Strategic & Leadership Skills (Comma-separated)</label>
+                <input type="text" id="inputSoftSkills" class="form-input" placeholder="Executive Stakeholder Management, Architecture Governance, Agile Coaching" value="Cross-Functional Leadership, Cloud Cost Governance (FinOps), Mentorship">
+              </div>
+
+              <div class="form-group">
+                <label for="inputLanguages">Languages & Fluency</label>
+                <input type="text" id="inputLanguages" class="form-input" placeholder="English (Native), Spanish (Professional), German (Conversational)" value="English (Native), German (Professional Working)">
+              </div>
+
+              <div style="display: flex; justify-content: space-between; margin-top: 1rem;">
+                <button class="btn btn-outline prev-step-btn" data-prev="4">&larr; Back</button>
+                <button class="btn btn-primary" id="btnScrollToPreview">View Completed CV &darr;</button>
+              </div>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right: Live A4 Preview & Theme Control -->
+        <div class="preview-col" id="previewArea">
+          <!-- Preview Actions Toolbar -->
+          <div class="preview-topbar">
+            <div class="theme-selector-group">
+              <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">Theme:</span>
+              <button class="theme-chip active" data-theme="midnight-luxury">Midnight Luxury</button>
+              <button class="theme-chip" data-theme="minimalist-clean">Minimalist Clean</button>
+              <button class="theme-chip" data-theme="modern-teal">Modern Teal</button>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <button id="btnCopyCVText" class="btn btn-outline btn-sm">Copy Text</button>
+              <button id="btnPrintCV" class="btn btn-primary btn-sm">🖨️ Print / Save PDF</button>
+            </div>
+          </div>
+
+          <!-- A4 Document Canvas -->
+          <div class="cv-paper-container">
+            <div id="cvPaper" class="cv-paper" data-theme="midnight-luxury">
+              <!-- Header -->
+              <header class="cv-header">
+                <h1 class="cv-name" id="previewFullName">Alexander Vance</h1>
+                <div class="cv-title" id="previewHeadline">Senior Principal Cloud Architect</div>
+                <div class="cv-contact-bar" id="previewContactBar">
+                  <span id="previewEmail">alexander.vance@enterprise.io</span>
+                  <span>•</span>
+                  <span id="previewPhone">+1 (555) 019-2834</span>
+                  <span>•</span>
+                  <span id="previewLocation">San Francisco, CA</span>
+                  <span>•</span>
+                  <span id="previewWebsite">linkedin.com/in/alexvance</span>
+                </div>
+              </header>
+
+              <!-- Professional Summary Section -->
+              <section class="cv-section" id="previewSummarySection">
+                <h2 class="cv-section-title">Executive Profile</h2>
+                <p class="cv-summary-text" id="previewSummary">
+                  Distinguished Cloud Solutions Architect with 12+ years spearheading large-scale distributed cloud systems, FinOps infrastructure optimization, and multi-region Kubernetes deployments for Fortune 100 enterprise organizations.
+                </p>
+              </section>
+
+              <!-- Experience Section -->
+              <section class="cv-section" id="previewExperienceSection">
+                <h2 class="cv-section-title">Professional Experience</h2>
+                <div id="previewExperienceList">
+                  <!-- Experience cards rendered dynamically -->
+                </div>
+              </section>
+
+              <!-- Education Section -->
+              <section class="cv-section" id="previewEducationSection">
+                <h2 class="cv-section-title">Education & Credentials</h2>
+                <div id="previewEducationList">
+                  <!-- Education items rendered dynamically -->
+                </div>
+                <div id="previewCertificationsBlock" style="margin-top: 0.85rem; font-size: 0.88rem;">
+                  <strong>Certifications: </strong><span id="previewCertifications">AWS Certified Solutions Architect (SAP-C02), HashiCorp Certified Terraform Associate</span>
+                </div>
+              </section>
+
+              <!-- Skills Section -->
+              <section class="cv-section" id="previewSkillsSection">
+                <h2 class="cv-section-title">Core Competencies & Technical Skills</h2>
+                <div class="cv-tags-wrap" id="previewSkillsList" style="margin-bottom: 0.75rem;">
+                  <!-- Skills rendered as tags -->
+                </div>
+                <div style="font-size: 0.85rem; margin-top: 0.5rem;" id="previewSoftSkillsBlock">
+                  <strong>Leadership & Strategy: </strong><span id="previewSoftSkills">Cross-Functional Leadership, Cloud Cost Governance (FinOps), Mentorship</span>
+                </div>
+                <div style="font-size: 0.85rem; margin-top: 0.35rem;" id="previewLanguagesBlock">
+                  <strong>Languages: </strong><span id="previewLanguages">English (Native), German (Professional Working)</span>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+
       </div>
-    
     </div>
   </main>
 
@@ -84,7 +849,7 @@
     "@type": "WebApplication",
     "name": "AI CV Builder",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-cv-builder/",
-    "description": "Build your CV entirely using AI intelligence.",
+    "description": "Build your CV entirely using AI intelligence with step-by-step guidance, industry bullet generators, and live A4 preview.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

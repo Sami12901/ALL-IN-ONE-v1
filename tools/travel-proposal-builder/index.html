@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Travel Proposal Builder - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create beautiful Client, Tour, and Visa proposals.">
-  <meta name="keywords" content="slide, presentation, pitch, deck, travel proposal builder, free, online, tool, utility">
+  <title>Travel Proposal Builder - Luxury Tour Itinerary Slides - ALL IN ONE</title>
+  <meta name="description" content="Build luxury travel proposals and bespoke itinerary slide decks. Customize destination photos, day-by-day timelines, hotel and flight details, inclusions, and pricing tiers with full-screen presentation mode and PDF export.">
+  <meta name="keywords" content="travel proposal builder, luxury travel itinerary deck, tour proposal slides, travel presentation maker, client travel pitch">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/travel-proposal-builder/">
 
@@ -13,8 +13,8 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/travel-proposal-builder/">
-  <meta property="og:title" content="Travel Proposal Builder - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Create beautiful Client, Tour, and Visa proposals.">
+  <meta property="og:title" content="Travel Proposal Builder - Luxury Tour Itinerary Slides - ALL IN ONE">
+  <meta property="og:description" content="Build luxury travel proposals and bespoke itinerary slide decks. Pre-populated for Dubai, Maldives, Turkey, and Switzerland.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
@@ -25,15 +25,472 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/travel-proposal-builder/">
-  <meta name="twitter:title" content="Travel Proposal Builder - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Create beautiful Client, Tour, and Visa proposals.">
+  <meta name="twitter:title" content="Travel Proposal Builder - Luxury Tour Itinerary Slides - ALL IN ONE">
+  <meta name="twitter:description" content="Build luxury travel proposals and bespoke itinerary slide decks with pre-populated destinations and PDF export.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="Travel Proposal Builder - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    /* Travel Proposal Builder Styles */
+    .deck-workarea {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (min-width: 1080px) {
+      .deck-workarea {
+        grid-template-columns: 290px 1fr;
+      }
+    }
+
+    /* Thumbnail Reel */
+    .thumbnail-manager {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .thumbnail-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      max-height: 600px;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+
+    .slide-thumb-card {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 0.85rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .slide-thumb-card:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateX(2px);
+    }
+
+    .slide-thumb-card.active {
+      background: var(--surface);
+      border-color: #06b6d4;
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.25);
+    }
+
+    .slide-thumb-number {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      background: rgba(255, 255, 255, 0.05);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .slide-thumb-card.active .slide-thumb-number {
+      background: #06b6d4;
+      color: #041318;
+    }
+
+    .slide-thumb-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .slide-thumb-title {
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .slide-thumb-type {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* Action bar */
+    .deck-action-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      padding: 0.75rem 1rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    .action-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    /* 16:9 Slide Canvas */
+    .slide-canvas-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: radial-gradient(circle at 10% 20%, #0d1e26 0%, #060b0e 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: clamp(1.25rem, 3.5vw, 2.75rem);
+      box-sizing: border-box;
+      color: #f1f5f9;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .slide-canvas-wrapper::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #06b6d4 0%, #3b82f6 50%, #10b981 100%);
+      z-index: 2;
+    }
+
+    .slide-canvas-wrapper .slide-bg-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(6, 11, 14, 0.92) 0%, rgba(13, 30, 38, 0.82) 100%);
+      z-index: 1;
+    }
+
+    .slide-canvas-content {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .slide-header-box h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.3rem, 2.8vw, 2.2rem);
+      margin: 0;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .slide-header-box p {
+      font-size: clamp(0.8rem, 1.3vw, 1rem);
+      color: rgba(255, 255, 255, 0.7);
+      margin: 0.35rem 0 0;
+    }
+
+    .slide-kicker {
+      display: inline-block;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      color: #06b6d4;
+      margin-bottom: 0.25rem;
+    }
+
+    .slide-watermark {
+      position: absolute;
+      bottom: 1rem;
+      right: 1.5rem;
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.35);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      z-index: 2;
+    }
+
+    /* Content components on canvas */
+    .canvas-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      padding: clamp(0.7rem, 1.4vw, 1.1rem);
+      backdrop-filter: blur(10px);
+    }
+
+    .timeline-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+
+    .timeline-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-top: 3px solid #06b6d4;
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 0.85rem;
+    }
+
+    .timeline-day {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #06b6d4;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .timeline-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 0.2rem 0;
+    }
+
+    .timeline-desc {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.35;
+    }
+
+    .split-details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 0.75rem;
+    }
+
+    .check-list {
+      list-style: none;
+      padding: 0;
+      margin: 0.5rem 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .check-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .check-icon {
+      color: #10b981;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .cross-icon {
+      color: #ef4444;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .pricing-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.85rem;
+      margin-top: 0.75rem;
+    }
+
+    .pricing-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: var(--radius-md);
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .pricing-card.featured {
+      background: rgba(6, 182, 212, 0.08);
+      border-color: rgba(6, 182, 212, 0.4);
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
+    }
+
+    .pricing-badge {
+      position: absolute;
+      top: -9px;
+      right: 12px;
+      background: #06b6d4;
+      color: #041318;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+    }
+
+    /* Inspector Drawer */
+    .slide-inspector-panel {
+      margin-top: 1.5rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+    }
+
+    .inspector-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .inspector-grid.two-col {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Presenter Fullscreen Overlay */
+    #presenter-fullscreen-container {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #030708;
+      z-index: 99999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    #presenter-fullscreen-container.active {
+      display: flex;
+    }
+
+    .presenter-stage {
+      width: 95vw;
+      max-width: 1400px;
+      aspect-ratio: 16 / 9;
+      max-height: 85vh;
+    }
+
+    .presenter-hud {
+      position: absolute;
+      bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      background: rgba(8, 20, 26, 0.88);
+      border: 1px solid rgba(6, 182, 212, 0.35);
+      padding: 0.5rem 1.25rem;
+      border-radius: var(--radius-full);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+      z-index: 100000;
+    }
+
+    .presenter-hud-btn {
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.4rem;
+      border-radius: 50%;
+      transition: var(--transition);
+    }
+
+    .presenter-hud-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #06b6d4;
+    }
+
+    .speaker-notes-box {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      width: 320px;
+      max-height: 250px;
+      background: rgba(8, 20, 26, 0.92);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      overflow-y: auto;
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      display: none;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .speaker-notes-box.active {
+      display: block;
+    }
+
+    /* Print styling */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      app-header, app-breadcrumbs, app-footer, .tool-header, .thumbnail-manager, .slide-inspector-panel, .deck-action-bar, .action-toolbar {
+        display: none !important;
+      }
+      #print-proposal-container, #print-proposal-container * {
+        visibility: visible;
+      }
+      #print-proposal-container {
+        display: block !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: #ffffff !important;
+        color: #111827 !important;
+        padding: 1.5cm;
+      }
+      .print-slide-page {
+        page-break-after: always;
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 2px solid #e2e8f0;
+      }
+      .print-slide-page:last-child {
+        page-break-after: auto;
+      }
+      .print-slide-page h2 {
+        color: #0284c7 !important;
+      }
+      .print-slide-page .canvas-card, .print-slide-page .timeline-card, .print-slide-page .pricing-card {
+        background: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #1e293b !important;
+      }
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -46,46 +503,164 @@
 
   <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
-      <div class="tool-header">
-        <h1>Travel Proposal Builder</h1>
-        <p class="tool-description">Create beautiful Client, Tour, and Visa proposals.</p>
+    <div class="container tool-container" style="max-width: 1360px;">
+      
+      <!-- Tool Header -->
+      <div class="tool-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h1>Travel Proposal Builder</h1>
+          <p class="tool-description">
+            Craft high-converting luxury travel itineraries and client proposals. Pre-populated decks for Dubai, Maldives, Turkey, and Switzerland with full-screen presentation mode and high-resolution PDF brochure export.
+          </p>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <label for="destination-preset-select" style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">Destination Preset:</label>
+          <select id="destination-preset-select" class="form-control" style="width: auto; padding: 0.45rem 0.9rem; font-size: 0.875rem;">
+            <option value="dubai">Dubai, UAE (Ultra-Luxury & Desert)</option>
+            <option value="maldives">Maldives (Overwater Villa Sanctuary)</option>
+            <option value="turkey">Turkey (Istanbul & Cappadocia)</option>
+            <option value="switzerland">Switzerland (Alpine Panorama & Chalets)</option>
+          </select>
+        </div>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Travel Proposal Builder</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create beautiful Client, Tour, and Visa proposals.</div>
-            <div><strong>Inputs:</strong> slide, presentation, pitch, deck, travel proposal builder</div>
-            <div><strong>Category:</strong> slide</div>
+      <!-- Action Bar -->
+      <div class="deck-action-bar">
+        <div class="action-group">
+          <button id="btn-add-slide" class="btn btn-secondary btn-sm" title="Add a new slide">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Add Slide
+          </button>
+          <button id="btn-move-up" class="btn btn-secondary btn-sm" title="Move active slide up">↑ Move Up</button>
+          <button id="btn-move-down" class="btn btn-secondary btn-sm" title="Move active slide down">↓ Move Down</button>
+          <button id="btn-delete-slide" class="btn btn-secondary btn-sm" style="color: #ef4444;" title="Delete active slide">✕ Delete</button>
+        </div>
+        <div class="action-group">
+          <button id="btn-launch-presenter" class="btn btn-primary btn-sm" title="Launch fullscreen presentation mode">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3l14 9-14 9V3z"/></svg> Present Slides
+          </button>
+          <button id="btn-print-deck" class="btn btn-secondary btn-sm" title="Export proposal to PDF / Print">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z"/></svg> Export PDF / Print
+          </button>
+          <button id="btn-export-json" class="btn btn-secondary btn-sm" title="Save deck data as JSON">Export JSON</button>
+          <label class="btn btn-secondary btn-sm" style="margin: 0; cursor: pointer;" title="Load deck from JSON">
+            Import JSON <input type="file" id="input-import-json" accept=".json" style="display: none;">
+          </label>
+        </div>
+      </div>
+
+      <!-- Main Deck Studio Workarea -->
+      <div class="deck-workarea">
+        
+        <!-- Left Thumbnail Reel -->
+        <div class="thumbnail-manager">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 0.25rem;">
+            <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary);">Slides (<span id="slide-count-badge">5</span>)</span>
+            <span id="active-slide-type-tag" class="badge" style="font-size: 0.7rem; background: rgba(6, 182, 212, 0.15); color: #06b6d4; border: 1px solid rgba(6, 182, 212, 0.3);">Cover</span>
+          </div>
+          <div id="slide-thumb-list" class="thumbnail-list">
+            <!-- Rendered by JavaScript -->
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Center Slide Stage & Inspector Form -->
+        <div class="slide-workspace-main">
+          
+          <!-- 16:9 Presentation Slide Canvas -->
+          <div id="slide-canvas-stage" class="slide-canvas-wrapper">
+            <div class="slide-bg-overlay"></div>
+            <div id="slide-canvas-content" class="slide-canvas-content">
+              <!-- Dynamically populated -->
+            </div>
+            <div id="slide-watermark" class="slide-watermark">Odyssey Luxury Travel</div>
+          </div>
+
+          <!-- Slide Content Inspector & Editor Panel -->
+          <div class="slide-inspector-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+              <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                Slide Content Inspector &bull; <span id="inspector-slide-label" style="color: #06b6d4;">Slide 1: Cover</span>
+              </h3>
+              <span style="font-size: 0.75rem; color: var(--text-tertiary);">Changes reflect live on the canvas</span>
+            </div>
+
+            <!-- Dynamic Form Fields depending on Active Slide Type -->
+            <div id="inspector-form-fields" class="inspector-grid">
+              <!-- Dynamically rendered -->
+            </div>
+
+            <!-- Speaker Notes -->
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+              <label for="slide-notes-input" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.35rem;">
+                Speaker Notes / Agent Briefing (Visible in Presenter Mode):
+              </label>
+              <textarea id="slide-notes-input" rows="2" class="form-control" style="width: 100%; font-size: 0.825rem;" placeholder="Key talking points for this slide..."></textarea>
+            </div>
+          </div>
+
+        </div>
+
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Fullscreen Presenter Mode Container -->
+  <div id="presenter-fullscreen-container">
+    <div id="presenter-stage" class="slide-canvas-wrapper presenter-stage">
+      <div class="slide-bg-overlay"></div>
+      <div id="presenter-content" class="slide-canvas-content"></div>
+      <div class="slide-watermark">Odyssey Luxury Travel</div>
+    </div>
+    
+    <!-- Presenter HUD Controls -->
+    <div class="presenter-hud">
+      <button id="hud-prev" class="presenter-hud-btn" title="Previous Slide (Left Arrow)">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <span id="hud-counter" style="font-size: 0.85rem; font-weight: 700; color: #ffffff; min-width: 50px; text-align: center;">1 / 5</span>
+      <button id="hud-next" class="presenter-hud-btn" title="Next Slide (Right Arrow)">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+      <div style="width: 1px; height: 18px; background: rgba(255, 255, 255, 0.2);"></div>
+      <span id="hud-timer" style="font-size: 0.8rem; font-family: monospace; color: #06b6d4;">00:00</span>
+      <button id="hud-notes-toggle" class="presenter-hud-btn" title="Toggle Speaker Notes">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+      </button>
+      <button id="hud-exit" class="presenter-hud-btn" style="color: #ef4444;" title="Exit Fullscreen (Esc)">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Floating Notes Window -->
+    <div id="presenter-speaker-notes" class="speaker-notes-box">
+      <div style="font-weight: 700; margin-bottom: 0.5rem; color: #06b6d4; font-size: 0.8rem; text-transform: uppercase;">Speaker Notes</div>
+      <div id="presenter-notes-text" style="line-height: 1.5;"></div>
+    </div>
+  </div>
+
+  <!-- Print Proposal Container (Hidden in screen, visible in print) -->
+  <div id="print-proposal-container" style="display: none;">
+    <!-- Rendered on demand when printing -->
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" style="position: fixed; bottom: 2rem; right: 2rem; background: #06b6d4; color: #041318; padding: 0.75rem 1.25rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; box-shadow: 0 10px 25px rgba(0,0,0,0.5); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; z-index: 1000000;">
+    Proposal Saved!
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Travel Proposal Builder",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/travel-proposal-builder/",
-    "description": "Create beautiful Client, Tour, and Visa proposals.",
-    "applicationCategory": "UtilityPage",
+    "description": "Design luxury travel proposals and bespoke tour itinerary decks with destination photo cover, day-by-day timeline, hotel & flight logistics, inclusions, and pricing.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

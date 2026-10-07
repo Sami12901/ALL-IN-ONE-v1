@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Multiplayer Typing Race - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Enhance your skills with Multiplayer Typing Race.">
-  <meta name="keywords" content="typing, keyboard, practice, free, online, tool, utility">
+  <title>Multiplayer Typing Race - Virtual Rooms & Split-Screen Duel - ALL IN ONE</title>
+  <meta name="description" content="Compete in real-time virtual rooms or local split-screen typing races. Experience live WPM drift, room lobby countdowns, and precision finishing time telemetry.">
+  <meta name="keywords" content="multiplayer typing, typing race, split-screen typing duel, virtual rooms, live wpm drift, typing competition">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/multiplayer-typing-race/">
 
@@ -13,10 +13,9 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/multiplayer-typing-race/">
-  <meta property="og:title" content="Multiplayer Typing Race - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Enhance your skills with Multiplayer Typing Race.">
+  <meta property="og:title" content="Multiplayer Typing Race - Virtual Rooms & Split-Screen - ALL IN ONE">
+  <meta property="og:description" content="Compete in real-time virtual rooms or local split-screen typing races. Live WPM drift, room countdowns, and finishing telemetry.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta property="og:image:alt" content="Multiplayer Typing Race - ALL IN ONE">
@@ -25,8 +24,8 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/multiplayer-typing-race/">
-  <meta name="twitter:title" content="Multiplayer Typing Race - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Enhance your skills with Multiplayer Typing Race.">
+  <meta name="twitter:title" content="Multiplayer Typing Race - ALL IN ONE">
+  <meta name="twitter:description" content="Compete in real-time virtual rooms or local split-screen typing races. Live WPM drift, room countdowns, and finishing telemetry.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="Multiplayer Typing Race - ALL IN ONE">
 
@@ -36,6 +35,304 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+
+  <style>
+    /* Multiplayer Race Custom Styles */
+    .mp-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    /* Mode Navigation Tabs */
+    .mp-mode-tabs {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.35rem;
+      width: fit-content;
+      margin: 0 auto 0.5rem;
+    }
+    .mp-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 0.5rem 1.4rem;
+      border-radius: var(--radius-full);
+      font-size: 0.875rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .mp-tab-btn:hover {
+      color: var(--text-primary);
+    }
+    .mp-tab-btn.active {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    /* Lobby Card & Controls */
+    .lobby-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    .lobby-header-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+
+    .room-code-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-tertiary);
+      border: 1px dashed var(--accent);
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-md);
+      font-family: monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    /* Racers Grid */
+    .racers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .racer-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      position: relative;
+      transition: var(--transition);
+    }
+    .racer-card.is-you {
+      border-color: var(--accent);
+      background: rgba(78, 133, 191, 0.08);
+    }
+    .racer-card.is-ready {
+      border-left: 4px solid var(--success);
+    }
+    .racer-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .racer-meta {
+      flex: 1;
+      min-width: 0;
+    }
+    .racer-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text-primary);
+    }
+    .racer-subtext {
+      font-size: 0.725rem;
+      color: var(--text-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 2px;
+    }
+    .ping-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+      display: inline-block;
+    }
+
+    /* Live Race Track */
+    .mp-track {
+      background: #0f1218;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .mp-track-lane {
+      position: relative;
+      height: 44px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: var(--radius-md);
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      padding: 0 0.75rem;
+    }
+    .mp-track-lane.is-you {
+      background: rgba(78, 133, 191, 0.08);
+      border: 1px solid rgba(78, 133, 191, 0.3);
+    }
+    .mp-lane-info {
+      position: absolute;
+      left: 10px;
+      top: 3px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      pointer-events: none;
+    }
+    .mp-car-node {
+      position: absolute;
+      left: 10px;
+      bottom: 4px;
+      width: 44px;
+      height: 24px;
+      transition: transform 0.15s linear;
+      z-index: 4;
+    }
+    .mp-finish-line {
+      position: absolute;
+      right: 35px;
+      top: 0;
+      bottom: 0;
+      width: 12px;
+      background-image: repeating-conic-gradient(#fff 0% 25%, #000 0% 50%);
+      background-size: 6px 6px;
+      opacity: 0.7;
+      z-index: 2;
+      border-left: 1px solid #ef4444;
+    }
+
+    /* Typing Input Area */
+    .mp-words-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem 2rem;
+      font-family: 'SF Mono', Consolas, Monaco, monospace;
+      font-size: 1.3rem;
+      line-height: 2.1;
+      letter-spacing: 0.02em;
+      min-height: 140px;
+      max-height: 190px;
+      overflow: hidden;
+      user-select: none;
+      position: relative;
+      cursor: text;
+    }
+    .mp-words-box.focused {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+    .mp-char {
+      color: var(--text-tertiary);
+    }
+    .mp-char.correct {
+      color: var(--text-primary);
+    }
+    .mp-char.incorrect {
+      color: var(--error);
+      background: rgba(239, 68, 68, 0.2);
+      border-radius: 2px;
+    }
+    .mp-char.active {
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+    }
+
+    /* Split Screen Duel Layout */
+    .split-duel-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 900px) {
+      .split-duel-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .duel-player-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .duel-player-card.p1 {
+      border-top: 4px solid #38bdf8;
+    }
+    .duel-player-card.p2 {
+      border-top: 4px solid #f43f5e;
+    }
+    .duel-stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-tertiary);
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+    }
+
+    /* Modal / Countdown */
+    .mp-countdown-modal {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 12, 18, 0.88);
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      border-radius: var(--radius-lg);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .mp-countdown-modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -49,28 +346,212 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Multiplayer Typing Race</h1>
-        <p class="tool-description">Enhance your skills with Multiplayer Typing Race.</p>
+        <p class="tool-description">Host virtual race rooms with friends and live simulated opponents, or challenge a rival in local split-screen duel mode with real-time WPM drift telemetry.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Multiplayer Typing Race</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Enhance your skills with Multiplayer Typing Race.</div>
-            <div><strong>Inputs:</strong> typing, keyboard, practice</div>
-            <div><strong>Category:</strong> typing</div>
+      <div class="mp-container">
+        <!-- Mode Navigation Tabs -->
+        <div class="mp-mode-tabs">
+          <button class="mp-tab-btn active" id="tabRoomMode">
+            🌐 Virtual Room Arena
+          </button>
+          <button class="mp-tab-btn" id="tabDuelMode">
+            ⚔️ Local Split Duel
+          </button>
+        </div>
+
+        <!-- MODE 1: VIRTUAL ROOM ARENA -->
+        <div id="roomModeSection">
+          <!-- Room Lobby State -->
+          <div class="lobby-card" id="lobbyView">
+            <div class="lobby-header-bar">
+              <div>
+                <h2 style="font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 0.25rem;">Room Lobby</h2>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <span class="room-code-tag" id="roomCodeDisplay">ROOM: #SPEED-884</span>
+                  <button id="copyRoomCodeBtn" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">
+                    📋 Copy Code
+                  </button>
+                  <button id="createRoomBtn" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">
+                    🎲 New Room
+                  </button>
+                </div>
+              </div>
+
+              <!-- Lobby Settings & Action -->
+              <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <label for="trackLengthSelect" style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);">WORDS:</label>
+                  <select id="trackLengthSelect" class="form-select" style="width: auto; padding: 0.4rem 0.75rem; font-size: 0.85rem;">
+                    <option value="25">Sprint (25w)</option>
+                    <option value="50" selected>Grand Prix (50w)</option>
+                    <option value="80">Endurance (80w)</option>
+                  </select>
+                </div>
+                <button id="addBotBtn" class="btn btn-outline" style="padding: 0.45rem 0.9rem; font-size: 0.85rem;">
+                  🤖 Add Contender
+                </button>
+                <button id="lobbyStartBtn" class="btn btn-primary" style="padding: 0.55rem 1.4rem; font-weight: 700;">
+                  🏁 Start Race
+                </button>
+              </div>
+            </div>
+
+            <!-- Racers Grid -->
+            <div>
+              <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 0.75rem; letter-spacing: 0.05em;">
+                Connected Racers (<span id="racerCount">4</span> / 6)
+              </div>
+              <div class="racers-grid" id="racersGrid">
+                <!-- Dynamically populated racer cards -->
+              </div>
+            </div>
+
+            <!-- Quick Reaction Chat -->
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: gap;">
+              <span style="font-size: 0.8rem; color: var(--text-tertiary);">Send Lobby Reaction:</span>
+              <div style="display: flex; gap: 0.5rem;" id="reactionButtons">
+                <button class="race-pill-btn" data-reaction="🔥">🔥 Lit</button>
+                <button class="race-pill-btn" data-reaction="⚡">⚡ Speed</button>
+                <button class="race-pill-btn" data-reaction="🏎️">🏎️ Vroom</button>
+                <button class="race-pill-btn" data-reaction="👑">👑 GG</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Room Race Arena (Hidden initially) -->
+          <div id="roomRaceArena" style="display: none; flex-direction: column; gap: 1.5rem; margin-top: 1rem;">
+            <!-- Race Track -->
+            <div class="mp-track" id="mpTrack">
+              <div class="mp-finish-line"></div>
+              <div id="mpLanesWrapper" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <!-- Lanes dynamically generated -->
+              </div>
+            </div>
+
+            <!-- Live Telemetry Bar -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1rem;">
+              <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem 1rem;">
+                <div style="font-size: 0.7rem; color: var(--text-secondary); font-weight: 700;">STANDINGS</div>
+                <div style="font-size: 1.5rem; font-weight: 800; color: var(--accent);" id="mpLiveRank">1st</div>
+              </div>
+              <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem 1rem;">
+                <div style="font-size: 0.7rem; color: var(--text-secondary); font-weight: 700;">CURRENT WPM</div>
+                <div style="font-size: 1.5rem; font-weight: 800;" id="mpLiveWpm">0</div>
+              </div>
+              <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem 1rem;">
+                <div style="font-size: 0.7rem; color: var(--text-secondary); font-weight: 700;">ACCURACY</div>
+                <div style="font-size: 1.5rem; font-weight: 800; color: var(--success);" id="mpLiveAcc">100%</div>
+              </div>
+              <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem 1rem;">
+                <div style="font-size: 0.7rem; color: var(--text-secondary); font-weight: 700;">PROGRESS</div>
+                <div style="font-size: 1.5rem; font-weight: 800;" id="mpLiveProg">0%</div>
+              </div>
+            </div>
+
+            <!-- Typing Box -->
+            <div class="mp-words-box" id="mpWordsBox" tabindex="0">
+              <div id="mpWordsWrapper"></div>
+              <!-- Countdown Overlay -->
+              <div class="mp-countdown-modal" id="mpCountdownModal">
+                <div style="font-size: 5rem; font-weight: 900; color: #fff; text-shadow: 0 0 20px var(--accent);" id="mpCountdownNum">3</div>
+                <p style="color: var(--text-secondary); font-weight: 600;">Race is starting...</p>
+              </div>
+            </div>
+
+            <input type="text" id="mpHiddenInput" style="position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px;">
+          </div>
+
+          <!-- Post-Race Leaderboard & Telemetry Table (Shown when race finishes) -->
+          <div class="lobby-card" id="roomResultsCard" style="display: none; margin-top: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+              <div>
+                <h2 style="font-family: var(--font-display); font-size: 1.6rem; margin-bottom: 0.25rem;">Race Results & Telemetry</h2>
+                <p style="color: var(--text-secondary); font-size: 0.85rem;">Official finishing times, average WPM, and net drift calculations.</p>
+              </div>
+              <div style="display: flex; gap: 0.75rem;">
+                <button id="mpRematchBtn" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-weight: 700;">
+                  🔄 Rematch
+                </button>
+                <button id="mpBackToLobbyBtn" class="btn btn-outline" style="padding: 0.5rem 1rem;">
+                  Lobby
+                </button>
+              </div>
+            </div>
+
+            <div style="overflow-x: auto;">
+              <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+                <thead>
+                  <tr style="border-bottom: 2px solid var(--border); color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase;">
+                    <th style="padding: 0.75rem 1rem;">Rank</th>
+                    <th style="padding: 0.75rem 1rem;">Racer</th>
+                    <th style="padding: 0.75rem 1rem;">Finish Time</th>
+                    <th style="padding: 0.75rem 1rem;">Avg WPM</th>
+                    <th style="padding: 0.75rem 1rem;">Accuracy</th>
+                    <th style="padding: 0.75rem 1rem;">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="mpResultsTbody">
+                  <!-- Dynamic rows -->
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- MODE 2: LOCAL SPLIT-SCREEN DUEL -->
+        <div id="duelModeSection" style="display: none;">
+          <div class="lobby-card" style="margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <h2 style="font-family: var(--font-display); font-size: 1.5rem;">2-Player Split-Screen Duel</h2>
+                <p style="color: var(--text-secondary); font-size: 0.85rem;">Challenge a friend on the same device! Player 1 sets a hot lap or races head-to-head.</p>
+              </div>
+              <button id="startDuelBtn" class="btn btn-primary" style="padding: 0.5rem 1.5rem; font-weight: 700;">
+                ⚔️ Start Split Duel
+              </button>
+            </div>
+          </div>
+
+          <!-- Side by Side Duel Cards -->
+          <div class="split-duel-grid">
+            <!-- Player 1 -->
+            <div class="duel-player-card p1">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 800; color: #38bdf8; font-size: 1.1rem;">PLAYER 1 (Blue)</span>
+                <span id="p1StatusBadge" class="badge" style="background: rgba(56, 189, 248, 0.2); color: #38bdf8;">Ready</span>
+              </div>
+              <div class="duel-stat-row">
+                <span>Speed: <strong id="p1Wpm">0 WPM</strong></span>
+                <span>Accuracy: <strong id="p1Acc">100%</strong></span>
+                <span>Time: <strong id="p1Time">0.0s</strong></span>
+              </div>
+              <div class="mp-words-box" id="p1WordsBox" style="min-height: 120px; font-size: 1.1rem; line-height: 1.8;">
+                <div id="p1WordsWrapper">Click 'Start Split Duel' to begin.</div>
+              </div>
+              <input type="text" id="p1Input" class="form-input" placeholder="Type here for Player 1..." autocomplete="off">
+            </div>
+
+            <!-- Player 2 -->
+            <div class="duel-player-card p2">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 800; color: #f43f5e; font-size: 1.1rem;">PLAYER 2 (Red)</span>
+                <span id="p2StatusBadge" class="badge" style="background: rgba(244, 63, 94, 0.2); color: #f43f5e;">Ready</span>
+              </div>
+              <div class="duel-stat-row">
+                <span>Speed: <strong id="p2Wpm">0 WPM</strong></span>
+                <span>Accuracy: <strong id="p2Acc">100%</strong></span>
+                <span>Time: <strong id="p2Time">0.0s</strong></span>
+              </div>
+              <div class="mp-words-box" id="p2WordsBox" style="min-height: 120px; font-size: 1.1rem; line-height: 1.8;">
+                <div id="p2WordsWrapper">Click 'Start Split Duel' to begin.</div>
+              </div>
+              <input type="text" id="p2Input" class="form-input" placeholder="Type here for Player 2..." autocomplete="off">
+            </div>
+          </div>
+        </div>
+
       </div>
-    
     </div>
   </main>
 
@@ -84,8 +565,8 @@
     "@type": "WebApplication",
     "name": "Multiplayer Typing Race",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/multiplayer-typing-race/",
-    "description": "Enhance your skills with Multiplayer Typing Race.",
-    "applicationCategory": "UtilityPage",
+    "description": "Virtual multiplayer typing rooms and split-screen duel with live WPM drift, countdowns, and finishing telemetry.",
+    "applicationCategory": "GameApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

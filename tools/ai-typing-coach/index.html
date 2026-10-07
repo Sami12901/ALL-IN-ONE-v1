@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Typing Coach - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Enhance your skills with AI Typing Coach.">
-  <meta name="keywords" content="typing, keyboard, practice, free, online, tool, utility">
+  <title>AI Typing Coach - Weak-Finger & Latency Analyzer - ALL IN ONE</title>
+  <meta name="description" content="Personalized typing diagnostic and weak-finger analyzer. Identifies keystroke latency, error frequency per key, and generates custom targeted 30-word remedial drills.">
+  <meta name="keywords" content="ai typing coach, weak finger analyzer, keystroke latency, typing heatmap, keyboard diagnostic, touch typing drill generator">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-typing-coach/">
 
@@ -13,10 +13,9 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-typing-coach/">
-  <meta property="og:title" content="AI Typing Coach - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Enhance your skills with AI Typing Coach.">
+  <meta property="og:title" content="AI Typing Coach - Weak-Finger & Latency Analyzer - ALL IN ONE">
+  <meta property="og:description" content="Personalized typing diagnostic and weak-finger analyzer. Identifies keystroke latency, error frequency per key, and generates custom targeted 30-word remedial drills.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta property="og:image:alt" content="AI Typing Coach - ALL IN ONE">
@@ -25,8 +24,8 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-typing-coach/">
-  <meta name="twitter:title" content="AI Typing Coach - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Enhance your skills with AI Typing Coach.">
+  <meta name="twitter:title" content="AI Typing Coach - ALL IN ONE">
+  <meta name="twitter:description" content="Personalized typing diagnostic and weak-finger analyzer. Identifies keystroke latency and generates targeted remedial drills.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="AI Typing Coach - ALL IN ONE">
 
@@ -36,6 +35,180 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+
+  <style>
+    /* AI Typing Coach Custom Styles */
+    .coach-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    /* Diagnostics Header / Control */
+    .coach-controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
+    }
+
+    /* Typing Test Arena */
+    .coach-typing-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem 2rem;
+      position: relative;
+    }
+    .coach-words-display {
+      font-family: 'SF Mono', Consolas, Monaco, monospace;
+      font-size: 1.3rem;
+      line-height: 2.1;
+      letter-spacing: 0.02em;
+      min-height: 120px;
+      max-height: 170px;
+      overflow-y: auto;
+      user-select: none;
+      cursor: text;
+      border: 1px dashed var(--border);
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      margin-bottom: 1rem;
+    }
+    .coach-words-display.focused {
+      border-color: var(--accent);
+    }
+    .coach-char {
+      color: var(--text-tertiary);
+    }
+    .coach-char.correct {
+      color: var(--text-primary);
+    }
+    .coach-char.error {
+      color: var(--error);
+      background: rgba(239, 68, 68, 0.2);
+      border-radius: 2px;
+    }
+    .coach-char.current {
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+    }
+
+    /* Interactive Keyboard Heatmap */
+    .keyboard-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      overflow-x: auto;
+    }
+    .kb-row {
+      display: flex;
+      gap: 5px;
+      justify-content: center;
+      width: 100%;
+      max-width: 860px;
+    }
+    .kb-key {
+      min-width: 44px;
+      height: 48px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'SF Mono', monospace;
+      font-size: 0.825rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+      position: relative;
+      user-select: none;
+      padding: 2px 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .kb-key.wide-15 { flex: 1.5; min-width: 60px; }
+    .kb-key.wide-20 { flex: 2; min-width: 80px; }
+    .kb-key.wide-space { flex: 6; min-width: 260px; }
+
+    .kb-key .key-stat {
+      font-size: 0.6rem;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      margin-top: 1px;
+    }
+
+    /* Finger Color Accents (Default Touch Zones) */
+    .finger-lp { border-bottom: 3px solid #ec4899; } /* Left Pinky */
+    .finger-lr { border-bottom: 3px solid #a855f7; } /* Left Ring */
+    .finger-lm { border-bottom: 3px solid #3b82f6; } /* Left Middle */
+    .finger-li { border-bottom: 3px solid #06b6d4; } /* Left Index */
+    .finger-th { border-bottom: 3px solid #10b981; } /* Thumbs */
+    .finger-ri { border-bottom: 3px solid #84cc16; } /* Right Index */
+    .finger-rm { border-bottom: 3px solid #eab308; } /* Right Middle */
+    .finger-rr { border-bottom: 3px solid #f97316; } /* Right Ring */
+    .finger-rp { border-bottom: 3px solid #ef4444; } /* Right Pinky */
+
+    /* Heatmap States */
+    .heat-cold { background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); }
+    .heat-warm { background: rgba(245, 158, 11, 0.2); border-color: rgba(245, 158, 11, 0.5); }
+    .heat-hot { background: rgba(239, 68, 68, 0.25); border-color: rgba(239, 68, 68, 0.6); }
+
+    /* Diagnostic Analysis Cards */
+    .diag-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 900px) {
+      .diag-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .diag-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .weak-rank-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-tertiary);
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      border-left: 4px solid var(--accent);
+    }
+
+    /* Remedial Generator Box */
+    .remedial-box {
+      background: linear-gradient(135deg, rgba(78, 133, 191, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -49,28 +222,183 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>AI Typing Coach</h1>
-        <p class="tool-description">Enhance your skills with AI Typing Coach.</p>
+        <p class="tool-description">Intelligent biomechanical typing diagnostic engine. Analyzes per-finger latency and error rates across all 10 fingers, pinpointing bottlenecks and synthesizing targeted remedial drills.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AI Typing Coach</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Enhance your skills with AI Typing Coach.</div>
-            <div><strong>Inputs:</strong> typing, keyboard, practice</div>
-            <div><strong>Category:</strong> typing</div>
+      <div class="coach-wrapper">
+        <!-- Controls Bar -->
+        <div class="coach-controls-bar">
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);">MODE:</span>
+            <div class="tst-pill-group">
+              <button class="race-pill-btn active" id="btnModeDiagnostic">🩺 Full Diagnostic</button>
+              <button class="race-pill-btn" id="btnModeRemedial">🎯 Targeted Remedial</button>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; align-items: center;">
+            <button id="resetDiagnosticBtn" class="btn btn-outline" style="font-size: 0.85rem; padding: 0.45rem 1rem;">
+              🔄 Reset Assessment
+            </button>
+            <button id="startCoachTestBtn" class="btn btn-primary" style="font-size: 0.85rem; padding: 0.45rem 1.25rem; font-weight: 700;">
+              🚀 Start Diagnostic
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Typing Test Arena -->
+        <div class="coach-typing-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <span id="arenaTitle" style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">Diagnostic Test (35 Words)</span>
+            <div style="display: flex; gap: 1rem; font-size: 0.85rem; color: var(--text-secondary);">
+              <span>Speed: <strong id="coachWpm" style="color: var(--accent);">0 WPM</strong></span>
+              <span>Accuracy: <strong id="coachAcc" style="color: var(--success);">100%</strong></span>
+              <span>Avg Latency: <strong id="coachLatency" style="color: var(--text-primary);">0 ms</strong></span>
+            </div>
+          </div>
+
+          <!-- Words Display Board -->
+          <div class="coach-words-display" id="coachWordsDisplay" tabindex="0">
+            <!-- Dynamic words rendered here -->
+          </div>
+
+          <input type="text" id="coachHiddenInput" style="position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px;">
+        </div>
+
+        <!-- Interactive Keyboard Heatmap -->
+        <div class="keyboard-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 860px; margin-bottom: 0.5rem;">
+            <span style="font-size: 0.85rem; font-weight: 700;">Live Keyboard Latency & Error Heatmap</span>
+            <div style="display: flex; gap: 1rem; font-size: 0.75rem; color: var(--text-secondary);">
+              <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 10px; height: 10px; background: rgba(16, 185, 129, 0.4); border-radius: 2px;"></span> Fast (&lt;160ms)</span>
+              <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 10px; height: 10px; background: rgba(245, 158, 11, 0.4); border-radius: 2px;"></span> Moderate (160-260ms)</span>
+              <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 10px; height: 10px; background: rgba(239, 68, 68, 0.5); border-radius: 2px;"></span> Slow/Error (&gt;260ms)</span>
+            </div>
+          </div>
+
+          <!-- Number Row -->
+          <div class="kb-row">
+            <div class="kb-key finger-lp" data-key="`">`</div>
+            <div class="kb-key finger-lp" data-key="1">1</div>
+            <div class="kb-key finger-lr" data-key="2">2</div>
+            <div class="kb-key finger-lm" data-key="3">3</div>
+            <div class="kb-key finger-li" data-key="4">4</div>
+            <div class="kb-key finger-li" data-key="5">5</div>
+            <div class="kb-key finger-ri" data-key="6">6</div>
+            <div class="kb-key finger-ri" data-key="7">7</div>
+            <div class="kb-key finger-rm" data-key="8">8</div>
+            <div class="kb-key finger-rr" data-key="9">9</div>
+            <div class="kb-key finger-rp" data-key="0">0</div>
+            <div class="kb-key finger-rp" data-key="-">-</div>
+            <div class="kb-key finger-rp" data-key="=">=</div>
+            <div class="kb-key wide-15" style="color: var(--text-tertiary);">Bksp</div>
+          </div>
+
+          <!-- QWERTY Row -->
+          <div class="kb-row">
+            <div class="kb-key wide-15" style="color: var(--text-tertiary);">Tab</div>
+            <div class="kb-key finger-lp" data-key="q">Q</div>
+            <div class="kb-key finger-lr" data-key="w">W</div>
+            <div class="kb-key finger-lm" data-key="e">E</div>
+            <div class="kb-key finger-li" data-key="r">R</div>
+            <div class="kb-key finger-li" data-key="t">T</div>
+            <div class="kb-key finger-ri" data-key="y">Y</div>
+            <div class="kb-key finger-ri" data-key="u">U</div>
+            <div class="kb-key finger-rm" data-key="i">I</div>
+            <div class="kb-key finger-rr" data-key="o">O</div>
+            <div class="kb-key finger-rp" data-key="p">P</div>
+            <div class="kb-key finger-rp" data-key="[">[</div>
+            <div class="kb-key finger-rp" data-key="]">]</div>
+          </div>
+
+          <!-- ASDF Row -->
+          <div class="kb-row">
+            <div class="kb-key wide-15" style="color: var(--text-tertiary);">Caps</div>
+            <div class="kb-key finger-lp" data-key="a">A</div>
+            <div class="kb-key finger-lr" data-key="s">S</div>
+            <div class="kb-key finger-lm" data-key="d">D</div>
+            <div class="kb-key finger-li" data-key="f">F</div>
+            <div class="kb-key finger-li" data-key="g">G</div>
+            <div class="kb-key finger-ri" data-key="h">H</div>
+            <div class="kb-key finger-ri" data-key="j">J</div>
+            <div class="kb-key finger-rm" data-key="k">K</div>
+            <div class="kb-key finger-rr" data-key="l">L</div>
+            <div class="kb-key finger-rp" data-key=";">;</div>
+            <div class="kb-key finger-rp" data-key="'">'</div>
+            <div class="kb-key wide-20" style="color: var(--text-tertiary);">Enter</div>
+          </div>
+
+          <!-- ZXCV Row -->
+          <div class="kb-row">
+            <div class="kb-key wide-20" style="color: var(--text-tertiary);">Shift</div>
+            <div class="kb-key finger-lp" data-key="z">Z</div>
+            <div class="kb-key finger-lr" data-key="x">X</div>
+            <div class="kb-key finger-lm" data-key="c">C</div>
+            <div class="kb-key finger-li" data-key="v">V</div>
+            <div class="kb-key finger-li" data-key="b">B</div>
+            <div class="kb-key finger-ri" data-key="n">N</div>
+            <div class="kb-key finger-ri" data-key="m">M</div>
+            <div class="kb-key finger-rm" data-key=",">,</div>
+            <div class="kb-key finger-rr" data-key=".">.</div>
+            <div class="kb-key finger-rp" data-key="/">/</div>
+            <div class="kb-key wide-20" style="color: var(--text-tertiary);">Shift</div>
+          </div>
+
+          <!-- Space Row -->
+          <div class="kb-row">
+            <div class="kb-key wide-space finger-th" data-key=" ">SPACEBAR</div>
+          </div>
+        </div>
+
+        <!-- Diagnostic Reports Grid -->
+        <div class="diag-grid">
+          <!-- Weak Fingers Breakdown -->
+          <div class="diag-card">
+            <div>
+              <h2 style="font-family: var(--font-display); font-size: 1.35rem; margin-bottom: 0.25rem;">Weak-Finger Diagnostic</h2>
+              <p style="color: var(--text-secondary); font-size: 0.825rem;">Identified latency lag and error concentration per finger.</p>
+            </div>
+            <div id="weakFingersList" style="display: flex; flex-direction: column; gap: 0.65rem;">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- AI Coach Feedback & Recommendations -->
+          <div class="diag-card">
+            <div>
+              <h2 style="font-family: var(--font-display); font-size: 1.35rem; margin-bottom: 0.25rem;">Biomechanical Coach Insights</h2>
+              <p style="color: var(--text-secondary); font-size: 0.825rem;">Personalized ergonomic recommendations based on your keystroke latency profile.</p>
+            </div>
+            <div id="coachInsights" style="font-size: 0.875rem; line-height: 1.6; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.75rem;">
+              <p>Complete the diagnostic test above to generate your customized biomechanical assessment and uncover hidden speed bottlenecks.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Remedial Drills Generator Section -->
+        <div class="remedial-box" id="remedialGeneratorCard">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <h2 style="font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 0.25rem;">Custom Targeted Remedial Drills</h2>
+              <p style="color: var(--text-secondary); font-size: 0.85rem;">Synthesizes tailored 30-word exercises targeting your exact weakest fingers and bottleneck keys.</p>
+            </div>
+            <button id="generateRemedialBtn" class="btn btn-primary" style="padding: 0.6rem 1.4rem; font-weight: 700;">
+              ✨ Generate Custom Drill
+            </button>
+          </div>
+
+          <div id="generatedDrillPreview" style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px dashed var(--border); font-family: monospace; font-size: 1.05rem; line-height: 1.8;">
+            Click 'Generate Custom Drill' to synthesize a targeted workout for your weakest keys.
+          </div>
+
+          <div style="display: flex; justify-content: flex-end;">
+            <button id="startRemedialPracticeBtn" class="btn btn-primary" style="display: none; padding: 0.5rem 1.5rem;">
+              🎯 Start This Drill Now
+            </button>
+          </div>
+        </div>
+
       </div>
-    
     </div>
   </main>
 
@@ -84,8 +412,8 @@
     "@type": "WebApplication",
     "name": "AI Typing Coach",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-typing-coach/",
-    "description": "Enhance your skills with AI Typing Coach.",
-    "applicationCategory": "UtilityPage",
+    "description": "Personalized typing diagnostic and weak-finger analyzer with keystroke latency tracking and remedial drill generator.",
+    "applicationCategory": "EducationalApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

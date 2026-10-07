@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VIP Customer Analytics - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Identify VIP clients and track repeat customer metrics.">
-  <meta name="keywords" content="analytics, data, ecommerce, vip customer analytics, free, online, tool, utility">
+  <title>VIP Customer Analytics - RFM Segmentation Suite - ALL IN ONE</title>
+  <meta name="description" content="RFM Customer Segmentation Suite. Classify clients into Champions, Loyalists, At Risk, and Hibernating with high-value cohort metrics and VIP retention playbooks.">
+  <meta name="keywords" content="vip customer analytics, rfm segmentation, customer lifetime value, enterprise churn prevention, rfm matrix, customer cohort analysis">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/vip-customer-analytics/">
 
@@ -13,27 +13,250 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/vip-customer-analytics/">
-  <meta property="og:title" content="VIP Customer Analytics - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Identify VIP clients and track repeat customer metrics.">
+  <meta property="og:title" content="VIP Customer Analytics - RFM Segmentation Suite - ALL IN ONE">
+  <meta property="og:description" content="Recency, Frequency, Monetary (RFM) customer segmentation engine with pre-loaded enterprise cohorts, churn risk detection, and VIP retention offers.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:width" content="512">
-  <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="VIP Customer Analytics - ALL IN ONE">
   <meta property="og:locale" content="en_US">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/vip-customer-analytics/">
-  <meta name="twitter:title" content="VIP Customer Analytics - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Identify VIP clients and track repeat customer metrics.">
+  <meta name="twitter:title" content="VIP Customer Analytics - RFM Segmentation Suite - ALL IN ONE">
+  <meta name="twitter:description" content="Enterprise RFM customer intelligence suite. Identify champions, rescue at-risk accounts, and maximize cohort LTV.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="VIP Customer Analytics - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .kpi-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+    .kpi-card:hover {
+      border-color: rgba(var(--accent-rgb), 0.5);
+    }
+    .kpi-card.highlight {
+      background: linear-gradient(145deg, rgba(var(--accent-rgb), 0.12), var(--bg-tertiary));
+      border-color: var(--accent);
+    }
+    .kpi-card.risk-card {
+      background: linear-gradient(145deg, rgba(239, 68, 68, 0.12), var(--bg-tertiary));
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+    .kpi-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .kpi-value {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+    .kpi-card.highlight .kpi-value {
+      color: var(--accent);
+    }
+    .kpi-card.risk-card .kpi-value {
+      color: #ef4444;
+    }
+    .kpi-subtext {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Segment Badges */
+    .badge-champion {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .badge-loyalist {
+      background: rgba(59, 130, 246, 0.2);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .badge-atrisk {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .badge-hibernating {
+      background: rgba(156, 163, 175, 0.2);
+      color: #9ca3af;
+      border: 1px solid rgba(156, 163, 175, 0.4);
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .badge-promising {
+      background: rgba(168, 85, 247, 0.2);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .matrix-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .matrix-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .matrix-svg-container {
+      width: 100%;
+      height: 300px;
+      position: relative;
+    }
+    .matrix-svg-container svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .segment-tabs {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.35rem 0.75rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .tab-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .tab-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      max-height: 440px;
+    }
+    .customer-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.825rem;
+      text-align: left;
+    }
+    .customer-table th {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 0.75rem 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    .customer-table td {
+      padding: 0.7rem 0.85rem;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+    .customer-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Retention Playbook Grid */
+    .playbook-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .playbook-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .playbook-card.p-champ { border-left: 4px solid #10b981; }
+    .playbook-card.p-risk { border-left: 4px solid #ef4444; }
+    .playbook-card.p-loyal { border-left: 4px solid #60a5fa; }
+    .playbook-card.p-hiber { border-left: 4px solid #9ca3af; }
+
+    .offer-box {
+      background: var(--bg-secondary);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -49,43 +272,177 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>VIP Customer Analytics</h1>
-        <p class="tool-description">Identify VIP clients and track repeat customer metrics.</p>
+        <p class="tool-description">Enterprise RFM (Recency, Frequency, Monetary) Customer Segmentation Suite. Detect at-risk VIP revenue, classify champions, and deploy retention offers.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>VIP Customer Analytics</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Identify VIP clients and track repeat customer metrics.</div>
-            <div><strong>Inputs:</strong> analytics, data, ecommerce, vip customer analytics</div>
-            <div><strong>Category:</strong> ecommerce</div>
+      <!-- KPI Summary Cards -->
+      <div class="kpi-cards-grid">
+        <div class="kpi-card highlight">
+          <span class="kpi-title">Champions Cohort</span>
+          <span class="kpi-value" id="kpi-champ-count">0</span>
+          <span class="kpi-subtext" id="kpi-champ-rev">$0 (0% of ARR)</span>
+        </div>
+        <div class="kpi-card risk-card">
+          <span class="kpi-title">At-Risk VIP Revenue</span>
+          <span class="kpi-value" id="kpi-atrisk-rev">$0</span>
+          <span class="kpi-subtext" id="kpi-atrisk-count">0 Enterprise Accounts</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">Total Active Accounts</span>
+          <span class="kpi-value" id="kpi-total-accounts">30</span>
+          <span class="kpi-subtext">Enterprise client portfolio</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">Total Tracked Revenue</span>
+          <span class="kpi-value" id="kpi-total-revenue">$0</span>
+          <span class="kpi-subtext" id="kpi-aov-sub">AOV: $0</span>
+        </div>
+      </div>
+
+      <!-- Interactive SVG RFM Segmentation Matrix -->
+      <div class="matrix-box">
+        <div class="matrix-header">
+          <div>
+            <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary);">RFM Distribution & Value Matrix</h3>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.2rem;">Recency (days since purchase) vs Monetary spend with bubble size mapped to purchase frequency</p>
+          </div>
+          <div style="display: flex; gap: 0.85rem; font-size: 0.75rem; flex-wrap: wrap;">
+            <span style="display: flex; align-items: center; gap: 0.35rem;"><span style="width: 10px; height: 10px; border-radius: 50%; background: #10b981;"></span> Champions</span>
+            <span style="display: flex; align-items: center; gap: 0.35rem;"><span style="width: 10px; height: 10px; border-radius: 50%; background: #60a5fa;"></span> Loyalists</span>
+            <span style="display: flex; align-items: center; gap: 0.35rem;"><span style="width: 10px; height: 10px; border-radius: 50%; background: #ef4444;"></span> At Risk</span>
+            <span style="display: flex; align-items: center; gap: 0.35rem;"><span style="width: 10px; height: 10px; border-radius: 50%; background: #9ca3af;"></span> Hibernating</span>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <div class="matrix-svg-container">
+          <svg id="rfm-matrix-svg" viewBox="0 0 760 300" preserveAspectRatio="none">
+            <!-- Rendered via JS -->
+          </svg>
+        </div>
       </div>
-    
+
+      <!-- Customer Segmentation Table & Filters -->
+      <div class="tool-panel glass-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.75rem;">
+          <div>
+            <h3 class="panel-title" style="border: none; padding: 0; margin: 0;">Enterprise Customer Portfolio (30 Accounts)</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">Filter by RFM segment, search by client, or export client segmentation data</p>
+          </div>
+          <div class="action-bar" style="margin-top: 0;">
+            <button type="button" class="btn btn-secondary" id="btn-export-csv" style="font-size: 0.825rem; padding: 0.4rem 0.85rem;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px; vertical-align: -2px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export CSV
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="filter-bar">
+          <div class="segment-tabs" id="segment-filter-tabs">
+            <button type="button" class="tab-btn active" data-segment="all">All (30)</button>
+            <button type="button" class="tab-btn" data-segment="Champions">Champions</button>
+            <button type="button" class="tab-btn" data-segment="Loyalists">Loyalists</button>
+            <button type="button" class="tab-btn" data-segment="At Risk">At Risk</button>
+            <button type="button" class="tab-btn" data-segment="Hibernating">Hibernating</button>
+            <button type="button" class="tab-btn" data-segment="Potential Loyalists">Promising</button>
+          </div>
+          <div style="position: relative; width: 220px;">
+            <input type="text" id="inp-search-client" class="form-input" placeholder="Search account..." style="padding: 0.4rem 0.75rem; font-size: 0.85rem;">
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="customer-table">
+            <thead>
+              <tr>
+                <th>Client Name</th>
+                <th>Industry</th>
+                <th>Recency (Days)</th>
+                <th>Frequency (Orders)</th>
+                <th>Monetary Spend ($)</th>
+                <th>RFM Score</th>
+                <th>Cohort Segment</th>
+                <th>Retention VIP Action</th>
+              </tr>
+            </thead>
+            <tbody id="customers-table-tbody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tailored Retention VIP Offers & Strategic Playbooks -->
+      <div class="tool-panel glass-panel" style="margin-top: 1.5rem;">
+        <h3 class="panel-title" style="border: none; padding: 0; margin-bottom: 0.25rem;">Tailored Retention & VIP Expansion Playbooks</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">Targeted incentives and account executive actions designed per cohort segment.</p>
+
+        <div class="playbook-grid">
+          <!-- Champions -->
+          <div class="playbook-card p-champ">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h4 style="font-size: 0.95rem; font-weight: 700; color: #10b981; margin: 0;">Champions Playbook</h4>
+              <span class="badge-champion">Tier 1 VIP</span>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Our highest-spending recent accounts. Treat with white-glove advisory support.</p>
+            <div class="offer-box">
+              &starf; Dedicated Executive Sponsor + Early Beta Feature Access + 15% Multi-Year Lock-in
+            </div>
+          </div>
+
+          <!-- At Risk -->
+          <div class="playbook-card p-risk">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h4 style="font-size: 0.95rem; font-weight: 700; color: #ef4444; margin: 0;">At Risk Playbook</h4>
+              <span class="badge-atrisk">Urgent Rescue</span>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">High past spenders going silent (>90 days). Immediate intervention required.</p>
+            <div class="offer-box">
+              &starf; C-Level Rescue Call + Bespoke 20% Renewal Concession + Complimentary Strategy Audit
+            </div>
+          </div>
+
+          <!-- Loyalists -->
+          <div class="playbook-card p-loyal">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h4 style="font-size: 0.95rem; font-weight: 700; color: #60a5fa; margin: 0;">Loyalists Playbook</h4>
+              <span class="badge-loyalist">Expansion Ready</span>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Steady, predictable repeat purchasers responsive to expansion upsells.</p>
+            <div class="offer-box">
+              &starf; Free Tier-2 Add-on Trial for 60 Days + Volume Tiered Discount Schedule
+            </div>
+          </div>
+
+          <!-- Hibernating -->
+          <div class="playbook-card p-hiber">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h4 style="font-size: 0.95rem; font-weight: 700; color: #9ca3af; margin: 0;">Hibernating Playbook</h4>
+              <span class="badge-hibernating">Automated Win-Back</span>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Low spend, infrequent, long absence. Run low-touch automated campaigns.</p>
+            <div class="offer-box">
+              &starf; Automated "What did we miss?" Survey + 30-Day Reactivation Credit ($500)
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "VIP Customer Analytics",
+    "name": "VIP Customer Analytics - RFM Segmentation Suite",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/vip-customer-analytics/",
-    "description": "Identify VIP clients and track repeat customer metrics.",
-    "applicationCategory": "UtilityPage",
+    "description": "RFM Customer Segmentation Suite preloaded with 30 enterprise clients and actionable VIP retention playbooks.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

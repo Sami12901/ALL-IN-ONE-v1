@@ -54,21 +54,166 @@
 
       <!-- Tool Workspace -->
       
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Audio Merger</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Merge multiple audio files and arrange their order.</div>
-            <div><strong>Inputs:</strong> audio, music, sound, audio merger</div>
-            <div><strong>Category:</strong> audio</div>
+      <!-- Tool Workspace -->
+      <div class="merger-workspace">
+        <!-- Top Toolbar -->
+        <div class="workspace-toolbar" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+            <button id="btn-load-demo" class="btn btn-secondary" title="Load synthetic sample tracks to test instantly">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+              Load Demo Tracks
+            </button>
+            <button id="btn-clear-all" class="btn btn-secondary" style="color: var(--error);" title="Clear all tracks">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              Clear All
+            </button>
+          </div>
+          <div id="stats-summary" style="display: flex; gap: 0.75rem; align-items: center; font-size: 0.875rem; color: var(--text-secondary);">
+            <span class="badge" id="track-count-badge" style="background: var(--bg-tertiary); border: 1px solid var(--border); padding: 0.35rem 0.75rem; border-radius: var(--radius-full); font-weight: 600;">0 Tracks</span>
+            <span class="badge" id="total-time-badge" style="background: var(--bg-tertiary); border: 1px solid var(--border); padding: 0.35rem 0.75rem; border-radius: var(--radius-full); font-family: monospace;">00:00.000</span>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- File Upload Area -->
+        <div class="file-drag-area" id="drop-zone" style="margin-bottom: 1.5rem; transition: var(--transition);">
+          <input type="file" id="audio-input" multiple accept="audio/*,.mp3,.wav,.ogg,.m4a,.flac,.aac,.weba" style="display: none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M9 19V6l12-3v13M9 10l12-3M9 19c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm12-3c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"></path>
+          </svg>
+          <h3 style="margin-bottom: 0.5rem; font-size: 1.15rem; font-weight: 600;">Drag & Drop Audio Files Here</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.25rem;">Supports MP3, WAV, OGG, M4A, FLAC, and AAC. Select multiple files to merge.</p>
+          <button type="button" class="btn btn-primary" onclick="document.getElementById('audio-input').click()">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            Choose Audio Files
+          </button>
+        </div>
+
+        <!-- Main Studio Grid -->
+        <div class="tool-workarea split-view" id="studio-workarea" style="display: none;">
+          <!-- Left Column: Track Ordering List -->
+          <div class="tool-panel glass-panel" style="padding: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;">
+              <h3 style="font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                Track Sequence (<span id="track-count-text">0</span>)
+              </h3>
+              <span style="font-size: 0.8rem; color: var(--text-tertiary);">Reorder with &uarr; &darr; buttons</span>
+            </div>
+
+            <div id="track-list" style="display: flex; flex-direction: column; gap: 0.75rem; min-height: 120px; max-height: 520px; overflow-y: auto; padding-right: 0.25rem;">
+              <!-- Dynamic track items injected here -->
+            </div>
+          </div>
+
+          <!-- Right Column: Crossfade Settings & Timeline View -->
+          <div class="tool-panel glass-panel" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem;">
+            <div style="border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;">
+              <h3 style="font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                Merge & Transition Settings
+              </h3>
+            </div>
+
+            <!-- Crossfade Duration Slider -->
+            <div class="form-group">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label for="crossfade-slider">Crossfade Overlap Duration</label>
+                <span class="range-value" id="crossfade-val">1.0 s</span>
+              </div>
+              <input type="range" class="range-slider" id="crossfade-slider" min="0" max="5" step="0.1" value="1.0">
+              <span style="font-size: 0.75rem; color: var(--text-tertiary);">Blends the end of each track seamlessly with the start of the next track. Set to 0s for gapless concatenation.</span>
+            </div>
+
+            <!-- Transition Blend Curve -->
+            <div class="form-group">
+              <label for="blend-mode-select">Fade Transition Curve</label>
+              <select class="form-select" id="blend-mode-select">
+                <option value="equal-power" selected>Equal Power (Smooth constant loudness - Recommended)</option>
+                <option value="linear">Linear Crossfade</option>
+                <option value="exponential">Exponential Smooth</option>
+              </select>
+            </div>
+
+            <!-- Gap/Silence Option -->
+            <div class="form-group">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label for="gap-slider">Silence Gap Between Tracks (when Crossfade = 0)</label>
+                <span class="range-value" id="gap-val">0.0 s</span>
+              </div>
+              <input type="range" class="range-slider" id="gap-slider" min="0" max="3" step="0.1" value="0.0">
+            </div>
+
+            <!-- Audio Format Quality -->
+            <div class="form-group">
+              <label for="output-channels">Export Channels</label>
+              <select class="form-select" id="output-channels">
+                <option value="stereo" selected>Stereo (2 Channels - High Quality)</option>
+                <option value="mono">Mono (1 Channel - Downmixed)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual Timeline Canvas Panel -->
+        <div class="tool-panel glass-panel" id="timeline-panel" style="display: none; padding: 1.5rem; margin-top: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <h3 style="font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+              Timeline Sequence Preview
+            </h3>
+            <div style="font-family: monospace; font-size: 0.85rem; color: var(--text-secondary);">
+              <span id="timeline-scrub-time">00:00.000</span> / <span id="timeline-total-time">00:00.000</span>
+            </div>
+          </div>
+
+          <div style="position: relative; width: 100%; height: 110px; background: rgba(5, 8, 14, 0.75); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; cursor: pointer;" id="timeline-wrapper">
+            <canvas id="timeline-canvas" style="width: 100%; height: 100%; display: block;"></canvas>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-tertiary); font-family: monospace;">
+            <span>00:00</span>
+            <span>Click timeline to seek preview</span>
+            <span id="timeline-tick-end">00:00</span>
+          </div>
+
+          <!-- Merger Action Bar & Preview Player -->
+          <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+            <div class="action-bar" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+              <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                <button id="btn-play-merged" class="btn btn-primary">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                  <span>Play Merged Audio</span>
+                </button>
+                <button id="btn-stop-merged" class="btn btn-secondary">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="6" y="6" width="12" height="12"></rect></svg>
+                  <span>Stop</span>
+                </button>
+              </div>
+
+              <button id="btn-export-wav" class="btn btn-primary" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span>Export Merged WAV</span>
+              </button>
+            </div>
+
+            <!-- Merged Audio Player Container -->
+            <div id="export-result-panel" style="display: none; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: var(--radius-md); padding: 1.25rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                <div style="font-weight: 600; color: var(--success); display: flex; align-items: center; gap: 0.4rem;">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  Merged Audio Ready!
+                </div>
+                <div id="export-meta" style="font-size: 0.8rem; font-family: monospace; color: var(--text-secondary);"></div>
+              </div>
+              <audio id="export-audio" controls style="width: 100%; border-radius: var(--radius-sm); margin-bottom: 0.75rem;"></audio>
+              <div style="display: flex; justify-content: flex-end;">
+                <a id="download-merged-link" class="btn btn-primary" download="merged_audio.wav" style="text-decoration: none;">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                  Download .WAV File
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     
     </div>

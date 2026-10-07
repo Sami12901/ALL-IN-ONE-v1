@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Export to PPTX &amp; PDF - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Export your presentation to PPTX, PDF, Images, or HTML.">
-  <meta name="keywords" content="slide, presentation, pitch, deck, export to pptx pdf, free, online, tool, utility">
+  <title>Export to PPTX &amp; PDF - Presentation Export Suite - ALL IN ONE</title>
+  <meta name="description" content="Presentation export and print suite. Multi-slide deck preview, 16:9 landscape page configuration, high-resolution print-to-PDF, and standalone HTML presentation package.">
+  <meta name="keywords" content="slide, presentation, pitch, deck, export to pptx pdf, print pdf, slide export, free, online, tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/export-to-pptx-pdf/">
 
@@ -13,27 +13,218 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/export-to-pptx-pdf/">
-  <meta property="og:title" content="Export to PPTX &amp; PDF - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Export your presentation to PPTX, PDF, Images, or HTML.">
+  <meta property="og:title" content="Export to PPTX &amp; PDF - Presentation Export Suite - ALL IN ONE">
+  <meta property="og:description" content="Preview multi-slide decks, adjust page margins and orientation, and trigger high-resolution print-to-PDF or HTML package downloads.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="Export to PPTX &amp; PDF - ALL IN ONE">
   <meta property="og:locale" content="en_US">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/export-to-pptx-pdf/">
-  <meta name="twitter:title" content="Export to PPTX &amp; PDF - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Export your presentation to PPTX, PDF, Images, or HTML.">
+  <meta name="twitter:title" content="Export to PPTX &amp; PDF - Presentation Export Suite - ALL IN ONE">
+  <meta name="twitter:description" content="Preview multi-slide decks, adjust page margins and orientation, and trigger high-resolution print-to-PDF or HTML package downloads.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="Export to PPTX &amp; PDF - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .exp-workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+    @media (min-width: 1024px) {
+      .exp-workspace {
+        grid-template-columns: 380px 1fr;
+      }
+    }
+
+    .exp-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* Deck Preview Canvas Grid */
+    .deck-scroll-area {
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+      width: 100%;
+    }
+
+    /* 16:9 Slide Item */
+    .print-slide-item {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: radial-gradient(circle at 75% 25%, #151b33 0%, #070912 100%);
+      color: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.5);
+      padding: clamp(1.5rem, 3.5vw, 3rem);
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s ease;
+    }
+
+    .slide-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+    .slide-badge-pill {
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--radius-full);
+      background: rgba(78, 133, 191, 0.2);
+      border: 1px solid rgba(78, 133, 191, 0.4);
+      color: #89aacc;
+      font-size: clamp(0.65rem, 1vw, 0.775rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .slide-page-badge {
+      font-family: monospace;
+      font-size: clamp(0.7rem, 1vw, 0.85rem);
+      opacity: 0.7;
+    }
+
+    .slide-content-center {
+      margin: auto 0;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(0.4rem, 1.2vw, 1rem);
+    }
+    .slide-head-title {
+      font-size: clamp(1.3rem, 3vw, 2.4rem);
+      font-weight: 800;
+      line-height: 1.2;
+      color: #ffffff;
+      margin: 0;
+    }
+    .slide-sub-line {
+      font-size: clamp(0.85rem, 1.6vw, 1.15rem);
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.4;
+      margin: 0;
+    }
+    .slide-points-list {
+      list-style: none;
+      padding: 0;
+      margin: 0.5rem 0 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .slide-point-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      font-size: clamp(0.78rem, 1.3vw, 1rem);
+      line-height: 1.35;
+      color: rgba(255, 255, 255, 0.92);
+    }
+    .slide-point-icon {
+      color: #4e85bf;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .slide-foot-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 0.75rem;
+      font-size: clamp(0.65rem, 0.9vw, 0.775rem);
+      opacity: 0.55;
+    }
+
+    /* Print Specific Media Styles: Critical for 16:9 Landscape PDF Output */
+    @page {
+      size: landscape;
+      margin: 0;
+    }
+
+    @media print {
+      html, body {
+        background: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      app-header, app-footer, app-breadcrumbs, .tool-header, .exp-sidebar, .screen-only, .stage-top-bar {
+        display: none !important;
+      }
+      .tool-layout, .container, .exp-workspace {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: none !important;
+        display: block !important;
+      }
+      .deck-scroll-area {
+        display: block !important;
+        gap: 0 !important;
+      }
+      .print-slide-item {
+        page-break-after: always !important;
+        break-after: page !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        border-radius: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        padding: 6vw !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+
+    /* Toast Notification */
+    .app-toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      padding: 0.85rem 1.4rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      z-index: 2000;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .app-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -47,32 +238,154 @@
   <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
-      <div class="tool-header">
-        <h1>Export to PPTX & PDF</h1>
-        <p class="tool-description">Export your presentation to PPTX, PDF, Images, or HTML.</p>
+      <div class="tool-header screen-only">
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Export to PPTX &amp; PDF</h1>
+        <p class="tool-description">High-fidelity presentation deck exporter. Render multi-slide decks with calibrated 16:9 landscape aspect ratios, trigger zero-margin vector Print-to-PDF, or export self-contained offline HTML slide decks.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Export to PPTX & PDF</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Export your presentation to PPTX, PDF, Images, or HTML.</div>
-            <div><strong>Inputs:</strong> slide, presentation, pitch, deck, export to pptx pdf</div>
-            <div><strong>Category:</strong> slide</div>
+      <div class="exp-workspace">
+        <!-- Sidebar Configurations -->
+        <aside class="exp-sidebar screen-only">
+          
+          <!-- Page & Print Setup -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+              Page &amp; Orientation Setup
+            </h2>
+
+            <div class="form-group">
+              <label for="select-aspect" style="font-size: 0.775rem;">Page Aspect Ratio</label>
+              <select id="select-aspect" class="form-select" style="padding: 0.45rem 0.75rem; font-size: 0.85rem;">
+                <option value="16-9" selected>16:9 Widescreen Landscape (Standard)</option>
+                <option value="4-3">4:3 Standard Landscape</option>
+                <option value="a4">A4 International Landscape</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="select-margins" style="font-size: 0.775rem;">Page Margins</label>
+              <select id="select-margins" class="form-select" style="padding: 0.45rem 0.75rem; font-size: 0.85rem;">
+                <option value="none" selected>None (Full Bleed - Recommended for Decks)</option>
+                <option value="minimal">Minimal (5mm)</option>
+                <option value="normal">Normal (15mm)</option>
+              </select>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.35rem;">
+              <label class="checkbox-label" style="min-height: auto;">
+                <input type="checkbox" id="toggle-pagenums" checked>
+                <span style="font-size: 0.825rem;">Show Slide Page Numbers (e.g. 01 / 04)</span>
+              </label>
+              <label class="checkbox-label" style="min-height: auto;">
+                <input type="checkbox" id="toggle-footers" checked>
+                <span style="font-size: 0.825rem;">Show Deck Organization Footer</span>
+              </label>
+            </div>
           </div>
-        </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+          <!-- Deck Information & Metadata -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+              Deck Metadata
+            </h2>
+
+            <div class="form-group">
+              <label for="meta-org" style="font-size: 0.775rem;">Organization / Project Name</label>
+              <input type="text" id="meta-org" class="form-input" value="ALL IN ONE TECHNOLOGIES" style="padding: 0.45rem 0.75rem; font-size: 0.825rem;">
+            </div>
+
+            <div class="form-group">
+              <label for="meta-date" style="font-size: 0.775rem;">Date / Version</label>
+              <input type="text" id="meta-date" class="form-input" value="ANNUAL REPORT 2026" style="padding: 0.45rem 0.75rem; font-size: 0.825rem;">
+            </div>
+          </div>
+
+          <!-- Slide Content Quick Editor -->
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+              <h2 class="panel-title" style="border: none; padding: 0; margin: 0;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                Edit Current Slide
+              </h2>
+              <select id="editor-slide-picker" class="form-select" style="width: auto; padding: 0.2rem 0.5rem; font-size: 0.75rem;">
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="edit-title" style="font-size: 0.775rem;">Headline Title</label>
+              <input type="text" id="edit-title" class="form-input" style="padding: 0.45rem 0.75rem; font-size: 0.825rem;">
+            </div>
+
+            <div class="form-group">
+              <label for="edit-subtitle" style="font-size: 0.775rem;">Subtitle Context</label>
+              <input type="text" id="edit-subtitle" class="form-input" style="padding: 0.45rem 0.75rem; font-size: 0.825rem;">
+            </div>
+
+            <div class="form-group">
+              <label for="edit-bullets" style="font-size: 0.775rem;">Key Takeaways (one per line)</label>
+              <textarea id="edit-bullets" class="form-textarea" style="min-height: 70px; padding: 0.45rem 0.75rem; font-size: 0.825rem; font-family: var(--font-sans);"></textarea>
+            </div>
+
+            <div class="action-bar" style="margin-top: 0.25rem;">
+              <button type="button" class="btn btn-secondary" id="add-new-slide-btn" style="flex: 1; font-size: 0.8rem; justify-content: center;">+ Add Slide</button>
+              <button type="button" class="btn btn-secondary" id="remove-slide-btn" style="font-size: 0.8rem; color: var(--danger);">Delete</button>
+            </div>
+          </div>
+
+          <!-- Print & Export Action Hub -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              Export Center
+            </h2>
+
+            <button type="button" class="btn btn-primary" id="print-pdf-btn" style="width: 100%; justify-content: center; padding: 0.6rem;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              Print / Save to PDF
+            </button>
+
+            <button type="button" class="btn btn-secondary" id="download-html-pkg-btn" style="width: 100%; justify-content: center; margin-top: 0.5rem; font-size: 0.85rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download HTML Slide Deck
+            </button>
+
+            <button type="button" class="btn btn-secondary" id="download-json-spec-btn" style="width: 100%; justify-content: center; margin-top: 0.5rem; font-size: 0.85rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Download Deck Spec (JSON)
+            </button>
+          </div>
+
+        </aside>
+
+        <!-- Right: Multi-Slide Print & Deck Preview Area -->
+        <section class="printable-deck-stage" style="width: 100%;">
+          <!-- Top bar on screen -->
+          <div class="stage-top-bar screen-only" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <span class="badge-tag" id="deck-count-badge">Deck: 4 Slides</span>
+              <span class="badge-tag">Format: 16:9 Landscape</span>
+            </div>
+            <span style="font-size: 0.8rem; color: var(--text-tertiary);">💡 In print dialog, select "Save as PDF" &amp; "Landscape"</span>
+          </div>
+
+          <!-- Printable Slides Container -->
+          <div class="deck-scroll-area" id="deck-slides-container">
+            <!-- Rendered dynamically via script.js -->
+          </div>
+        </section>
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Toast Notification -->
+  <div class="app-toast screen-only" id="app-toast">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span id="toast-text">Deck updated</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -84,10 +397,10 @@
     "@type": "WebApplication",
     "name": "Export to PPTX & PDF",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/export-to-pptx-pdf/",
-    "description": "Export your presentation to PPTX, PDF, Images, or HTML.",
-    "applicationCategory": "UtilityPage",
+    "description": "Presentation export and print suite with 16:9 landscape page configuration, high-resolution print-to-PDF, and standalone HTML presentation package.",
+    "applicationCategory": "ProductivityApplication",
     "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
+    "browserRequirements": "Requires JavaScript. Requires HTML5 Print."
   }
   </script>
 </body>

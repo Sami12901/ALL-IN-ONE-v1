@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Image Manager - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Insert, crop, and compress images directly inside presentations.">
-  <meta name="keywords" content="slide, presentation, pitch, deck, image manager, free, online, tool, utility">
+  <title>Image Manager - Slide Image Curator &amp; Cropper - ALL IN ONE</title>
+  <meta name="description" content="Presentation slide image curator & cropper studio. Drag-and-drop uploads, 16:9, 4:3, 1:1 aspect presets, text readability overlay, and optimized slide image export.">
+  <meta name="keywords" content="slide, presentation, pitch, deck, image manager, cropper, aspect ratio, text overlay, free, online, tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/image-manager/">
 
@@ -13,26 +13,222 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/image-manager/">
-  <meta property="og:title" content="Image Manager - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Insert, crop, and compress images directly inside presentations.">
+  <meta property="og:title" content="Image Manager - Slide Image Curator &amp; Cropper - ALL IN ONE">
+  <meta property="og:description" content="Insert, crop, and compress images directly for presentations with 16:9 widescreen presets and text readability enhancements.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="Image Manager - ALL IN ONE">
   <meta property="og:locale" content="en_US">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/image-manager/">
-  <meta name="twitter:title" content="Image Manager - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Insert, crop, and compress images directly inside presentations.">
+  <meta name="twitter:title" content="Image Manager - Slide Image Curator &amp; Cropper - ALL IN ONE">
+  <meta name="twitter:description" content="Insert, crop, and compress images directly for presentations with 16:9 widescreen presets and text readability enhancements.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="Image Manager - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
+
+  <style>
+    .im-workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+    @media (min-width: 1024px) {
+      .im-workspace {
+        grid-template-columns: 380px 1fr;
+      }
+    }
+
+    .im-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .preset-pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .preset-chip {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.45rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.825rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .preset-chip:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .preset-chip.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+      font-weight: 600;
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    .slider-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+    }
+    .slider-header span.val {
+      font-family: monospace;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .stage-container {
+      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.4) 100%), var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      min-height: 440px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stage-toolbar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      z-index: 10;
+    }
+
+    .badge-tag {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-size: 0.775rem;
+      font-family: monospace;
+      color: var(--text-secondary);
+    }
+
+    .viewport-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-width: 100%;
+      max-height: 540px;
+      width: 100%;
+      overflow: hidden;
+      border-radius: var(--radius-md);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.45);
+      border: 1px solid var(--border);
+      background: #000;
+    }
+
+    #studio-canvas {
+      display: block;
+      max-width: 100%;
+      max-height: 520px;
+      object-fit: contain;
+      cursor: grab;
+      touch-action: none;
+    }
+    #studio-canvas:active {
+      cursor: grabbing;
+    }
+
+    /* Live Presentation Slide Text Overlay */
+    .slide-text-preview {
+      position: absolute;
+      inset: 0;
+      padding: clamp(1rem, 4vw, 3rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      z-index: 5;
+    }
+    .slide-text-preview h2 {
+      font-size: clamp(1.2rem, 3.2vw, 2.5rem);
+      font-weight: 800;
+      line-height: 1.15;
+      color: #ffffff;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+      margin-bottom: 0.5rem;
+      font-family: var(--font-sans);
+    }
+    .slide-text-preview p {
+      font-size: clamp(0.85rem, 1.6vw, 1.15rem);
+      color: rgba(255,255,255,0.88);
+      text-shadow: 0 1px 6px rgba(0,0,0,0.8);
+      max-width: 80%;
+      line-height: 1.4;
+    }
+
+    .sample-pill-btn {
+      padding: 0.35rem 0.65rem;
+      font-size: 0.775rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .sample-pill-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    /* Toast Notification */
+    .app-toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      padding: 0.85rem 1.4rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      z-index: 1000;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .app-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+  </style>
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
@@ -48,31 +244,229 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Image Manager</h1>
-        <p class="tool-description">Insert, crop, and compress images directly inside presentations.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Image Manager</h1>
+        <p class="tool-description">Curate, crop, and optimize high-impact presentation imagery. Apply slide aspect ratios (16:9, 4:3, Banner), calibrate text readability dark overlays, and export ready-to-present visuals.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Image Manager</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Insert, crop, and compress images directly inside presentations.</div>
-            <div><strong>Inputs:</strong> slide, presentation, pitch, deck, image manager</div>
-            <div><strong>Category:</strong> slide</div>
+      <div class="im-workspace">
+        <!-- Sidebar Controls -->
+        <aside class="im-sidebar">
+          
+          <!-- Upload & Samples Card -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              Slide Source Image
+            </h2>
+            
+            <div class="file-drag-area" id="file-dropzone" style="padding: 1.5rem 1rem;">
+              <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 0.5rem; color: var(--accent);">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+              <p style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.25rem;">Drop slide image or browse</p>
+              <p style="font-size: 0.775rem; color: var(--text-tertiary); margin-bottom: 0.85rem;">PNG, JPG, WebP, SVG, AVIF</p>
+              <button type="button" class="btn btn-primary" id="browse-btn" style="padding: 0.4rem 1rem; font-size: 0.85rem;">
+                Select File
+              </button>
+              <input type="file" id="image-file-input" accept="image/*" style="display: none;">
+            </div>
+
+            <!-- Demo / Sample Presets -->
+            <div style="margin-top: 0.5rem;">
+              <span style="font-size: 0.75rem; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.4rem;">Or load slide background:</span>
+              <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                <button type="button" class="sample-pill-btn" id="sample-pitch">Executive Pitch</button>
+                <button type="button" class="sample-pill-btn" id="sample-tech">Tech Darkwave</button>
+                <button type="button" class="sample-pill-btn" id="sample-minimal">Studio Gradient</button>
+              </div>
+            </div>
           </div>
-        </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+          <!-- Aspect Ratio Presets -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+              Slide Aspect Ratio
+            </h2>
+            <div class="preset-pill-group">
+              <button type="button" class="preset-chip active" data-ratio="16/9">16:9 Widescreen</button>
+              <button type="button" class="preset-chip" data-ratio="4/3">4:3 Standard</button>
+              <button type="button" class="preset-chip" data-ratio="1/1">1:1 Square</button>
+              <button type="button" class="preset-chip" data-ratio="21/9">21:9 Ultra-Wide</button>
+              <button type="button" class="preset-chip" data-ratio="3/1">Banner / Header</button>
+              <button type="button" class="preset-chip" data-ratio="free">Freeform</button>
+            </div>
+          </div>
+
+          <!-- Visual Adjustments & Readability -->
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+              <h2 class="panel-title" style="border: none; padding: 0; margin: 0;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                Readability &amp; Style
+              </h2>
+              <button type="button" id="reset-adjustments-btn" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">Reset</button>
+            </div>
+
+            <!-- Dark Overlay (Crucial for Presentations) -->
+            <div class="slider-row" style="background: rgba(78, 133, 191, 0.08); padding: 0.65rem; border-radius: var(--radius-sm); border: 1px solid rgba(78, 133, 191, 0.2);">
+              <div class="slider-header">
+                <span style="font-weight: 600; color: var(--text-primary);">Dark Readability Scrim</span>
+                <span class="val" id="val-scrim">35%</span>
+              </div>
+              <input type="range" class="range-slider" id="adj-scrim" min="0" max="90" value="35">
+              <span style="font-size: 0.72rem; color: var(--text-tertiary);">Darkens photo so white presentation titles pop cleanly.</span>
+            </div>
+
+            <!-- Brightness -->
+            <div class="slider-row">
+              <div class="slider-header">
+                <span>Brightness</span>
+                <span class="val" id="val-brightness">100%</span>
+              </div>
+              <input type="range" class="range-slider" id="adj-brightness" min="40" max="160" value="100">
+            </div>
+
+            <!-- Contrast -->
+            <div class="slider-row">
+              <div class="slider-header">
+                <span>Contrast</span>
+                <span class="val" id="val-contrast">100%</span>
+              </div>
+              <input type="range" class="range-slider" id="adj-contrast" min="50" max="180" value="100">
+            </div>
+
+            <!-- Blur -->
+            <div class="slider-row">
+              <div class="slider-header">
+                <span>Background Blur</span>
+                <span class="val" id="val-blur">0px</span>
+              </div>
+              <input type="range" class="range-slider" id="adj-blur" min="0" max="25" value="0">
+            </div>
+
+            <!-- Grayscale -->
+            <div class="slider-row">
+              <div class="slider-header">
+                <span>Desaturate (B&amp;W)</span>
+                <span class="val" id="val-grayscale">0%</span>
+              </div>
+              <input type="range" class="range-slider" id="adj-grayscale" min="0" max="100" value="0">
+            </div>
+          </div>
+
+          <!-- Slide Typography Test Controls -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+              Slide Title Preview
+            </h2>
+            <label class="checkbox-label" style="min-height: auto; margin-bottom: 0.5rem;">
+              <input type="checkbox" id="toggle-slide-text" checked>
+              <span>Show Slide Typography Overlay</span>
+            </label>
+            <div class="form-group" style="gap: 0.35rem;">
+              <label for="slide-headline" style="font-size: 0.775rem;">Headline Text</label>
+              <input type="text" id="slide-headline" class="form-input" value="Strategic Market Vision 2026" style="padding: 0.5rem 0.75rem; font-size: 0.85rem;">
+            </div>
+            <div class="form-group" style="gap: 0.35rem;">
+              <label for="slide-subtext" style="font-size: 0.775rem;">Supporting Subtitle</label>
+              <input type="text" id="slide-subtext" class="form-input" value="Scaling global infrastructure with high-performance distributed systems" style="padding: 0.5rem 0.75rem; font-size: 0.85rem;">
+            </div>
+          </div>
+
+          <!-- Export Settings -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export Slide Image
+            </h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <label for="export-format" style="font-size: 0.775rem;">Format</label>
+                <select id="export-format" class="form-select" style="padding: 0.5rem 0.75rem; font-size: 0.85rem;">
+                  <option value="image/webp">WebP (Optimized)</option>
+                  <option value="image/png">PNG (Crisp)</option>
+                  <option value="image/jpeg">JPEG (Standard)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="export-resolution" style="font-size: 0.775rem;">Target Size</label>
+                <select id="export-resolution" class="form-select" style="padding: 0.5rem 0.75rem; font-size: 0.85rem;">
+                  <option value="1920">1080p FHD (1920px)</option>
+                  <option value="3840">4K Ultra HD (3840px)</option>
+                  <option value="1280">720p HD (1280px)</option>
+                  <option value="native">Native Cropped</option>
+                </select>
+              </div>
+            </div>
+
+            <label class="checkbox-label" style="min-height: auto; margin-top: 0.25rem;">
+              <input type="checkbox" id="burn-text-export">
+              <span style="font-size: 0.8rem;">Burn presentation text into exported image</span>
+            </label>
+
+            <div class="action-bar" style="margin-top: 0.75rem;">
+              <button type="button" class="btn btn-primary" id="download-btn" style="flex: 1; justify-content: center;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download Slide
+              </button>
+              <button type="button" class="btn btn-secondary" id="copy-btn" title="Copy to clipboard">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </button>
+            </div>
+          </div>
+
+        </aside>
+
+        <!-- Studio Canvas & Slide Preview Workspace -->
+        <section class="stage-container">
+          <!-- Stage Top Toolbar -->
+          <div class="stage-toolbar">
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+              <span class="badge-tag" id="badge-ratio">Aspect: 16:9</span>
+              <span class="badge-tag" id="badge-dims">1920 &times; 1080 px</span>
+              <span class="badge-tag" id="badge-zoom">Zoom: 100%</span>
+            </div>
+
+            <!-- Viewport helpers -->
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <button type="button" class="btn btn-secondary" id="zoom-out-btn" style="padding: 0.35rem 0.65rem;" title="Zoom out">-</button>
+              <button type="button" class="btn btn-secondary" id="zoom-in-btn" style="padding: 0.35rem 0.65rem;" title="Zoom in">+</button>
+              <button type="button" class="btn btn-secondary" id="fit-btn" style="padding: 0.35rem 0.65rem; font-size: 0.8rem;">Fit Center</button>
+              <button type="button" class="btn btn-secondary" id="toggle-grid-btn" style="padding: 0.35rem 0.65rem; font-size: 0.8rem;" title="Rule of thirds guide">Grid</button>
+            </div>
+          </div>
+
+          <!-- Visual Canvas Viewport -->
+          <div class="viewport-wrapper" id="viewport-box">
+            <canvas id="studio-canvas" width="1280" height="720"></canvas>
+
+            <!-- Slide Text Overlay -->
+            <div class="slide-text-preview" id="slide-text-overlay">
+              <h2 id="preview-headline">Strategic Market Vision 2026</h2>
+              <p id="preview-subtext">Scaling global infrastructure with high-performance distributed systems</p>
+            </div>
+          </div>
+
+          <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; color: var(--text-tertiary); font-size: 0.8rem; padding: 0 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+            <span>💡 <strong>Tip:</strong> Drag canvas to pan image position. Scroll wheel to zoom.</span>
+            <span id="file-meta-info">Ready</span>
+          </div>
+        </section>
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Toast Notification -->
+  <div class="app-toast" id="app-toast">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span id="toast-text">Slide image saved</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -84,10 +478,10 @@
     "@type": "WebApplication",
     "name": "Image Manager",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/image-manager/",
-    "description": "Insert, crop, and compress images directly inside presentations.",
-    "applicationCategory": "UtilityPage",
+    "description": "Presentation slide image curator & cropper studio with 16:9 aspect presets, text readability overlay, and optimized image export.",
+    "applicationCategory": "MultimediaApplication",
     "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
+    "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas."
   }
   </script>
 </body>

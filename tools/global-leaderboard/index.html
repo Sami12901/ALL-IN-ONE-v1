@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Global Leaderboard - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Enhance your skills with Global Leaderboard.">
-  <meta name="keywords" content="typing, keyboard, practice, free, online, tool, utility">
+  <title>Global Leaderboard - Hall of Fame & Ranking Suite - ALL IN ONE</title>
+  <meta name="description" content="Global typing speed leaderboard. Explore hall of fame rankings across Sprint, Standard, Quotes, and Code. Submit high scores, view percentile distribution, and export custom ranking badges.">
+  <meta name="keywords" content="typing leaderboard, typing rankings, wpm high score, typing hall of fame, percentile calculator, ranking badge export">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/global-leaderboard/">
 
@@ -13,10 +13,9 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/global-leaderboard/">
-  <meta property="og:title" content="Global Leaderboard - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Enhance your skills with Global Leaderboard.">
+  <meta property="og:title" content="Global Leaderboard - Hall of Fame & Ranking Suite - ALL IN ONE">
+  <meta property="og:description" content="Global typing speed leaderboard. Explore hall of fame rankings across Sprint, Standard, Quotes, and Code. Submit high scores, view percentile distribution, and export custom ranking badges.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta property="og:image:alt" content="Global Leaderboard - ALL IN ONE">
@@ -25,8 +24,8 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/global-leaderboard/">
-  <meta name="twitter:title" content="Global Leaderboard - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Enhance your skills with Global Leaderboard.">
+  <meta name="twitter:title" content="Global Leaderboard - ALL IN ONE">
+  <meta name="twitter:description" content="Global typing speed leaderboard. Submit high scores, view percentile rankings, and export luxury ranking badges.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="Global Leaderboard - ALL IN ONE">
 
@@ -36,6 +35,241 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+
+  <style>
+    /* Leaderboard Custom Styles */
+    .glb-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    /* Category Pill Navigation */
+    .glb-cat-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
+    }
+    .glb-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .glb-pill {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .glb-pill:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+    .glb-pill.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    /* Podium Top 3 Cards */
+    .glb-podium {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    @media (max-width: 768px) {
+      .glb-podium {
+        grid-template-columns: 1fr;
+      }
+    }
+    .podium-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+    .podium-box.rank-1 {
+      border-color: rgba(234, 179, 8, 0.4);
+      background: linear-gradient(180deg, rgba(234, 179, 8, 0.08) 0%, var(--surface) 100%);
+      transform: translateY(-4px);
+    }
+    .podium-box.rank-1::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: #eab308;
+    }
+    .podium-box.rank-2::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: #94a3b8;
+    }
+    .podium-box.rank-3::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: #d97706;
+    }
+    .top-crown {
+      font-size: 2rem;
+      margin-bottom: 0.35rem;
+    }
+    .top-name {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .top-wpm {
+      font-size: 2.2rem;
+      font-weight: 900;
+      line-height: 1;
+      margin: 0.5rem 0;
+      color: var(--accent);
+    }
+
+    /* Filter Bar */
+    .glb-filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.25rem;
+    }
+
+    /* Leaderboard Table */
+    .glb-table-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow-x: auto;
+      box-shadow: var(--shadow-sm);
+    }
+    .glb-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.925rem;
+    }
+    .glb-table th {
+      padding: 1rem 1.25rem;
+      background: var(--bg-tertiary);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+    .glb-table td {
+      padding: 0.95rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .glb-table tr:last-child td {
+      border-bottom: none;
+    }
+    .glb-table tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .glb-table tr.is-user {
+      background: rgba(78, 133, 191, 0.12);
+      font-weight: 700;
+    }
+
+    /* Percentile & Badge Generator Drawer / Modal */
+    .glb-split-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 900px) {
+      .glb-split-panel {
+        grid-template-columns: 1fr;
+      }
+    }
+    .glb-sub-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* Modal styling */
+    .glb-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .glb-modal.active {
+      display: flex;
+    }
+    .glb-modal-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 550px;
+      padding: 2rem;
+      position: relative;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Badge Preview Canvas */
+    #badgeCanvas {
+      width: 100%;
+      max-width: 480px;
+      height: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      display: block;
+      margin: 0 auto;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -49,30 +283,222 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Global Leaderboard</h1>
-        <p class="tool-description">Enhance your skills with Global Leaderboard.</p>
+        <p class="tool-description">The worldwide Hall of Fame for speed typists. Track top scores across 15s sprint, 60s standard, quotes, and code syntax. Test your ranking and export verified badges.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Global Leaderboard</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Enhance your skills with Global Leaderboard.</div>
-            <div><strong>Inputs:</strong> typing, keyboard, practice</div>
-            <div><strong>Category:</strong> typing</div>
+      <div class="glb-wrapper">
+        <!-- Category & Mode Bar -->
+        <div class="glb-cat-bar">
+          <div class="glb-pills" id="categoryPills">
+            <button class="glb-pill active" data-cat="sprint">⚡ 15s Sprint</button>
+            <button class="glb-pill" data-cat="standard">⏱️ 60s Standard</button>
+            <button class="glb-pill" data-cat="quotes">📜 Quote Endurance</button>
+            <button class="glb-pill" data-cat="code">💻 Code Syntax</button>
+          </div>
+          <div style="display: flex; gap: 0.75rem;">
+            <button id="openSubmitModalBtn" class="btn btn-primary" style="padding: 0.45rem 1rem; font-size: 0.85rem; font-weight: 700;">
+              ➕ Submit Your Score
+            </button>
+            <button id="openBadgeModalBtn" class="btn btn-outline" style="padding: 0.45rem 1rem; font-size: 0.85rem;">
+              🎖️ Export Badge
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Top 3 Podium Highlights -->
+        <div class="glb-podium" id="podiumHighlights">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Filter & Search Bar -->
+        <div class="glb-filter-bar">
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <label for="countryFilter" style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);">COUNTRY:</label>
+            <select id="countryFilter" class="form-select" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+              <option value="ALL">All Countries 🌍</option>
+              <option value="US">United States 🇺🇸</option>
+              <option value="JP">Japan 🇯🇵</option>
+              <option value="DE">Germany 🇩🇪</option>
+              <option value="GB">United Kingdom 🇬🇧</option>
+              <option value="KR">South Korea 🇰🇷</option>
+              <option value="CA">Canada 🇨🇦</option>
+              <option value="FR">France 🇫🇷</option>
+              <option value="BR">Brazil 🇧🇷</option>
+              <option value="AU">Australia 🇦🇺</option>
+            </select>
+
+            <label for="timeframeFilter" style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-left: 0.5rem;">TIMEFRAME:</label>
+            <select id="timeframeFilter" class="form-select" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+              <option value="all">All-Time</option>
+              <option value="month">This Month</option>
+              <option value="week">This Week</option>
+              <option value="today">Today</option>
+            </select>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <input type="text" id="searchInput" class="form-input" placeholder="Search typist..." style="width: 200px; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+          </div>
+        </div>
+
+        <!-- Leaderboard Table -->
+        <div class="glb-table-container">
+          <table class="glb-table">
+            <thead>
+              <tr>
+                <th style="width: 80px;">Rank</th>
+                <th>Typist</th>
+                <th>Country</th>
+                <th>WPM</th>
+                <th>Accuracy</th>
+                <th>Tier</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboardTbody">
+              <!-- Dynamically rendered -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Percentile Diagnostics & Quick Sprint Test -->
+        <div class="glb-split-panel">
+          <!-- Percentile & Global Standing Calculator -->
+          <div class="glb-sub-card">
+            <div>
+              <h2 style="font-family: var(--font-display); font-size: 1.35rem; margin-bottom: 0.25rem;">Global Percentile Calculator</h2>
+              <p style="color: var(--text-secondary); font-size: 0.825rem;">Enter your top WPM to evaluate where you rank among millions of typists worldwide.</p>
+            </div>
+            
+            <div style="display: flex; gap: 0.75rem; align-items: flex-end;">
+              <div class="form-group" style="flex: 1;">
+                <label for="calcWpmInput">Your WPM:</label>
+                <input type="number" id="calcWpmInput" class="form-input" value="95" min="10" max="250">
+              </div>
+              <button id="calculatePercentileBtn" class="btn btn-primary" style="padding: 0.75rem 1.25rem;">
+                Evaluate Rank
+              </button>
+            </div>
+
+            <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <span style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 700;">GLOBAL PERCENTILE</span>
+                <span class="badge" id="calcTierBadge" style="background: rgba(147, 51, 234, 0.2); color: #c084fc; font-weight: 700;">Grandmaster</span>
+              </div>
+              <div style="font-size: 1.85rem; font-weight: 900; color: var(--accent);" id="calcPercentileText">
+                Top 2.4% Worldwide
+              </div>
+              <p style="font-size: 0.8rem; color: var(--text-tertiary); margin-top: 0.35rem;" id="calcFeedback">
+                You are faster than 97.6% of typists. In the upper echelon of professional speed typists!
+              </p>
+            </div>
+          </div>
+
+          <!-- Quick 15s Benchmark Test -->
+          <div class="glb-sub-card">
+            <div>
+              <h2 style="font-family: var(--font-display); font-size: 1.35rem; margin-bottom: 0.25rem;">Quick 15s Test-to-Rank</h2>
+              <p style="color: var(--text-secondary); font-size: 0.825rem;">Benchmark your speed right now to qualify and auto-submit to the hall of fame.</p>
+            </div>
+
+            <div id="quickTestBox" style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); font-family: monospace; font-size: 1rem; line-height: 1.6; min-height: 80px; user-select: none;">
+              Click 'Start Warmup' to begin the 15-second benchmark sprint.
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+              <input type="text" id="quickTestInput" class="form-input" placeholder="Type here when active..." disabled autocomplete="off">
+              <button id="startQuickTestBtn" class="btn btn-outline" style="white-space: nowrap;">
+                ⏱️ Start Warmup
+              </button>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-secondary);">
+              <span>Time Left: <strong id="quickTestTimer" style="color: var(--text-primary);">15s</strong></span>
+              <span>Speed: <strong id="quickTestWpm" style="color: var(--accent);">0 WPM</strong></span>
+              <span>Acc: <strong id="quickTestAcc" style="color: var(--success);">100%</strong></span>
+            </div>
+          </div>
+        </div>
+
       </div>
-    
     </div>
   </main>
+
+  <!-- Submit Score Modal -->
+  <div class="glb-modal" id="submitScoreModal">
+    <div class="glb-modal-box">
+      <h2 style="font-family: var(--font-display); font-size: 1.6rem; margin-bottom: 0.25rem;">Submit High Score</h2>
+      <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1.25rem;">Add your benchmark score to the official worldwide hall of fame.</p>
+
+      <form id="submitScoreForm" style="display: flex; flex-direction: column; gap: 1rem;">
+        <div class="form-group">
+          <label for="submitName">Typist Handle / Nickname:</label>
+          <input type="text" id="submitName" class="form-input" placeholder="e.g. CyberSonic" required maxlength="20">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label for="submitCountry">Country:</label>
+            <select id="submitCountry" class="form-select">
+              <option value="US">United States 🇺🇸</option>
+              <option value="JP">Japan 🇯🇵</option>
+              <option value="DE">Germany 🇩🇪</option>
+              <option value="GB">United Kingdom 🇬🇧</option>
+              <option value="KR">South Korea 🇰🇷</option>
+              <option value="CA">Canada 🇨🇦</option>
+              <option value="FR">France 🇫🇷</option>
+              <option value="BR">Brazil 🇧🇷</option>
+              <option value="AU">Australia 🇦🇺</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="submitCategory">Category:</label>
+            <select id="submitCategory" class="form-select">
+              <option value="sprint">15s Sprint</option>
+              <option value="standard">60s Standard</option>
+              <option value="quotes">Quote Endurance</option>
+              <option value="code">Code Syntax</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label for="submitWpm">Speed (WPM):</label>
+            <input type="number" id="submitWpm" class="form-input" min="20" max="250" value="85" required>
+          </div>
+          <div class="form-group">
+            <label for="submitAccuracy">Accuracy (%):</label>
+            <input type="number" id="submitAccuracy" class="form-input" min="70" max="100" value="98" required>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1rem;">
+          <button type="button" id="closeSubmitModalBtn" class="btn btn-outline">Cancel</button>
+          <button type="submit" class="btn btn-primary">Submit to Leaderboard</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Export Badge Modal -->
+  <div class="glb-modal" id="badgeModal">
+    <div class="glb-modal-box" style="max-width: 580px; text-align: center;">
+      <h2 style="font-family: var(--font-display); font-size: 1.6rem; margin-bottom: 0.25rem;">Official Typist Badge</h2>
+      <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1.25rem;">High-resolution ranking card generated directly on canvas.</p>
+
+      <canvas id="badgeCanvas" width="800" height="450"></canvas>
+
+      <div style="display: flex; justify-content: center; gap: 0.75rem; margin-top: 1.5rem;">
+        <button id="downloadBadgeBtn" class="btn btn-primary">
+          💾 Download Badge (PNG)
+        </button>
+        <button id="closeBadgeModalBtn" class="btn btn-outline">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -84,8 +510,8 @@
     "@type": "WebApplication",
     "name": "Global Leaderboard",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/global-leaderboard/",
-    "description": "Enhance your skills with Global Leaderboard.",
-    "applicationCategory": "UtilityPage",
+    "description": "Global typing speed hall of fame and ranking suite with percentile diagnostics and badge export.",
+    "applicationCategory": "GameApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

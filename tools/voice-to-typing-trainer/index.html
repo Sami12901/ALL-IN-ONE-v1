@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Voice to Typing Trainer - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Enhance your skills with Voice to Typing Trainer.">
-  <meta name="keywords" content="typing, keyboard, practice, free, online, tool, utility">
+  <title>Voice to Typing Trainer - Audio Dictation Practice - ALL IN ONE</title>
+  <meta name="description" content="Audio dictation typing practice powered by Web Speech Synthesis. Listen and type what you hear at adjustable speaking rates, track transcription accuracy, and build listening comprehension.">
+  <meta name="keywords" content="voice to typing, audio dictation typing, transcription practice, speech synthesis typing trainer, listening comprehension typing">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/voice-to-typing-trainer/">
 
@@ -13,10 +13,9 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/voice-to-typing-trainer/">
-  <meta property="og:title" content="Voice to Typing Trainer - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Enhance your skills with Voice to Typing Trainer.">
+  <meta property="og:title" content="Voice to Typing Trainer - Audio Dictation Practice - ALL IN ONE">
+  <meta property="og:description" content="Audio dictation typing practice powered by Web Speech Synthesis. Listen and type what you hear at adjustable speaking rates, track transcription accuracy, and build listening comprehension.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta property="og:image:alt" content="Voice to Typing Trainer - ALL IN ONE">
@@ -25,8 +24,8 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/voice-to-typing-trainer/">
-  <meta name="twitter:title" content="Voice to Typing Trainer - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Enhance your skills with Voice to Typing Trainer.">
+  <meta name="twitter:title" content="Voice to Typing Trainer - ALL IN ONE">
+  <meta name="twitter:description" content="Audio dictation typing practice with Web Speech API. Track transcription accuracy, WPM, and listening comprehension index.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="Voice to Typing Trainer - ALL IN ONE">
 
@@ -36,6 +35,192 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+
+  <style>
+    /* Voice Trainer Custom Styles */
+    .vt-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    /* Audio Player Card */
+    .vt-player-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+    .vt-player-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #8b5cf6, #38bdf8);
+    }
+
+    /* Waveform Animation */
+    .waveform-visualizer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 54px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      padding: 0 1.5rem;
+      border: 1px solid var(--border);
+    }
+    .wave-bar {
+      width: 6px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 3px;
+      transition: height 0.15s ease;
+    }
+    .is-speaking .wave-bar {
+      animation: wavePulse 0.8s ease-in-out infinite alternate;
+    }
+    .is-speaking .wave-bar:nth-child(2) { animation-delay: 0.1s; }
+    .is-speaking .wave-bar:nth-child(3) { animation-delay: 0.25s; }
+    .is-speaking .wave-bar:nth-child(4) { animation-delay: 0.4s; }
+    .is-speaking .wave-bar:nth-child(5) { animation-delay: 0.15s; }
+    .is-speaking .wave-bar:nth-child(6) { animation-delay: 0.3s; }
+    .is-speaking .wave-bar:nth-child(7) { animation-delay: 0.45s; }
+    .is-speaking .wave-bar:nth-child(8) { animation-delay: 0.2s; }
+
+    @keyframes wavePulse {
+      0% { height: 8px; background: #38bdf8; }
+      50% { height: 38px; background: #8b5cf6; }
+      100% { height: 16px; background: #38bdf8; }
+    }
+
+    /* Player Controls Bar */
+    .vt-controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    /* Rate Pills */
+    .rate-pill-group {
+      display: inline-flex;
+      background: var(--bg-tertiary);
+      padding: 4px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border);
+    }
+    .rate-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 5px 12px;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .rate-btn.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* Transcription Workspace */
+    .transcription-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .vt-textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 1rem 1.25rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: 'SF Mono', Consolas, Monaco, monospace;
+      font-size: 1.15rem;
+      line-height: 1.8;
+      resize: vertical;
+      transition: var(--transition);
+    }
+    .vt-textarea:focus {
+      border-color: var(--accent);
+      outline: none;
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    /* Peek Box */
+    .peek-transcript-box {
+      background: var(--bg-tertiary);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      filter: blur(5px);
+      user-select: none;
+      transition: filter 0.3s ease;
+    }
+    .peek-transcript-box.revealed {
+      filter: blur(0);
+      user-select: auto;
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    /* Telemetry HUD */
+    .vt-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+    }
+    .vt-stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .vt-stat-val {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    /* Comparison Diff Display */
+    .diff-display-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      font-family: monospace;
+      font-size: 1.05rem;
+      line-height: 1.8;
+    }
+    .word-match { color: var(--success); font-weight: 700; }
+    .word-mismatch { color: var(--error); text-decoration: line-through; margin-right: 4px; }
+    .word-correction { color: var(--accent); font-weight: 700; margin-right: 6px; }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -49,28 +234,136 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Voice to Typing Trainer</h1>
-        <p class="tool-description">Enhance your skills with Voice to Typing Trainer.</p>
+        <p class="tool-description">Hone auditory transcription and rapid listening comprehension. Listen to spoken passages synthesized sentence-by-sentence, transcribe in real time, and measure phonetic precision.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Voice to Typing Trainer</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Enhance your skills with Voice to Typing Trainer.</div>
-            <div><strong>Inputs:</strong> typing, keyboard, practice</div>
-            <div><strong>Category:</strong> typing</div>
+      <div class="vt-wrapper">
+        <!-- Audio Dictation Player Panel -->
+        <div class="vt-player-card">
+          <!-- Top Row: Category & Voice Setup -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+              <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);">DICTATION CATEGORY:</span>
+              <select id="vtCategorySelect" class="form-select" style="width: auto; padding: 0.4rem 0.85rem; font-size: 0.85rem;">
+                <option value="business">Executive & Business Briefings</option>
+                <option value="medical">Medical & Clinical Transcription</option>
+                <option value="legal">Legal Depositions & Contracts</option>
+                <option value="tech">Tech Keynotes & Systems Engineering</option>
+                <option value="literature">Classic Literature & Historic Speeches</option>
+              </select>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);">VOICE:</span>
+              <select id="vtVoiceSelect" class="form-select" style="width: 220px; padding: 0.4rem 0.75rem; font-size: 0.85rem;">
+                <option value="">Default Speech Voice</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Waveform Visualizer -->
+          <div class="waveform-visualizer" id="waveformVisualizer">
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+          </div>
+
+          <!-- Controls Bar -->
+          <div class="vt-controls-bar">
+            <!-- Speaking Rate Presets -->
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);">SPEED:</span>
+              <div class="rate-pill-group">
+                <button class="rate-btn" data-rate="0.75">Slow (0.75x)</button>
+                <button class="rate-btn active" data-rate="1.0">Normal (1.0x)</button>
+                <button class="rate-btn" data-rate="1.25">Fast (1.25x)</button>
+                <button class="rate-btn" data-rate="1.5">Hyper (1.5x)</button>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+              <button id="vtPlayAudioBtn" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-weight: 700;">
+                🔊 Play Audio
+              </button>
+              <button id="vtReplayBtn" class="btn btn-outline" style="padding: 0.5rem 1rem;">
+                🔁 Replay Sentence
+              </button>
+              <button id="vtPeekBtn" class="btn btn-outline" style="padding: 0.5rem 1rem;">
+                👁️ Peek Transcript
+              </button>
+            </div>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Telemetry HUD Grid -->
+        <div class="vt-metrics-grid">
+          <div class="vt-stat-card">
+            <span style="font-size: 0.7rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase;">Sentence Progress</span>
+            <div class="vt-stat-val" id="hudSentenceProgress" style="color: var(--accent);">1 / 4</div>
+          </div>
+          <div class="vt-stat-card">
+            <span style="font-size: 0.7rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase;">Transcription Acc</span>
+            <div class="vt-stat-val" id="hudAccuracy" style="color: var(--success);">100%</div>
+          </div>
+          <div class="vt-stat-card">
+            <span style="font-size: 0.7rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase;">Typing Speed</span>
+            <div class="vt-stat-val" id="hudWpm">0 WPM</div>
+          </div>
+          <div class="vt-stat-card">
+            <span style="font-size: 0.7rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase;">Audio Replays</span>
+            <div class="vt-stat-val" id="hudReplays" style="color: #f59e0b;">0</div>
+          </div>
+          <div class="vt-stat-card">
+            <span style="font-size: 0.7rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase;">Comprehension Index</span>
+            <div class="vt-stat-val" id="hudComprehension" style="color: #c084fc;">98 / 100</div>
+          </div>
+        </div>
+
+        <!-- Transcription Area -->
+        <div class="transcription-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label for="vtTypingInput" style="font-weight: 700; font-size: 1rem;">Type What You Hear:</label>
+            <span style="font-size: 0.75rem; color: var(--text-tertiary);">Press Enter or click 'Submit Sentence' when done</span>
+          </div>
+
+          <textarea id="vtTypingInput" class="vt-textarea" placeholder="Listen to the voice audio and type the spoken sentence here..."></textarea>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <button id="vtClearBtn" class="btn btn-outline" style="padding: 0.5rem 1rem;">
+              Clear Input
+            </button>
+            <div style="display: flex; gap: 0.75rem;">
+              <button id="vtSubmitSentenceBtn" class="btn btn-primary" style="padding: 0.5rem 1.5rem; font-weight: 700;">
+                ✓ Submit Sentence
+              </button>
+              <button id="vtNextSentenceBtn" class="btn btn-outline" style="padding: 0.5rem 1.25rem;">
+                Next Sentence ➔
+              </button>
+            </div>
+          </div>
+
+          <!-- Peek / Hidden Transcript Box -->
+          <div style="margin-top: 0.5rem;">
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 0.4rem;">Spoken Reference (Peeked):</div>
+            <div class="peek-transcript-box" id="peekTranscriptBox">
+              Click 'Peek Transcript' above if you need assistance hearing the words.
+            </div>
+          </div>
+
+          <!-- Diff Comparison Feedback -->
+          <div id="diffContainer" style="display: none; margin-top: 1rem;">
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 0.4rem;">Transcription Analysis:</div>
+            <div class="diff-display-box" id="diffDisplay"></div>
+          </div>
+        </div>
+
       </div>
-    
     </div>
   </main>
 
@@ -84,8 +377,8 @@
     "@type": "WebApplication",
     "name": "Voice to Typing Trainer",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/voice-to-typing-trainer/",
-    "description": "Enhance your skills with Voice to Typing Trainer.",
-    "applicationCategory": "UtilityPage",
+    "description": "Audio dictation typing practice powered by Web Speech Synthesis with real-time accuracy and listening comprehension scoring.",
+    "applicationCategory": "EducationalApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

@@ -54,21 +54,241 @@
 
       <!-- Tool Workspace -->
       
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Podcast Editor</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Cut, trim, merge, and normalize podcast audio files.</div>
-            <div><strong>Inputs:</strong> audio, music, sound, podcast editor</div>
-            <div><strong>Category:</strong> audio</div>
+      <!-- Tool Workspace -->
+      <div class="podcast-workspace">
+        <!-- Top Project Toolbar -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+            <button id="btn-load-demo" class="btn btn-secondary" title="Load sample 3-track podcast session with intro, voice, and outro">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+              Load Sample Episode
+            </button>
+            <button id="btn-clear-project" class="btn btn-secondary" style="color: var(--error);" title="Clear all tracks">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              Clear Project
+            </button>
+          </div>
+          <div style="display: flex; gap: 0.75rem; align-items: center; font-size: 0.875rem; color: var(--text-secondary); font-family: monospace;">
+            <span class="badge" id="episode-duration-badge" style="background: var(--bg-tertiary); border: 1px solid var(--border); padding: 0.35rem 0.75rem; border-radius: var(--radius-full); font-weight: 700; color: var(--text-primary);">Total Duration: 00:00.000</span>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Multi-Track Canvas Timeline Stage -->
+        <div class="tool-panel glass-panel" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+            <h3 style="font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+              Multi-Track Episode Timeline
+            </h3>
+            <div style="font-family: monospace; font-size: 0.85rem; color: var(--text-secondary);">
+              <span id="timeline-current-time">00:00.000</span> / <span id="timeline-total-time">00:00.000</span>
+            </div>
+          </div>
+
+          <!-- Timeline Container -->
+          <div id="timeline-wrapper" style="position: relative; width: 100%; height: 160px; background: rgba(5, 8, 14, 0.85); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; cursor: crosshair;">
+            <canvas id="timeline-canvas" style="width: 100%; height: 100%; display: block;"></canvas>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-tertiary); font-family: monospace;">
+            <span>00:00</span>
+            <span>Click timeline to scrub playhead</span>
+            <span id="timeline-end-tick">00:00</span>
+          </div>
+
+          <!-- Playback Toolbar -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.25rem;">
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+              <button id="btn-play-episode" class="btn btn-primary" style="font-size: 1rem; padding: 0.75rem 1.25rem;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                <span>Play Episode Preview</span>
+              </button>
+              <button id="btn-stop-episode" class="btn btn-secondary">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="6" y="6" width="12" height="12"></rect></svg>
+                <span>Stop</span>
+              </button>
+            </div>
+
+            <!-- Ducking & Master Settings -->
+            <div style="display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;">
+              <label class="checkbox-label" style="min-height: auto;">
+                <input type="checkbox" id="check-auto-duck" checked>
+                <span style="font-size: 0.85rem; font-weight: 600; color: #10b981;">Smart Voice Ducking (Lower music 70% under voice)</span>
+              </label>
+              <button id="btn-export-episode" class="btn btn-primary" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span>Export Master Episode (.WAV)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Export Result Panel -->
+          <div id="export-panel" style="display: none; margin-top: 1.25rem; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: var(--radius-md); padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+              <div style="font-weight: 600; color: var(--success); display: flex; align-items: center; gap: 0.4rem;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Podcast Episode Mastered!
+              </div>
+              <span id="export-details" style="font-size: 0.8rem; font-family: monospace; color: var(--text-secondary);"></span>
+            </div>
+            <audio id="export-audio-player" controls style="width: 100%; border-radius: var(--radius-sm); margin-bottom: 0.75rem;"></audio>
+            <div style="display: flex; justify-content: flex-end;">
+              <a id="download-episode-link" class="btn btn-primary" download="podcast_episode_master.wav" style="text-decoration: none;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download Master Episode (.WAV)
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 Audio Track Strips: Intro, Voiceover, Outro -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+          
+          <!-- Track 1: Intro Music -->
+          <div class="tool-panel glass-panel" style="padding: 1.5rem; border-top: 4px solid #06b6d4; display: flex; flex-direction: column; gap: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-weight: 700; color: #06b6d4; font-size: 0.9rem; font-family: monospace;">TRACK 1</span>
+                <h4 style="margin: 0; font-size: 1.05rem;">Intro Music</h4>
+              </div>
+              <span class="meta-tag" id="intro-status" style="font-size: 0.75rem; background: var(--bg-tertiary); padding: 0.2rem 0.5rem; border-radius: var(--radius-full); border: 1px solid var(--border);">No audio</span>
+            </div>
+
+            <!-- Upload / Select -->
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="button" class="btn btn-secondary" style="flex: 1; font-size: 0.8rem; padding: 0.45rem;" onclick="document.getElementById('file-intro').click()">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                Upload Audio
+              </button>
+              <input type="file" id="file-intro" accept="audio/*" style="display: none;">
+            </div>
+
+            <!-- Track Parameters -->
+            <div class="form-group">
+              <div style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                <label for="intro-vol">Volume</label>
+                <span id="intro-vol-val" style="font-family: monospace; font-weight: 600;">85%</span>
+              </div>
+              <input type="range" class="range-slider" id="intro-vol" min="0" max="1.5" step="0.05" value="0.85">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <label for="intro-offset" style="font-size: 0.8rem;">Start Offset (s)</label>
+                <input type="number" id="intro-offset" class="form-input" value="0.0" min="0" step="0.5" style="padding: 0.4rem 0.6rem; font-size: 0.85rem;">
+              </div>
+              <div class="form-group">
+                <label for="intro-fadeout" style="font-size: 0.8rem;">Fade Out (s)</label>
+                <input type="number" id="intro-fadeout" class="form-input" value="1.5" min="0" step="0.5" style="padding: 0.4rem 0.6rem; font-size: 0.85rem;">
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 0.5rem; border-top: 1px solid var(--border);">
+              <label class="checkbox-label" style="font-size: 0.8rem; min-height: auto;">
+                <input type="checkbox" id="intro-mute">
+                <span>Mute Track</span>
+              </label>
+              <span id="intro-time-info" style="font-size: 0.75rem; font-family: monospace; color: var(--text-tertiary);">0.0s</span>
+            </div>
+          </div>
+
+          <!-- Track 2: Voiceover / Speech -->
+          <div class="tool-panel glass-panel" style="padding: 1.5rem; border-top: 4px solid #10b981; display: flex; flex-direction: column; gap: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-weight: 700; color: #10b981; font-size: 0.9rem; font-family: monospace;">TRACK 2</span>
+                <h4 style="margin: 0; font-size: 1.05rem;">Voiceover Dialogue</h4>
+              </div>
+              <span class="meta-tag" id="voice-status" style="font-size: 0.75rem; background: var(--bg-tertiary); padding: 0.2rem 0.5rem; border-radius: var(--radius-full); border: 1px solid var(--border);">No audio</span>
+            </div>
+
+            <!-- Upload / Record -->
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="button" class="btn btn-secondary" style="flex: 1; font-size: 0.8rem; padding: 0.45rem;" onclick="document.getElementById('file-voice').click()">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                Upload Audio
+              </button>
+              <input type="file" id="file-voice" accept="audio/*" style="display: none;">
+            </div>
+
+            <!-- Track Parameters -->
+            <div class="form-group">
+              <div style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                <label for="voice-vol">Volume</label>
+                <span id="voice-vol-val" style="font-family: monospace; font-weight: 600;">100%</span>
+              </div>
+              <input type="range" class="range-slider" id="voice-vol" min="0" max="1.5" step="0.05" value="1.0">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <label for="voice-offset" style="font-size: 0.8rem;">Start Offset (s)</label>
+                <input type="number" id="voice-offset" class="form-input" value="1.5" min="0" step="0.5" style="padding: 0.4rem 0.6rem; font-size: 0.85rem;">
+              </div>
+              <div class="form-group">
+                <label for="voice-trim-start" style="font-size: 0.8rem;">Trim Start (s)</label>
+                <input type="number" id="voice-trim-start" class="form-input" value="0.0" min="0" step="0.5" style="padding: 0.4rem 0.6rem; font-size: 0.85rem;">
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 0.5rem; border-top: 1px solid var(--border);">
+              <label class="checkbox-label" style="font-size: 0.8rem; min-height: auto;">
+                <input type="checkbox" id="voice-mute">
+                <span>Mute Track</span>
+              </label>
+              <span id="voice-time-info" style="font-size: 0.75rem; font-family: monospace; color: var(--text-tertiary);">0.0s</span>
+            </div>
+          </div>
+
+          <!-- Track 3: Outro Music -->
+          <div class="tool-panel glass-panel" style="padding: 1.5rem; border-top: 4px solid #8b5cf6; display: flex; flex-direction: column; gap: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-weight: 700; color: #8b5cf6; font-size: 0.9rem; font-family: monospace;">TRACK 3</span>
+                <h4 style="margin: 0; font-size: 1.05rem;">Outro Music</h4>
+              </div>
+              <span class="meta-tag" id="outro-status" style="font-size: 0.75rem; background: var(--bg-tertiary); padding: 0.2rem 0.5rem; border-radius: var(--radius-full); border: 1px solid var(--border);">No audio</span>
+            </div>
+
+            <!-- Upload / Select -->
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="button" class="btn btn-secondary" style="flex: 1; font-size: 0.8rem; padding: 0.45rem;" onclick="document.getElementById('file-outro').click()">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                Upload Audio
+              </button>
+              <input type="file" id="file-outro" accept="audio/*" style="display: none;">
+            </div>
+
+            <!-- Track Parameters -->
+            <div class="form-group">
+              <div style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                <label for="outro-vol">Volume</label>
+                <span id="outro-vol-val" style="font-family: monospace; font-weight: 600;">80%</span>
+              </div>
+              <input type="range" class="range-slider" id="outro-vol" min="0" max="1.5" step="0.05" value="0.8">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <label for="outro-offset" style="font-size: 0.8rem;">Start Offset (s)</label>
+                <input type="number" id="outro-offset" class="form-input" value="6.0" min="0" step="0.5" style="padding: 0.4rem 0.6rem; font-size: 0.85rem;">
+              </div>
+              <div class="form-group">
+                <label for="outro-fadein" style="font-size: 0.8rem;">Fade In (s)</label>
+                <input type="number" id="outro-fadein" class="form-input" value="1.0" min="0" step="0.5" style="padding: 0.4rem 0.6rem; font-size: 0.85rem;">
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 0.5rem; border-top: 1px solid var(--border);">
+              <label class="checkbox-label" style="font-size: 0.8rem; min-height: auto;">
+                <input type="checkbox" id="outro-mute">
+                <span>Mute Track</span>
+              </label>
+              <span id="outro-time-info" style="font-size: 0.75rem; font-family: monospace; color: var(--text-tertiary);">0.0s</span>
+            </div>
+          </div>
+
+        </div>
       </div>
     
     </div>

@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Video Slides - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Embed videos and YouTube links into your presentations.">
-  <meta name="keywords" content="slide, presentation, pitch, deck, video slides, free, online, tool, utility">
+  <title>Video Slides - Multimedia Presentation Slide Designer - ALL IN ONE</title>
+  <meta name="description" content="Embed videos into 16:9 presentation slides with glassmorphic, laptop, and phone mockups, customizable bullet points, playback controls, and slide export.">
+  <meta name="keywords" content="slide, presentation, pitch, deck, video slides, mockups, laptop frame, phone mockup, multimedia presentation, free, online, tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/video-slides/">
 
@@ -13,27 +13,408 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/video-slides/">
-  <meta property="og:title" content="Video Slides - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Embed videos and YouTube links into your presentations.">
+  <meta property="og:title" content="Video Slides - Multimedia Presentation Slide Designer - ALL IN ONE">
+  <meta property="og:description" content="Embed video clips into 16:9 presentation slide frames with laptop mockups, speaker notes, and presentation mode.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="Video Slides - ALL IN ONE">
   <meta property="og:locale" content="en_US">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/video-slides/">
-  <meta name="twitter:title" content="Video Slides - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Embed videos and YouTube links into your presentations.">
+  <meta name="twitter:title" content="Video Slides - Multimedia Presentation Slide Designer - ALL IN ONE">
+  <meta name="twitter:description" content="Embed video clips into 16:9 presentation slide frames with laptop mockups, speaker notes, and presentation mode.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="Video Slides - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .vs-workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+    @media (min-width: 1024px) {
+      .vs-workspace {
+        grid-template-columns: 380px 1fr;
+      }
+    }
+
+    .vs-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .frame-pill-group, .layout-pill-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+      gap: 0.5rem;
+    }
+
+    .mode-chip {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.5rem 0.65rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      text-align: center;
+    }
+    .mode-chip:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .mode-chip.active {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Presentation Slide Stage (16:9 Aspect Ratio) */
+    .slide-stage-outer {
+      background: #08080a;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: clamp(0.75rem, 2vw, 1.5rem);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+      width: 100%;
+    }
+
+    .slide-viewport-16-9 {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: radial-gradient(circle at 70% 30%, #151928 0%, #07090e 100%);
+      border-radius: var(--radius-md);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      padding: clamp(1rem, 3vw, 2.5rem);
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+
+    /* Slide Layout Variants */
+    .slide-viewport-16-9.layout-split-left {
+      flex-direction: row;
+      align-items: center;
+      gap: clamp(1rem, 3vw, 2.5rem);
+    }
+    .slide-viewport-16-9.layout-split-right {
+      flex-direction: row-reverse;
+      align-items: center;
+      gap: clamp(1rem, 3vw, 2.5rem);
+    }
+    .slide-viewport-16-9.layout-stacked {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.25rem;
+      text-align: center;
+    }
+    .slide-viewport-16-9.layout-backdrop {
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: clamp(1.5rem, 4vw, 3rem);
+    }
+
+    /* Slide Text Section */
+    .slide-text-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.75rem;
+      z-index: 5;
+    }
+    .slide-category-pill {
+      align-self: flex-start;
+      padding: 0.2rem 0.65rem;
+      border-radius: var(--radius-full);
+      background: rgba(78, 133, 191, 0.2);
+      border: 1px solid rgba(78, 133, 191, 0.4);
+      color: var(--accent);
+      font-size: clamp(0.65rem, 1vw, 0.75rem);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .slide-heading-text {
+      font-family: var(--font-sans);
+      font-size: clamp(1.2rem, 2.8vw, 2.2rem);
+      font-weight: 800;
+      line-height: 1.2;
+      color: #ffffff;
+      margin: 0;
+    }
+    .slide-subheading-text {
+      font-size: clamp(0.8rem, 1.5vw, 1.05rem);
+      color: rgba(255, 255, 255, 0.75);
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .slide-bullet-list {
+      list-style: none;
+      padding: 0;
+      margin: 0.35rem 0 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+    .slide-bullet-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      font-size: clamp(0.75rem, 1.3vw, 0.925rem);
+      color: rgba(255, 255, 255, 0.88);
+      line-height: 1.35;
+    }
+    .slide-bullet-dot {
+      color: var(--accent);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* Video Frame Container */
+    .slide-media-col {
+      flex: 1.2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      position: relative;
+    }
+
+    /* Frame Mockups */
+    /* 1. Glassmorphic Bezel */
+    .frame-glassmorphic {
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(12px);
+      border-radius: var(--radius-lg);
+      padding: 0.75rem;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.2);
+      width: 100%;
+      max-width: 520px;
+    }
+    .frame-glassmorphic video {
+      border-radius: var(--radius-sm);
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      background: #000;
+    }
+
+    /* 2. Laptop Mockup */
+    .frame-laptop {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .laptop-screen {
+      background: #111;
+      border: 8px solid #222;
+      border-radius: 10px 10px 2px 2px;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.6);
+    }
+    .laptop-notch {
+      position: absolute;
+      top: 3px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 4px;
+      background: #444;
+      border-radius: 50%;
+      z-index: 10;
+    }
+    .laptop-screen video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .laptop-base {
+      width: 114%;
+      height: 10px;
+      background: #2b2b30;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      position: relative;
+    }
+    .laptop-notch-cutout {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 3px;
+      background: #1b1b1e;
+      border-radius: 0 0 4px 4px;
+    }
+
+    /* 3. Phone Mockup */
+    .frame-phone {
+      width: 100%;
+      max-width: 220px;
+      background: #16161a;
+      border: 7px solid #2a2a32;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 14px 36px rgba(0,0,0,0.65);
+      position: relative;
+      aspect-ratio: 9 / 19;
+    }
+    .phone-island {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 44px;
+      height: 12px;
+      background: #000;
+      border-radius: 9999px;
+      z-index: 10;
+    }
+    .frame-phone video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* 4. Browser Mockup */
+    .frame-browser {
+      background: #181920;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      overflow: hidden;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.55);
+    }
+    .browser-header-bar {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 10px;
+      background: #121318;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .browser-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .frame-browser video {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* 5. Borderless */
+    .frame-borderless {
+      width: 100%;
+      max-width: 520px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.5);
+    }
+    .frame-borderless video {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Backdrop Mode Video */
+    .slide-viewport-16-9.layout-backdrop .slide-media-col {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+    }
+    .slide-viewport-16-9.layout-backdrop .slide-media-col video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .slide-viewport-16-9.layout-backdrop .backdrop-dim {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(5,6,10,0.85) 100%);
+      z-index: 2;
+    }
+    .slide-viewport-16-9.layout-backdrop .slide-text-col {
+      background: rgba(15, 20, 30, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      max-width: 640px;
+      z-index: 5;
+    }
+
+    /* Fullscreen Mode */
+    .fullscreen-slide-overlay {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .fullscreen-slide-overlay.active {
+      display: flex;
+    }
+    .fullscreen-exit-btn {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      z-index: 100;
+      font-size: 0.85rem;
+    }
+    .fullscreen-exit-btn:hover {
+      background: rgba(255,255,255,0.25);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -48,31 +429,248 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Video Slides</h1>
-        <p class="tool-description">Embed videos and YouTube links into your presentations.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Video Slides</h1>
+        <p class="tool-description">Create engaging multimedia presentation slides. Embed high-definition video clips into glassmorphic bezels, laptop mockups, and mobile frames with customizable speaker takeaways and interactive playback.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Video Slides</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Embed videos and YouTube links into your presentations.</div>
-            <div><strong>Inputs:</strong> slide, presentation, pitch, deck, video slides</div>
-            <div><strong>Category:</strong> slide</div>
+      <div class="vs-workspace">
+        <!-- Sidebar Controls -->
+        <aside class="vs-sidebar">
+          
+          <!-- Video Source Panel -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
+              Video Source
+            </h2>
+
+            <div class="file-drag-area" id="video-dropzone" style="padding: 1.25rem 0.75rem;">
+              <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent); margin-bottom: 0.25rem;">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              <p style="font-weight: 600; font-size: 0.85rem; margin-bottom: 0.2rem;">Drop video clip or browse</p>
+              <p style="font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 0.6rem;">MP4, WebM, MOV</p>
+              <button type="button" class="btn btn-primary" id="video-browse-btn" style="padding: 0.35rem 0.85rem; font-size: 0.8rem;">
+                Select Video File
+              </button>
+              <input type="file" id="video-file-input" accept="video/mp4,video/webm,video/ogg,video/quicktime" style="display: none;">
+            </div>
+
+            <div style="margin-top: 0.5rem;">
+              <span style="font-size: 0.75rem; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.35rem;">Or try sample video stream:</span>
+              <div style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
+                <button type="button" class="sample-pill-btn" id="demo-tech-btn">AI Neural Network</button>
+                <button type="button" class="sample-pill-btn" id="demo-orbit-btn">Orbital Sphere</button>
+                <button type="button" class="sample-pill-btn" id="demo-waves-btn">Cyber Matrix</button>
+              </div>
+            </div>
           </div>
-        </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+          <!-- Mockup Frame Border Style -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+              Device Frame Mockup
+            </h2>
+            <div class="frame-pill-group">
+              <button type="button" class="mode-chip active" data-frame="glassmorphic">
+                <span>Glass Bezel</span>
+              </button>
+              <button type="button" class="mode-chip" data-frame="laptop">
+                <span>Laptop</span>
+              </button>
+              <button type="button" class="mode-chip" data-frame="phone">
+                <span>Phone</span>
+              </button>
+              <button type="button" class="mode-chip" data-frame="browser">
+                <span>Browser</span>
+              </button>
+              <button type="button" class="mode-chip" data-frame="borderless">
+                <span>Borderless</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Slide Layout Selection -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="3" x2="12" y2="21"></line></svg>
+              Slide Layout
+            </h2>
+            <div class="layout-pill-group">
+              <button type="button" class="mode-chip active" data-layout="layout-split-left">
+                <span>Text / Video</span>
+              </button>
+              <button type="button" class="mode-chip" data-layout="layout-split-right">
+                <span>Video / Text</span>
+              </button>
+              <button type="button" class="mode-chip" data-layout="layout-stacked">
+                <span>Centered</span>
+              </button>
+              <button type="button" class="mode-chip" data-layout="layout-backdrop">
+                <span>Backdrop</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Slide Text & Speaker Notes -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+              Slide Content &amp; Points
+            </h2>
+
+            <div class="form-group">
+              <label for="input-badge" style="font-size: 0.775rem;">Category Tag</label>
+              <input type="text" id="input-badge" class="form-input" value="PRODUCT DEMO" style="padding: 0.45rem 0.75rem; font-size: 0.825rem;">
+            </div>
+
+            <div class="form-group">
+              <label for="input-title" style="font-size: 0.775rem;">Slide Headline</label>
+              <input type="text" id="input-title" class="form-input" value="Real-Time Neural Inference" style="padding: 0.45rem 0.75rem; font-size: 0.85rem;">
+            </div>
+
+            <div class="form-group">
+              <label for="input-subtitle" style="font-size: 0.775rem;">Subtitle / Context</label>
+              <textarea id="input-subtitle" class="form-textarea" style="min-height: 55px; padding: 0.45rem 0.75rem; font-size: 0.825rem; font-family: var(--font-sans);">Accelerating deep neural models across cloud edge clusters with sub-millisecond response latency.</textarea>
+            </div>
+
+            <div class="form-group">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label style="font-size: 0.775rem;">Bullet Points (One per line)</label>
+              </div>
+              <textarea id="input-bullets" class="form-textarea" style="min-height: 80px; padding: 0.45rem 0.75rem; font-size: 0.825rem; font-family: var(--font-sans);">99.98% High-availability uptime SLA
+Zero packet drop over distributed webhooks
+Instant automated scaling during peak load spikes</textarea>
+            </div>
+          </div>
+
+          <!-- Video Playback Controller -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+              Slide Playback Controls
+            </h2>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <label class="checkbox-label" style="min-height: auto;">
+                <input type="checkbox" id="ctrl-autoplay" checked>
+                <span style="font-size: 0.825rem;">Autoplay on slide load</span>
+              </label>
+              <label class="checkbox-label" style="min-height: auto;">
+                <input type="checkbox" id="ctrl-loop" checked>
+                <span style="font-size: 0.825rem;">Continuous video loop</span>
+              </label>
+              <label class="checkbox-label" style="min-height: auto;">
+                <input type="checkbox" id="ctrl-muted" checked>
+                <span style="font-size: 0.825rem;">Mute audio (recommended for presentation decks)</span>
+              </label>
+            </div>
+
+            <div class="action-bar" style="margin-top: 0.5rem;">
+              <button type="button" class="btn btn-secondary" id="play-pause-btn" style="flex: 1; justify-content: center; font-size: 0.825rem;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                <span id="play-pause-text">Pause Video</span>
+              </button>
+              <button type="button" class="btn btn-secondary" id="restart-video-btn" style="font-size: 0.825rem;" title="Restart from beginning">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Export & Presentation Mode -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export &amp; Present
+            </h2>
+            <div class="action-bar">
+              <button type="button" class="btn btn-primary" id="export-html-btn" style="flex: 1; justify-content: center;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Export HTML Slide
+              </button>
+              <button type="button" class="btn btn-secondary" id="export-snapshot-btn" title="Download PNG Snapshot">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                Snapshot
+              </button>
+            </div>
+            <button type="button" class="btn btn-secondary" id="present-fullscreen-btn" style="width: 100%; margin-top: 0.5rem; justify-content: center;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+              Launch 16:9 Presentation Mode
+            </button>
+          </div>
+
+        </aside>
+
+        <!-- Slide Stage Container -->
+        <section class="slide-stage-outer">
+          <!-- Slide Stage Header Bar -->
+          <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <span class="badge-tag">16:9 Presentation Frame</span>
+              <span class="badge-tag" id="current-frame-badge">Bezel: Glassmorphic</span>
+            </div>
+            <span style="font-size: 0.8rem; color: var(--text-tertiary);">Interactive Live Deck Preview</span>
+          </div>
+
+          <!-- Main 16:9 Slide Canvas/DOM Container -->
+          <div class="slide-viewport-16-9 layout-split-left" id="slide-preview-frame">
+            
+            <!-- Backdrop dimming overlay if in backdrop layout -->
+            <div class="backdrop-dim" id="backdrop-dim-el" style="display: none;"></div>
+
+            <!-- Slide Content Column -->
+            <div class="slide-text-col" id="slide-text-content">
+              <span class="slide-category-pill" id="view-badge">PRODUCT DEMO</span>
+              <h2 class="slide-heading-text" id="view-title">Real-Time Neural Inference</h2>
+              <p class="slide-subheading-text" id="view-subtitle">Accelerating deep neural models across cloud edge clusters with sub-millisecond response latency.</p>
+              
+              <ul class="slide-bullet-list" id="view-bullets">
+                <li class="slide-bullet-item">
+                  <span class="slide-bullet-dot">✔</span>
+                  <span>99.98% High-availability uptime SLA</span>
+                </li>
+                <li class="slide-bullet-item">
+                  <span class="slide-bullet-dot">✔</span>
+                  <span>Zero packet drop over distributed webhooks</span>
+                </li>
+                <li class="slide-bullet-item">
+                  <span class="slide-bullet-dot">✔</span>
+                  <span>Instant automated scaling during peak load spikes</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Video Device Frame Mockup Column -->
+            <div class="slide-media-col" id="slide-media-content">
+              <div class="frame-glassmorphic" id="device-mockup-wrapper">
+                <video id="slide-video-element" autoplay loop muted playsinline></video>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Hint -->
+          <div style="width: 100%; display: flex; justify-content: space-between; font-size: 0.775rem; color: var(--text-tertiary);">
+            <span>Press <strong>Launch Presentation Mode</strong> for clean borderless 16:9 stage view.</span>
+            <span>Supports local videos &amp; royalty-free video clips</span>
+          </div>
+        </section>
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Fullscreen Presentation Modal -->
+  <div class="fullscreen-slide-overlay" id="fullscreen-overlay">
+    <button type="button" class="fullscreen-exit-btn" id="exit-fullscreen-btn">✕ Exit Presentation (Esc)</button>
+    <div id="fullscreen-slide-slot" style="width: 100%; max-width: 1600px; aspect-ratio: 16 / 9;"></div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="app-toast" id="app-toast">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span id="toast-text">Video slide updated</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -84,10 +682,10 @@
     "@type": "WebApplication",
     "name": "Video Slides",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/video-slides/",
-    "description": "Embed videos and YouTube links into your presentations.",
-    "applicationCategory": "UtilityPage",
+    "description": "Multimedia presentation slide designer with customizable device mockups, bullet points, and 16:9 presentation layout.",
+    "applicationCategory": "MultimediaApplication",
     "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5."
+    "browserRequirements": "Requires JavaScript. Requires HTML5 Video."
   }
   </script>
 </body>

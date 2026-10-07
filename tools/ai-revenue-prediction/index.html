@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Revenue Prediction - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Predict future revenue using machine learning models.">
-  <meta name="keywords" content="analytics, data, business, ai revenue prediction, free, online, tool, utility">
+  <title>AI Revenue Prediction & Forecasting Engine - ALL IN ONE</title>
+  <meta name="description" content="Predict future revenue using Linear Regression and Exponential Smoothing with 95% confidence intervals, interactive SVG projection charts, and CSV export.">
+  <meta name="keywords" content="ai revenue prediction, revenue forecasting, linear regression revenue, exponential smoothing forecast, confidence interval prediction, sales forecast tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-revenue-prediction/">
 
@@ -13,27 +13,215 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-revenue-prediction/">
-  <meta property="og:title" content="AI Revenue Prediction - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Predict future revenue using machine learning models.">
+  <meta property="og:title" content="AI Revenue Prediction & Forecasting Engine - ALL IN ONE">
+  <meta property="og:description" content="Predict future monthly revenue with regression modeling, exponential smoothing, and statistical 95% confidence intervals.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:width" content="512">
-  <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="AI Revenue Prediction - ALL IN ONE">
   <meta property="og:locale" content="en_US">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-revenue-prediction/">
-  <meta name="twitter:title" content="AI Revenue Prediction - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Predict future revenue using machine learning models.">
+  <meta name="twitter:title" content="AI Revenue Prediction & Forecasting Engine - ALL IN ONE">
+  <meta name="twitter:description" content="Statistical revenue projection engine with interactive SVG time-series charts and 95% confidence intervals.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="AI Revenue Prediction - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .split-layout {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 992px) {
+      .split-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kpi-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      position: relative;
+      transition: var(--transition);
+    }
+    .kpi-card:hover {
+      border-color: rgba(var(--accent-rgb), 0.5);
+    }
+    .kpi-card.highlight {
+      background: linear-gradient(145deg, rgba(var(--accent-rgb), 0.12), var(--bg-tertiary));
+      border-color: var(--accent);
+    }
+    .kpi-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .kpi-value {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+    .kpi-card.highlight .kpi-value {
+      color: var(--accent);
+    }
+    .kpi-subtext {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    .chart-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .chart-legend {
+      display: flex;
+      gap: 1.25rem;
+      font-size: 0.78rem;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      color: var(--text-secondary);
+    }
+    .legend-indicator {
+      width: 14px;
+      height: 4px;
+      border-radius: 2px;
+    }
+    .indicator-hist { background: #89aacc; }
+    .indicator-proj { background: #10b981; border-top: 2px dashed #10b981; }
+    .indicator-ci { background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.4); height: 8px; }
+
+    .chart-svg-container {
+      width: 100%;
+      height: 330px;
+      position: relative;
+    }
+    .chart-svg-container svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .preset-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      max-height: 320px;
+    }
+    .forecast-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.825rem;
+      text-align: left;
+    }
+    .forecast-table th {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 0.75rem 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    .forecast-table td {
+      padding: 0.65rem 0.85rem;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .forecast-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .tag-hist {
+      background: rgba(137, 170, 204, 0.15);
+      color: #89aacc;
+      padding: 0.15rem 0.45rem;
+      border-radius: var(--radius-full);
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    .tag-proj {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      padding: 0.15rem 0.45rem;
+      border-radius: var(--radius-full);
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .hist-inputs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+    .hist-input-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .hist-input-item label {
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+      font-weight: 600;
+    }
+    .hist-input-item input {
+      padding: 0.4rem 0.5rem;
+      font-size: 0.8rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      width: 100%;
+    }
+    .hist-input-item input:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -49,43 +237,170 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>AI Revenue Prediction</h1>
-        <p class="tool-description">Predict future revenue using machine learning models.</p>
+        <p class="tool-description">Predictive revenue forecasting engine combining Linear Regression and Holt's Exponential Smoothing with 95% Confidence Intervals.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AI Revenue Prediction</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Predict future revenue using machine learning models.</div>
-            <div><strong>Inputs:</strong> analytics, data, business, ai revenue prediction</div>
-            <div><strong>Category:</strong> business</div>
+      <!-- Presets Bar -->
+      <div class="preset-bar">
+        <span style="font-size: 0.8rem; color: var(--text-tertiary); font-weight: 600;">Sample 12-Month Patterns:</span>
+        <button type="button" class="btn btn-secondary chip-btn active" id="preset-steady">Steady Growth (+8-12%)</button>
+        <button type="button" class="btn btn-secondary chip-btn" id="preset-hyper">Hypergrowth Tech (+25%)</button>
+        <button type="button" class="btn btn-secondary chip-btn" id="preset-seasonal">Seasonal Retail (Q4 Spike)</button>
+        <button type="button" class="btn btn-secondary chip-btn" id="preset-plateau">Maturing / Plateau</button>
+      </div>
+
+      <!-- Main Layout -->
+      <div class="split-layout">
+        
+        <!-- Left: Configuration & Historical Inputs -->
+        <div class="tool-panel glass-panel">
+          <h3 class="panel-title">Forecasting Configuration</h3>
+
+          <div class="form-group">
+            <label for="sel-model">Statistical Model</label>
+            <select id="sel-model" class="form-select">
+              <option value="ensemble" selected>Ensemble (Regression + Holt's Smoothing)</option>
+              <option value="linear">Linear Regression (Trend Focus)</option>
+              <option value="holt">Holt's Exponential Smoothing (Recent Momentum)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="sel-horizon">Forecast Horizon</label>
+            <select id="sel-horizon" class="form-select">
+              <option value="3">3 Months Ahead</option>
+              <option value="6">6 Months Ahead</option>
+              <option value="12" selected>12 Months Ahead (Full Year)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="slider-alpha" style="display: flex; justify-content: space-between;">
+              <span>Smoothing Factor (&alpha;)</span>
+              <span id="val-alpha" style="color: var(--accent); font-weight: 700;">0.35</span>
+            </label>
+            <input type="range" id="slider-alpha" class="range-slider" min="0.05" max="0.95" step="0.05" value="0.35">
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+            <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin: 0;">Historical 12-Month Data ($)</h4>
+            <button type="button" class="btn btn-secondary" id="btn-randomize" style="font-size: 0.75rem; padding: 0.2rem 0.55rem;">
+              Generate Sample
+            </button>
+          </div>
+
+          <!-- Monthly Historical Input Grid -->
+          <div class="hist-inputs-grid" id="hist-inputs-container">
+            <!-- 12 input boxes generated via JS -->
+          </div>
+
+          <div class="action-bar" style="margin-top: 1rem;">
+            <button type="button" class="btn btn-primary" id="btn-run-forecast" style="width: 100%; justify-content: center;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              Recalculate Forecast
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right: Forecast Dashboard, SVG Chart, & Table -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+
+          <!-- KPI Cards -->
+          <div class="kpi-cards-grid">
+            <div class="kpi-card highlight">
+              <span class="kpi-title">Next 3-Mo Projection</span>
+              <span class="kpi-value" id="kpi-proj-3m">$0</span>
+              <span class="kpi-subtext" id="kpi-proj-3m-sub">Cumulative: $0</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-title">Next 6-Mo Projection</span>
+              <span class="kpi-value" id="kpi-proj-6m">$0</span>
+              <span class="kpi-subtext" id="kpi-proj-6m-sub">Cumulative: $0</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-title">Next 12-Mo Projection</span>
+              <span class="kpi-value" id="kpi-proj-12m">$0</span>
+              <span class="kpi-subtext" id="kpi-proj-12m-sub">Cumulative: $0</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-title">Model Confidence (R&sup2;)</span>
+              <span class="kpi-value" id="kpi-r2">0.96</span>
+              <span class="kpi-subtext" id="kpi-r2-sub">High Predictive Fit</span>
+            </div>
+          </div>
+
+          <!-- Interactive SVG Projection Chart -->
+          <div class="chart-box">
+            <div class="chart-header">
+              <div>
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary);">Revenue Trajectory & Confidence Band</h3>
+                <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.2rem;">Historical observations vs projected forecast with 95% statistical boundary envelope</p>
+              </div>
+              <div class="chart-legend">
+                <div class="legend-item"><span class="legend-indicator indicator-hist"></span> Historical</div>
+                <div class="legend-item"><span class="legend-indicator indicator-proj"></span> Forecast</div>
+                <div class="legend-item"><span class="legend-indicator indicator-ci"></span> 95% Confidence Band</div>
+              </div>
+            </div>
+
+            <div class="chart-svg-container">
+              <svg id="revenue-forecast-svg" viewBox="0 0 760 310" preserveAspectRatio="none">
+                <!-- Rendered dynamically via JS -->
+              </svg>
+            </div>
+          </div>
+
+          <!-- Forecast Breakdown Table & Actions -->
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+              <div>
+                <h3 class="panel-title" style="border: none; padding: 0; margin: 0;">Period-by-Period Forecast Schedule</h3>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">Detailed monthly predictions with Lower and Upper 95% Confidence Bounds</p>
+              </div>
+              <div class="action-bar" style="margin-top: 0;">
+                <button type="button" class="btn btn-secondary" id="btn-export-csv" style="font-size: 0.825rem; padding: 0.4rem 0.85rem;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px; vertical-align: -2px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                  Export CSV
+                </button>
+              </div>
+            </div>
+
+            <div class="table-container" style="margin-top: 1rem;">
+              <table class="forecast-table">
+                <thead>
+                  <tr>
+                    <th>Month</th>
+                    <th>Type</th>
+                    <th>Lower 95% CI</th>
+                    <th>Projected Revenue</th>
+                    <th>Upper 95% CI</th>
+                    <th>Growth vs Baseline</th>
+                  </tr>
+                </thead>
+                <tbody id="forecast-table-tbody">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
       </div>
-    
     </div>
   </main>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "AI Revenue Prediction",
+    "name": "AI Revenue Prediction & Forecasting Engine",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-revenue-prediction/",
-    "description": "Predict future revenue using machine learning models.",
-    "applicationCategory": "UtilityPage",
+    "description": "Predictive revenue forecasting engine using linear regression and exponential smoothing with 95% confidence intervals.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

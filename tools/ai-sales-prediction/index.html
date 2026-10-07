@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Sales Prediction - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Forecast e-commerce sales based on historical data.">
-  <meta name="keywords" content="analytics, data, ecommerce, ai sales prediction, free, online, tool, utility">
+  <title>AI Sales Prediction & Demand Forecasting - ALL IN ONE</title>
+  <meta name="description" content="E-commerce SKU-level sales demand forecasting with seasonality index, price elasticity, promotion modeling, and stockout prevention.">
+  <meta name="keywords" content="ai sales prediction, sku demand forecasting, price elasticity calculator, seasonality index, stockout prevention, overstock clearance, inventory demand planning">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-sales-prediction/">
 
@@ -13,27 +13,209 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-sales-prediction/">
-  <meta property="og:title" content="AI Sales Prediction - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Forecast e-commerce sales based on historical data.">
+  <meta property="og:title" content="AI Sales Prediction & Demand Forecasting - ALL IN ONE">
+  <meta property="og:description" content="Forecast SKU-level monthly sales demand using seasonality indices, price elasticity, and promotional lift simulations.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:width" content="512">
-  <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="AI Sales Prediction - ALL IN ONE">
   <meta property="og:locale" content="en_US">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-sales-prediction/">
-  <meta name="twitter:title" content="AI Sales Prediction - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Forecast e-commerce sales based on historical data.">
+  <meta name="twitter:title" content="AI Sales Prediction & Demand Forecasting - ALL IN ONE">
+  <meta name="twitter:description" content="SKU-level e-commerce sales forecasting and replenishment intelligence engine.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="AI Sales Prediction - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .split-layout {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 992px) {
+      .split-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+    @media (max-width: 520px) {
+      .form-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kpi-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+    .kpi-card:hover {
+      border-color: rgba(var(--accent-rgb), 0.5);
+    }
+    .kpi-card.highlight {
+      background: linear-gradient(145deg, rgba(var(--accent-rgb), 0.12), var(--bg-tertiary));
+      border-color: var(--accent);
+    }
+    .kpi-card.alert-card {
+      background: linear-gradient(145deg, rgba(239, 68, 68, 0.12), var(--bg-tertiary));
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+    .kpi-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .kpi-value {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+    .kpi-card.highlight .kpi-value {
+      color: var(--accent);
+    }
+    .kpi-card.alert-card .kpi-value {
+      color: #ef4444;
+    }
+    .kpi-subtext {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    .badge-stockout {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+    .badge-overstock {
+      background: rgba(245, 158, 11, 0.2);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+    .badge-optimal {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+
+    .chart-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .chart-legend {
+      display: flex;
+      gap: 1.25rem;
+      font-size: 0.78rem;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      color: var(--text-secondary);
+    }
+    .indicator-box {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+
+    .chart-svg-container {
+      width: 100%;
+      height: 300px;
+      position: relative;
+    }
+    .chart-svg-container svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+    }
+    .demand-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.825rem;
+      text-align: left;
+    }
+    .demand-table th {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 0.75rem 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .demand-table td {
+      padding: 0.75rem 0.85rem;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+    .demand-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .toggle-container {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      margin-top: 1rem;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -49,43 +231,170 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>AI Sales Prediction</h1>
-        <p class="tool-description">Forecast e-commerce sales based on historical data.</p>
+        <p class="tool-description">E-commerce SKU-level sales demand forecasting with seasonality indices, price elasticity, and promotional lift simulations.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AI Sales Prediction</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Forecast e-commerce sales based on historical data.</div>
-            <div><strong>Inputs:</strong> analytics, data, ecommerce, ai sales prediction</div>
-            <div><strong>Category:</strong> ecommerce</div>
+      <div class="split-layout">
+        <!-- Left: Demand Drivers & Simulation Panel -->
+        <div class="tool-panel glass-panel">
+          <h3 class="panel-title">Forecasting Environment</h3>
+
+          <div class="form-group">
+            <label for="sel-quarter">Seasonality Quarter</label>
+            <select id="sel-quarter" class="form-select">
+              <option value="Q1">Q1 Post-Holiday Lull (Index: 0.85x)</option>
+              <option value="Q2">Q2 Spring Expansion (Index: 1.05x)</option>
+              <option value="Q3">Q3 Summer Midseason (Index: 0.95x)</option>
+              <option value="Q4" selected>Q4 Holiday Peak (Index: 1.35x)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="range-price-change" style="display: flex; justify-content: space-between;">
+              <span>Planned Price Adjustment</span>
+              <span id="val-price-change" style="color: var(--accent); font-weight: 700;">0%</span>
+            </label>
+            <input type="range" id="range-price-change" class="range-slider" min="-30" max="30" step="5" value="0">
+            <span style="font-size: 0.72rem; color: var(--text-tertiary);">Simulates unit volume change via SKU Price Elasticity (PED)</span>
+          </div>
+
+          <!-- Promotion Simulation Toggle -->
+          <div class="toggle-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">Promotional Campaign</span>
+              <label class="checkbox-label" style="min-height: auto; margin: 0;">
+                <input type="checkbox" id="chk-promo-active" checked>
+                <span style="font-size: 0.8rem; font-weight: 600;">Active</span>
+              </label>
+            </div>
+
+            <div id="promo-options-box" style="display: flex; flex-direction: column; gap: 0.65rem;">
+              <div class="form-group" style="gap: 0.25rem;">
+                <label for="range-promo-discount" style="display: flex; justify-content: space-between; font-size: 0.75rem;">
+                  <span>Flash Sale Discount</span>
+                  <span id="val-promo-discount" style="color: #10b981; font-weight: 700;">15%</span>
+                </label>
+                <input type="range" id="range-promo-discount" class="range-slider" min="5" max="40" step="5" value="15">
+              </div>
+
+              <div class="form-group" style="gap: 0.25rem;">
+                <label for="range-marketing-lift" style="display: flex; justify-content: space-between; font-size: 0.75rem;">
+                  <span>Ad Campaign Lift Multiplier</span>
+                  <span id="val-marketing-lift" style="color: var(--accent); font-weight: 700;">+20%</span>
+                </label>
+                <input type="range" id="range-marketing-lift" class="range-slider" min="0" max="60" step="5" value="20">
+              </div>
+            </div>
+          </div>
+
+          <div class="action-bar" style="margin-top: 1rem;">
+            <button type="button" class="btn btn-primary" id="btn-recalc-demand" style="width: 100%; justify-content: center;">
+              Recalculate SKU Demand
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right: Forecast KPIs, SVG Chart, & Replenishment Plan -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- KPI Cards -->
+          <div class="kpi-cards-grid">
+            <div class="kpi-card highlight">
+              <span class="kpi-title">Total Forecast Demand</span>
+              <span class="kpi-value" id="kpi-forecast-units">0 Units</span>
+              <span class="kpi-subtext" id="kpi-forecast-units-sub">Next month projected sales</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-title">Expected Revenue</span>
+              <span class="kpi-value" id="kpi-forecast-rev">$0</span>
+              <span class="kpi-subtext" id="kpi-forecast-rev-sub">Gross merchandise volume</span>
+            </div>
+            <div class="kpi-card alert-card">
+              <span class="kpi-title">Stockout Vulnerability</span>
+              <span class="kpi-value" id="kpi-stockout-count">0 SKUs</span>
+              <span class="kpi-subtext" id="kpi-stockout-sub">Urgent reorder required</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-title">Excess Overstock</span>
+              <span class="kpi-value" id="kpi-overstock-count">0 SKUs</span>
+              <span class="kpi-subtext" id="kpi-overstock-sub">Surplus clearance needed</span>
+            </div>
+          </div>
+
+          <!-- Comparative SVG Chart -->
+          <div class="chart-box">
+            <div class="chart-header">
+              <div>
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary);">Stock on Hand vs Forecast Demand</h3>
+                <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.2rem;">Inventory buffers compared to simulated next-month sales velocity</p>
+              </div>
+              <div class="chart-legend">
+                <div class="legend-item"><span class="indicator-box" style="background: #89aacc;"></span> Current Stock</div>
+                <div class="legend-item"><span class="indicator-box" style="background: #10b981;"></span> Forecast Demand</div>
+              </div>
+            </div>
+
+            <div class="chart-svg-container">
+              <svg id="sales-demand-svg" viewBox="0 0 760 290" preserveAspectRatio="none">
+                <!-- Dynamic SVG Bars rendered via JS -->
+              </svg>
+            </div>
+          </div>
+
+          <!-- Replenishment & SKU Schedule Table -->
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+              <div>
+                <h3 class="panel-title" style="border: none; padding: 0; margin: 0;">SKU Demand & Replenishment Action Plan</h3>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">Algorithmic recommendations to prevent both stockouts and working capital lockup</p>
+              </div>
+              <div class="action-bar" style="margin-top: 0;">
+                <button type="button" class="btn btn-secondary" id="btn-export-csv" style="font-size: 0.825rem; padding: 0.4rem 0.85rem;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px; vertical-align: -2px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                  Export CSV
+                </button>
+              </div>
+            </div>
+
+            <div class="table-container" style="margin-top: 1rem;">
+              <table class="demand-table">
+                <thead>
+                  <tr>
+                    <th>SKU Code</th>
+                    <th>Product Name</th>
+                    <th>Unit Price</th>
+                    <th>Current Stock</th>
+                    <th>Forecast Demand</th>
+                    <th>Variance Units</th>
+                    <th>Expected GMV</th>
+                    <th>Status</th>
+                    <th>Recommended Action</th>
+                  </tr>
+                </thead>
+                <tbody id="demand-table-tbody">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
       </div>
-    
     </div>
   </main>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "AI Sales Prediction",
+    "name": "AI Sales Prediction & Demand Forecasting",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-sales-prediction/",
-    "description": "Forecast e-commerce sales based on historical data.",
-    "applicationCategory": "UtilityPage",
+    "description": "E-commerce SKU sales demand forecasting engine with price elasticity and seasonality adjustment.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Convert to Slides - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Convert Excel, CSV, PDF, and Text files directly into PPT slides.">
-  <meta name="keywords" content="slide, presentation, pitch, deck, convert to slides, free, online, tool, utility">
+  <title>Convert to Slides - Markdown &amp; Outline to Deck - ALL IN ONE</title>
+  <meta name="description" content="Convert Markdown notes, structured outlines, and bullet points into an interactive 16:9 presentation slide deck with live thumbnail sorter and presentation mode.">
+  <meta name="keywords" content="slide, presentation, pitch, deck, markdown to slides, outline to slides, presentation converter, free, online, tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/convert-to-slides/">
 
@@ -13,27 +13,324 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/convert-to-slides/">
-  <meta property="og:title" content="Convert to Slides - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Convert Excel, CSV, PDF, and Text files directly into PPT slides.">
+  <meta property="og:title" content="Convert to Slides - Markdown &amp; Outline to Deck - ALL IN ONE">
+  <meta property="og:description" content="Convert markdown outlines directly into 16:9 slide decks with live thumbnail sorting and presentation mode.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="Convert to Slides - ALL IN ONE">
   <meta property="og:locale" content="en_US">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/convert-to-slides/">
-  <meta name="twitter:title" content="Convert to Slides - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Convert Excel, CSV, PDF, and Text files directly into PPT slides.">
+  <meta name="twitter:title" content="Convert to Slides - Markdown &amp; Outline to Deck - ALL IN ONE">
+  <meta name="twitter:description" content="Convert markdown outlines directly into 16:9 slide decks with live thumbnail sorting and presentation mode.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="Convert to Slides - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .cs-workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+    @media (min-width: 1024px) {
+      .cs-workspace {
+        grid-template-columns: 420px 1fr;
+      }
+    }
+
+    .editor-card {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .markdown-input-box {
+      width: 100%;
+      height: 380px;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 0.85rem;
+      line-height: 1.55;
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      resize: vertical;
+    }
+    .markdown-input-box:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    /* Deck Preview Stage */
+    .deck-stage-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      width: 100%;
+    }
+
+    /* 16:9 Slide Canvas Container */
+    .slide-canvas-wrapper {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: clamp(1.5rem, 4vw, 3.5rem);
+      box-sizing: border-box;
+      transition: background 0.3s ease;
+    }
+
+    /* Theme Variants */
+    .theme-cyber {
+      background: radial-gradient(circle at 80% 20%, #151b33 0%, #070912 100%);
+      color: #ffffff;
+    }
+    .theme-cyber .slide-accent-tag {
+      background: rgba(78, 133, 191, 0.2);
+      border: 1px solid rgba(78, 133, 191, 0.4);
+      color: #89aacc;
+    }
+    .theme-cyber .slide-bullet-dot {
+      color: #4e85bf;
+    }
+
+    .theme-obsidian {
+      background: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #0a0a0a 100%);
+      color: #ffffff;
+    }
+    .theme-obsidian .slide-accent-tag {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+    }
+    .theme-obsidian .slide-bullet-dot {
+      color: #ffffff;
+    }
+
+    .theme-emerald {
+      background: radial-gradient(circle at 75% 25%, #064e3b 0%, #022c22 100%);
+      color: #ffffff;
+    }
+    .theme-emerald .slide-accent-tag {
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34d399;
+    }
+    .theme-emerald .slide-bullet-dot {
+      color: #10b981;
+    }
+
+    .theme-sunset {
+      background: linear-gradient(135deg, #4c0519 0%, #1f0714 50%, #090207 100%);
+      color: #ffffff;
+    }
+    .theme-sunset .slide-accent-tag {
+      background: rgba(244, 63, 94, 0.2);
+      border: 1px solid rgba(244, 63, 94, 0.4);
+      color: #fb7185;
+    }
+    .theme-sunset .slide-bullet-dot {
+      color: #f43f5e;
+    }
+
+    /* Slide Elements */
+    .slide-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+    .slide-accent-tag {
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: clamp(0.65rem, 1vw, 0.8rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .slide-num-pill {
+      font-family: monospace;
+      font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+      opacity: 0.7;
+    }
+
+    .slide-body-center {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(0.5rem, 1.5vw, 1.25rem);
+      margin: auto 0;
+    }
+    .slide-title-text {
+      font-family: var(--font-sans);
+      font-size: clamp(1.4rem, 3.5vw, 2.75rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+    .slide-subtitle-text {
+      font-size: clamp(0.85rem, 1.8vw, 1.25rem);
+      opacity: 0.82;
+      line-height: 1.4;
+      max-width: 90%;
+    }
+
+    .slide-content-bullets {
+      list-style: none;
+      padding: 0;
+      margin: 0.5rem 0 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(0.35rem, 1vw, 0.75rem);
+    }
+    .slide-bullet-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      font-size: clamp(0.8rem, 1.5vw, 1.1rem);
+      line-height: 1.4;
+      opacity: 0.92;
+    }
+    .slide-bullet-dot {
+      font-weight: bold;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .slide-footer-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      font-size: clamp(0.65rem, 1vw, 0.775rem);
+      opacity: 0.55;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 0.75rem;
+    }
+
+    /* Thumbnail Sorter Filmstrip */
+    .thumbnails-sorter-bar {
+      display: flex;
+      gap: 0.75rem;
+      overflow-x: auto;
+      padding: 0.75rem 0.25rem;
+      scrollbar-width: thin;
+      align-items: center;
+    }
+
+    .slide-thumb-card {
+      min-width: 140px;
+      aspect-ratio: 16 / 9;
+      background: var(--bg-tertiary);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .slide-thumb-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .slide-thumb-card.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
+      background: rgba(78, 133, 191, 0.15);
+    }
+    .thumb-num {
+      font-size: 0.65rem;
+      font-family: monospace;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .thumb-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--text-primary);
+    }
+
+    /* Fullscreen Presentation Mode */
+    .fs-presentation-overlay {
+      position: fixed;
+      inset: 0;
+      background: #000000;
+      z-index: 9999;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .fs-presentation-overlay.active {
+      display: flex;
+    }
+    .fs-slide-container {
+      width: 100%;
+      max-width: 1600px;
+      aspect-ratio: 16 / 9;
+    }
+    .fs-controls-hud {
+      position: absolute;
+      bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(20, 20, 25, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 0.5rem 1.25rem;
+      border-radius: var(--radius-full);
+      color: #ffffff;
+      font-size: 0.85rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+    }
+
+    /* Toast Notification */
+    .app-toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      padding: 0.85rem 1.4rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      z-index: 2000;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .app-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -48,31 +345,141 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Convert to Slides</h1>
-        <p class="tool-description">Convert Excel, CSV, PDF, and Text files directly into PPT slides.</p>
+        <h1 class="gradient-text" style="font-family: var(--font-display); font-weight: 800;">Convert to Slides</h1>
+        <p class="tool-description">Instantly parse Markdown notes and outlines into clean 16:9 presentation slide decks. Reorder slides with live thumbnail sorters, switch presentation themes, and launch full-deck presentation mode.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Convert to Slides</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Convert Excel, CSV, PDF, and Text files directly into PPT slides.</div>
-            <div><strong>Inputs:</strong> slide, presentation, pitch, deck, convert to slides</div>
-            <div><strong>Category:</strong> slide</div>
+      <div class="cs-workspace">
+        <!-- Left: Markdown Input & Controls -->
+        <aside class="editor-card">
+          
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+              <h2 class="panel-title" style="border: none; padding: 0; margin: 0;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                Markdown Outline
+              </h2>
+              <div style="display: flex; gap: 0.35rem;">
+                <button type="button" class="btn btn-secondary" id="sample-pitch-btn" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">Pitch</button>
+                <button type="button" class="btn btn-secondary" id="sample-tech-btn" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">Tech</button>
+                <button type="button" class="btn btn-secondary" id="clear-input-btn" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">Clear</button>
+              </div>
+            </div>
+
+            <textarea id="markdown-input" class="markdown-input-box" placeholder="# Slide 1: Introduction&#10;Subheading or context text&#10;- Bullet point one&#10;- Bullet point two&#10;&#10;---&#10;&#10;# Slide 2: Market Opportunity&#10;- $45B Total Addressable Market&#10;- 34% YoY Sector Growth"></textarea>
+
+            <span style="font-size: 0.75rem; color: var(--text-tertiary);">Tip: Use <code># Title</code> or <code>---</code> dividers to create new slides.</span>
           </div>
-        </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+          <!-- Deck Theme & Visual Settings -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+              Deck Styling Theme
+            </h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(85px, 1fr)); gap: 0.5rem;">
+              <button type="button" class="preset-chip active" data-theme="theme-cyber">Cyber Navy</button>
+              <button type="button" class="preset-chip" data-theme="theme-obsidian">Obsidian</button>
+              <button type="button" class="preset-chip" data-theme="theme-emerald">Emerald</button>
+              <button type="button" class="preset-chip" data-theme="theme-sunset">Sunset</button>
+            </div>
+          </div>
+
+          <!-- Export Actions -->
+          <div class="tool-panel glass-panel">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Deck Export
+            </h2>
+            <div class="action-bar">
+              <button type="button" class="btn btn-primary" id="export-html-deck-btn" style="flex: 1; justify-content: center;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Export Standalone HTML
+              </button>
+              <button type="button" class="btn btn-secondary" id="copy-deck-json-btn" title="Copy Deck JSON">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy JSON
+              </button>
+            </div>
+          </div>
+
+        </aside>
+
+        <!-- Right: Live 16:9 Slide Stage & Thumbnail Sorter -->
+        <section class="deck-stage-panel">
+          
+          <!-- Top Navigation Header -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <button type="button" class="btn btn-secondary" id="prev-slide-btn" style="padding: 0.4rem 0.8rem;">&larr; Prev</button>
+              <span id="slide-counter-badge" style="font-family: monospace; font-size: 0.9rem; font-weight: 700; color: var(--accent); min-width: 90px; text-align: center;">Slide 1 / 4</span>
+              <button type="button" class="btn btn-secondary" id="next-slide-btn" style="padding: 0.4rem 0.8rem;">Next &rarr;</button>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="button" class="btn btn-secondary" id="add-slide-btn" style="padding: 0.4rem 0.8rem; font-size: 0.825rem;">+ Add Slide</button>
+              <button type="button" class="btn btn-primary" id="launch-present-btn" style="padding: 0.4rem 1rem; font-size: 0.85rem;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                Present Fullscreen
+              </button>
+            </div>
+          </div>
+
+          <!-- Main 16:9 Slide Viewport -->
+          <div class="slide-canvas-wrapper theme-cyber" id="live-slide-viewport">
+            <div class="slide-header-bar">
+              <span class="slide-accent-tag" id="live-slide-category">OVERVIEW</span>
+              <span class="slide-num-pill" id="live-slide-num">01 / 04</span>
+            </div>
+
+            <div class="slide-body-center">
+              <h1 class="slide-title-text" id="live-slide-title">Slide Title</h1>
+              <p class="slide-subtitle-text" id="live-slide-subtitle">Slide Subtitle or Context Line</p>
+              <ul class="slide-content-bullets" id="live-slide-bullets">
+                <!-- Bullets dynamically inserted -->
+              </ul>
+            </div>
+
+            <div class="slide-footer-bar">
+              <span id="live-deck-title">ALL-IN-ONE PRESENTATIONS</span>
+              <span id="live-deck-date">2026 DECK</span>
+            </div>
+          </div>
+
+          <!-- Thumbnail Filmstrip Sorter -->
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <span style="font-size: 0.775rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-tertiary); font-weight: 600;">Slide Filmstrip (Click to jump, drag or reorder)</span>
+              <button type="button" class="btn btn-secondary" id="delete-current-slide-btn" style="padding: 0.15rem 0.5rem; font-size: 0.7rem; color: var(--danger);">Delete Slide</button>
+            </div>
+            <div class="thumbnails-sorter-bar" id="thumbnails-container">
+              <!-- Rendered via script.js -->
+            </div>
+          </div>
+
+        </section>
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Fullscreen Presentation Mode HUD -->
+  <div class="fs-presentation-overlay" id="fs-presentation-overlay">
+    <div class="fs-slide-container" id="fs-slide-slot"></div>
+    <div class="fs-controls-hud">
+      <button type="button" id="fs-prev-btn" style="background:none; border:none; color:#fff; cursor:pointer; font-size:1rem;">&larr;</button>
+      <span id="fs-counter" style="font-family: monospace; font-weight:700;">1 / 4</span>
+      <button type="button" id="fs-next-btn" style="background:none; border:none; color:#fff; cursor:pointer; font-size:1rem;">&rarr;</button>
+      <span style="opacity:0.4;">|</span>
+      <button type="button" id="fs-exit-btn" style="background:none; border:none; color:#fff; cursor:pointer; font-size:0.8rem;">Exit (Esc)</button>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="app-toast" id="app-toast">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span id="toast-text">Deck updated</span>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -84,8 +491,8 @@
     "@type": "WebApplication",
     "name": "Convert to Slides",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/convert-to-slides/",
-    "description": "Convert Excel, CSV, PDF, and Text files directly into PPT slides.",
-    "applicationCategory": "UtilityPage",
+    "description": "Convert Markdown notes and structured outlines into an interactive 16:9 presentation slide deck with live thumbnail sorter and presentation mode.",
+    "applicationCategory": "ProductivityApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resume Keyword Generator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Generate job-based keywords for ATS compatibility.">
-  <meta name="keywords" content="cv, resume, job, career, resume keyword generator, free, online, tool, utility">
+  <title>Resume Keyword Generator - ATS Job Description Extractor - ALL IN ONE</title>
+  <meta name="description" content="Free client-side ATS Resume Keyword Generator. Paste any job posting to instantly extract hard skills, tools, soft skills, and certifications with 1-click copy.">
+  <meta name="keywords" content="resume keyword generator, ats keyword extractor, job description keyword scanner, cv skills extractor, resume optimization tool, free online tool">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/resume-keyword-generator/">
 
@@ -13,8 +13,8 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/resume-keyword-generator/">
-  <meta property="og:title" content="Resume Keyword Generator - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Generate job-based keywords for ATS compatibility.">
+  <meta property="og:title" content="Resume Keyword Generator - ATS Job Description Extractor">
+  <meta property="og:description" content="Extract hard skills, tools, technologies, and certifications from job postings with 1-click copy for tailored CV customization.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
@@ -25,15 +25,236 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/resume-keyword-generator/">
-  <meta name="twitter:title" content="Resume Keyword Generator - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Generate job-based keywords for ATS compatibility.">
+  <meta name="twitter:title" content="Resume Keyword Generator - ATS Job Description Extractor">
+  <meta name="twitter:description" content="Extract categorized hard skills, tech tools, and certifications from any job posting.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="Resume Keyword Generator - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    /* Resume Keyword Generator Scoped Styles */
+    .generator-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .generator-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      align-items: start;
+      margin-top: 1.5rem;
+    }
+
+    @media (min-width: 1024px) {
+      .generator-grid {
+        grid-template-columns: 480px 1fr;
+      }
+    }
+
+    .input-panel, .results-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1rem;
+    }
+
+    .panel-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .sample-pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .sample-pill {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      padding: 0.25rem 0.65rem;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .sample-pill:hover {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: var(--accent);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+
+    /* Metric stats counter ribbon */
+    .kw-metrics-ribbon {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 0.75rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem;
+    }
+
+    .kw-metric-box {
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .kw-metric-value {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+
+    .kw-metric-label {
+      font-size: 0.675rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+    }
+
+    /* Category Blocks */
+    .kw-category-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .kw-cat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .kw-cat-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .kw-cat-badge {
+      font-size: 0.75rem;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.15rem 0.45rem;
+      border-radius: var(--radius-full);
+      color: var(--text-secondary);
+    }
+
+    .kw-chips-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .kw-chip {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.3rem 0.65rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+
+    .kw-chip:hover {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.15);
+      transform: translateY(-1px);
+    }
+
+    .kw-chip.copied {
+      background: #10b981 !important;
+      border-color: #10b981 !important;
+      color: #ffffff !important;
+    }
+
+    .kw-chip-freq {
+      background: rgba(0, 0, 0, 0.25);
+      font-size: 0.68rem;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      color: var(--text-secondary);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 1.5rem;
+      color: var(--text-secondary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .toast-msg {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #10b981;
+      color: #ffffff;
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      font-size: 0.85rem;
+      font-weight: 700;
+      z-index: 9999;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+      pointer-events: none;
+    }
+
+    .toast-msg.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -46,45 +267,210 @@
 
   <!-- Main Work Container -->
   <main class="tool-layout">
-    <div class="container tool-container">
+    <div class="generator-container">
+      
       <div class="tool-header">
         <h1>Resume Keyword Generator</h1>
-        <p class="tool-description">Generate job-based keywords for ATS compatibility.</p>
+        <p class="tool-description">Job description keyword extractor &amp; ATS taxonomy parser. Paste any job posting to extract categorized hard skills, technical tools, leadership capabilities, and certifications with 1-click clipboard copy for tailored resume customization.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Resume Keyword Generator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Generate job-based keywords for ATS compatibility.</div>
-            <div><strong>Inputs:</strong> cv, resume, job, career, resume keyword generator</div>
-            <div><strong>Category:</strong> cv</div>
+      <!-- Presets Toolbar -->
+      <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem 1.25rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.85rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
+          <span style="font-size: 0.825rem; font-weight: 700; color: var(--text-secondary);">Demo Postings:</span>
+          <div class="sample-pill-group">
+            <span class="sample-pill" id="btn-load-eng">Full-Stack Engineer</span>
+            <span class="sample-pill" id="btn-load-pm">Product Manager</span>
+            <span class="sample-pill" id="btn-load-mkt">Growth Marketer</span>
+            <span class="sample-pill" id="btn-load-ecomm">E-Commerce Manager</span>
+            <span class="sample-pill" id="btn-load-sales">Account Executive</span>
+            <span class="sample-pill" id="btn-load-devops">DevOps / Cloud</span>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+        <div>
+          <button type="button" id="btn-clear-text" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.35rem 0.85rem;">Clear Input</button>
+        </div>
       </div>
-    
+
+      <!-- Main Workspace Grid -->
+      <div class="generator-grid">
+        
+        <!-- Left: Job Posting Text Area -->
+        <div class="input-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              Target Job Posting
+            </div>
+            <div id="jd-stats-badge" style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600;">0 Words</div>
+          </div>
+
+          <div class="form-group">
+            <label for="inp-job-title">Job Title (Optional)</label>
+            <input type="text" id="inp-job-title" class="form-input" placeholder="e.g. Senior Full-Stack Engineer / Lead Growth Marketer">
+          </div>
+
+          <div class="form-group">
+            <label for="inp-jd-content">Paste Job Description / Requirements *</label>
+            <textarea id="inp-jd-content" class="form-textarea" style="min-height: 380px; font-family: monospace; font-size: 0.85rem;" placeholder="Paste the job posting requirements, qualifications, and role description here..."></textarea>
+          </div>
+
+          <button type="button" id="btn-extract-keywords" class="btn btn-primary" style="padding: 0.85rem; font-weight: 700; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            Extract Categorized Keywords
+          </button>
+        </div>
+
+        <!-- Right: Extracted Keywords Panel -->
+        <div class="results-panel">
+          
+          <div class="panel-header">
+            <div class="panel-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9h16"></path><path d="M4 15h16"></path><path d="M10 3L8 21"></path><path d="M16 3l-2 18"></path></svg>
+              Extracted ATS Keywords
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button type="button" id="btn-copy-all" class="btn btn-primary" style="font-size: 0.75rem; padding: 0.35rem 0.75rem;" disabled>Copy All Keywords</button>
+              <button type="button" id="btn-export-csv" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.35rem 0.75rem;" disabled>Export CSV</button>
+            </div>
+          </div>
+
+          <!-- Empty State -->
+          <div id="kw-empty-state" class="empty-state">
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--text-secondary); opacity: 0.6;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            <div>
+              <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-primary); margin-bottom: 0.35rem;">Awaiting Job Posting</div>
+              <p style="font-size: 0.85rem; max-width: 380px; margin: 0 auto;">Paste a job description on the left and click <strong>Extract Categorized Keywords</strong> or select any demo preset above.</p>
+            </div>
+          </div>
+
+          <!-- Active Results View -->
+          <div id="kw-results-view" style="display: none; flex-direction: column; gap: 1.25rem;">
+            
+            <!-- Summary Metrics Ribbon -->
+            <div class="kw-metrics-ribbon">
+              <div class="kw-metric-box">
+                <span class="kw-metric-value" id="val-total-count">0</span>
+                <span class="kw-metric-label">Total Terms</span>
+              </div>
+              <div class="kw-metric-box">
+                <span class="kw-metric-value" id="val-tools-count">0</span>
+                <span class="kw-metric-label">Tools &amp; Tech</span>
+              </div>
+              <div class="kw-metric-box">
+                <span class="kw-metric-value" id="val-hard-count">0</span>
+                <span class="kw-metric-label">Hard Skills</span>
+              </div>
+              <div class="kw-metric-box">
+                <span class="kw-metric-value" id="val-soft-count">0</span>
+                <span class="kw-metric-label">Soft Skills</span>
+              </div>
+              <div class="kw-metric-box">
+                <span class="kw-metric-value" id="val-cert-count">0</span>
+                <span class="kw-metric-label">Certs / Creds</span>
+              </div>
+            </div>
+
+            <!-- Keyword Filter Input & Formatting Option -->
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+              <input type="text" id="inp-filter-kw" class="form-input" style="flex: 1; min-width: 200px; padding: 0.4rem 0.75rem; font-size: 0.825rem;" placeholder="Filter extracted keywords...">
+              <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: var(--text-secondary);">
+                <span>Copy Format:</span>
+                <select id="sel-copy-format" class="form-select" style="width: auto; padding: 0.35rem 0.65rem; font-size: 0.8rem;">
+                  <option value="comma">Comma-separated (A, B, C)</option>
+                  <option value="bullet">Bullet Points (• A\n• B)</option>
+                  <option value="lines">Newlines</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Category 1: Tools & Technologies -->
+            <div class="kw-category-card">
+              <div class="kw-cat-header">
+                <div class="kw-cat-title">
+                  <span>💻</span>
+                  <span>Tools, Technologies &amp; Platforms</span>
+                  <span class="kw-cat-badge" id="badge-tools-count">0</span>
+                </div>
+                <button type="button" class="btn btn-secondary" id="btn-copy-cat-tools" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;">Copy Category</button>
+              </div>
+              <div class="kw-chips-wrap" id="container-tools-chips"></div>
+            </div>
+
+            <!-- Category 2: Hard Skills & Domain Competencies -->
+            <div class="kw-category-card">
+              <div class="kw-cat-header">
+                <div class="kw-cat-title">
+                  <span>🛠️</span>
+                  <span>Hard Skills &amp; Domain Competencies</span>
+                  <span class="kw-cat-badge" id="badge-hard-count">0</span>
+                </div>
+                <button type="button" class="btn btn-secondary" id="btn-copy-cat-hard" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;">Copy Category</button>
+              </div>
+              <div class="kw-chips-wrap" id="container-hard-chips"></div>
+            </div>
+
+            <!-- Category 3: Soft Skills & Leadership -->
+            <div class="kw-category-card">
+              <div class="kw-cat-header">
+                <div class="kw-cat-title">
+                  <span>🤝</span>
+                  <span>Soft Skills, Leadership &amp; Collaboration</span>
+                  <span class="kw-cat-badge" id="badge-soft-count">0</span>
+                </div>
+                <button type="button" class="btn btn-secondary" id="btn-copy-cat-soft" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;">Copy Category</button>
+              </div>
+              <div class="kw-chips-wrap" id="container-soft-chips"></div>
+            </div>
+
+            <!-- Category 4: Certifications & Credentials -->
+            <div class="kw-category-card">
+              <div class="kw-cat-header">
+                <div class="kw-cat-title">
+                  <span>📜</span>
+                  <span>Certifications, Degrees &amp; Credentials</span>
+                  <span class="kw-cat-badge" id="badge-cert-count">0</span>
+                </div>
+                <button type="button" class="btn btn-secondary" id="btn-copy-cat-cert" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;">Copy Category</button>
+              </div>
+              <div class="kw-chips-wrap" id="container-cert-chips"></div>
+            </div>
+
+            <!-- Category 5: High-Frequency Domain Terms -->
+            <div class="kw-category-card">
+              <div class="kw-cat-header">
+                <div class="kw-cat-title">
+                  <span>📊</span>
+                  <span>High-Frequency Domain Phrases</span>
+                  <span class="kw-cat-badge" id="badge-general-count">0</span>
+                </div>
+                <button type="button" class="btn btn-secondary" id="btn-copy-cat-general" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;">Copy Category</button>
+              </div>
+              <div class="kw-chips-wrap" id="container-general-chips"></div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
     </div>
   </main>
+
+  <!-- Toast Notification -->
+  <div id="toast-elem" class="toast-msg">Copied to clipboard!</div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Schema.org Rich Snippet -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Resume Keyword Generator",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/resume-keyword-generator/",
-    "description": "Generate job-based keywords for ATS compatibility.",
+    "description": "Job description keyword extractor for ATS resume optimization.",
     "applicationCategory": "UtilityPage",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."

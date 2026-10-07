@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Business Insights - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="AI-generated actionable insights for your business.">
-  <meta name="keywords" content="analytics, data, business, ai business insights, free, online, tool, utility">
+  <title>AI Business Insights & SWOT Diagnostic Engine - ALL IN ONE</title>
+  <meta name="description" content="Automated business diagnostic engine. Calculate overall business health score, generate dynamic SWOT analysis, unit economics, and prioritized strategic recommendations.">
+  <meta name="keywords" content="ai business insights, business health score, swot analysis generator, unit economics calculator, ltv cac ratio, runway calculator, churn analysis, business diagnostics">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-business-insights/">
 
@@ -13,27 +13,311 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-business-insights/">
-  <meta property="og:title" content="AI Business Insights - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="AI-generated actionable insights for your business.">
+  <meta property="og:title" content="AI Business Insights & SWOT Diagnostic Engine - ALL IN ONE">
+  <meta property="og:description" content="Instant business health score (0-100), automated SWOT analysis, unit economics diagnostic, and 5 prioritized strategic recommendations.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:width" content="512">
-  <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="AI Business Insights - ALL IN ONE">
   <meta property="og:locale" content="en_US">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-business-insights/">
-  <meta name="twitter:title" content="AI Business Insights - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="AI-generated actionable insights for your business.">
+  <meta name="twitter:title" content="AI Business Insights & SWOT Diagnostic Engine - ALL IN ONE">
+  <meta name="twitter:description" content="Algorithmic business diagnosis: Unit economics, runway, SWOT heuristics, and strategic executive playbook.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta name="twitter:image:alt" content="AI Business Insights - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .split-layout {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 992px) {
+      .split-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+    @media (max-width: 520px) {
+      .form-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .health-gauge-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .score-circle-wrapper {
+      position: relative;
+      width: 170px;
+      height: 170px;
+      margin: 0.5rem 0 1rem;
+    }
+    .score-circle-wrapper svg {
+      transform: rotate(-90deg);
+      width: 100%;
+      height: 100%;
+    }
+    .score-center-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .score-num {
+      font-size: 2.75rem;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+    .score-max {
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+      font-weight: 600;
+    }
+    .score-grade-badge {
+      display: inline-flex;
+      padding: 0.3rem 0.85rem;
+      border-radius: var(--radius-full);
+      font-size: 0.825rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .gauge-breakdown {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      text-align: left;
+    }
+    .breakdown-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 0.75rem;
+    }
+    .breakdown-label {
+      font-size: 0.72rem;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+    .breakdown-val {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .kpi-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+    .kpi-card:hover {
+      border-color: rgba(var(--accent-rgb), 0.5);
+    }
+    .kpi-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .kpi-value {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+    .kpi-subtext {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    /* SWOT Grid */
+    .swot-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    @media (max-width: 680px) {
+      .swot-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .swot-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .swot-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .swot-letter {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.85rem;
+      color: #fff;
+    }
+    .swot-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .swot-strengths .swot-letter { background: #10b981; }
+    .swot-weaknesses .swot-letter { background: #ef4444; }
+    .swot-opportunities .swot-letter { background: #3b82f6; }
+    .swot-threats .swot-letter { background: #f59e0b; }
+
+    .swot-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin: 0;
+      padding: 0;
+    }
+    .swot-list li {
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      position: relative;
+      padding-left: 1rem;
+    }
+    .swot-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    /* Recommendations */
+    .rec-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-bottom: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      transition: var(--transition);
+    }
+    .rec-card:hover {
+      border-color: rgba(var(--accent-rgb), 0.4);
+    }
+    .rec-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .rec-priority {
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .priority-critical { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .priority-high { background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .priority-medium { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .priority-growth { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+    .rec-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .rec-impact {
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .rec-desc {
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .rec-checklist {
+      list-style: none;
+      padding: 0;
+      margin: 0.25rem 0 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .rec-checklist li {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .preset-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -49,43 +333,211 @@
     <div class="container tool-container">
       <div class="tool-header">
         <h1>AI Business Insights</h1>
-        <p class="tool-description">AI-generated actionable insights for your business.</p>
+        <p class="tool-description">Automated business diagnostic heuristics engine. Unit economics, dynamic SWOT analysis, health score, and 5 prioritized strategic recommendations.</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>AI Business Insights</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> AI-generated actionable insights for your business.</div>
-            <div><strong>Inputs:</strong> analytics, data, business, ai business insights</div>
-            <div><strong>Category:</strong> business</div>
+      <!-- Presets -->
+      <div class="preset-bar">
+        <span style="font-size: 0.8rem; color: var(--text-tertiary); font-weight: 600;">Diagnostic Models:</span>
+        <button type="button" class="btn btn-secondary chip-btn active" id="preset-saas">Scaling B2B SaaS</button>
+        <button type="button" class="btn btn-secondary chip-btn" id="preset-seed">Seed Startup (Burn Mode)</button>
+        <button type="button" class="btn btn-secondary chip-btn" id="preset-ecommerce">E-Commerce Brand</button>
+        <button type="button" class="btn btn-secondary chip-btn" id="preset-agency">Profitable Agency</button>
+      </div>
+
+      <!-- Work Area Grid -->
+      <div class="split-layout">
+        <!-- Left: Input Control Panel -->
+        <div class="tool-panel glass-panel">
+          <h3 class="panel-title">Business Fundamentals</h3>
+
+          <div class="form-group">
+            <label for="inp-revenue">Monthly Revenue ($ MRR)</label>
+            <input type="number" id="inp-revenue" class="form-input" value="120000" min="0" step="5000">
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="inp-margin">Net Margin (%)</label>
+              <input type="number" id="inp-margin" class="form-input" value="22" step="1">
+            </div>
+            <div class="form-group">
+              <label for="inp-churn">Monthly Churn (%)</label>
+              <input type="number" id="inp-churn" class="form-input" value="2.2" min="0" max="100" step="0.1">
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="inp-cac">CAC ($ per customer)</label>
+              <input type="number" id="inp-cac" class="form-input" value="480" min="1" step="20">
+            </div>
+            <div class="form-group">
+              <label for="inp-ltv">LTV ($ customer lifetime)</label>
+              <input type="number" id="inp-ltv" class="form-input" value="2850" min="1" step="50">
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="inp-cash">Cash Balance ($)</label>
+              <input type="number" id="inp-cash" class="form-input" value="450000" min="0" step="10000">
+            </div>
+            <div class="form-group">
+              <label for="inp-burn">Monthly Burn ($)</label>
+              <input type="number" id="inp-burn" class="form-input" value="38000" min="0" step="2000">
+            </div>
+          </div>
+
+          <!-- Gauge Box -->
+          <div class="health-gauge-box" style="margin-top: 1rem;">
+            <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary);">Overall Business Health Score</span>
+            
+            <div class="score-circle-wrapper">
+              <svg viewBox="0 0 160 160">
+                <circle cx="80" cy="80" r="70" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="12"></circle>
+                <circle id="score-gauge-arc" cx="80" cy="80" r="70" fill="none" stroke="var(--accent)" stroke-width="12" stroke-linecap="round" stroke-dasharray="440" stroke-dashoffset="100" style="transition: stroke-dashoffset 0.6s ease, stroke 0.6s ease;"></circle>
+              </svg>
+              <div class="score-center-text">
+                <span class="score-num" id="health-score-val">84</span>
+                <span class="score-max">/ 100</span>
+              </div>
+            </div>
+
+            <div id="health-grade-container">
+              <span class="score-grade-badge" id="health-grade-badge">Strong Health</span>
+            </div>
+
+            <div class="gauge-breakdown">
+              <div class="breakdown-item">
+                <span class="breakdown-label">Unit Economics</span>
+                <span class="breakdown-val" id="score-part-unit">23/25</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="breakdown-label">Profitability</span>
+                <span class="breakdown-val" id="score-part-profit">20/25</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="breakdown-label">Runway / Solvency</span>
+                <span class="breakdown-val" id="score-part-runway">22/25</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="breakdown-label">Retention Engine</span>
+                <span class="breakdown-val" id="score-part-churn">19/25</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-bar" style="margin-top: 1rem;">
+            <button type="button" class="btn btn-secondary" id="btn-export-report" style="width: 100%; justify-content: center;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export Diagnostic Executive Brief
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Right: Diagnostic Dashboards, SWOT & Strategic Recs -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Key Diagnostic Metrics -->
+          <div class="kpi-cards-grid">
+            <div class="kpi-card">
+              <span class="kpi-title">LTV : CAC Ratio</span>
+              <span class="kpi-value" id="kpi-ltv-cac">5.9x</span>
+              <span class="kpi-subtext" id="kpi-ltv-cac-sub">Target: &ge; 3.0x</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-title">Cash Runway</span>
+              <span class="kpi-value" id="kpi-runway">11.8 Mo</span>
+              <span class="kpi-subtext" id="kpi-runway-sub">At current gross burn</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-title">Monthly Net Profit</span>
+              <span class="kpi-value" id="kpi-net-profit">$26,400</span>
+              <span class="kpi-subtext" id="kpi-net-profit-sub">22% Margin</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-title">CAC Payback</span>
+              <span class="kpi-value" id="kpi-payback">~2.8 Mo</span>
+              <span class="kpi-subtext">Estimated capital recovery</span>
+            </div>
+          </div>
+
+          <!-- Automated Dynamic SWOT Analysis -->
+          <div class="tool-panel glass-panel">
+            <h3 class="panel-title" style="border: none; padding: 0; margin-bottom: 0.25rem;">Algorithmic SWOT Diagnostic</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">Synthesized in real-time from your financial fundamentals and unit economics.</p>
+
+            <div class="swot-grid">
+              <!-- Strengths -->
+              <div class="swot-card swot-strengths">
+                <div class="swot-header">
+                  <span class="swot-letter">S</span>
+                  <span class="swot-title">Strengths</span>
+                </div>
+                <ul class="swot-list" id="swot-strengths-list"></ul>
+              </div>
+
+              <!-- Weaknesses -->
+              <div class="swot-card swot-weaknesses">
+                <div class="swot-header">
+                  <span class="swot-letter">W</span>
+                  <span class="swot-title">Weaknesses</span>
+                </div>
+                <ul class="swot-list" id="swot-weaknesses-list"></ul>
+              </div>
+
+              <!-- Opportunities -->
+              <div class="swot-card swot-opportunities">
+                <div class="swot-header">
+                  <span class="swot-letter">O</span>
+                  <span class="swot-title">Opportunities</span>
+                </div>
+                <ul class="swot-list" id="swot-opportunities-list"></ul>
+              </div>
+
+              <!-- Threats -->
+              <div class="swot-card swot-threats">
+                <div class="swot-header">
+                  <span class="swot-letter">T</span>
+                  <span class="swot-title">Threats</span>
+                </div>
+                <ul class="swot-list" id="swot-threats-list"></ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Prioritized Strategic Recommendations -->
+          <div class="tool-panel glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+              <div>
+                <h3 class="panel-title" style="border: none; padding: 0; margin: 0;">5 Prioritized Strategic Directives</h3>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.2rem;">Heuristic recommendations ranked by immediate ROI, capital protection, and growth friction.</p>
+              </div>
+            </div>
+
+            <div id="recommendations-container">
+              <!-- Dynamic recommendations rendered via JS -->
+            </div>
+          </div>
+
+        </div>
       </div>
-    
     </div>
   </main>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
 
-  <!-- Structured schema for search engine rich snippets -->
+  <!-- Structured schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "AI Business Insights",
+    "name": "AI Business Insights & SWOT Diagnostic Engine",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/ai-business-insights/",
-    "description": "AI-generated actionable insights for your business.",
-    "applicationCategory": "UtilityPage",
+    "description": "Automated business diagnostic heuristics engine with dynamic SWOT analysis and strategic recommendations.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Typing Race - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Free online Typing Race. Enhance your skills with Typing Race. Fast, private, and client-side with zero server tracking.">
-  <meta name="keywords" content="typing, keyboard, practice, free, online, tool, utility">
+  <title>Typing Race - 2D Track Racer vs AI - ALL IN ONE</title>
+  <meta name="description" content="Race against AI contenders on a 2D typing track. Track real-time positions, trigger nitro boosts with error-free streaks, and celebrate on the podium.">
+  <meta name="keywords" content="typing race, keyboard game, typing speed test, 2d racing, nitro boost, wpm racer">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/typing-race/">
 
@@ -13,10 +13,9 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/typing-race/">
-  <meta property="og:title" content="Typing Race - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Free online Typing Race. Enhance your skills with Typing Race. Fast, private, and client-side with zero server tracking.">
+  <meta property="og:title" content="Typing Race - 2D Track Racer vs AI - ALL IN ONE">
+  <meta property="og:description" content="Race against AI contenders on a 2D typing track. Track real-time positions, trigger nitro boosts with error-free streaks, and celebrate on the podium.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
-  <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta property="og:image:alt" content="Typing Race - ALL IN ONE">
@@ -25,8 +24,8 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/typing-race/">
-  <meta name="twitter:title" content="Typing Race - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Free online Typing Race. Enhance your skills with Typing Race. Fast, private, and client-side with zero server tracking.">
+  <meta name="twitter:title" content="Typing Race - 2D Track Racer vs AI - ALL IN ONE">
+  <meta name="twitter:description" content="Race against AI contenders on a 2D typing track. Track real-time positions, trigger nitro boosts with error-free streaks, and celebrate on the podium.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="Typing Race - ALL IN ONE">
 
@@ -36,6 +35,415 @@
   
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
+  
+  <style>
+    /* Typing Race Custom Styling */
+    .race-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    /* Controls Bar */
+    .race-controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+    .race-options-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .race-pill-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.45rem 0.9rem;
+      border-radius: var(--radius-full);
+      font-size: 0.825rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .race-pill-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+    .race-pill-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    /* Track Container */
+    .track-container {
+      background: linear-gradient(180deg, #12141a 0%, #0d0f14 100%);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.6);
+    }
+    .track-finish-line {
+      position: absolute;
+      right: 50px;
+      top: 0;
+      bottom: 0;
+      width: 16px;
+      background-image: repeating-conic-gradient(#fff 0% 25%, #1e293b 0% 50%);
+      background-size: 8px 8px;
+      opacity: 0.85;
+      z-index: 2;
+      border-left: 2px solid #ef4444;
+      border-right: 2px solid #ef4444;
+    }
+    .track-finish-label {
+      position: absolute;
+      right: 70px;
+      top: 8px;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      color: #ef4444;
+      text-transform: uppercase;
+      z-index: 3;
+    }
+
+    /* Lanes */
+    .track-lanes {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      position: relative;
+      z-index: 3;
+    }
+    .race-lane {
+      position: relative;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: var(--radius-md);
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      padding: 0 1rem;
+    }
+    .race-lane.player-lane {
+      background: rgba(78, 133, 191, 0.08);
+      border: 1px solid rgba(78, 133, 191, 0.25);
+    }
+    .racer-info-tag {
+      position: absolute;
+      left: 10px;
+      top: 6px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      z-index: 5;
+      pointer-events: none;
+    }
+    .racer-info-tag .racer-rank-badge {
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+    .racer-car {
+      position: absolute;
+      left: 12px;
+      bottom: 6px;
+      width: 58px;
+      height: 32px;
+      transition: transform 0.12s linear;
+      z-index: 4;
+      will-change: transform;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .racer-car svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    }
+    /* Nitro Trail Effect */
+    .nitro-trail {
+      display: none;
+      position: absolute;
+      right: 52px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 14px;
+      background: linear-gradient(90deg, rgba(56, 189, 248, 0) 0%, rgba(56, 189, 248, 0.9) 70%, #fff 100%);
+      border-radius: 10px 0 0 10px;
+      filter: blur(2px);
+      animation: nitroFlicker 0.1s infinite alternate;
+    }
+    .has-nitro .nitro-trail {
+      display: block;
+    }
+    @keyframes nitroFlicker {
+      0% { opacity: 0.8; transform: translateY(-50%) scaleX(0.9); }
+      100% { opacity: 1; transform: translateY(-50%) scaleX(1.3); }
+    }
+
+    /* HUD Stats Strip */
+    .race-hud-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+    }
+    .hud-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hud-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+    .hud-label {
+      font-size: 0.725rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 700;
+    }
+    .hud-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.1;
+    }
+    .hud-sub {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Nitro Meter */
+    .nitro-meter-container {
+      margin-top: 0.25rem;
+      width: 100%;
+      height: 6px;
+      background: var(--bg-tertiary);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .nitro-meter-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+      transition: width 0.15s ease-out;
+    }
+    .nitro-meter-fill.full {
+      background: linear-gradient(90deg, #f43f5e, #fbbf24);
+      animation: pulseGlow 0.6s infinite alternate;
+    }
+    @keyframes pulseGlow {
+      from { filter: drop-shadow(0 0 2px #f43f5e); }
+      to { filter: drop-shadow(0 0 8px #fbbf24); }
+    }
+
+    /* Text Display Board */
+    .words-board {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem 2rem;
+      font-family: 'SF Mono', Consolas, Monaco, monospace;
+      font-size: 1.35rem;
+      line-height: 2.1;
+      letter-spacing: 0.02em;
+      user-select: none;
+      min-height: 140px;
+      max-height: 200px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.25);
+    }
+    .words-board.focused {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+    .word-token {
+      display: inline-block;
+      margin-right: 0.55em;
+      position: relative;
+    }
+    .char-token {
+      position: relative;
+      color: var(--text-tertiary);
+      transition: color 0.05s ease;
+    }
+    .char-token.correct {
+      color: var(--text-primary);
+    }
+    .char-token.incorrect {
+      color: var(--error);
+      background: rgba(239, 68, 68, 0.2);
+      border-radius: 2px;
+    }
+    .char-token.current {
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      animation: cursorBlink 0.8s infinite;
+    }
+    @keyframes cursorBlink {
+      0%, 100% { border-bottom-color: var(--accent); }
+      50% { border-bottom-color: transparent; }
+    }
+
+    /* Hidden / Invisible real input to capture typing cleanly */
+    .hidden-typing-input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 1px;
+      height: 1px;
+      top: -100px;
+    }
+
+    /* Countdown Overlay */
+    .countdown-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(8, 10, 15, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      border-radius: var(--radius-lg);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .countdown-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .countdown-number {
+      font-size: 5.5rem;
+      font-weight: 900;
+      font-family: var(--font-display);
+      color: #fff;
+      text-shadow: 0 0 20px var(--accent);
+      transform: scale(0.6);
+      animation: countdownPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes countdownPop {
+      0% { transform: scale(0.4); opacity: 0; }
+      50% { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Podium Modal */
+    .podium-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .podium-modal.active {
+      display: flex;
+    }
+    .podium-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 650px;
+      padding: 2.25rem;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      position: relative;
+    }
+    .podium-stage {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 1.25rem;
+      margin: 2rem 0 1.5rem;
+    }
+    .podium-pillar {
+      flex: 1;
+      max-width: 130px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      padding: 1rem 0.5rem;
+      color: #fff;
+      font-weight: 700;
+    }
+    .podium-1st {
+      height: 170px;
+      background: linear-gradient(180deg, #eab308 0%, #ca8a04 100%);
+      order: 2;
+      box-shadow: 0 0 25px rgba(234, 179, 8, 0.4);
+    }
+    .podium-2nd {
+      height: 130px;
+      background: linear-gradient(180deg, #94a3b8 0%, #64748b 100%);
+      order: 1;
+    }
+    .podium-3rd {
+      height: 100px;
+      background: linear-gradient(180deg, #d97706 0%, #b45309 100%);
+      order: 3;
+    }
+    .podium-avatar {
+      font-size: 2rem;
+      margin-bottom: 0.35rem;
+    }
+    .podium-name {
+      font-size: 0.85rem;
+      margin-bottom: 0.25rem;
+    }
+    .podium-wpm {
+      font-size: 0.75rem;
+      opacity: 0.9;
+    }
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 105;
+    }
+  </style>
 </head>
 <body>
   <!-- Header Web Component -->
@@ -44,35 +452,239 @@
   <!-- Breadcrumbs -->
   <app-breadcrumbs></app-breadcrumbs>
 
+  <!-- Confetti Canvas -->
+  <canvas id="confettiCanvas"></canvas>
+
   <!-- Main Work Container -->
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
         <h1>Typing Race</h1>
-        <p class="tool-description">Enhance your skills with Typing Race.</p>
+        <p class="tool-description">Race your high-octane cybercar against 3 AI drivers. Type accurately to build nitro streaks and claim 1st place on the podium!</p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Typing Race</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Enhance your skills with Typing Race.</div>
-            <div><strong>Inputs:</strong> typing, keyboard, practice</div>
-            <div><strong>Category:</strong> typing</div>
+      <div class="race-wrapper">
+        <!-- Controls & Customization Bar -->
+        <div class="race-controls-bar">
+          <div class="race-options-group">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);">DISTANCE:</span>
+            <div class="tst-pill-group">
+              <button class="race-pill-btn active" data-length="25">Sprint (25w)</button>
+              <button class="race-pill-btn" data-length="50">Grand Prix (50w)</button>
+              <button class="race-pill-btn" data-length="80">Endurance (80w)</button>
+            </div>
+          </div>
+
+          <div class="race-options-group">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);">CATEGORY:</span>
+            <select id="raceCategorySelect" class="form-select" style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+              <option value="racing">Cyber Racing</option>
+              <option value="literature">Classic Literature</option>
+              <option value="tech">Tech & Code</option>
+              <option value="quotes">Inspiring Quotes</option>
+            </select>
+            <button id="soundToggleBtn" class="race-pill-btn" title="Toggle Sound">
+              🔊 <span>Sound: ON</span>
+            </button>
+            <button id="startRaceBtn" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-weight: 700;">
+              🏁 Start Race
+            </button>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- 2D Track Arena -->
+        <div class="track-container" id="trackContainer">
+          <div class="track-finish-line"></div>
+          <span class="track-finish-label">FINISH</span>
+
+          <div class="track-lanes">
+            <!-- Lane 1: Player -->
+            <div class="race-lane player-lane" id="lane-player">
+              <div class="racer-info-tag">
+                <span class="racer-rank-badge" id="rank-badge-player">1st</span>
+                <span style="color: #38bdf8; font-weight: 800;">YOU</span>
+                <span id="lane-wpm-player" style="font-size: 0.7rem; color: var(--text-tertiary);">(0 WPM)</span>
+              </div>
+              <div class="racer-car" id="car-player">
+                <div class="nitro-trail"></div>
+                <!-- Player Cyber Car SVG -->
+                <svg viewBox="0 0 60 30" fill="none">
+                  <path d="M5 20 L15 10 L45 10 L55 20 L58 24 L2 24 Z" fill="#0284c7" />
+                  <path d="M18 12 L28 12 L30 18 L15 18 Z" fill="#7dd3fc" opacity="0.8" />
+                  <path d="M32 12 L42 12 L46 18 L32 18 Z" fill="#7dd3fc" opacity="0.8" />
+                  <circle cx="15" cy="24" r="5" fill="#0f172a" stroke="#38bdf8" stroke-width="2" />
+                  <circle cx="45" cy="24" r="5" fill="#0f172a" stroke="#38bdf8" stroke-width="2" />
+                  <circle cx="15" cy="24" r="2" fill="#38bdf8" />
+                  <circle cx="45" cy="24" r="2" fill="#38bdf8" />
+                  <line x1="56" y1="21" x2="60" y2="21" stroke="#f43f5e" stroke-width="2" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- Lane 2: Novice Bot (Nova) -->
+            <div class="race-lane" id="lane-bot1">
+              <div class="racer-info-tag">
+                <span class="racer-rank-badge" id="rank-badge-bot1">2nd</span>
+                <span style="color: #10b981; font-weight: 700;">Nova (Novice 35 WPM)</span>
+                <span id="lane-wpm-bot1" style="font-size: 0.7rem; color: var(--text-tertiary);">(35 WPM)</span>
+              </div>
+              <div class="racer-car" id="car-bot1">
+                <svg viewBox="0 0 60 30" fill="none">
+                  <path d="M5 20 L15 11 L45 11 L55 20 L58 24 L2 24 Z" fill="#059669" />
+                  <path d="M18 13 L42 13 L45 18 L16 18 Z" fill="#a7f3d0" opacity="0.7" />
+                  <circle cx="15" cy="24" r="5" fill="#0f172a" stroke="#10b981" stroke-width="2" />
+                  <circle cx="45" cy="24" r="5" fill="#0f172a" stroke="#10b981" stroke-width="2" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- Lane 3: Intermediate Bot (Vector) -->
+            <div class="race-lane" id="lane-bot2">
+              <div class="racer-info-tag">
+                <span class="racer-rank-badge" id="rank-badge-bot2">3rd</span>
+                <span style="color: #f59e0b; font-weight: 700;">Vector (Intermediate 60 WPM)</span>
+                <span id="lane-wpm-bot2" style="font-size: 0.7rem; color: var(--text-tertiary);">(60 WPM)</span>
+              </div>
+              <div class="racer-car" id="car-bot2">
+                <svg viewBox="0 0 60 30" fill="none">
+                  <path d="M5 20 L15 11 L45 11 L55 20 L58 24 L2 24 Z" fill="#d97706" />
+                  <path d="M18 13 L42 13 L45 18 L16 18 Z" fill="#fde68a" opacity="0.7" />
+                  <circle cx="15" cy="24" r="5" fill="#0f172a" stroke="#f59e0b" stroke-width="2" />
+                  <circle cx="45" cy="24" r="5" fill="#0f172a" stroke="#f59e0b" stroke-width="2" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- Lane 4: Pro Bot (Phantom) -->
+            <div class="race-lane" id="lane-bot3">
+              <div class="racer-info-tag">
+                <span class="racer-rank-badge" id="rank-badge-bot3">4th</span>
+                <span style="color: #ef4444; font-weight: 700;">Phantom (Pro 95 WPM)</span>
+                <span id="lane-wpm-bot3" style="font-size: 0.7rem; color: var(--text-tertiary);">(95 WPM)</span>
+              </div>
+              <div class="racer-car" id="car-bot3">
+                <svg viewBox="0 0 60 30" fill="none">
+                  <path d="M5 20 L15 11 L45 11 L55 20 L58 24 L2 24 Z" fill="#dc2626" />
+                  <path d="M18 13 L42 13 L45 18 L16 18 Z" fill="#fca5a5" opacity="0.7" />
+                  <circle cx="15" cy="24" r="5" fill="#0f172a" stroke="#ef4444" stroke-width="2" />
+                  <circle cx="45" cy="24" r="5" fill="#0f172a" stroke="#ef4444" stroke-width="2" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Telemetry HUD Grid -->
+        <div class="race-hud-grid">
+          <div class="hud-card">
+            <span class="hud-label">Race Position</span>
+            <div class="hud-value" id="hudRank" style="color: #38bdf8;">1st</div>
+            <span class="hud-sub" id="hudLeadDiff">Leading pack</span>
+          </div>
+
+          <div class="hud-card">
+            <span class="hud-label">Speed (WPM)</span>
+            <div class="hud-value" id="hudWpm">0</div>
+            <span class="hud-sub" id="hudRawWpm">Raw: 0 WPM</span>
+          </div>
+
+          <div class="hud-card">
+            <span class="hud-label">Accuracy</span>
+            <div class="hud-value" id="hudAccuracy">100%</div>
+            <span class="hud-sub" id="hudErrors">0 errors</span>
+          </div>
+
+          <div class="hud-card">
+            <span class="hud-label">Nitro Streak</span>
+            <div class="hud-value" id="hudStreak" style="color: #f59e0b;">0</div>
+            <div class="nitro-meter-container">
+              <div class="nitro-meter-fill" id="nitroMeterFill"></div>
+            </div>
+          </div>
+
+          <div class="hud-card">
+            <span class="hud-label">Time Elapsed</span>
+            <div class="hud-value" id="hudTimer">0.0s</div>
+            <span class="hud-sub" id="hudProgress">0% Track Done</span>
+          </div>
+        </div>
+
+        <!-- Words Typing Display -->
+        <div class="words-board" id="wordsBoard" tabindex="0">
+          <div id="wordsWrapper">
+            <!-- Dynamic words loaded here -->
+          </div>
+          <!-- 3-2-1 Countdown Overlay -->
+          <div class="countdown-overlay" id="countdownOverlay">
+            <div class="countdown-number" id="countdownNumber">3</div>
+            <p style="color: var(--text-secondary); margin-top: 1rem; font-size: 1rem; font-weight: 600;">Get your fingers ready...</p>
+          </div>
+        </div>
+
+        <!-- Invisible Input for Keyboard Capture -->
+        <input type="text" id="hiddenTypingInput" class="hidden-typing-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
       </div>
-    
     </div>
   </main>
+
+  <!-- Race Podium Celebration Modal -->
+  <div class="podium-modal" id="podiumModal">
+    <div class="podium-card">
+      <h2 style="font-family: var(--font-display); font-size: 2.25rem; font-weight: 800; margin-bottom: 0.5rem;" id="podiumHeaderTitle">Race Finished!</h2>
+      <p style="color: var(--text-secondary); font-size: 0.95rem;" id="podiumSubtitle">Awesome race performance on the cybertrack!</p>
+
+      <!-- 3-Tier Podium Stage -->
+      <div class="podium-stage">
+        <!-- 2nd Place -->
+        <div class="podium-pillar podium-2nd" id="podium2nd">
+          <div class="podium-avatar">🥈</div>
+          <div class="podium-name" id="podium2ndName">Vector</div>
+          <div class="podium-wpm" id="podium2ndWpm">60 WPM</div>
+        </div>
+        <!-- 1st Place -->
+        <div class="podium-pillar podium-1st" id="podium1st">
+          <div class="podium-avatar">🏆</div>
+          <div class="podium-name" id="podium1stName">YOU</div>
+          <div class="podium-wpm" id="podium1stWpm">102 WPM</div>
+        </div>
+        <!-- 3rd Place -->
+        <div class="podium-pillar podium-3rd" id="podium3rd">
+          <div class="podium-avatar">🥉</div>
+          <div class="podium-name" id="podium3rdName">Nova</div>
+          <div class="podium-wpm" id="podium3rdWpm">35 WPM</div>
+        </div>
+      </div>
+
+      <!-- Stat Badges Breakdown -->
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin: 1.5rem 0; text-align: center;">
+        <div style="background: var(--bg-tertiary); padding: 0.75rem; border-radius: var(--radius-md);">
+          <div style="font-size: 0.7rem; color: var(--text-secondary);">FINAL TIME</div>
+          <div style="font-size: 1.25rem; font-weight: 800;" id="modalFinalTime">24.5s</div>
+        </div>
+        <div style="background: var(--bg-tertiary); padding: 0.75rem; border-radius: var(--radius-md);">
+          <div style="font-size: 0.7rem; color: var(--text-secondary);">FINAL WPM</div>
+          <div style="font-size: 1.25rem; font-weight: 800; color: #38bdf8;" id="modalFinalWpm">88</div>
+        </div>
+        <div style="background: var(--bg-tertiary); padding: 0.75rem; border-radius: var(--radius-md);">
+          <div style="font-size: 0.7rem; color: var(--text-secondary);">ACCURACY</div>
+          <div style="font-size: 1.25rem; font-weight: 800; color: #10b981;" id="modalFinalAcc">98%</div>
+        </div>
+        <div style="background: var(--bg-tertiary); padding: 0.75rem; border-radius: var(--radius-md);">
+          <div style="font-size: 0.7rem; color: var(--text-secondary);">NITRO STREAK</div>
+          <div style="font-size: 1.25rem; font-weight: 800; color: #f59e0b;" id="modalMaxStreak">28</div>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem;">
+        <button id="modalRematchBtn" class="btn btn-primary" style="padding: 0.65rem 1.75rem; font-weight: 700;">
+          🏎️ Race Again
+        </button>
+        <button id="modalCloseBtn" class="btn btn-outline" style="padding: 0.65rem 1.25rem;">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -84,8 +696,8 @@
     "@type": "WebApplication",
     "name": "Typing Race",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/typing-race/",
-    "description": "Enhance your skills with Typing Race.",
-    "applicationCategory": "UtilityPage",
+    "description": "Interactive simulated 2D typing track with AI contenders, live positions, nitro boosts, and podium celebrations.",
+    "applicationCategory": "GameApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }

@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bounce Rate Calculator - Free Online Tool - ALL IN ONE</title>
-  <meta name="description" content="Create, analyze, and manage your Bounce Rate Calculator online.">
-  <meta name="keywords" content="marketing, digital, analytics, free, online, tool, utility">
+  <title>Bounce Rate Calculator &amp; Engagement Auditor - Free Online Tool - ALL IN ONE</title>
+  <meta name="description" content="Calculate bounce rate %, evaluate user engagement score (0-100), compare against industry benchmarks (E-commerce, B2B, Blogs), and get personalized optimization tips.">
+  <meta name="keywords" content="bounce rate calculator, website engagement calculator, ga4 engagement rate, ecommerce bounce rate, industry bounce rate benchmark, reduce bounce rate">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sami12901.github.io/ALL-IN-ONE-v1/tools/bounce-rate-calculator/">
 
@@ -13,8 +13,8 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ALL IN ONE">
   <meta property="og:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/bounce-rate-calculator/">
-  <meta property="og:title" content="Bounce Rate Calculator - Free Online Tool - ALL IN ONE">
-  <meta property="og:description" content="Create, analyze, and manage your Bounce Rate Calculator online.">
+  <meta property="og:title" content="Bounce Rate Calculator &amp; Engagement Auditor - ALL IN ONE">
+  <meta property="og:description" content="Calculate website bounce rate %, compare against industry benchmarks (E-commerce, B2B, Blogs), and view actionable tips to boost engagement.">
   <meta property="og:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:secure_url" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta property="og:image:width" content="512">
@@ -25,15 +25,292 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sami12901.github.io/ALL-IN-ONE-v1/tools/bounce-rate-calculator/">
-  <meta name="twitter:title" content="Bounce Rate Calculator - Free Online Tool - ALL IN ONE">
-  <meta name="twitter:description" content="Create, analyze, and manage your Bounce Rate Calculator online.">
+  <meta name="twitter:title" content="Bounce Rate Calculator &amp; Engagement Auditor - ALL IN ONE">
+  <meta name="twitter:description" content="Compute website bounce rate %, check industry benchmarks, and discover personalized optimization recommendations.">
   <meta name="twitter:image" content="https://sami12901.github.io/ALL-IN-ONE-v1/assets/icons/icon-512.png">
   <meta name="twitter:image:alt" content="Bounce Rate Calculator - ALL IN ONE">
 
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/portfolio.css">
   <link rel="stylesheet" href="../../css/tools-shared.css">
-  
+
+  <style>
+    .bounce-workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 992px) {
+      .bounce-workspace {
+        grid-template-columns: 420px 1fr;
+      }
+    }
+
+    .preset-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+    .preset-chip {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.8rem;
+      font-size: 0.775rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .preset-chip:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .preset-chip.active {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    /* Score Hero Banner */
+    .score-hero-banner {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+      position: relative;
+      overflow: hidden;
+    }
+    .score-hero-banner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+    .score-circle-group {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+    .score-number-badge {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.65rem;
+      font-weight: 800;
+      line-height: 1;
+      background: rgba(16, 185, 129, 0.15);
+      border: 2px solid #10b981;
+      color: #10b981;
+      flex-shrink: 0;
+    }
+    .score-number-badge.warning {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: #f59e0b;
+      color: #f59e0b;
+    }
+    .score-number-badge.danger {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+    .score-meta-text h3 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .score-meta-text p {
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+      line-height: 1.45;
+      max-width: 440px;
+      margin: 0;
+    }
+
+    /* Benchmark Gauge Box */
+    .benchmark-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .benchmark-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .benchmark-range-pill {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      background: rgba(78, 133, 191, 0.15);
+      border: 1px solid rgba(78, 133, 191, 0.3);
+      color: var(--accent-light);
+    }
+    .gauge-track {
+      height: 16px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-full);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .gauge-benchmark-zone {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      background: rgba(16, 185, 129, 0.25);
+      border-left: 2px dashed rgba(16, 185, 129, 0.8);
+      border-right: 2px dashed rgba(16, 185, 129, 0.8);
+    }
+    .gauge-marker {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      background: #ffffff;
+      box-shadow: 0 0 8px #ffffff;
+      transform: translateX(-50%);
+      transition: left 0.4s ease;
+      z-index: 2;
+    }
+    .gauge-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Metric Sm Cards */
+    .metric-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    @media (min-width: 640px) {
+      .metric-grid-4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    .metric-card-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .metric-card-lbl {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .metric-card-num {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      line-height: 1.1;
+    }
+    .metric-card-detail {
+      font-size: 0.725rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Actionable Tips Checklist */
+    .tips-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .tip-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      font-size: 0.825rem;
+      line-height: 1.45;
+    }
+    .tip-card.priority-high {
+      border-left: 3px solid #ef4444;
+    }
+    .tip-card.priority-medium {
+      border-left: 3px solid #f59e0b;
+    }
+    .tip-card.priority-good {
+      border-left: 3px solid #10b981;
+    }
+    .tip-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: var(--radius-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .tip-badge.high { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+    .tip-badge.medium { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+    .tip-badge.good { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+
+    /* Toast */
+    .toast-popup {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      color: var(--text-primary);
+      padding: 0.75rem 1.4rem;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 600;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: var(--transition);
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .toast-popup.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+
   <script type="module" src="../../js/components.js"></script>
   <script type="module" src="./script.js" defer></script>
 </head>
@@ -48,31 +325,193 @@
   <main class="tool-layout">
     <div class="container tool-container">
       <div class="tool-header">
-        <h1>Bounce Rate Calculator</h1>
-        <p class="tool-description">Create, analyze, and manage your Bounce Rate Calculator online.</p>
+        <h1>Bounce Rate Calculator &amp; Engagement Auditor</h1>
+        <p class="tool-description">
+          Analyze website user engagement, calculate exact bounce rates, evaluate performance against industry standards (E-commerce, B2B, Blogs), and generate personalized optimization recommendations.
+        </p>
       </div>
 
-      <!-- Tool Workspace -->
-      
-      <div class="tool-panel glass-panel" style="padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 700px; margin: 2rem auto;">
-        <div style="margin-bottom: 1rem;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-        <h2 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800;">Utility Scheduled for Rollout</h2>
-        <p style="color: var(--text-secondary); line-height: 1.6; max-width: 500px;">
-          The <strong>Bounce Rate Calculator</strong> is scheduled in our upcoming static utility rollout phase. The core client-side Javascript logic is currently under integration.
-        </p>
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); width: 100%; max-width: 480px; margin-top: 1rem; text-align: left;">
-          <span style="font-weight: 700; font-size: 0.875rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Details:</span>
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem; color: var(--text-secondary);">
-            <div><strong>Description:</strong> Create, analyze, and manage your Bounce Rate Calculator online.</div>
-            <div><strong>Inputs:</strong> marketing, digital, analytics</div>
-            <div><strong>Category:</strong> digital-marketing</div>
+      <!-- Presets Selector Bar -->
+      <div class="preset-bar">
+        <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); margin-right: 0.25rem;">PRESET SCENARIOS:</span>
+        <button type="button" class="preset-chip active" data-preset="ecommerce">🛍️ E-Commerce Store</button>
+        <button type="button" class="preset-chip" data-preset="b2b">💼 B2B Lead Gen</button>
+        <button type="button" class="preset-chip" data-preset="blog">📰 Content / Blog</button>
+        <button type="button" class="preset-chip" data-preset="saas">⚡ SaaS Web App</button>
+        <button type="button" class="preset-chip" data-preset="landing">🎯 PPC Landing Page</button>
+      </div>
+
+      <!-- Main Workspace -->
+      <div class="bounce-workspace">
+        
+        <!-- Controls & Input Panel -->
+        <div class="tool-panel glass-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>Auditing Parameters</span>
+          </div>
+
+          <div class="form-group">
+            <label for="industry-select">Industry &amp; Site Category</label>
+            <select id="industry-select" class="form-select">
+              <option value="ecommerce" selected>E-Commerce Store (Typical: 20% – 45%)</option>
+              <option value="b2b">B2B Lead Generation (Typical: 25% – 55%)</option>
+              <option value="blog">Content Publication / Blog (Typical: 65% – 90%)</option>
+              <option value="saas">SaaS &amp; Web App (Typical: 20% – 40%)</option>
+              <option value="landing">PPC / Lead Landing Page (Typical: 60% – 90%)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="total-sessions">Total Website Visitors / Sessions</label>
+            <input type="number" id="total-sessions" class="form-input" min="1" step="1" value="25000">
+          </div>
+
+          <div class="form-group">
+            <label for="bounced-sessions">Single-Page Sessions (Bounces)</label>
+            <input type="number" id="bounced-sessions" class="form-input" min="0" step="1" value="8750">
+          </div>
+
+          <div class="form-group">
+            <label>Average Session Duration</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div>
+                <input type="number" id="duration-min" class="form-input" min="0" step="1" placeholder="Minutes" value="2">
+                <span style="font-size: 0.72rem; color: var(--text-tertiary); display: block; margin-top: 0.2rem;">Minutes</span>
+              </div>
+              <div>
+                <input type="number" id="duration-sec" class="form-input" min="0" max="59" step="1" placeholder="Seconds" value="45">
+                <span style="font-size: 0.72rem; color: var(--text-tertiary); display: block; margin-top: 0.2rem;">Seconds</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="pageviews-per-session">Pageviews Per Session</label>
+            <input type="number" id="pageviews-per-session" class="form-input" min="1.0" step="0.1" value="3.4">
+          </div>
+
+          <div class="action-bar" style="margin-top: 0.5rem;">
+            <button type="button" id="btn-export-audit" class="btn btn-primary" style="flex: 1;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Copy Audit Report
+            </button>
+            <button type="button" id="btn-reset-bounce" class="btn btn-secondary">
+              Reset Defaults
+            </button>
+          </div>
+
+          <!-- Quick Explainer Box -->
+          <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem; font-size: 0.775rem; color: var(--text-secondary); line-height: 1.45;">
+            <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">Standard Formula:</strong>
+            <code>Bounce Rate = (Bounces / Total Sessions) × 100</code>
+            <p style="margin: 0.35rem 0 0 0;">
+              In GA4, <em>Engagement Rate</em> is the inverse: sessions lasting &gt;10s, with &ge;2 pageviews, or triggering a key conversion event.
+            </p>
           </div>
         </div>
-        <a href="../../index.html" class="btn btn-primary" style="margin-top: 1rem;">&larr; Return to Dashboard</a>
+
+        <!-- Output & Analytics Column -->
+        <div class="tool-panel glass-panel" style="gap: 1.25rem;">
+          
+          <!-- Score Hero Banner -->
+          <div class="score-hero-banner">
+            <div class="score-circle-group">
+              <div class="score-number-badge" id="badge-score">82</div>
+              <div class="score-meta-text">
+                <h3 id="lbl-score-verdict" style="color: #10b981;">
+                  <span>Strong Engagement</span>
+                </h3>
+                <p id="lbl-score-desc">
+                  Your visitors explore multiple pages with healthy session durations exceeding industry benchmarks.
+                </p>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-tertiary); font-weight: 700; display: block;">Calculated Rate</span>
+              <span id="hero-bounce-val" style="font-size: 2.2rem; font-weight: 800; color: var(--accent); font-family: var(--font-sans); line-height: 1;">35.0%</span>
+            </div>
+          </div>
+
+          <!-- Key Metrics Grid -->
+          <div class="metric-grid-4">
+            <div class="metric-card-box">
+              <span class="metric-card-lbl">Bounce Rate</span>
+              <span class="metric-card-num" id="card-bounce-rate" style="color: #34d399;">35.0%</span>
+              <span class="metric-card-detail" id="card-bounce-count">8,750 dropped</span>
+            </div>
+            <div class="metric-card-box">
+              <span class="metric-card-lbl">Engaged Sessions</span>
+              <span class="metric-card-num" id="card-engaged-rate" style="color: var(--accent);">65.0%</span>
+              <span class="metric-card-detail" id="card-engaged-count">16,250 multi-page</span>
+            </div>
+            <div class="metric-card-box">
+              <span class="metric-card-lbl">Avg Duration</span>
+              <span class="metric-card-num" id="card-duration-val">2m 45s</span>
+              <span class="metric-card-detail" id="card-duration-sub">165s total time</span>
+            </div>
+            <div class="metric-card-box">
+              <span class="metric-card-lbl">Pages / Visit</span>
+              <span class="metric-card-num" id="card-pageviews-val">3.4</span>
+              <span class="metric-card-detail" id="card-pageviews-sub">High exploration</span>
+            </div>
+          </div>
+
+          <!-- Industry Benchmark Comparison Card -->
+          <div class="benchmark-card">
+            <div class="benchmark-title-row">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span>Industry Benchmark Comparison</span>
+                <span class="benchmark-range-pill" id="lbl-benchmark-range">Expected: 20% – 45%</span>
+              </div>
+              <span id="lbl-benchmark-verdict" style="font-weight: 700; color: #10b981; font-size: 0.8rem;">✅ Within Optimal Range</span>
+            </div>
+
+            <!-- Visual Range Gauge Track -->
+            <div class="gauge-track">
+              <!-- Expected range highlight -->
+              <div class="gauge-benchmark-zone" id="gauge-zone" style="left: 20%; width: 25%;"></div>
+              <!-- Actual user marker -->
+              <div class="gauge-marker" id="gauge-marker" style="left: 35%;"></div>
+            </div>
+
+            <div class="gauge-labels">
+              <span>0% (Lowest Bounce)</span>
+              <span id="gauge-mid-lbl">Industry Avg: 32.5%</span>
+              <span>100% (High Drop-off)</span>
+            </div>
+          </div>
+
+          <!-- Personalized Actionable Tips Section -->
+          <div>
+            <div style="font-weight: 700; font-size: 0.85rem; color: var(--text-primary); margin-bottom: 0.65rem; display: flex; align-items: center; gap: 0.4rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+              <span>Personalized Recommendations to Reduce Bounce Rate</span>
+            </div>
+
+            <div class="tips-list" id="tips-container">
+              <!-- Dynamically populated based on metrics -->
+            </div>
+          </div>
+
+        </div>
+
       </div>
-    
+
     </div>
   </main>
+
+  <!-- Toast Notification -->
+  <div id="app-toast" class="toast-popup">Copied to clipboard!</div>
 
   <!-- Footer Web Component -->
   <app-footer></app-footer>
@@ -82,10 +521,10 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Bounce Rate Calculator",
+    "name": "Bounce Rate Calculator & Engagement Auditor",
     "url": "https://sami12901.github.io/ALL-IN-ONE-v1/tools/bounce-rate-calculator/",
-    "description": "Create, analyze, and manage your Bounce Rate Calculator online.",
-    "applicationCategory": "UtilityPage",
+    "description": "Calculate website bounce rate, compute user engagement score, compare with industry benchmarks, and get actionable CRO tips.",
+    "applicationCategory": "BusinessApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5."
   }
