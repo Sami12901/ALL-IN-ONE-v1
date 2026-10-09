@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.fillText(tag, w / 2, h - 115);
 
     // Concierge Bottom Bar
-    const contact = luxeContact.value || 'VIP Inquiries: concierge@domain.com';
+    const contact = luxeContact.value || 'VIP Inquiries: concierge@example.com';
     ctx.font = '400 16px "Inter", sans-serif';
     ctx.letterSpacing = '1px';
     ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';

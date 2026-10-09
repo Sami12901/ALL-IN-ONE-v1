@@ -17,7 +17,7 @@ const TEMPLATES = {
         <div class="text-muted" style="margin-top: 8px;">
           100 Montgomery Street, Suite 2400<br>
           San Francisco, CA 94104<br>
-          contact@apexdynamics.io
+          contact@example.com
         </div>
       </div>
       <div class="invoice-meta">
@@ -39,7 +39,7 @@ const TEMPLATES = {
           Attn: Accounts Payable &amp; Procurement<br>
           452 Fifth Avenue, 18th Floor<br>
           New York, NY 10018<br>
-          billing@vanguardfintech.com
+          billing@example.com
         </div>
       </div>
       <div class="client-col">
@@ -121,7 +121,7 @@ const TEMPLATES = {
 
     <div class="footer-note">
       <div style="font-weight: 700; color: #111827; margin-bottom: 4px;">Thank you for your partnership!</div>
-      Please transfer payment within 30 calendar days. For electronic inquiries, contact billing@apexdynamics.io.
+      Please transfer payment within 30 calendar days. For electronic inquiries, contact billing@example.com.
     </div>
   </div>
 </body>
@@ -454,7 +454,7 @@ const TEMPLATES = {
       <div class="candidate-title">Principal Cloud &amp; AI Systems Architect</div>
       <div class="contact-bar">
         <span>San Francisco, CA</span> &bull;
-        <span>marcus.vance@systems.io</span> &bull;
+        <span>marcus.vance@example.com</span> &bull;
         <span>+1 (415) 555-0192</span> &bull;
         <span>linkedin.com/in/marcus-vance</span>
       </div>

@@ -374,7 +374,7 @@ const TEMPLATE_DEFINITIONS = [
       kicker: 'Let’s Build Together',
       title: 'Thank You & Discussion',
       subtitle: 'We invite strategic questions, deep dives, and pilot partnership discussions.',
-      email: 'partnerships@auraintelligence.io',
+      email: 'partnerships@example.com',
       website: 'https://auraintelligence.io',
       location: 'San Francisco, CA & London, UK',
       accentColor: '#6366f1'

@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
       value: 45000,
       source: 'Website',
       stage: 'new',
-      email: 'sjenkins@omnicloud.io',
+      email: 'sjenkins@example.com',
       phone: '+1 (415) 555-0192',
       notes: 'Inbound demo request for 150 enterprise seats.'
     },
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
       value: 82000,
       source: 'Referral',
       stage: 'qualified',
-      email: 'mchang@zenithlg.com',
+      email: 'mchang@example.com',
       phone: '+1 (312) 555-0143',
       notes: 'Referred by regional VP; budget approved for Q4 deployment.'
     },
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
       value: 120000,
       source: 'Cold Outreach',
       stage: 'demo',
-      email: 'erostova@biovance.com',
+      email: 'erostova@example.com',
       phone: '+1 (617) 555-0819',
       notes: 'Product architecture demo with CTO and compliance team.'
     },
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
       value: 65000,
       source: 'Ads',
       stage: 'proposal',
-      email: 'mvance@aetherfin.net',
+      email: 'mvance@example.com',
       phone: '+1 (212) 555-0722',
       notes: 'Contract review underway with procurement.'
     },
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
       value: 95000,
       source: 'Website',
       stage: 'won',
-      email: 'diana@apexrobotics.tech',
+      email: 'diana@example.com',
       phone: '+1 (206) 555-0388',
       notes: 'Signed 2-year enterprise software contract.'
     },
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
       value: 28000,
       source: 'Cold Outreach',
       stage: 'lost',
-      email: 'dmiller@summitretail.com',
+      email: 'dmiller@example.com',
       phone: '+1 (404) 555-0914',
       notes: 'Chose competitor due to existing legacy system commitments.'
     },
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
       value: 36000,
       source: 'Referral',
       stage: 'qualified',
-      email: 'claire@nexusmedia.org',
+      email: 'claire@example.org',
       phone: '+1 (512) 555-0631',
       notes: 'Need CRM workflow integration by month end.'
     }

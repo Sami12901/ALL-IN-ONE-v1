@@ -368,7 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
       payload = {
         sub: 'usr_auth0_892019482',
         name: 'Alex Mercer',
-        email: 'alex.mercer@enterprise-cloud.io',
+        email: 'alex.mercer@example.com',
         role: 'Senior Cloud Engineer',
         iss: 'https://auth.enterprise-cloud.io/',
         aud: 'https://api.enterprise-cloud.io/v2',
@@ -380,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
       payload = {
         sub: 'usr_oauth_expired_9921',
         name: 'Diana Prince',
-        email: 'diana.prince@themyscira.gov',
+        email: 'diana.prince@example.org',
         role: 'Guest Member',
         iss: 'https://identity.global-service.net/',
         aud: 'https://api.global-service.net',
@@ -392,7 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
       payload = {
         sub: 'usr_rbac_superadmin',
         name: 'Jordan Bell',
-        email: 'jbell@fintech-security.com',
+        email: 'jbell@example.com',
         roles: ['superadmin', 'billing_admin', 'devops_lead'],
         scope: 'read:all write:all audit:logs deploy:production',
         organization_id: 'org_88192a0',

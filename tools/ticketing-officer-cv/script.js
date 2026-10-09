@@ -7,7 +7,7 @@ const SAMPLE_TICKETING_CV = {
   personal: {
     fullName: 'Tariq Al-Mansoor, IATA CTT',
     title: 'Senior Airline Ticketing Officer & Multi-GDS Specialist',
-    email: 'tariq.ticketing@aviationpro.com',
+    email: 'tariq.ticketing@example.com',
     phone: '+971 50 123 4567',
     location: 'Dubai, UAE (Open to International Transfer)',
     iataCode: 'IATA #07-2 9841 3 • Sabre PCC: 4F2A • Amadeus: DXB1A0982',

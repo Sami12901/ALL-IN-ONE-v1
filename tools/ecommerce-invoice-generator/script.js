@@ -4,7 +4,7 @@ const STORAGE_KEY = 'ecommerce_invoice_data';
 
 const DEFAULT_INVOICE = {
   storeName: 'Lumina Luxury Goods',
-  storeInfo: '742 Evergreen Avenue, Suite 400\nSan Francisco, CA 94107\nsupport@luminaluxury.com | +1 (555) 234-5678',
+  storeInfo: '742 Evergreen Avenue, Suite 400\nSan Francisco, CA 94107\nsupport@example.com | +1 (555) 234-5678',
   customerName: 'Eleanor Vance',
   customerEmail: 'eleanor.vance@example.com',
   customerAddress: '1024 Kensington Road, Apt 5B\nBrooklyn, NY 11218\nUnited States',
@@ -24,7 +24,7 @@ const DEFAULT_INVOICE = {
   discountVal: 10,
   taxRate: 8.5,
   shippingFee: 15.00,
-  notes: 'Thank you for your order! All products are covered by a 1-year comprehensive replacement warranty. For service questions, contact support@luminaluxury.com.'
+  notes: 'Thank you for your order! All products are covered by a 1-year comprehensive replacement warranty. For service questions, contact support@example.com.'
 };
 
 let invoiceData = null;

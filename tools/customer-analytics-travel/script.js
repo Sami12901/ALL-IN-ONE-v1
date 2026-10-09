@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'cust-101',
       name: 'Prince Faisal Bin Salman',
-      email: 'faisal.office@riyadh-holdings.sa',
+      email: 'faisal.office@example.org',
       country: 'Saudi Arabia',
       cohort: 'VIP High-Net-Worth',
       bookings: 14,
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'cust-102',
       name: 'Apex Global Logistics Ltd (C. Patel)',
-      email: 'corporate.travel@apexlogistics.co.uk',
+      email: 'corporate.travel@example.com',
       country: 'United Kingdom',
       cohort: 'Frequent Corporate Travelers',
       bookings: 28,
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'cust-103',
       name: 'Al-Madinah Islamic Foundation',
-      email: 'hajj.delegates@madinah-foundation.org',
+      email: 'hajj.delegates@example.org',
       country: 'Canada',
       cohort: 'Pilgrims',
       bookings: 9,
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'cust-104',
       name: 'Dr. Raymond & Eleanor Vance',
-      email: 'raymond.vance@vancemedical.com',
+      email: 'raymond.vance@example.com',
       country: 'United States',
       cohort: 'VIP High-Net-Worth',
       bookings: 8,
@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'cust-105',
       name: 'TechFin Solutions Pte (Tan Wei Ming)',
-      email: 'tan.w@techfin.sg',
+      email: 'tan.w@example.com',
       country: 'Singapore',
       cohort: 'Frequent Corporate Travelers',
       bookings: 19,
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'cust-106',
       name: 'Haji Mohammad Farooq & Family',
-      email: 'farooq.family@orienttraders.com.bd',
+      email: 'farooq.family@example.com',
       country: 'Bangladesh',
       cohort: 'Pilgrims',
       bookings: 6,
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'cust-107',
       name: 'The Harrison Family (5 Pax)',
-      email: 'greg.harrison@gmail.com',
+      email: 'greg.harrison@example.com',
       country: 'Australia',
       cohort: 'Family Vacationers',
       bookings: 4,
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'cust-108',
       name: 'Countess Sofia Von Habsburg',
-      email: 'sofia.habsburg@vienna-estate.at',
+      email: 'sofia.habsburg@example.org',
       country: 'Austria',
       cohort: 'VIP High-Net-Worth',
       bookings: 7,
@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'cust-109',
       name: 'Kearney Middle East Consulting',
-      email: 'travel.desk@kearney-me.ae',
+      email: 'travel.desk@example.org',
       country: 'United Arab Emirates',
       cohort: 'Frequent Corporate Travelers',
       bookings: 22,
@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'cust-110',
       name: 'The Al-Zahrani Family (7 Pax)',
-      email: 'khalid.zahrani@zahrani-holding.sa',
+      email: 'khalid.zahrani@example.org',
       country: 'Saudi Arabia',
       cohort: 'Family Vacationers',
       bookings: 5,
@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'cust-111',
       name: 'Ustadh Bilal Tariq & Pilgrims Group',
-      email: 'bilal.umrah@birmingham-dawah.uk',
+      email: 'bilal.umrah@example.org',
       country: 'United Kingdom',
       cohort: 'Pilgrims',
       bookings: 5,
@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'cust-112',
       name: 'Lucas & Mia Johansson',
-      email: 'lucas.johansson@nordicdesigns.se',
+      email: 'lucas.johansson@example.org',
       country: 'Sweden',
       cohort: 'Family Vacationers',
       bookings: 3,
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'cust-113',
       name: 'Marcus Brody (Solo Executive)',
-      email: 'mbrody@brodycap.com',
+      email: 'mbrody@example.com',
       country: 'United States',
       cohort: 'Frequent Corporate Travelers',
       bookings: 11,
@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'cust-114',
       name: 'Ahmed & Samira Khan (First-Time Umrah)',
-      email: 'ahmed.khan92@yahoo.com',
+      email: 'ahmed.khan92@example.com',
       country: 'Canada',
       cohort: 'Pilgrims',
       bookings: 1,
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'cust-115',
       name: 'The Dubois Family (4 Pax)',
-      email: 'jean.dubois@lyon-agro.fr',
+      email: 'jean.dubois@example.org',
       country: 'France',
       cohort: 'Family Vacationers',
       bookings: 1,
@@ -850,12 +850,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (presetLuxuryPilgrim) {
     presetLuxuryPilgrim.addEventListener('click', () => {
       customers = [
-        { id: 'p1', name: 'Al-Mansoor Royal Travel Delegation', email: 'vip@almansoor.sa', country: 'Saudi Arabia', cohort: 'VIP High-Net-Worth', bookings: 12, revenue: 112000, destination: 'Makkah Clock Tower Royal Suite' },
-        { id: 'p2', name: 'Canadian Muslim Pilgrims Union', email: 'info@canadapilgrims.ca', country: 'Canada', cohort: 'Pilgrims', bookings: 15, revenue: 94000, destination: 'Annual Group Umrah 18-Days' },
-        { id: 'p3', name: 'Sultanate Aviation Private Charter', email: 'ops@sultanate-air.om', country: 'Oman', cohort: 'VIP High-Net-Worth', bookings: 9, revenue: 76000, destination: 'Medina & Jeddah Executive Ground Ops' },
-        { id: 'p4', name: 'London Islamic Academy Group', email: 'hajj@london-academy.org.uk', country: 'United Kingdom', cohort: 'Pilgrims', bookings: 8, revenue: 52000, destination: 'Ramadan 10-Nights Madinah' },
-        { id: 'p5', name: 'Doha Business Group (Al-Thani reps)', email: 'travel@doha-holding.qa', country: 'Qatar', cohort: 'Frequent Corporate Travelers', bookings: 14, revenue: 39000, destination: 'Gulf Shuttle & London' },
-        { id: 'p6', name: 'Al-Hashemi Family Pilgrims', email: 'hashemi@gmail.com', country: 'Jordan', cohort: 'Pilgrims', bookings: 4, revenue: 22000, destination: 'Umrah 12-Days 5-Star' }
+        { id: 'p1', name: 'Al-Mansoor Royal Travel Delegation', email: 'vip@example.org', country: 'Saudi Arabia', cohort: 'VIP High-Net-Worth', bookings: 12, revenue: 112000, destination: 'Makkah Clock Tower Royal Suite' },
+        { id: 'p2', name: 'Canadian Muslim Pilgrims Union', email: 'info@example.org', country: 'Canada', cohort: 'Pilgrims', bookings: 15, revenue: 94000, destination: 'Annual Group Umrah 18-Days' },
+        { id: 'p3', name: 'Sultanate Aviation Private Charter', email: 'ops@example.org', country: 'Oman', cohort: 'VIP High-Net-Worth', bookings: 9, revenue: 76000, destination: 'Medina & Jeddah Executive Ground Ops' },
+        { id: 'p4', name: 'London Islamic Academy Group', email: 'hajj@example.org', country: 'United Kingdom', cohort: 'Pilgrims', bookings: 8, revenue: 52000, destination: 'Ramadan 10-Nights Madinah' },
+        { id: 'p5', name: 'Doha Business Group (Al-Thani reps)', email: 'travel@example.org', country: 'Qatar', cohort: 'Frequent Corporate Travelers', bookings: 14, revenue: 39000, destination: 'Gulf Shuttle & London' },
+        { id: 'p6', name: 'Al-Hashemi Family Pilgrims', email: 'hashemi@example.com', country: 'Jordan', cohort: 'Pilgrims', bookings: 4, revenue: 22000, destination: 'Umrah 12-Days 5-Star' }
       ];
       selectedCohortFilter = 'ALL';
       selectFilterCohort.value = 'ALL';
@@ -866,11 +866,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if (presetCorporateHub) {
     presetCorporateHub.addEventListener('click', () => {
       customers = [
-        { id: 'c1', name: 'McKinsey & Co Middle East', email: 'travel@mckinsey.com', country: 'UAE', cohort: 'Frequent Corporate Travelers', bookings: 45, revenue: 88500, destination: 'Weekly GCC Business Flights' },
-        { id: 'c2', name: 'Deloitte Consulting APAC', email: 'apac-travel@deloitte.com', country: 'Singapore', cohort: 'Frequent Corporate Travelers', bookings: 38, revenue: 74200, destination: 'Singapore - Hong Kong - Sydney' },
-        { id: 'c3', name: 'Siemens Energy Regional Desk', email: 'mobility@siemens-energy.de', country: 'Germany', cohort: 'Frequent Corporate Travelers', bookings: 29, revenue: 56000, destination: 'Frankfurt - Doha - Dammam' },
-        { id: 'c4', name: 'Barclays Private Wealth (London)', email: 'privateclient@barclays.co.uk', country: 'United Kingdom', cohort: 'VIP High-Net-Worth', bookings: 11, revenue: 64000, destination: 'Geneva - Dubai First Class' },
-        { id: 'c5', name: 'The Thompson Family Vacation', email: 'thompson@gmail.com', country: 'United Kingdom', cohort: 'Family Vacationers', bookings: 3, revenue: 16500, destination: 'Caribbean Cruise & Miami' }
+        { id: 'c1', name: 'McKinsey & Co Middle East', email: 'travel@example.com', country: 'UAE', cohort: 'Frequent Corporate Travelers', bookings: 45, revenue: 88500, destination: 'Weekly GCC Business Flights' },
+        { id: 'c2', name: 'Deloitte Consulting APAC', email: 'apac-travel@example.com', country: 'Singapore', cohort: 'Frequent Corporate Travelers', bookings: 38, revenue: 74200, destination: 'Singapore - Hong Kong - Sydney' },
+        { id: 'c3', name: 'Siemens Energy Regional Desk', email: 'mobility@example.org', country: 'Germany', cohort: 'Frequent Corporate Travelers', bookings: 29, revenue: 56000, destination: 'Frankfurt - Doha - Dammam' },
+        { id: 'c4', name: 'Barclays Private Wealth (London)', email: 'privateclient@example.org', country: 'United Kingdom', cohort: 'VIP High-Net-Worth', bookings: 11, revenue: 64000, destination: 'Geneva - Dubai First Class' },
+        { id: 'c5', name: 'The Thompson Family Vacation', email: 'thompson@example.com', country: 'United Kingdom', cohort: 'Family Vacationers', bookings: 3, revenue: 16500, destination: 'Caribbean Cruise & Miami' }
       ];
       selectedCohortFilter = 'ALL';
       selectFilterCohort.value = 'ALL';

@@ -310,7 +310,7 @@ const PRESETS = {
   tech: {
     fullName: 'Alexander Vance',
     headline: 'Senior Principal Cloud Solutions Architect',
-    email: 'alexander.vance@enterprise.io',
+    email: 'alexander.vance@example.com',
     phone: '+1 (555) 019-2834',
     location: 'San Francisco, CA',
     website: 'linkedin.com/in/alexvance',
@@ -362,7 +362,7 @@ const PRESETS = {
   marketing: {
     fullName: 'Elena Rostova',
     headline: 'VP of Growth & Performance Marketing',
-    email: 'elena.rostova@growthscale.com',
+    email: 'elena.rostova@example.com',
     phone: '+1 (415) 890-4122',
     location: 'New York, NY',
     website: 'linkedin.com/in/elenarostova',
@@ -414,7 +414,7 @@ const PRESETS = {
   finance: {
     fullName: 'Marcus Sterling',
     headline: 'Head of Product - FinTech & Capital Infrastructure',
-    email: 'marcus.sterling@capitalvault.com',
+    email: 'marcus.sterling@example.com',
     phone: '+1 (312) 774-9021',
     location: 'Chicago, IL',
     website: 'linkedin.com/in/marcussterling',

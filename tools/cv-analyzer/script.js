@@ -36,7 +36,7 @@ const WEAK_PASSIVE_PHRASES = [
 const SAMPLES = {
   tech: {
     cv: `Alex Rivera
-alex.rivera@cloudscale.io | (415) 555-0199 | San Francisco, CA | linkedin.com/in/alexrivera-tech
+alex.rivera@example.com | (415) 555-0199 | San Francisco, CA | linkedin.com/in/alexrivera-tech
 
 PROFESSIONAL SUMMARY
 Senior Full-Stack Engineer and Distributed Systems Architect with 7+ years building enterprise SaaS platforms. Expert in TypeScript, React, Node.js, Kubernetes, and AWS infrastructure. Track record of scaling microservices to 10M+ daily active requests with 99.99% uptime.
@@ -77,7 +77,7 @@ Requirements & Qualifications:
   },
   sales: {
     cv: `Marcus Vance
-marcus.vance@enterprisesales.io | +1 (312) 555-0144 | Chicago, IL | linkedin.com/in/marcus-vance-sales
+marcus.vance@example.com | +1 (312) 555-0144 | Chicago, IL | linkedin.com/in/marcus-vance-sales
 
 EXECUTIVE SUMMARY
 President's Club Enterprise Account Executive with 8+ years executing high-ticket B2B software sales across Fortune 500 corporations. Proven track record generating $18.4M in closed ARR with an average 145% annual quota attainment. Master practitioner of MEDDPIC and Command of the Message.
@@ -104,7 +104,7 @@ B.S. in Business Administration | University of Illinois Urbana-Champaign`
   },
   pm: {
     cv: `Sarah Jenkins
-sarah.jenkins@productlead.com | (206) 555-0177 | Seattle, WA | linkedin.com/in/sarah-jenkins-pm
+sarah.jenkins@example.com | (206) 555-0177 | Seattle, WA | linkedin.com/in/sarah-jenkins-pm
 
 SUMMARY
 Data-informed Principal Product Manager with 8+ years leading cross-functional engineering, UX, and growth teams for consumer tech applications. Drove 45% increase in annual active users and launched 6 marquee mobile products from zero to one.

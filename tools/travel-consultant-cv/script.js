@@ -7,7 +7,7 @@ const SAMPLE_TRAVEL_CV = {
   personal: {
     fullName: 'Julian Montgomery, CTA',
     title: 'Senior Luxury Travel Consultant & Itinerary Designer',
-    email: 'j.montgomery@wanderlustluxury.com',
+    email: 'j.montgomery@example.com',
     phone: '+1 (212) 555-0188',
     location: 'New York, NY (Open to Remote / Relocation)',
     linkedin: 'linkedin.com/in/julian-montgomery-travel',

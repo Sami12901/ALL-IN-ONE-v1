@@ -202,7 +202,7 @@ function generateBrandDeck(brandPrompt, archetype, count, customPalette = null) 
       cards: [
         { title: 'Design Token Repository', desc: 'Figma Community Design System & GitHub CSS/Tailwind repository: brand.company.io' },
         { title: 'Vector Asset Packages', desc: 'Download approved SVG, EPS, and PNG asset suites via the internal brand portal.' },
-        { title: 'Brand Steward Contact', desc: 'Direct inquiries to brand-governance@company.io for custom campaign review.' }
+        { title: 'Brand Steward Contact', desc: 'Direct inquiries to brand-governance@example.com for custom campaign review.' }
       ]
     });
   }

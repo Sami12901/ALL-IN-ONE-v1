@@ -140,7 +140,7 @@ const HOTEL_PRESETS = {
           }
         ],
         terms: "25% deposit upon contract signature &bull; Tailored cancellation terms &bull; Dedicated Master Event Planner assigned.",
-        contact: "Direct Inquiries: events@grandazureresort.com &bull; Phone +33 4 93 00 11 22"
+        contact: "Direct Inquiries: events@example.com &bull; Phone +33 4 93 00 11 22"
       }
     }
   ],
@@ -284,7 +284,7 @@ const HOTEL_PRESETS = {
           }
         ],
         terms: "30% deposit upon confirmation &bull; 100% refund up to 60 days before event &bull; Dedicated concierge.",
-        contact: "Inquiries: summits@alpinecrestresort.ch &bull; Phone +41 81 830 00 00"
+        contact: "Inquiries: summits@example.org &bull; Phone +41 81 830 00 00"
       }
     }
   ],
@@ -428,7 +428,7 @@ const HOTEL_PRESETS = {
           }
         ],
         terms: "25% initial booking deposit &bull; Dedicated Master Production Director &bull; Flexible multi-currency invoicing.",
-        contact: "Conventions & Weddings: events@royaloasispalace.ae &bull; VIP Desk +971 4 888 9900"
+        contact: "Conventions & Weddings: events@example.org &bull; VIP Desk +971 4 888 9900"
       }
     }
   ]

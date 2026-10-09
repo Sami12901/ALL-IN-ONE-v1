@@ -6,7 +6,7 @@
 const PRESET_SCENARIOS = {
   stripe: {
     applicantName: 'Sophia Montgomery',
-    email: 'sophia.montgomery@outlook.com',
+    email: 'sophia.montgomery@example.com',
     phone: '+1 (555) 349-8812',
     location: 'San Francisco, CA • linkedin.com/in/sophiamontgomery',
     targetRole: 'Staff Infrastructure Architect',
@@ -18,7 +18,7 @@ const PRESET_SCENARIOS = {
   },
   spotify: {
     applicantName: 'Julian Croft',
-    email: 'julian.croft@creatorgrowth.io',
+    email: 'julian.croft@example.com',
     phone: '+1 (212) 880-9140',
     location: 'New York, NY • linkedin.com/in/juliancroft',
     targetRole: 'Director of Growth Marketing',
@@ -30,7 +30,7 @@ const PRESET_SCENARIOS = {
   },
   airbnb: {
     applicantName: 'Maya Lin-Torres',
-    email: 'maya.lintorres@productscale.com',
+    email: 'maya.lintorres@example.com',
     phone: '+1 (415) 773-6629',
     location: 'Seattle, WA • linkedin.com/in/mayalintorres',
     targetRole: 'Lead Product Manager - Host Community',
@@ -42,7 +42,7 @@ const PRESET_SCENARIOS = {
   },
   goldman: {
     applicantName: 'David Sterling Vance',
-    email: 'david.vance@capitalgroup.org',
+    email: 'david.vance@example.org',
     phone: '+1 (212) 555-0188',
     location: 'New York, NY • linkedin.com/in/davidsterlingvance',
     targetRole: 'Vice President - Corporate FP&A & Strategy',

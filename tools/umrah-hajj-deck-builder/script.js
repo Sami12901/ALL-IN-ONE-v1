@@ -107,7 +107,7 @@ const UMRAH_PRESETS = {
           { name: "Imperial Presidential", price: "$12,900", unit: "per pilgrim", desc: "Two-Bedroom Royal Clock Tower Penthouse, 24/7 dedicated private chauffeur & personal scholar." }
         ],
         terms: "30% deposit upon booking &bull; Balance due 30 days prior to departure &bull; Full visa processing included.",
-        ctaContact: "Direct Inquiries: pilgrims@nooralharamain.com &bull; WhatsApp +966 50 123 4567"
+        ctaContact: "Direct Inquiries: pilgrims@example.com &bull; WhatsApp +966 50 123 4567"
       }
     }
   ],
@@ -218,7 +218,7 @@ const UMRAH_PRESETS = {
           { name: "VIP Family Suite", price: "$5,200", unit: "per person", desc: "Two-Bedroom Family Connecting Suite, Full Board meals, private GMC Yukon throughout." }
         ],
         terms: "25% deposit required upon confirmation &bull; Balance 3 weeks before travel &bull; Full visa support.",
-        ctaContact: "Book Now: booking@nooralharamain.com &bull; Office +966 12 555 8899"
+        ctaContact: "Book Now: booking@example.com &bull; Office +966 12 555 8899"
       }
     }
   ],
@@ -329,7 +329,7 @@ const UMRAH_PRESETS = {
           { name: "Double / Twin", price: "$2,250", unit: "per pilgrim", desc: "Private room for two, breakfast included, full visa & transport package." }
         ],
         terms: "$500 deposit to hold seat &bull; Balance 15 days before departure &bull; 100% transparent terms.",
-        ctaContact: "Join Group: groups@nooralharamain.com &bull; Call +966 12 555 7711"
+        ctaContact: "Join Group: groups@example.com &bull; Call +966 12 555 7711"
       }
     }
   ],
@@ -440,7 +440,7 @@ const UMRAH_PRESETS = {
           { name: "Royal Sovereign Hajj", price: "$28,500", unit: "per pilgrim", desc: "Fairmont Penthouse, private tent partition with private en-suite bathroom, 24/7 personal guide." }
         ],
         terms: "50% deposit upon Nusuk quota confirmation &bull; 100% money-back guarantee if visa rejected.",
-        ctaContact: "Confidential Consultation: hajj@nooralharamain.com &bull; VIP Desk +966 12 555 9900"
+        ctaContact: "Confidential Consultation: hajj@example.com &bull; VIP Desk +966 12 555 9900"
       }
     }
   ]

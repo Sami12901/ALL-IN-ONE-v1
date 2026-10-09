@@ -38,8 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
       name: 'Email Address',
       pattern: '([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})',
       flags: ['g', 'i'],
-      sample: `Contact our primary support desk at support@all-in-one.dev or reach out to sales.lead@enterprise-tech.org.
-You can also notify admin@subdomain.company.co.uk for emergency escalations.`,
+      sample: `Contact our primary support desk at support@example.com or reach out to sales.lead@example.org.
+You can also notify admin@example.com for emergency escalations.`,
       description: 'Matches standard RFC email addresses with separate groups for user and domain.'
     },
     {
@@ -110,10 +110,10 @@ UK branch office inquiries: +44 20 7946 0919.`,
 
   const DEFAULT_SAMPLE_TEXT = `Welcome to the ALL-IN-ONE Regex Playground!
 Here are several sample contact records to test:
-- Lead Architect: alexandra.reed@cloud-systems.io (Assigned Team: Infrastructure)
-- Senior DevOps: marcus.vance@devops-flow.com (Assigned Team: Deployment)
-- Support Desk: inquiry-support@customer-care.net (Assigned Team: Operations)
-- Security Specialist: sec-officer99@cyber-shield.org (Assigned Team: SecOps)
+- Lead Architect: alexandra.reed@example.com (Assigned Team: Infrastructure)
+- Senior DevOps: marcus.vance@example.com (Assigned Team: Deployment)
+- Support Desk: inquiry-support@example.com (Assigned Team: Operations)
+- Security Specialist: sec-officer99@example.org (Assigned Team: SecOps)
 
 Try modifying the expression above or click "Regex Cheat Sheet" for more presets.`;
 

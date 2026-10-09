@@ -128,23 +128,23 @@ document.addEventListener('DOMContentLoaded', () => {
     applog: `[2024-03-15 10:14:02.124] [INFO] Application server initialized on port 8080. Environment: production.
 [2024-03-15 10:14:15.340] [INFO] Database connection pool established: 20 active connections to db.internal.net.
 [2024-03-15 10:15:22.891] [WARN] Cache eviction rate high: 840 keys evicted in 60s from Redis cache at 10.0.2.14.
-[2024-03-15 10:16:05.412] [ERROR] Payment gateway connection timeout connecting to https://api.stripe.com/v1/charges for customer sarah.connor@sky.net.
+[2024-03-15 10:16:05.412] [ERROR] Payment gateway connection timeout connecting to https://api.stripe.com/v1/charges for customer sarah.connor@example.com.
 [2024-03-15 10:16:05.415] [ERROR] Transaction failed for Order #ORD-7721. Total: $249.99 USD. Retrying in 5000ms.
 [2024-03-15 10:16:10.420] [INFO] Retry payment succeeded for Order #ORD-7721. Stripe Charge ID: ch_3N5b2k8.
 [2024-03-15 10:18:44.901] [WARN] High memory usage alert: JVM Heap at 84% (6.7 GB of 8.0 GB allocated).
-[2024-03-15 10:20:12.650] [INFO] User login authenticated for dev.lead@acme.com from IP 192.168.10.45.
-[2024-03-15 10:22:33.118] [ERROR] Failed to send invoice notification email to finance@partnercorp.org. SMTP 550 Mailbox full.
+[2024-03-15 10:20:12.650] [INFO] User login authenticated for dev.lead@example.com from IP 192.168.10.45.
+[2024-03-15 10:22:33.118] [ERROR] Failed to send invoice notification email to finance@example.org. SMTP 550 Mailbox full.
 [2024-03-15 10:25:00.000] [INFO] Routine cron backup completed: snapshot-20240315-1025.sql.gz (1.42 GB).`,
 
     support: `Chat Session #88392 - Date: 2024-03-18
-Customer: Alex Mercer (alex.mercer@gmail.com, Phone: +1 (555) 438-9921)
-Support Agent: Sophia Chen (schen@support.zendesk.com)
+Customer: Alex Mercer (alex.mercer@example.com, Phone: +1 (555) 438-9921)
+Support Agent: Sophia Chen (schen@example.com)
 
 [14:02:10] Sophia: Hello Alex! Thank you for contacting Premium Support. How can I assist you today?
 [14:03:05] Alex: Hi Sophia, I noticed an unexpected subscription charge of $189.50 on my credit card on 2024-03-17.
 [14:03:42] Alex: My account invoice ID is INV-44910 and my subscription tier was supposed to be $49.00/month.
 [14:04:15] Sophia: Let me look into that transaction immediately for you. Could you verify the billing zip code?
-[14:04:30] Alex: Sure, it is 94107, San Francisco. You can also reach me at alex.personal@mercer.tech.
+[14:04:30] Alex: Sure, it is 94107, San Francisco. You can also reach me at alex.personal@example.com.
 [14:06:22] Sophia: Thank you Alex. I see what happened. An extra 3 enterprise team seats were billed at $45.00 each on March 15, 2024.
 [14:07:05] Alex: Oh, I see! I thought those were included in the trial. Can we please downgrade to the single tier?
 [14:08:12] Sophia: Absolutely. I have processed an immediate refund of $135.00 back to your card ending in 4022. You can track this at https://billing.service.com/refunds/RF-1092.
@@ -152,14 +152,14 @@ Support Agent: Sophia Chen (schen@support.zendesk.com)
 [14:09:25] Sophia: You are very welcome! Have a wonderful day.`,
 
     ledger: `RecordID | TransactionDate | VendorName | ContactEmail | ReferenceCode | Amount | Status | PortalURL
-TX-101 | 2024-01-12 | Amazon Web Services | billing@amazon.com | AWS-99201 | $3,450.00 | Paid | https://aws.amazon.com/invoice
-TX-102 | 2024-01-15 | Slack Technologies | support@slack.com | SLK-1140 | $720.50 | Paid | https://slack.com/billing
-TX-103 | 2024-01-20 | GitHub Enterprise | billing@github.com | GH-8831 | $1,250.00 | Paid | https://github.com/organizations
-TX-104 | 2024-02-01 | Twilio Communications | finance@twilio.com | TWL-409 | $415.80 | Paid | https://twilio.com/console
-TX-105 | 2024-02-05 | Google Workspace | payments@google.com | GGL-772 | $1,890.00 | Paid | https://admin.google.com
-TX-106 | 2024-02-14 | Datadog Cloud | ar@datadoghq.com | DD-2091 | $2,840.00 | Pending | https://app.datadoghq.com/billing
-TX-107 | 2024-02-28 | Zoom Video | billing@zoom.us | ZM-6019 | $350.00 | Paid | https://zoom.us/account
-TX-108 | 2024-03-01 | Atlassian Jira | invoices@atlassian.com | ATL-339 | $1,600.00 | Paid | https://my.atlassian.com`
+TX-101 | 2024-01-12 | Amazon Web Services | billing@example.com | AWS-99201 | $3,450.00 | Paid | https://aws.amazon.com/invoice
+TX-102 | 2024-01-15 | Slack Technologies | support@example.com | SLK-1140 | $720.50 | Paid | https://slack.com/billing
+TX-103 | 2024-01-20 | GitHub Enterprise | billing@example.com | GH-8831 | $1,250.00 | Paid | https://github.com/organizations
+TX-104 | 2024-02-01 | Twilio Communications | finance@example.com | TWL-409 | $415.80 | Paid | https://twilio.com/console
+TX-105 | 2024-02-05 | Google Workspace | payments@example.com | GGL-772 | $1,890.00 | Paid | https://admin.google.com
+TX-106 | 2024-02-14 | Datadog Cloud | ar@example.com | DD-2091 | $2,840.00 | Pending | https://app.datadoghq.com/billing
+TX-107 | 2024-02-28 | Zoom Video | billing@example.com | ZM-6019 | $350.00 | Paid | https://zoom.us/account
+TX-108 | 2024-03-01 | Atlassian Jira | invoices@example.com | ATL-339 | $1,600.00 | Paid | https://my.atlassian.com`
   };
 
   // Event Listeners for Presets

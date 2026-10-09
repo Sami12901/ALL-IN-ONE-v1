@@ -7,7 +7,7 @@ const SAMPLE_VISA_CV = {
   personal: {
     fullName: 'Elena Rostova, RCIC',
     title: 'Senior Visa Processing Officer & Immigration Consultant',
-    email: 'elena.rostova@visaconsult.com',
+    email: 'elena.rostova@example.com',
     phone: '+44 20 7946 0912',
     location: 'London, UK (Open to Hybrid / Relocation)',
     regno: 'RCIC #R532109 • OISC Ref: F20190014',

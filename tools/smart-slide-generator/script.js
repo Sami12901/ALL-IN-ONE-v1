@@ -189,7 +189,7 @@ function generateSmartDeck(topic, audience, count) {
       bullets: [
         'Schedule a 30-day sandbox pilot on live enterprise pipelines.',
         'Access technical architecture whitepapers and benchmark telemetry data.',
-        'Direct inquiry: team@enterpriseintelligence.io'
+        'Direct inquiry: team@example.com'
       ],
       accent
     });

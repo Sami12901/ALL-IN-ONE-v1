@@ -1,7 +1,7 @@
 // ATS Resume Checker & NLP Auditor Logic
 
 const SAMPLE_RESUME_TEXT = `VICTORIA STERLING
-San Francisco, CA | v.sterling@apexcloud.io | +1 (555) 349-8201 | linkedin.com/in/victoriasterling
+San Francisco, CA | v.sterling@example.com | +1 (555) 349-8201 | linkedin.com/in/victoriasterling
 
 EXECUTIVE SUMMARY
 Transformational technology leader with 12+ years of track record in distributed systems, hyper-scale cloud infrastructure, and engineering management. Spearheaded cloud transformations saving $2.1M annually, scaled teams from 10 to 90+ engineers, and maintained 99.99% system availability.

@@ -399,7 +399,7 @@ class CatalogManager {
       name: 'LUMIÈRE ATELIER',
       tagline: 'Autumn / Winter Haute Collection & Lookbook',
       currency: 'USD',
-      contact: 'atelier@lumiere.com • www.lumiere-atelier.com',
+      contact: 'atelier@example.com • www.lumiere-atelier.com',
       notes: 'Net 30 wholesale terms available on select orders. Worldwide courier delivery.'
     };
     this.display = {

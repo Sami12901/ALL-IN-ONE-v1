@@ -222,7 +222,7 @@ function generatePitchDeck(promptText, stage, count) {
       footerLeft: 'Q&A and Next Steps',
       layout: 'hero',
       bullets: [
-        'Founder Direct Email: founders@startup.io',
+        'Founder Direct Email: founders@example.com',
         'Website & Product Demo: https://startup.io',
         'Headquarters: San Francisco, CA & Remote'
       ]

@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <!-- Interactive Form Demonstration -->
       <form action="/submit" method="post" novalidate="novalidate">
         <label for="subscriber-email">Subscribe to updates:</label>
-        <input type="email" id="subscriber-email" name="email" required="required" autofocus="autofocus" placeholder="alex@domain.com">
+        <input type="email" id="subscriber-email" name="email" required="required" autofocus="autofocus" placeholder="alex@example.com">
 
         <label for="newsletter-optin">
           <input type="checkbox" id="newsletter-optin" checked="checked"> Receive weekly dev newsletter

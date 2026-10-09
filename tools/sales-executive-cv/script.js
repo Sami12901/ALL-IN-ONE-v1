@@ -7,7 +7,7 @@ const SAMPLE_SALES_CV = {
   personal: {
     fullName: 'Sterling Thorne',
     title: 'Senior Enterprise Account Executive • President’s Club',
-    email: 's.thorne@enterprisesales.io',
+    email: 's.thorne@example.com',
     phone: '+1 (312) 678-4902',
     location: 'Chicago, IL (North America & EMEA Territory)',
     linkedin: 'linkedin.com/in/sterling-thorne-sales',

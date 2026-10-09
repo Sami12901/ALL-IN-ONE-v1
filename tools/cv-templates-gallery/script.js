@@ -5,7 +5,7 @@ const SAMPLE_RESUME = {
   personal: {
     name: 'Victoria Sterling',
     title: 'Vice President of Engineering',
-    email: 'v.sterling@apexcloud.io',
+    email: 'v.sterling@example.com',
     phone: '+1 (555) 349-8201',
     location: 'San Francisco, CA',
     website: 'linkedin.com/in/victoriasterling'

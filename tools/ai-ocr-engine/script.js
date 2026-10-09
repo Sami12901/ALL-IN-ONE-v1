@@ -404,7 +404,7 @@ function generateSampleScannedDocument() {
   ctx.font = '18px sans-serif';
   ctx.fillStyle = '#4b5563';
   ctx.fillText('100 Montgomery Street, Suite 2400', 80, 155);
-  ctx.fillText('San Francisco, CA 94104 \u2022 contact@apexsystems.io', 80, 180);
+  ctx.fillText('San Francisco, CA 94104 \u2022 contact@example.com', 80, 180);
 
   // Invoice Banner
   ctx.fillStyle = '#0f172a';
@@ -521,7 +521,7 @@ function generateSampleScannedDocument() {
 
   recognizedFullText = `APEX CLOUD SYSTEMS INC.
 100 Montgomery Street, Suite 2400
-San Francisco, CA 94104 • contact@apexsystems.io
+San Francisco, CA 94104 • contact@example.com
 
 COMMERCIAL INVOICE
 INVOICE NO: #INV-2026-904

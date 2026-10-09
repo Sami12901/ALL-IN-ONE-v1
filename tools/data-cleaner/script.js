@@ -114,17 +114,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const DIRTY_PRESETS = {
     crm: `Customer ID,Full Name,Email Address,Phone Number,City,Status,Annual Spend
 CUST-101,   john DOE  ,john.doe@example.com ,(555) 123-4567,   NEW YORK  ,Active,$4,500.00
-CUST-102,JANE smith,jane.smith@domain.org,555.987.6543,chicago,Pending,2200
-CUST-103,robert  JOHNSON ,  robert.j@corp.net,555-432-1098,SAN FRANCISCO,Active,8900
+CUST-102,JANE smith,jane.smith@example.org,555.987.6543,chicago,Pending,2200
+CUST-103,robert  JOHNSON ,  robert.j@example.net,555-432-1098,SAN FRANCISCO,Active,8900
 CUST-101,john doe,john.doe@example.com,(555) 123-4567,New York,Active,4500
 CUST-104, EMILY  williams  ,,(555) 678-9012,SEATTLE,Inactive,1200
-CUST-105,MICHAEL   BROWN,michael.b@webmail.com,555-890-1234,   ,Active,
-CUST-106, sarah  miller ,sarah.m@test.com,(555) 345-6789,boston,Pending,3100
-CUST-107,david  WILSON,david.w@firm.com,,DALLAS,Active,6400
-CUST-102,jane SMITH,jane.smith@domain.org,555.987.6543,chicago,Pending,2200
-CUST-108,LISA   taylor,lisa.t@service.co,555-234-5678,miami,Active,5200
-CUST-109, james ANDERSON,james.a@enterprise.com,(555) 789-0123,ATLANTA,,4800
-CUST-110,karen   THOMAS  ,karen.t@site.org,555.678.1234,austin,Inactive,950`,
+CUST-105,MICHAEL   BROWN,michael.b@example.com,555-890-1234,   ,Active,
+CUST-106, sarah  miller ,sarah.m@example.com,(555) 345-6789,boston,Pending,3100
+CUST-107,david  WILSON,david.w@example.com,,DALLAS,Active,6400
+CUST-102,jane SMITH,jane.smith@example.org,555.987.6543,chicago,Pending,2200
+CUST-108,LISA   taylor,lisa.t@example.com,555-234-5678,miami,Active,5200
+CUST-109, james ANDERSON,james.a@example.com,(555) 789-0123,ATLANTA,,4800
+CUST-110,karen   THOMAS  ,karen.t@example.org,555.678.1234,austin,Inactive,950`,
 
     inventory: `SKU,Product Name,Category,Unit Price,Quantity in Stock,Supplier
 SKU-901,  ultra wireless mouse  ,ELECTRONICS, 29.99 ,  150 ,LogiTech Corp

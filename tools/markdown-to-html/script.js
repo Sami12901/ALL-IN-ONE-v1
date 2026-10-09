@@ -44,6 +44,28 @@ class MarkdownConverter {
     });
   }
 
+  sanitizePreview(dirtyHtml) {
+    try {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(dirtyHtml, 'text/html');
+      const dangerousTags = ['script', 'iframe', 'object', 'embed', 'link', 'style', 'base', 'frame', 'applet', 'meta'];
+      dangerousTags.forEach(tag => doc.querySelectorAll(tag).forEach(el => el.remove()));
+      doc.querySelectorAll('*').forEach(el => {
+        for (let i = el.attributes.length - 1; i >= 0; i--) {
+          const attr = el.attributes[i];
+          const name = attr.name.toLowerCase();
+          const val = attr.value.trim().toLowerCase();
+          if (name.startsWith('on') || val.startsWith('javascript:')) {
+            el.removeAttribute(attr.name);
+          }
+        }
+      });
+      return doc.body.innerHTML;
+    } catch {
+      return dirtyHtml.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+    }
+  }
+
   process() {
     const text = this.inputBox.value;
     if (!text) {
@@ -64,9 +86,8 @@ class MarkdownConverter {
       // Output raw HTML code
       this.outputBox.value = html;
       
-      // Render visual preview
-      // Note: In a real app we'd sanitize this using DOMPurify, but for a client-side utility we assume the user trusts their own input.
-      this.previewBox.innerHTML = html;
+      // Render secure visual preview with DOM XSS filtering
+      this.previewBox.innerHTML = this.sanitizePreview(html);
     } catch (e) {
       console.error(e);
       this.outputBox.value = 'Error parsing markdown.';

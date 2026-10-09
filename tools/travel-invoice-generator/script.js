@@ -25,79 +25,79 @@ const CATEGORY_OPTIONS = [
 const PRESETS = {
   dubai: {
     agencyName: 'Aura Luxe Travel Concierge',
-    agencyTagline: 'IATA #92-81920 • Bespoke Journeys',
-    agencyEmail: 'concierge@auraluxetravel.com',
-    agencyPhone: '+1 (800) 492-8820',
-    agencyAddress: 'Suite 4800, 350 5th Avenue, New York, NY 10118',
-    clientName: 'Lord Julian Sterling',
-    clientPassport: 'GB-982144 • PNR: EK902X',
-    clientEmail: 'julian.sterling@sterlingholdings.co.uk',
-    clientPhone: '+44 20 7946 0912',
-    clientAddress: '14 Kensington Palace Gardens, London W8 4QX',
+    agencyTagline: 'Bespoke Journeys & Itineraries',
+    agencyEmail: 'concierge@example.com',
+    agencyPhone: '+1 (555) 019-2831',
+    agencyAddress: '350 5th Avenue, New York, NY 10118',
+    clientName: 'Julian Sterling',
+    clientBookingRef: 'REF-2026-DXB01',
+    clientEmail: 'client@example.com',
+    clientPhone: '+1 (555) 014-9921',
+    clientAddress: '14 Kensington Palace Gardens, London, UK',
     invoiceNumber: 'INV-2026-DXB01',
     currency: 'USD',
     status: 'Pending',
     discount: 500,
     paid: 2000,
-    bankDetails: 'JPMorgan Chase NY | SWIFT: CHASUS33 | Account: 8812-4401-9921 | Aura Luxe Travel LLC',
-    terms: 'Flight tickets are issued under Emirates First Fare rules. Hotel cancellation valid up to 72 hours before arrival.',
+    bankDetails: 'Bank Remittance / Wire Transfer | Routing: 000000000 | Account Ref: DEMO-TRV-8812 | Aura Luxe Travel LLC',
+    terms: 'Flight tickets are issued under airline fare rules. Hotel cancellation valid up to 72 hours before arrival.',
     items: [
-      { id: 'item-1', category: 'Flights', desc: 'Emirates First Class (LHR ⇄ DXB) A380 Private Suites', qty: 2, price: 6200, tax: 5 },
-      { id: 'item-2', category: 'Hotels', desc: 'Burj Al Arab Jumeirah - 1-Bedroom Deluxe Ocean Suite (5 Nights)', qty: 5, price: 1850, tax: 10 },
-      { id: 'item-3', category: 'Airport Transfers', desc: 'VIP Airport Meet & Assist + Rolls-Royce Phantom Transfers', qty: 2, price: 450, tax: 5 },
-      { id: 'item-4', category: 'Visa Processing', desc: 'UAE 30-Day Express Tourist Visa Clearance', qty: 2, price: 180, tax: 0 },
-      { id: 'item-5', category: 'Travel Insurance', desc: 'Allianz Global Platinum Medical & Flight Disruption Policy', qty: 2, price: 240, tax: 0 }
+      { id: 'item-1', category: 'Flights', desc: 'First Class International Suite (Round Trip)', qty: 2, price: 6200, tax: 5 },
+      { id: 'item-2', category: 'Hotels', desc: 'Luxury Resort - 1-Bedroom Ocean Suite (5 Nights)', qty: 5, price: 1850, tax: 10 },
+      { id: 'item-3', category: 'Airport Transfers', desc: 'VIP Airport Meet & Assist + Chauffeur Executive Transfer', qty: 2, price: 450, tax: 5 },
+      { id: 'item-4', category: 'Visa Processing', desc: '30-Day Express Tourist Visa Clearance', qty: 2, price: 180, tax: 0 },
+      { id: 'item-5', category: 'Travel Insurance', desc: 'Global Platinum Medical & Disruption Protection Policy', qty: 2, price: 240, tax: 0 }
     ]
   },
   europe: {
     agencyName: 'Grand Continental Voyages',
-    agencyTagline: 'ABTA #Y4012 • European Specialist',
-    agencyEmail: 'bookings@continentalvoyages.eu',
-    agencyPhone: '+33 1 42 68 55 00',
-    agencyAddress: '24 Place Vendôme, 75001 Paris, France',
+    agencyTagline: 'European Travel Specialist',
+    agencyEmail: 'bookings@example.com',
+    agencyPhone: '+1 (555) 018-4420',
+    agencyAddress: '24 Place Vendome, 75001 Paris, France',
     clientName: 'Dr. Evelyn Montgomery',
-    clientPassport: 'US-7740192 • PNR: AF1401',
-    clientEmail: 'evelyn.montgomery@biofoundry.org',
-    clientPhone: '+1 (415) 883-9120',
+    clientBookingRef: 'REF-2026-EUR44',
+    clientEmail: 'traveler@example.org',
+    clientPhone: '+1 (555) 012-7740',
     clientAddress: '2200 Pacific Avenue, San Francisco, CA 94115',
     invoiceNumber: 'INV-2026-EUR44',
     currency: 'EUR',
     status: 'Deposit',
     discount: 300,
     paid: 4500,
-    bankDetails: 'BNP Paribas Paris | IBAN: FR76 3000 4012 8820 1928 334 | Grand Continental Voyages SAS',
-    terms: 'Private museum curators and historical guides confirmed upon deposit. Train reservations non-exchangeable.',
+    bankDetails: 'SEPA Direct Credit Transfer | Reference: DEMO-EUR-1928 | Grand Continental Voyages SAS',
+    terms: 'Private curators and guides confirmed upon deposit. Train reservations non-exchangeable.',
     items: [
-      { id: 'item-1', category: 'Hotels', desc: 'Le Meurice, Dorchester Collection Paris - Executive Tuileries Room', qty: 4, price: 1400, tax: 10 },
-      { id: 'item-2', category: 'Flights', desc: 'Air France Business Class (CDG ⇄ FCO)', qty: 1, price: 850, tax: 10 },
-      { id: 'item-3', category: 'Hotels', desc: 'Hotel de Russie Rome - Classic Suite overlooking Piazza del Popolo', qty: 3, price: 1250, tax: 10 },
-      { id: 'item-4', category: 'Guided Tours', desc: 'Private After-Hours Vatican Museum & Sistine Chapel Tour', qty: 1, price: 1100, tax: 5 },
-      { id: 'item-5', category: 'Visa Processing', desc: 'Schengen Multi-Entry Priority Diplomatic Fast-Track', qty: 1, price: 220, tax: 0 }
+      { id: 'item-1', category: 'Hotels', desc: 'Historic Luxury Hotel - Executive City View Room (4 Nights)', qty: 4, price: 1400, tax: 10 },
+      { id: 'item-2', category: 'Flights', desc: 'Regional Business Class Flight (Round Trip)', qty: 1, price: 850, tax: 10 },
+      { id: 'item-3', category: 'Hotels', desc: 'Classic Suite overlooking Piazza del Popolo (3 Nights)', qty: 3, price: 1250, tax: 10 },
+      { id: 'item-4', category: 'Guided Tours', desc: 'Private After-Hours Museum & Cultural Heritage Tour', qty: 1, price: 1100, tax: 5 },
+      { id: 'item-5', category: 'Visa Processing', desc: 'Priority Diplomatic Fast-Track Visa Clearance', qty: 1, price: 220, tax: 0 }
     ]
   },
   bali: {
     agencyName: 'Serene Tropic Concierge',
-    agencyTagline: 'Luxury Southeast Asian Itineraries',
-    agencyEmail: 'hello@serenetropic.com',
-    agencyPhone: '+65 6789 2211',
-    agencyAddress: 'Marina Bay Financial Centre, Tower 2, Singapore',
+    agencyTagline: 'Southeast Asian Itineraries',
+    agencyEmail: 'reservations@example.com',
+    agencyPhone: '+1 (555) 017-3310',
+    agencyAddress: 'Marina Bay Financial Centre, Singapore',
     clientName: 'Liam & Olivia Vance',
-    clientPassport: 'AU-992140 / AU-992141 • PNR: SQ948',
-    clientEmail: 'olivia.vance@vancemedia.com.au',
-    clientPhone: '+61 2 9231 4400',
-    clientAddress: '88 Point Piper Rd, Sydney NSW 2027, Australia',
+    clientBookingRef: 'REF-2026-DPS88',
+    clientEmail: 'guests@example.com',
+    clientPhone: '+1 (555) 016-5520',
+    clientAddress: '88 Point Piper Rd, Sydney, Australia',
     invoiceNumber: 'INV-2026-DPS88',
     currency: 'USD',
     status: 'Paid',
     discount: 250,
     paid: 9850,
-    bankDetails: 'DBS Bank Singapore | SWIFT: DBSSSGSG | Account: 014-99210-4 | Serene Tropic Pte Ltd',
-    terms: 'Full payment received. Private pool villa guarantees early check-in and complimentary breakfast & spa ritual.',
+    bankDetails: 'International Wire Remittance | Reference: DEMO-DPS-9921 | Serene Tropic LLC',
+    terms: 'Full payment received. Private pool villa includes early check-in and complimentary breakfast & spa ritual.',
     items: [
-      { id: 'item-1', category: 'Hotels', desc: 'Four Seasons Resort Bali at Sayan - Riverfront Pool Villa (7 Nights)', qty: 7, price: 980, tax: 10 },
-      { id: 'item-2', category: 'Airport Transfers', desc: 'Ngurah Rai VIP Tarmac Fast Track + Luxury Mercedes Chauffeur', qty: 2, price: 210, tax: 0 },
-      { id: 'item-3', category: 'Guided Tours', desc: 'Private Sacred Temple Sunrise & Helicopter Volcano Expedition', qty: 1, price: 1450, tax: 5 },
-      { id: 'item-4', category: 'Travel Insurance', desc: 'Chubb World Medical & Scuba Excursion Endorsement', qty: 2, price: 195, tax: 0 }
+      { id: 'item-1', category: 'Hotels', desc: 'Riverfront Luxury Pool Villa (7 Nights)', qty: 7, price: 980, tax: 10 },
+      { id: 'item-2', category: 'Airport Transfers', desc: 'Airport Fast Track + Luxury Executive Chauffeur Transfer', qty: 2, price: 210, tax: 0 },
+      { id: 'item-3', category: 'Guided Tours', desc: 'Private Sacred Temple Sunrise & Helicopter Scenic Tour', qty: 1, price: 1450, tax: 5 },
+      { id: 'item-4', category: 'Travel Insurance', desc: 'Comprehensive Medical & Excursion Protection Policy', qty: 2, price: 195, tax: 0 }
     ]
   }
 };
@@ -121,7 +121,7 @@ class TravelInvoiceApp {
 
     // Client inputs
     this.inputClientName = document.getElementById('client-name');
-    this.inputClientPassport = document.getElementById('client-passport');
+    this.inputClientBookingRef = document.getElementById('client-booking-ref') || document.getElementById('client-booking-ref');
     this.inputClientEmail = document.getElementById('client-email');
     this.inputClientPhone = document.getElementById('client-phone');
     this.inputClientAddress = document.getElementById('client-address');
@@ -234,7 +234,7 @@ class TravelInvoiceApp {
     this.inputAgencyAddress.value = this.data.agencyAddress || '';
 
     this.inputClientName.value = this.data.clientName || '';
-    this.inputClientPassport.value = this.data.clientPassport || '';
+    this.inputClientBookingRef.value = this.data.clientBookingRef || this.data.clientBookingRef || '';
     this.inputClientEmail.value = this.data.clientEmail || '';
     this.inputClientPhone.value = this.data.clientPhone || '';
     this.inputClientAddress.value = this.data.clientAddress || '';
@@ -261,7 +261,7 @@ class TravelInvoiceApp {
     this.data.agencyAddress = this.inputAgencyAddress.value;
 
     this.data.clientName = this.inputClientName.value;
-    this.data.clientPassport = this.inputClientPassport.value;
+    this.data.clientBookingRef = this.inputClientBookingRef.value;
     this.data.clientEmail = this.inputClientEmail.value;
     this.data.clientPhone = this.inputClientPhone.value;
     this.data.clientAddress = this.inputClientAddress.value;
@@ -284,7 +284,7 @@ class TravelInvoiceApp {
     // Form inputs change
     const inputs = [
       this.inputAgencyName, this.inputAgencyTagline, this.inputAgencyEmail, this.inputAgencyPhone, this.inputAgencyAddress,
-      this.inputClientName, this.inputClientPassport, this.inputClientEmail, this.inputClientPhone, this.inputClientAddress,
+      this.inputClientName, this.inputClientBookingRef, this.inputClientEmail, this.inputClientPhone, this.inputClientAddress,
       this.inputInvoiceNumber, this.inputInvoiceCurrency, this.inputInvoiceDate, this.inputInvoiceDueDate, this.inputInvoiceStatus,
       this.inputDiscount, this.inputPaid, this.inputBankDetails, this.inputTerms
     ];
@@ -492,7 +492,7 @@ class TravelInvoiceApp {
 
     // Client
     this.viewClientName.textContent = this.data.clientName || 'Valued Client';
-    this.viewClientRef.textContent = this.data.clientPassport || '';
+    this.viewClientRef.textContent = this.data.clientBookingRef || this.data.clientBookingRef || '';
     this.viewClientAddress.textContent = this.data.clientAddress || '';
     this.viewClientContact.textContent = `${this.data.clientEmail || ''} ${this.data.clientPhone ? '• ' + this.data.clientPhone : ''}`;
 
@@ -585,7 +585,7 @@ class TravelInvoiceApp {
 ══════════════════════════════════════════════════
 TRAVEL BOOKING STATEMENT - ${this.data.invoiceNumber}
 Agency: ${this.data.agencyName} (${this.data.agencyPhone})
-Billed To: ${this.data.clientName} [${this.data.clientPassport}]
+Billed To: ${this.data.clientName} [${this.data.clientBookingRef || this.data.clientBookingRef || ''}]
 Status: ${this.data.status} | Due: ${this.data.dueDate}
 ══════════════════════════════════════════════════
 ITINERARY ITEMS:

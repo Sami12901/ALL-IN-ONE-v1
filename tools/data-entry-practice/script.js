@@ -1,16 +1,16 @@
 // Data Entry Practice - Commercial Speed Test & 10-Key Analytics
 
 const SAMPLE_RECORDS = [
-  { firstName: "Sophia", lastName: "Vanderbilt", email: "sophia.v@meridian.io", phone: "(415) 555-0194", zip: "94107", amount: "$1,845.50" },
-  { firstName: "Alexander", lastName: "Wright", email: "a.wright@solaris.net", phone: "(212) 555-0182", zip: "10001", amount: "$4,230.00" },
-  { firstName: "Elena", lastName: "Rostova", email: "elena.r@quantum.org", phone: "(312) 555-0138", zip: "60601", amount: "$890.75" },
-  { firstName: "Marcus", lastName: "Chen", email: "marcus.c@apexcorp.com", phone: "(206) 555-0149", zip: "98101", amount: "$2,610.25" },
-  { firstName: "Isabella", lastName: "Fontana", email: "i.fontana@luxora.ch", phone: "(617) 555-0193", zip: "02108", amount: "$5,120.80" },
-  { firstName: "Lucas", lastName: "Moreau", email: "lucas.m@strata.fr", phone: "(512) 555-0177", zip: "78701", amount: "$3,415.00" },
-  { firstName: "Chloe", lastName: "Kowalski", email: "c.kowalski@nordic.se", phone: "(303) 555-0164", zip: "80202", amount: "$945.30" },
-  { firstName: "Liam", lastName: "O'Connor", email: "liam.oc@emerald.ie", phone: "(404) 555-0155", zip: "30303", amount: "$1,275.60" },
-  { firstName: "Maya", lastName: "Patel", email: "maya.p@vectortech.in", phone: "(650) 555-0128", zip: "94025", amount: "$6,890.00" },
-  { firstName: "Julian", lastName: "Sterling", email: "j.sterling@crown.co.uk", phone: "(202) 555-0119", zip: "20005", amount: "$7,350.40" }
+  { firstName: "Sophia", lastName: "Vanderbilt", email: "sophia.v@example.com", phone: "(415) 555-0194", zip: "94107", amount: "$1,845.50" },
+  { firstName: "Alexander", lastName: "Wright", email: "a.wright@example.com", phone: "(212) 555-0182", zip: "10001", amount: "$4,230.00" },
+  { firstName: "Elena", lastName: "Rostova", email: "elena.r@example.org", phone: "(312) 555-0138", zip: "60601", amount: "$890.75" },
+  { firstName: "Marcus", lastName: "Chen", email: "marcus.c@example.com", phone: "(206) 555-0149", zip: "98101", amount: "$2,610.25" },
+  { firstName: "Isabella", lastName: "Fontana", email: "i.fontana@example.com", phone: "(617) 555-0193", zip: "02108", amount: "$5,120.80" },
+  { firstName: "Lucas", lastName: "Moreau", email: "lucas.m@example.com", phone: "(512) 555-0177", zip: "78701", amount: "$3,415.00" },
+  { firstName: "Chloe", lastName: "Kowalski", email: "c.kowalski@example.com", phone: "(303) 555-0164", zip: "80202", amount: "$945.30" },
+  { firstName: "Liam", lastName: "O'Connor", email: "liam.oc@example.com", phone: "(404) 555-0155", zip: "30303", amount: "$1,275.60" },
+  { firstName: "Maya", lastName: "Patel", email: "maya.p@example.com", phone: "(650) 555-0128", zip: "94025", amount: "$6,890.00" },
+  { firstName: "Julian", lastName: "Sterling", email: "j.sterling@example.com", phone: "(202) 555-0119", zip: "20005", amount: "$7,350.40" }
 ];
 
 const FIELD_SEQUENCE = ['firstName', 'lastName', 'email', 'phone', 'zip', 'amount'];

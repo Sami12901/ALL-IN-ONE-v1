@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'deal-1',
       client: 'Apex Global Logistics',
       value: 38000,
-      email: 'marcus@apexlogistics.com',
+      email: 'marcus@example.com',
       stage: 'proposal',
       closeDate: '2026-10-25',
       notes: 'Custom ERP integration and fleet telemetry tracking.'
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'deal-2',
       client: 'Nova BioTech Labs',
       value: 54000,
-      email: 'dr.elena@novabiotech.org',
+      email: 'dr.elena@example.org',
       stage: 'won',
       closeDate: '2026-09-30',
       notes: 'Annual enterprise multi-seat research subscription.'
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'deal-3',
       client: 'Kromer & Associates',
       value: 12500,
-      email: 'deals@kromerlaw.com',
+      email: 'deals@example.com',
       stage: 'contacted',
       closeDate: '2026-11-10',
       notes: 'Initial discovery call completed; requested compliance demo.'
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'deal-4',
       client: 'Solaris Cloud Systems',
       value: 82000,
-      email: 'alex@solariscloud.io',
+      email: 'alex@example.com',
       stage: 'lead',
       closeDate: '2026-12-01',
       notes: 'Inbound referral from regional tech summit.'
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'deal-5',
       client: 'Horizon Retail Partners',
       value: 29000,
-      email: 'sourcing@horizonretail.com',
+      email: 'sourcing@example.com',
       stage: 'proposal',
       closeDate: '2026-10-31',
       notes: 'Contract review currently in legal department.'
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'deal-6',
       client: 'Vanguard Media Group',
       value: 18500,
-      email: 'marketing@vanguardmedia.net',
+      email: 'marketing@example.org',
       stage: 'won',
       closeDate: '2026-09-15',
       notes: 'Digital marketing analytics automation package.'
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'deal-7',
       client: 'Bluefin Maritime Services',
       value: 15000,
-      email: 'procurement@bluefinship.com',
+      email: 'procurement@example.com',
       stage: 'lost',
       closeDate: '2026-08-20',
       notes: 'Selected internal legacy tooling due to budgetary freeze.'

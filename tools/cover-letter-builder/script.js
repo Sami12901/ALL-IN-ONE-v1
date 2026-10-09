@@ -3,7 +3,7 @@
 const SAMPLE_DATA = {
   applicant: {
     name: 'Maya Lin',
-    email: 'maya.lin@designer.io',
+    email: 'maya.lin@example.com',
     phone: '+1 (555) 789-0123',
     location: 'Seattle, WA',
   },

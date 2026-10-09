@@ -104,7 +104,7 @@ const DESTINATION_PRESETS = {
           { name: "Royal Sovereign", price: "$16,500", unit: "per person", desc: "Presidential two-story suite, 24/7 private security, unlimited private yacht days." }
         ],
         terms: "30% deposit upon itinerary confirmation &bull; Balance due 21 days prior to departure &bull; 100% flexible rescheduling.",
-        ctaContact: "Ready to confirm? Email reservations@odysseytravel.com or call +1 (800) 845-VOYAGE."
+        ctaContact: "Ready to confirm? Email reservations@example.com or call +1 (800) 845-VOYAGE."
       }
     }
   ],
@@ -212,7 +212,7 @@ const DESTINATION_PRESETS = {
           { name: "Royal Reserve Estate", price: "$24,500", unit: "per guest", desc: "4-Bedroom Overwater Palace, dedicated private yacht, 24/7 personal chef & crew." }
         ],
         terms: "25% deposit at time of booking &bull; Final settlement 30 days before arrival &bull; Fully flexible date rescheduling.",
-        ctaContact: "Inquire or confirm: maldives@odysseytravel.com &bull; +1 (800) 845-8692"
+        ctaContact: "Inquire or confirm: maldives@example.com &bull; +1 (800) 845-8692"
       }
     }
   ],
@@ -320,7 +320,7 @@ const DESTINATION_PRESETS = {
           { name: "Grand Vizier", price: "$12,800", unit: "per person", desc: "Imperial Sultan Suite, private helicopter transfers, 24/7 private security detail." }
         ],
         terms: "30% initial deposit required &bull; 70% balance due 3 weeks prior &bull; Comprehensive cancellation insurance available.",
-        ctaContact: "Reserve your journey: turkey@odysseytravel.com &bull; +1 (800) 845-8692"
+        ctaContact: "Reserve your journey: turkey@example.com &bull; +1 (800) 845-8692"
       }
     }
   ],
@@ -428,7 +428,7 @@ const DESTINATION_PRESETS = {
           { name: "Chalet Sovereign", price: "$18,200", unit: "per person", desc: "Private catered Alpine Chalet, private helicopter transfers, unlimited private ski guide." }
         ],
         terms: "25% deposit upon itinerary confirmation &bull; 75% due 30 days prior &bull; Flexible winter cancellation protection.",
-        ctaContact: "Secure your reservation: switzerland@odysseytravel.com &bull; +1 (800) 845-8692"
+        ctaContact: "Secure your reservation: switzerland@example.com &bull; +1 (800) 845-8692"
       }
     }
   ]

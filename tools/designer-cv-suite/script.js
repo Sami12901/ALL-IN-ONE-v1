@@ -9,7 +9,7 @@ const DESIGNER_SAMPLE = {
     fullName: "Elena Rostova",
     role: "Principal Product Designer & Systems Architect",
     portfolio: "https://elenarostova.design",
-    email: "elena@rostova.design",
+    email: "elena@example.org",
     phone: "+1 (415) 890-4421",
     location: "New York, NY (Open to Remote / Relo)",
     dribbble: "dribbble.com/elenarostova",

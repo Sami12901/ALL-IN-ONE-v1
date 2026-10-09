@@ -677,7 +677,7 @@
       {
         uid: "usr_9901",
         username: "sarah_c",
-        email: "sarah.connor@cyberdyne.io",
+        email: "sarah.connor@example.com",
         role: "DevOps Engineer",
         verified: true,
         profile: {
@@ -701,7 +701,7 @@
       {
         uid: "usr_9902",
         username: "john_w",
-        email: "john.wick@continental.com",
+        email: "john.wick@example.com",
         role: "Security Director",
         verified: true,
         profile: {
@@ -725,7 +725,7 @@
       {
         uid: "usr_9903",
         username: "ellen_r",
-        email: "ellen.ripley@weyland.org",
+        email: "ellen.ripley@example.org",
         role: "Flight Officer",
         verified: false,
         profile: {

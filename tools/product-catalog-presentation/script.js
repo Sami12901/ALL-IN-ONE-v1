@@ -14,7 +14,7 @@ const CATALOG_PRESETS = {
         brand: "Aura Studio Design Labs",
         collection: "Aura Horizon Collection 2026",
         tagline: "Designed for focused creation & uncompromising acoustic clarity",
-        contact: "wholesale@aurastudio.design &bull; B2B Portal"
+        contact: "wholesale@example.org &bull; B2B Portal"
       }
     },
     {
@@ -132,7 +132,7 @@ const CATALOG_PRESETS = {
           }
         ],
         terms: "Minimum Opening Order: $4,500 &bull; Net 30/60 Days &bull; EDI & CSV Invoicing Supported.",
-        contact: "Buyer Inquiries: b2b@aurastudio.design &bull; Phone +1 (800) 412-AURA"
+        contact: "Buyer Inquiries: b2b@example.org &bull; Phone +1 (800) 412-AURA"
       }
     }
   ],
@@ -150,7 +150,7 @@ const CATALOG_PRESETS = {
         brand: "Botanica Luxe Laboratory",
         collection: "Cellular Longevity Collection",
         tagline: "Clinically proven bio-fermented actives with zero compromise",
-        contact: "wholesale@botanicaluxe.com"
+        contact: "wholesale@example.com"
       }
     },
     {
@@ -268,7 +268,7 @@ const CATALOG_PRESETS = {
           }
         ],
         terms: "Orders ship within 48h from Paris / New Jersey &bull; Free shipping on orders over $2,500.",
-        contact: "Partner Inquiries: stockist@botanicaluxe.com &bull; +1 (888) 920-LUXE"
+        contact: "Partner Inquiries: stockist@example.com &bull; +1 (888) 920-LUXE"
       }
     }
   ],
@@ -286,7 +286,7 @@ const CATALOG_PRESETS = {
         brand: "Kinetics Atelier Tokyo &bull; Paris",
         collection: "System 04: Kinetic Geometries",
         tagline: "Technical performance meets timeless architectural tailoring",
-        contact: "showroom@kineticsatelier.com"
+        contact: "showroom@example.com"
       }
     },
     {
@@ -404,7 +404,7 @@ const CATALOG_PRESETS = {
           }
         ],
         terms: "Production Window: Delivery August 15 &bull; 30% Deposit upon Order &bull; Balance on Delivery.",
-        contact: "Showroom Contact: showroom@kineticsatelier.com &bull; Paris Office +33 1 42 68 00 11"
+        contact: "Showroom Contact: showroom@example.com &bull; Paris Office +33 1 42 68 00 11"
       }
     }
   ]

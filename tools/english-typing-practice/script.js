@@ -37,7 +37,7 @@ const LESSONS_DATA = {
     drills: [
       { id: 1, label: "Number Row", text: "12345 67890 19283 74650 98765 43210" },
       { id: 2, label: "Phone & Currency", text: "call 1-800-555-0199 today; price is $49.99 plus 8% tax" },
-      { id: 3, label: "Symbol Drills", text: "user@domain.com #tag [status: 200] {value: 99.5%}" },
+      { id: 3, label: "Symbol Drills", text: "user@example.com #tag [status: 200] {value: 99.5%}" },
       { id: 4, label: "Code Syntax", text: "if (count >= 10 && total != 0) { return array[i] * 2.5; }" }
     ]
   },

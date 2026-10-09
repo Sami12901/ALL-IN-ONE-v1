@@ -156,7 +156,7 @@ const SALES_PRESETS = {
           }
         ],
         terms: "Includes 60-Day Unconditional Money-Back ROI Guarantee &bull; Volume discounting for multi-year contracts.",
-        contact: "Enterprise Sales: sales@cognitiveflow.ai &bull; Schedule Deal Desk Call"
+        contact: "Enterprise Sales: sales@example.com &bull; Schedule Deal Desk Call"
       }
     },
     {
@@ -343,7 +343,7 @@ const SALES_PRESETS = {
           }
         ],
         terms: "Annual contract with 99.99% service SLA &bull; Comprehensive SOC 2 audit package provided.",
-        contact: "Contact SecOps: security-sales@shieldguard.io &bull; Book Security Architecture Review"
+        contact: "Contact SecOps: security-sales@example.com &bull; Book Security Architecture Review"
       }
     },
     {
@@ -530,7 +530,7 @@ const SALES_PRESETS = {
           }
         ],
         terms: "No monthly account maintenance fees &bull; Real-time balance reporting &bull; Regulatory insured.",
-        contact: "Treasury Inquiries: partnerships@velocitypay.io &bull; Talk with Payments Architect"
+        contact: "Treasury Inquiries: partnerships@example.com &bull; Talk with Payments Architect"
       }
     },
     {

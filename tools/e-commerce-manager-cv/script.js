@@ -7,7 +7,7 @@ const SAMPLE_ECOMMERCE_CV = {
   personal: {
     fullName: 'Marcus Vance',
     title: 'Senior E-Commerce & D2C Growth Director',
-    email: 'marcus.vance@growthcommerce.io',
+    email: 'marcus.vance@example.com',
     phone: '+1 (415) 890-2341',
     location: 'Austin, TX (Open to Remote / Hybrid)',
     portfolio: 'marcusvancecommerce.com',

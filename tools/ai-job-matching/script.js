@@ -70,7 +70,7 @@ Key Requirements:
 - Experience with GraphQL APIs, RESTful design patterns, and asynchronous messaging (Kafka or RabbitMQ).
 - Strong track record of system architecture, cross-functional collaboration, and technical mentoring.`,
       resume: `Alex Morgan
-alex.morgan@email.com • linkedin.com/in/alexmorgan-tech • github.com/alexmorgan
+alex.morgan@example.com • linkedin.com/in/alexmorgan-tech • github.com/alexmorgan
 
 PROFESSIONAL SUMMARY:
 Lead Full-Stack Software Engineer with 6+ years of experience architecting resilient web applications and microservices. Expert in TypeScript, React.js, Node.js, and PostgreSQL. Passionate about scalable system architecture and CI/CD automation.
@@ -106,7 +106,7 @@ Responsibilities & Qualifications:
 - Experience with MLOps pipelines (MLflow, Weights & Biases) and automated evaluation benchmarks.
 - Bachelor's or Master's degree in Computer Science, Data Science, or related quantitative field.`,
       resume: `Jordan Hayes
-jordan.hayes@email.com • github.com/jordan-ai
+jordan.hayes@example.com • github.com/jordan-ai
 
 SUMMARY:
 Machine Learning Engineer with 4 years of expertise in Python, PyTorch, generative AI, and NLP. Proven track record deploying production LLM pipelines and vector search systems.
@@ -134,7 +134,7 @@ Requirements:
 - Data-driven mindset: comfortable executing A/B testing, cohort analysis, and product analytics (Mixpanel, Amplitude).
 - Exceptional executive stakeholder communication, backlog prioritization, and go-to-market execution.`,
       resume: `Taylor Brooks
-taylor.brooks@email.com • linkedin.com/in/taylorbrookspm
+taylor.brooks@example.com • linkedin.com/in/taylorbrookspm
 
 SUMMARY:
 Product Management leader with 6 years experience driving product strategy and roadmap execution for high-growth SaaS applications.
@@ -158,7 +158,7 @@ Requirements:
 - Production observability with Prometheus, Grafana, Datadog, and distributed tracing.
 - Strong scripting skills in Python, Bash, or Go; 24/7 on-call incident response leadership.`,
       resume: `Devin Vance
-devin.vance@cloudops.net • github.com/devinvance
+devin.vance@example.org • github.com/devinvance
 
 SUMMARY:
 DevOps & SRE Engineer with 5+ years optimizing cloud reliability and automation on AWS.

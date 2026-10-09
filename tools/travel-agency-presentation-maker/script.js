@@ -104,7 +104,7 @@ const DEFAULT_TRAVEL_SLIDES = [
         { tier: "Ultra-Bespoke Villa", price: "$12,500", unit: "per guest", desc: "Exclusive 4-bedroom cliffside villa estate, helicopter transfers, private yacht 2 days." }
       ],
       terms: "25% deposit upon itinerary confirmation • Balance due 30 days prior • Fully flexible cancellation.",
-      contact: "Odyssey Luxury Travel • bookings@odysseytravel.com • +1 (800) 555-VOYAGE"
+      contact: "Odyssey Luxury Travel • bookings@example.com • +1 (800) 555-VOYAGE"
     }
   }
 ];
@@ -663,7 +663,7 @@ function printTourBrochure() {
     `).join('')}
 
     <div style="text-align: center; font-size: 0.85rem; color: #6b7280; padding-top: 1.5rem;">
-      Thank you for choosing Odyssey Luxury Travel • Contact: bookings@odysseytravel.com • +1 (800) 555-VOYAGE
+      Thank you for choosing Odyssey Luxury Travel • Contact: bookings@example.com • +1 (800) 555-VOYAGE
     </div>
   `;
 

@@ -3,14 +3,14 @@
 const STORAGE_KEY = 'stock_alert_inventory';
 
 const SAMPLE_PRODUCTS = [
-  { id: 'prod-1', sku: 'AUDIO-ANC-01', name: 'AeroSound Pro Noise-Cancelling Headphones', stock: 3, threshold: 15, cost: 74.50, supplier: 'orders@aerosound.io' },
-  { id: 'prod-2', sku: 'KB-MECH-RGB', name: 'Vortex RGB Mechanical Gaming Keyboard', stock: 0, threshold: 10, cost: 42.00, supplier: 'sales@vortextoys.com' },
-  { id: 'prod-3', sku: 'MOU-WL-ULTRA', name: 'ErgoGlide Ultra Wireless Mouse', stock: 12, threshold: 25, cost: 18.20, supplier: 'supply@ergoglide.com' },
-  { id: 'prod-4', sku: 'MON-4K-27IN', name: 'Lumix 27-inch 4K Studio Monitor', stock: 18, threshold: 8, cost: 195.00, supplier: 'b2b@lumixdisplays.net' },
-  { id: 'prod-5', sku: 'CAB-USB4-2M', name: 'Braided Thunderbolt 4 Cable 2M', stock: 0, threshold: 30, cost: 6.80, supplier: 'procure@cablefast.com' },
-  { id: 'prod-6', sku: 'HUB-10IN1-ALU', name: '10-in-1 Aluminium USB-C Docking Station', stock: 5, threshold: 20, cost: 38.50, supplier: 'sales@vortextoys.com' },
-  { id: 'prod-7', sku: 'CAM-4K-STREAM', name: 'ApexCam 4K UHD Streaming Webcam', stock: 24, threshold: 10, cost: 55.00, supplier: 'orders@aerosound.io' },
-  { id: 'prod-8', sku: 'PAD-DESK-LEATH', name: 'Full-Grain Vegan Leather Desk Mat', stock: 7, threshold: 15, cost: 12.40, supplier: 'supply@ergoglide.com' }
+  { id: 'prod-1', sku: 'AUDIO-ANC-01', name: 'AeroSound Pro Noise-Cancelling Headphones', stock: 3, threshold: 15, cost: 74.50, supplier: 'orders@example.com' },
+  { id: 'prod-2', sku: 'KB-MECH-RGB', name: 'Vortex RGB Mechanical Gaming Keyboard', stock: 0, threshold: 10, cost: 42.00, supplier: 'sales@example.com' },
+  { id: 'prod-3', sku: 'MOU-WL-ULTRA', name: 'ErgoGlide Ultra Wireless Mouse', stock: 12, threshold: 25, cost: 18.20, supplier: 'supply@example.com' },
+  { id: 'prod-4', sku: 'MON-4K-27IN', name: 'Lumix 27-inch 4K Studio Monitor', stock: 18, threshold: 8, cost: 195.00, supplier: 'b2b@example.com' },
+  { id: 'prod-5', sku: 'CAB-USB4-2M', name: 'Braided Thunderbolt 4 Cable 2M', stock: 0, threshold: 30, cost: 6.80, supplier: 'procure@example.com' },
+  { id: 'prod-6', sku: 'HUB-10IN1-ALU', name: '10-in-1 Aluminium USB-C Docking Station', stock: 5, threshold: 20, cost: 38.50, supplier: 'sales@example.com' },
+  { id: 'prod-7', sku: 'CAM-4K-STREAM', name: 'ApexCam 4K UHD Streaming Webcam', stock: 24, threshold: 10, cost: 55.00, supplier: 'orders@example.com' },
+  { id: 'prod-8', sku: 'PAD-DESK-LEATH', name: 'Full-Grain Vegan Leather Desk Mat', stock: 7, threshold: 15, cost: 12.40, supplier: 'supply@example.com' }
 ];
 
 let inventory = [];

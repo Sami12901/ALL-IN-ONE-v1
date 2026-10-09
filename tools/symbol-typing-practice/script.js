@@ -160,7 +160,7 @@ const ExerciseGenerators = {
   'web-code': () => {
     const samples = [
       '<div class="card" id="main"><span data-id="101">Content</span></div>',
-      '<input type="text" name="email" required placeholder="name@domain.com" />',
+      '<input type="text" name="email" required placeholder="name@example.com" />',
       '.container > .header:first-child { display: flex; align-items: center; }',
       '@media (min-width: 768px) { .grid { grid-template-columns: 1fr 1fr; } }',
       '<button onclick="handleClick(event)" disabled="false">&rarr; Submit</button>'

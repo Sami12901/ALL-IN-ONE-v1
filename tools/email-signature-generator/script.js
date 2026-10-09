@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
     inpTitle.value = 'Head of Growth & Strategy';
     inpCompany.value = 'Nexus Global Innovations';
     inpPhone.value = '+1 (555) 349-8821';
-    inpEmail.value = 'alex.morgan@nexusglobal.io';
+    inpEmail.value = 'alex.morgan@example.com';
     inpWebsite.value = 'https://nexusglobal.io';
     inpAddress.value = '100 Broadway, Suite 2400, New York, NY';
     inpAvatar.value = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80';

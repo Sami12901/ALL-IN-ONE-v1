@@ -2,7 +2,7 @@
 
 const SAMPLE_DATA = {
   applicantName: "Alex Morgan",
-  applicantContact: "alex.morgan@cloudarch.dev | +1 (555) 019-2834 | San Francisco, CA",
+  applicantContact: "alex.morgan@example.com | +1 (555) 019-2834 | San Francisco, CA",
   targetRole: "Staff Full-Stack Engineer",
   companyName: "Starlight Technologies",
   hiringManager: "Dr. Evelyn Vance",
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function getFormData() {
   return {
     applicantName: document.getElementById('applicantName')?.value.trim() || 'Alex Morgan',
-    applicantContact: document.getElementById('applicantContact')?.value.trim() || 'alex.morgan@email.com',
+    applicantContact: document.getElementById('applicantContact')?.value.trim() || 'alex.morgan@example.com',
     targetRole: document.getElementById('targetRole')?.value.trim() || 'Software Engineer',
     companyName: document.getElementById('companyName')?.value.trim() || 'Acme Corp',
     hiringManager: document.getElementById('hiringManager')?.value.trim() || 'Hiring Team',
