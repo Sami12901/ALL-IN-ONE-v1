@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Helper to initialize hero features
   function initHeroAnimations() {
-    // 1. HLS Video Background
+    // 1. Video / Interactive Water Background
     const video = document.getElementById('hero-video');
     const videoSrc = 'https://stream.mux.com/Aa02T7oM1wH5Mk5EEVDYhbZ1ChcdhRsS2m1NYyx4Ua1g.m3u8';
     
@@ -75,8 +75,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const hls = new Hls();
         hls.loadSource(videoSrc);
         hls.attachMedia(video);
+        hls.on(Hls.Events.ERROR, (event, data) => {
+          if (data && data.fatal) {
+            video.style.display = 'none'; // Gracefully fallback to interactive water canvas
+            hls.destroy();
+          }
+        });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
         video.src = videoSrc;
+        video.onerror = () => { video.style.display = 'none'; };
+      } else {
+        video.style.display = 'none';
       }
     }
 
